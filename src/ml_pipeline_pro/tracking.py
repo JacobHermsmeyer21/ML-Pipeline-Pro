@@ -5,14 +5,17 @@ import asyncio
 from fastapi import Request
 from pymongo import ASCENDING, DESCENDING
 
+from ml_pipeline_pro.jobs import ExperimentRepository
 from ml_pipeline_pro.repositories import MongoRepository
-from ml_pipeline_pro.schemas import DatasetRecord, ModelRecord
+from ml_pipeline_pro.schemas import DatasetRecord, ExperimentRecord, ModelRecord, ModelVersionRecord
 
 
 class TrackingStore:
     def __init__(self, database) -> None:
         self.datasets = MongoRepository(database, "datasets", DatasetRecord)
         self.models = MongoRepository(database, "models", ModelRecord)
+        self.experiments = ExperimentRepository(database, "experiments", ExperimentRecord)
+        self.versions = ModelVersionRepository(database, "model_versions", ModelVersionRecord)
         self._indexed = False
         self._index_lock = asyncio.Lock()
 
@@ -30,7 +33,30 @@ class TrackingStore:
                 unique=True,
                 name="model_project_name",
             )
-            for repository in (self.datasets, self.models):
+            await self.experiments.collection.create_index(
+                [("project_id", ASCENDING), ("submission_key", ASCENDING)],
+                unique=True,
+                name="experiment_submission",
+            )
+            await self.versions.collection.create_index(
+                [("project_id", ASCENDING), ("model_id", ASCENDING), ("version", ASCENDING)],
+                unique=True,
+                name="model_version_identity",
+            )
+            for key in ("status", "model_id"):
+                await self.experiments.collection.create_index(
+                    [("project_id", ASCENDING), (key, ASCENDING), ("created_at", DESCENDING)],
+                    name=f"experiment_project_{key}_created",
+                )
+            await self.experiments.collection.create_index(
+                [
+                    ("status", ASCENDING),
+                    ("last_dispatch_at", ASCENDING),
+                    ("lease_expires_at", ASCENDING),
+                ],
+                name="experiment_recovery",
+            )
+            for repository in (self.datasets, self.models, self.experiments, self.versions):
                 await repository.collection.create_index(
                     [("project_id", ASCENDING), ("created_at", DESCENDING), ("_id", DESCENDING)],
                     name="project_created_id",
@@ -47,3 +73,14 @@ async def get_store(request: Request) -> TrackingStore:
     store = request.app.state.tracking_store
     await store.ensure_indexes()
     return store
+
+
+class ModelVersionRepository(MongoRepository[ModelVersionRecord]):
+    async def for_model(self, project_id: str, model_id: str, *, limit: int, offset: int):
+        cursor = (
+            self.collection.find({"project_id": project_id, "model_id": model_id})
+            .sort([("created_at", -1), ("_id", -1)])
+            .skip(offset)
+            .limit(limit)
+        )
+        return [self._decode(document) async for document in cursor]

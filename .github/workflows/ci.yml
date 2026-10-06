@@ -22,15 +22,18 @@ jobs:
           version: "0.12.23"
           python-version: ${{ matrix.python-version }}
           enable-cache: true
-      - run: uv sync --locked
-      - run: uv run --locked ruff check .
-      - run: uv run --locked ruff format --check .
-      - run: uv run --locked pytest -m "not integration" --cov --cov-report=term-missing
+      - run: uv sync --locked --extra training
+      - run: uv run --locked --extra training ruff check .
+      - run: uv run --locked --extra training ruff format --check .
+      - run: uv run --locked --extra training pytest -m "not integration" --cov --cov-report=term-missing
       - run: uv pip check
       - if: matrix.python-version == '3.11'
         run: |
-          uv export --locked --no-dev --no-emit-project --output-file /tmp/requirements.txt
-          uv run --locked pip-audit -r /tmp/requirements.txt --require-hashes --disable-pip
+          uv export --locked --extra training --no-dev --no-emit-project --output-file /tmp/requirements.txt
+          uv run --locked --extra training pip-audit -r /tmp/requirements.txt --require-hashes --disable-pip
+          # PyPI's advisory service cannot look up the CPU build suffix. Audit its release too.
+          uv run --locked --extra training python -c 'from importlib.metadata import version; from pathlib import Path; Path("/tmp/torch-audit.txt").write_text("torch==" + version("torch").split("+")[0] + "\n")'
+          uv run --locked --extra training pip-audit -r /tmp/torch-audit.txt --no-deps --disable-pip
 
   compose-smoke:
     runs-on: ubuntu-latest
@@ -43,13 +46,14 @@ jobs:
           version: "0.12.23"
           python-version: "3.11"
           enable-cache: true
-      - run: uv sync --locked
+      - run: uv sync --locked --extra training
       - run: docker compose config --quiet
-      - run: docker compose up --build --wait --wait-timeout 180
+      - run: docker compose up --build --wait --wait-timeout 300
       - run: curl --fail http://127.0.0.1:8000/api/v1/health/ready
-      - run: uv run --locked pytest -m integration
+      - run: uv run --locked --extra training pytest -m integration
         env:
           MLPP_RUN_INTEGRATION: "1"
+          MLPP_RUN_WORKER_INTEGRATION: "1"
       - if: failure()
         run: docker compose logs
       - if: always()

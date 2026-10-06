@@ -5,32 +5,6 @@ import pytest
 from pydantic import SecretStr
 from pymongo.errors import AutoReconnect
 
-from ml_pipeline_pro.tracking import get_store
-from tests.memory import MemoryStore
-
-
-@pytest.fixture
-def store(app):
-    store = MemoryStore()
-    app.dependency_overrides[get_store] = lambda: store
-    return store
-
-
-@pytest.fixture
-def tracking_client(client, store):
-    client.headers["X-Project-ID"] = "demo"
-    return client
-
-
-@pytest.fixture
-def dataset_body():
-    return {
-        "name": "classification",
-        "version": "v1",
-        "uri": "classification.csv",
-        "feature_columns": ["feature_1", "feature_2"],
-    }
-
 
 def test_dataset_registration_records_real_content_hash_and_split_counts(
     tracking_client, dataset_body

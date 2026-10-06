@@ -2,11 +2,11 @@
 
 ML Pipeline Pro is an AI-assisted platform in development for creating, tracking, tuning, and monitoring machine learning pipelines. Engineers will use a conversational interface to turn natural language requests into structured pipeline actions, inspect experiments, and generate Python code for common workflows.
 
-**Project status:** Development foundation plus dataset and model registration implemented. The FastAPI backend validates local classification CSVs, records content hashes and explicit splits, stores project-scoped metadata with unique indexes, and supports project API keys. Training, tuning, monitoring, and conversational features remain planned. The API starts without provider credentials.
+**Project status:** Initial classification experiment workflow implemented. Register datasets and models, submit idempotent Celery training jobs, inspect results, compare validation metrics, download verified artifacts, and register model versions. The CPU PyTorch adapter is tested locally with a synthetic dataset. Docker and real-service integration execution remain unverified on the initial Windows machine. Tuning, monitoring, and conversational features remain planned.
 
 See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and validation strategy.
 
-Follow the [classification walkthrough](docs/experiments.md) to register a dataset and model. The next step is queued training and experiment result retrieval.
+Follow the [classification walkthrough](docs/experiments.md) for API requests, result retrieval, and a training demo that runs without Docker. The next feature milestone is bounded hyperparameter tuning, after real-service integration verification.
 
 ## Problem and purpose
 
@@ -39,7 +39,7 @@ The supplied concept describes workflow pain points from 2025. This project will
 | Testing and CI | pytest and GitHub Actions | Validate behavior and automate checks |
 | Packaging and deployment | Docker Compose, then Kubernetes | Local development and scalable deployment |
 
-FastAPI, PyMongo, configuration tooling, Uvicorn, and a Redis client are implemented dependencies. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
+FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, and a Redis client are core dependencies. The optional `training` extra adds NumPy and CPU PyTorch. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
 
 ## Proposed architecture
 
@@ -88,7 +88,7 @@ These examples illustrate planned behavior; no runnable conversational interface
 Install Docker with Compose 2.24 or later, then run from the repository root:
 
 ```powershell
-docker compose up --build --wait --wait-timeout 180
+docker compose up --build --wait --wait-timeout 300
 Invoke-RestMethod http://127.0.0.1:8000/api/v1/health/ready
 ```
 
@@ -102,10 +102,18 @@ Open [the API documentation](http://127.0.0.1:8000/docs). The current endpoints 
 | `GET /api/v1/datasets` and `GET /api/v1/datasets/{id}` | List or retrieve datasets within a project |
 | `POST /api/v1/models` | Register a PyTorch classification model |
 | `GET /api/v1/models` and `GET /api/v1/models/{id}` | List or retrieve models within a project |
+| `POST /api/v1/experiments` | Queue a bounded training job; requires `Idempotency-Key` |
+| `GET /api/v1/experiments` and `GET /api/v1/experiments/{id}` | Filter experiments or retrieve status, metrics, and artifacts |
+| `GET /api/v1/experiments/compare` | Compare completed experiments using validation metrics |
+| `GET /api/v1/experiments/{id}/artifacts/{name}` | Download a hash-verified checkpoint or manifest |
+| `POST /api/v1/models/{id}/versions` | Register a model version from a completed experiment |
+| `GET /api/v1/models/{id}/versions` and `GET /api/v1/models/{id}/versions/{version_id}` | Retrieve registered model versions |
 
 Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
 
-Compose publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. This configuration is for local development. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. A complete identity/authorization design is still needed before shared deployment. Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
+Readiness checks MongoDB/Redis connectivity. Experiment status and heartbeat timestamps show worker progress separately.
+
+Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. This configuration is for local development. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. A complete identity/authorization design is still needed before shared deployment. Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
 
 ### Develop the API on your host
 
@@ -118,18 +126,20 @@ docker compose up --wait mongo redis
 uv run --locked uvicorn ml_pipeline_pro.main:create_app --factory --reload --no-access-log
 ```
 
+For queued experiments with the host API, also start the container worker and scheduler with `docker compose up --build --wait mongo redis worker scheduler`. Both use the same MongoDB/Redis and checked-in dataset. To download artifacts through the host API, replace the named artifact volume with a shared host directory mounted at `/app/artifacts` in the containers and set the host's `MLPP_ARTIFACT_ROOT` to that directory. Running the whole stack in Compose already shares artifact storage correctly.
+
 The API runs at `http://127.0.0.1:8000`. Select `.venv/Scripts/python.exe` as the Python interpreter in your Windows editor. On macOS or Linux, use `cp .env.example .env` and `.venv/bin/python`.
 
 If Docker or the dependency services are not installed yet, the API still starts: liveness and `/docs` work, and readiness returns `503`. The foundation's unit tests also run without MongoDB, Redis, or language model credentials.
 
-Configuration uses the `MLPP_` prefix. `.env.example` lists the available settings, including connection URLs, database name, log level, dependency timeout, and the artifact directory reserved for training. Environment variables override `.env`. Credentials belong in `.env` or the environment, outside source control. Connection URLs are treated as secrets; configured passwords are redacted from application and client logs.
+Configuration uses the `MLPP_` prefix. `.env.example` lists connection URLs, dataset/artifact directories, data limits, project keys, and worker recovery limits. Environment variables override `.env`. Credentials belong in `.env` or the environment, outside source control. Connection URLs are treated as secrets; configured passwords and project keys are redacted from application and client logs.
 
 ### Run checks
 
 ```powershell
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked pytest -m "not integration" --cov
+uv run --locked --extra training pytest -m "not integration" --cov
 uv pip check
 ```
 
@@ -144,9 +154,9 @@ Remove-Item Env:MLPP_RUN_INTEGRATION
 
 On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integration`. These tests use the default local connection URLs and delete only their own generated test records.
 
-GitHub Actions is configured for linting, formatting, unit tests on Python 3.11 and 3.13, installed dependency compatibility, a vulnerability audit of locked runtime dependencies, and a Compose build/readiness/integration smoke test. The container and real-service checks require Docker and have not yet been run on the initial Windows development machine.
+GitHub Actions is configured for linting, formatting, unit/real-training tests on Python 3.11 and 3.13, installed dependency compatibility, a vulnerability audit of locked runtime dependencies and the PyTorch release, and a Compose build/readiness/queued-training integration smoke test. The container and real-service checks require Docker and have not yet been run on the initial Windows development machine. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the full worker integration command.
 
-`pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` to reproduce the environment. Add PyTorch/Celery for queued training, Optuna for tuning, and LangChain/provider integrations when those milestones begin.
+`pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training and its tests. PyTorch comes from its CPU index on Windows/Linux. Optuna and LangChain/provider integrations will follow in later milestones.
 
 ### Source layout
 
@@ -158,6 +168,17 @@ src/ml_pipeline_pro/
   errors.py         # Consistent API errors
   logging.py        # JSON request logs and credential redaction
   repositories.py   # Record schema and project-scoped repository contract
+  schemas.py        # Dataset, model, experiment, and model version schemas
+  api.py            # Metadata, experiment, comparison, and artifact endpoints
+  access.py         # Project selection and optional API key enforcement
+  datasets.py       # Bounded CSV validation and explicit splits
+  tracking.py       # Owned repositories and MongoDB indexes
+  jobs.py           # Atomic worker claims, heartbeats, and completion
+  queue.py          # Celery configuration and Redis dispatch
+  worker.py         # Training and recovery tasks
+  execution.py      # Job execution and terminal status reporting
+  training.py       # Deterministic CPU PyTorch adapter
+  artifacts.py      # Artifact writes, hashing, and download verification
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies
@@ -189,4 +210,4 @@ Publish workload definitions, baselines, sample sizes, and results before making
 
 ## Documentation roadmap
 
-The foundation quickstart is included above. Implementation will add a small reproducible classification tutorial, domain API reference, experiment comparison guide, tuning guide, monitoring walkthrough, deployment guide, and troubleshooting notes. Each tutorial must be verified against the implemented service versions.
+The foundation quickstart and [classification tutorial](docs/experiments.md) are included. Implementation will add a tuning guide, monitoring walkthrough, deployment guide, and troubleshooting notes. Full queued-workflow verification requires the Compose integration suite.

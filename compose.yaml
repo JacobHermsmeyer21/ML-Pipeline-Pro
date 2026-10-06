@@ -1,33 +1,47 @@
+x-app: &app
+  image: ml-pipeline-pro:local
+  build: .
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    MLPP_ENVIRONMENT: development
+    MLPP_LOG_LEVEL: ${MLPP_LOG_LEVEL:-INFO}
+    MLPP_MONGODB_URI: mongodb://mongo:27017
+    MLPP_MONGODB_DATABASE: ${MLPP_MONGODB_DATABASE:-ml_pipeline_pro}
+    MLPP_REDIS_URL: redis://redis:6379/0
+    MLPP_DEPENDENCY_TIMEOUT_SECONDS: ${MLPP_DEPENDENCY_TIMEOUT_SECONDS:-2}
+    MLPP_ARTIFACT_ROOT: /app/artifacts
+    MLPP_DATASET_ROOT: /app/examples/data
+  volumes:
+    - artifacts:/app/artifacts
+  depends_on:
+    mongo:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
 services:
   api:
-    build: .
-    env_file:
-      - path: .env
-        required: false
+    <<: *app
     ports:
       - "127.0.0.1:8000:8000"
-    environment:
-      MLPP_ENVIRONMENT: development
-      MLPP_LOG_LEVEL: ${MLPP_LOG_LEVEL:-INFO}
-      MLPP_MONGODB_URI: mongodb://mongo:27017
-      MLPP_MONGODB_DATABASE: ${MLPP_MONGODB_DATABASE:-ml_pipeline_pro}
-      MLPP_REDIS_URL: redis://redis:6379/0
-      MLPP_DEPENDENCY_TIMEOUT_SECONDS: ${MLPP_DEPENDENCY_TIMEOUT_SECONDS:-2}
-      MLPP_ARTIFACT_ROOT: /app/artifacts
-      MLPP_DATASET_ROOT: /app/examples/data
-    volumes:
-      - artifacts:/app/artifacts
-    depends_on:
-      mongo:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)"]
       interval: 10s
       timeout: 6s
       retries: 5
       start_period: 10s
+
+  worker:
+    <<: *app
+    command: ["celery", "-A", "ml_pipeline_pro.worker:app", "worker", "--loglevel=INFO", "--concurrency=1", "--queues=training,celery"]
+    mem_limit: 1g
+    cpus: 1.0
+
+  scheduler:
+    <<: *app
+    command: ["celery", "-A", "ml_pipeline_pro.worker:app", "beat", "--loglevel=INFO", "--schedule=/tmp/mlpp-celerybeat"]
 
   mongo:
     image: mongo:8.0

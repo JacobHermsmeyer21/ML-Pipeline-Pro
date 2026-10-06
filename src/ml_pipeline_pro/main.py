@@ -51,7 +51,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ML Pipeline Pro",
-        description="Project-scoped registration for reproducible classification experiments.",
+        description="Project-scoped datasets, queued training experiments, and model versions.",
         version=__version__,
         lifespan=lifespan,
         responses={422: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},

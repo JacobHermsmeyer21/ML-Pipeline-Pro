@@ -4,7 +4,7 @@ import re
 from pathlib import PurePosixPath
 from typing import Annotated, Generic, Literal, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from ml_pipeline_pro.repositories import Record
 
@@ -65,6 +65,71 @@ class ModelCreate(RequestModel):
 
 class ModelRecord(Record, ModelCreate):
     pass
+
+
+class TrainingConfig(RequestModel):
+    seed: int = Field(default=42, ge=0, le=2**32 - 1)
+    epochs: int = Field(default=30, ge=1, le=500)
+    batch_size: int = Field(default=16, ge=1, le=4096)
+    learning_rate: float = Field(default=0.01, gt=0, le=1, allow_inf_nan=False)
+    hidden_units: int = Field(default=16, ge=1, le=512)
+    max_runtime_seconds: int = Field(default=60, ge=1, le=600)
+
+
+class ExperimentCreate(RequestModel):
+    dataset_id: str = Field(min_length=1, max_length=128)
+    model_id: str = Field(min_length=1, max_length=128)
+    config: TrainingConfig = Field(default_factory=TrainingConfig)
+
+
+class ArtifactReference(RequestModel):
+    name: Literal["model.pt", "manifest.json"]
+    uri: str
+    sha256: Sha256
+    size_bytes: int = Field(ge=1)
+
+
+ExperimentStatus = Literal["queued", "running", "succeeded", "failed"]
+
+
+class ExperimentResult(Record, ExperimentCreate):
+    status: ExperimentStatus = "queued"
+    attempts: int = 0
+    heartbeat_at: AwareDatetime | None = None
+    started_at: AwareDatetime | None = None
+    completed_at: AwareDatetime | None = None
+    metrics: dict[str, Annotated[float, Field(allow_inf_nan=False)]] = Field(default_factory=dict)
+    artifacts: list[ArtifactReference] = Field(default_factory=list)
+    dependencies: dict[str, str] = Field(default_factory=dict)
+    error_summary: str | None = None
+
+
+class ExperimentRecord(ExperimentResult):
+    submission_key: str
+    request_hash: Sha256
+    worker_token: str | None = None
+    lease_expires_at: AwareDatetime | None = None
+    last_dispatch_at: AwareDatetime | None = None
+
+
+class ModelVersionCreate(RequestModel):
+    version: Name
+    experiment_id: str = Field(min_length=1, max_length=128)
+
+
+class ModelVersionRecord(Record):
+    model_id: str
+    version: Name
+    experiment_id: str
+    artifact: ArtifactReference
+    dependencies: dict[str, str]
+
+
+class ExperimentComparison(BaseModel):
+    metric: Literal["validation_f1", "validation_accuracy"]
+    direction: Literal["maximize"] = "maximize"
+    best_experiment_id: str
+    experiments: list[ExperimentResult]
 
 
 ItemT = TypeVar("ItemT", bound=BaseModel)

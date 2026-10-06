@@ -9,7 +9,7 @@ def make_dataset(destination: Path) -> None:
     rng = random.Random(42)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.writer(stream)
+        writer = csv.writer(stream, lineterminator="\n")
         writer.writerow(["feature_1", "feature_2", "target", "split"])
         for split, count in (("train", 80), ("validation", 20), ("test", 20)):
             for index in range(count):

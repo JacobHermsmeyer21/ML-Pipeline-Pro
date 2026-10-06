@@ -8,7 +8,7 @@ This is the implementation roadmap. Milestones are ordered by dependency, with n
 
 The development foundation is implemented: a packaged FastAPI application, environment validation, async MongoDB/Redis clients, bounded readiness checks, structured logging with connection credential redaction, consistent errors, project-scoped repository contracts, locked dependencies, local Compose configuration, and GitHub Actions checks. Unit tests, linting, dependency compatibility, and the runtime dependency vulnerability audit have been run locally. Docker image startup and real-service integration verification remain pending because Docker is not installed on the initial development machine; the CI workflow includes those checks.
 
-Milestone 2 now includes dataset/model registration and project-scoped MongoDB indexes. Local CSV validation captures content hashes, feature definitions, class counts, and explicit train/validation/test splits. Project API keys are optional for local development and required by production configuration. Next add experiment submission, a Celery training worker, and metrics/artifact retrieval. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+Milestone 2 implementation now includes dataset/model registration, indexed experiment/model version records, idempotent job submission, a Celery CPU training worker, lease/heartbeat recovery, metric comparison, and verified artifact downloads. Local CSV validation captures content hashes, feature definitions, class counts, and explicit train/validation/test splits. Project API keys are optional for local development and required by production configuration. Unit and real-training checks pass locally; full MongoDB/Redis/worker integration requires Docker and remains pending on the initial Windows machine. Verify that suite before starting bounded tuning. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
 ## MVP boundaries
 
@@ -84,7 +84,7 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 
 ### 2. Deliver reproducible experiment tracking
 
-**Status:** Dataset/model registration and indexes are implemented with unit tests and a synthetic CSV example. Queued training and experiment results are in progress. Real-service integration checks remain pending locally.
+**Status:** Implementation is in place, with local API/worker contract tests and real PyTorch training checks. Repeated runs produce identical checkpoint bytes and metrics in the tested environment; altered test labels do not affect selected weights. A synthetic tutorial and full queued integration suite are provided. Real-service integration execution and the full acceptance check remain pending locally because Docker is unavailable.
 
 - Implement the initial dataset, model, model version, and experiment schemas and indexes.
 - Build a PyTorch adapter with a small classification example, explicit train/validation/test splits, and a fixed seed.

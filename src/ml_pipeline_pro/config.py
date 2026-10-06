@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     dataset_max_bytes: int = Field(default=10_000_000, ge=1, le=100_000_000)
     dataset_max_rows: int = Field(default=100_000, ge=3, le=1_000_000)
     project_api_keys: dict[str, SecretStr] = Field(default_factory=dict)
+    worker_lease_seconds: int = Field(default=30, ge=10, le=300)
+    worker_max_attempts: int = Field(default=3, ge=1, le=10)
 
     @field_validator("project_api_keys")
     @classmethod

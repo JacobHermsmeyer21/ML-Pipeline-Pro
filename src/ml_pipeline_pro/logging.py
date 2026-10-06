@@ -53,7 +53,7 @@ def configure_logging(settings: Settings) -> None:
 
     handler = logging.StreamHandler()
     handler.setFormatter(JsonFormatter(tuple(secrets)))
-    for name in ("ml_pipeline_pro", "pymongo", "redis", "uvicorn"):
+    for name in ("ml_pipeline_pro", "pymongo", "redis", "uvicorn", "celery", "kombu"):
         logger = logging.getLogger(name)
         logger.handlers = [handler]
         logger.setLevel(settings.log_level)
