@@ -147,5 +147,8 @@ tests and nine real-service integration tests passed on October 6, 2026, includi
 real tuning indexes and deadlines, recovery after saved training, queued tuning,
 final test evaluation, and active cancellation.
 
+Python 3.11/3.13 checks, dependency audits, and the complete Docker integration
+suite also passed [GitHub CI for cd5832c](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37540333222).
+
 For isolated test services, override `MLPP_TEST_API_BASE_URL`,
 `MLPP_TEST_MONGODB_URI`, and `MLPP_TEST_REDIS_URL`.

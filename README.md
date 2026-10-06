@@ -158,7 +158,7 @@ Remove-Item Env:MLPP_RUN_INTEGRATION
 
 On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integration`. These tests use the default local connection URLs and delete only their own generated test records.
 
-GitHub Actions runs linting, formatting, unit/real-training/tuning tests on Python 3.11 and 3.13, installed dependency compatibility, dependency audits, and a Compose integration suite. Earlier classification checks passed for commit `56f4a08`, and tuning API/storage checks passed for `09671a3`. Full tuning worker checks now also pass locally with Docker. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the integration command.
+GitHub Actions runs linting, formatting, unit/real-training/tuning tests on Python 3.11 and 3.13, installed dependency compatibility, dependency audits, and a Compose integration suite. All jobs passed [CI for tuning implementation cd5832c](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37540333222). The same 126 unit/training checks and nine real-service integration checks also pass locally. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the integration command.
 
 `pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next milestone.
 
