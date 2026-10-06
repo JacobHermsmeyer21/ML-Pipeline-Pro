@@ -2,13 +2,11 @@
 
 ML Pipeline Pro is an AI-assisted platform in development for creating, tracking, tuning, and monitoring machine learning pipelines. Engineers will use a conversational interface to turn natural language requests into structured pipeline actions, inspect experiments, and generate Python code for common workflows.
 
-**Project status:** Initial classification experiment workflow implemented and verified. Register datasets and models, submit idempotent Celery training jobs, inspect results, compare validation metrics, download verified artifacts, and register model versions. All 88 unit/training tests pass locally, and the full Docker workflow passed [GitHub CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384). The initial Windows machine can run the training demo; its Docker Engine remains unavailable. Tuning, monitoring, and conversational features remain planned.
+**Project status:** Classification experiments and bounded Optuna tuning are implemented. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. All 126 local unit/training tests and nine real-service Docker integration tests pass, including tuning recovery and cancellation. Monitoring and conversational features remain planned.
 
 See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and validation strategy.
 
-Follow the [classification walkthrough](docs/experiments.md) for API requests, result retrieval, and a training demo that runs without Docker. The next feature milestone is bounded hyperparameter tuning.
-
-Bounded tuning is in progress: [job API and storage contracts](docs/tuning.md) are implemented; the Optuna worker is the next step.
+Follow the [classification walkthrough](docs/experiments.md) for experiment requests, or the [tuning walkthrough](docs/tuning.md) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
 
 ## Problem and purpose
 
@@ -41,7 +39,7 @@ The supplied concept describes workflow pain points from 2025. This project will
 | Testing and CI | pytest and GitHub Actions | Validate behavior and automate checks |
 | Packaging and deployment | Docker Compose, then Kubernetes | Local development and scalable deployment |
 
-FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, and a Redis client are core dependencies. The optional `training` extra adds NumPy and CPU PyTorch. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
+FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, and a Redis client are core dependencies. The optional `training` extra adds NumPy, CPU PyTorch, and Optuna. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
 
 ## Proposed architecture
 
@@ -110,6 +108,10 @@ Open [the API documentation](http://127.0.0.1:8000/docs). The current endpoints 
 | `GET /api/v1/experiments/{id}/artifacts/{name}` | Download a hash-verified checkpoint or manifest |
 | `POST /api/v1/models/{id}/versions` | Register a model version from a completed experiment |
 | `GET /api/v1/models/{id}/versions` and `GET /api/v1/models/{id}/versions/{version_id}` | Retrieve registered model versions |
+| `POST /api/v1/tuning-jobs` | Queue a bounded TPE search; requires `Idempotency-Key` |
+| `GET /api/v1/tuning-jobs` and `GET /api/v1/tuning-jobs/{id}` | Retrieve tuning status, budgets, and the selected configuration |
+| `GET /api/v1/tuning-jobs/{id}/trials` | Inspect trial parameters, metrics, durations, and failures |
+| `POST /api/v1/tuning-jobs/{id}/cancel` | Cancel queued tuning or cooperatively stop an active trial |
 
 Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
 
@@ -156,9 +158,9 @@ Remove-Item Env:MLPP_RUN_INTEGRATION
 
 On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integration`. These tests use the default local connection URLs and delete only their own generated test records.
 
-GitHub Actions runs linting, formatting, unit/real-training tests on Python 3.11 and 3.13, installed dependency compatibility, a vulnerability audit of locked runtime dependencies and the PyTorch release, and a Compose build/readiness/queued-training integration smoke test. All jobs passed for implementation commit `56f4a08`. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the full worker integration command; Docker is needed to repeat those integration checks locally.
+GitHub Actions runs linting, formatting, unit/real-training/tuning tests on Python 3.11 and 3.13, installed dependency compatibility, dependency audits, and a Compose integration suite. Earlier classification checks passed for commit `56f4a08`, and tuning API/storage checks passed for `09671a3`. Full tuning worker checks now also pass locally with Docker. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the integration command.
 
-`pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training and its tests. PyTorch comes from its CPU index on Windows/Linux. Optuna and LangChain/provider integrations will follow in later milestones.
+`pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next milestone.
 
 ### Source layout
 
@@ -181,6 +183,12 @@ src/ml_pipeline_pro/
   execution.py      # Job execution and terminal status reporting
   training.py       # Deterministic CPU PyTorch adapter
   artifacts.py      # Artifact writes, hashing, and download verification
+  tuning_schemas.py # Search spaces, budgets, and job/trial contracts
+  tuning_store.py   # Tuning-owned collections, leases, and reservations
+  tuning_api.py     # Tuning submission, progress, and cancellation
+  tuning_sampler.py # Seeded TPE suggestions from durable history
+  tuning_execution.py # Serial search and final holdout evaluation
+  training_control.py # Deadlines, cancellation, and ownership checks
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies

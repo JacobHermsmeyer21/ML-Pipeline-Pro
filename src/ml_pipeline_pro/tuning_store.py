@@ -193,6 +193,13 @@ class TuningJobRepository(MongoRepository[TuningRecord]):
                                 values["status"],
                             ]
                         },
+                        "stop_reason": {
+                            "$cond": [
+                                {"$eq": ["$status", "cancel_requested"]},
+                                "cancelled",
+                                values.get("stop_reason", "$stop_reason"),
+                            ]
+                        },
                         "phase": "complete",
                         "completed_at": now,
                         "updated_at": now,
@@ -203,6 +210,17 @@ class TuningJobRepository(MongoRepository[TuningRecord]):
             ],
         )
         return result.matched_count == 1
+
+    async def refresh_terminal_progress(self, project_id: str, job_id: str, values: dict) -> None:
+        await self.collection.update_one(
+            {
+                "_id": job_id,
+                "project_id": project_id,
+                "status": {"$in": ["failed", "cancelled"]},
+                "worker_token": None,
+            },
+            {"$set": {**values, "reservation": None, "updated_at": datetime.now(UTC)}},
+        )
 
     async def pending_recovery(self):
         now = datetime.now(UTC)
@@ -267,13 +285,18 @@ class TrialRepository(MongoRepository[TrialRecord]):
         )
         return result.matched_count == 1
 
-    async def stop_incomplete(self, project_id: str, job_id: str, status: str, reason: str) -> None:
+    async def stop_incomplete(
+        self, project_id: str, job_id: str, status: str, reason: str, token: str | None = None
+    ) -> None:
+        query = {
+            "project_id": project_id,
+            "tuning_job_id": job_id,
+            "status": {"$in": ["queued", "running"]},
+        }
+        if token is not None:
+            query["worker_token"] = token
         await self.collection.update_many(
-            {
-                "project_id": project_id,
-                "tuning_job_id": job_id,
-                "status": {"$in": ["queued", "running"]},
-            },
+            query,
             {
                 "$set": {
                     "status": status,

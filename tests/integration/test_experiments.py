@@ -8,10 +8,10 @@ from uuid import uuid4
 import httpx
 import pytest
 
-from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import open_connections
 from ml_pipeline_pro.schemas import ExperimentRecord
 from ml_pipeline_pro.tracking import TrackingStore
+from tests.integration.helpers import api_base_url, integration_settings
 
 pytestmark = [
     pytest.mark.integration,
@@ -23,7 +23,7 @@ pytestmark = [
 
 def cleanup(project_id):
     async def run():
-        settings = Settings(_env_file=None)
+        settings = integration_settings()
         async with open_connections(settings) as connections:
             database = connections.mongo.get_database(settings.mongodb_database)
             for collection in ("experiments", "model_versions", "datasets", "models"):
@@ -36,7 +36,7 @@ def test_mongodb_claims_are_atomic_and_recovery_attempts_are_bounded():
     project_id = f"test_{uuid4().hex}"
 
     async def run():
-        settings = Settings(_env_file=None)
+        settings = integration_settings()
         async with open_connections(settings) as connections:
             store = TrackingStore(connections.mongo.get_database(settings.mongodb_database))
             await store.ensure_indexes()
@@ -106,7 +106,7 @@ def test_queued_training_artifact_download_and_model_version_registration():
     project_id = f"test_{uuid4().hex}"
     try:
         with httpx.Client(
-            base_url="http://127.0.0.1:8000/api/v1", headers={"X-Project-ID": project_id}, timeout=5
+            base_url=api_base_url(), headers={"X-Project-ID": project_id}, timeout=5
         ) as client:
             dataset = client.post(
                 "/datasets",

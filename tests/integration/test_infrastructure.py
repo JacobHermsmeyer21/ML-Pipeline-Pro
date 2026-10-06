@@ -5,10 +5,10 @@ from uuid import uuid4
 import pytest
 from fastapi.testclient import TestClient
 
-from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import check_readiness, open_connections
 from ml_pipeline_pro.main import create_app
 from ml_pipeline_pro.repositories import MongoRepository, Record
+from tests.integration.helpers import integration_settings
 
 pytestmark = [
     pytest.mark.integration,
@@ -24,7 +24,7 @@ class ExampleRecord(Record):
 
 
 def test_real_service_readiness():
-    with TestClient(create_app(Settings(_env_file=None))) as client:
+    with TestClient(create_app(integration_settings())) as client:
         response = client.get("/api/v1/health/ready")
 
     assert response.status_code == 200, response.text
@@ -33,7 +33,7 @@ def test_real_service_readiness():
 
 def test_real_repository_scoping_pagination_and_timestamp_round_trip():
     async def exercise():
-        settings = Settings(_env_file=None)
+        settings = integration_settings()
         project_id = f"test_{uuid4().hex}"
         other_project_id = f"test_{uuid4().hex}"
         async with open_connections(settings) as connections:
@@ -71,7 +71,7 @@ def test_real_repository_scoping_pagination_and_timestamp_round_trip():
 
 def test_real_registration_indexes_and_project_isolation():
     project_id = f"test_{uuid4().hex}"
-    settings = Settings(_env_file=None)
+    settings = integration_settings()
     try:
         with TestClient(create_app(settings), headers={"X-Project-ID": project_id}) as client:
             body = {"name": "classifier"}

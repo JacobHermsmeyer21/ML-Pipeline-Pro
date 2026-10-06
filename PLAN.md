@@ -95,7 +95,7 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 
 ### 3. Automate bounded tuning
 
-**Status:** In progress. Typed search spaces and limits, project-scoped job/trial records and indexes, idempotent submission, and cancellation contracts are implemented. The Optuna worker, validation-only trial execution, final test evaluation, recovery, and end-to-end tuning verification are next.
+**Status:** Complete for bounded serial CPU searches. Optuna TPE uses typed parameter ranges and explicit trial/runtime limits. Each trial's configuration and experiment ID are durably reserved; recovery reuses completed training and preserves deadlines. Searches select using validation metrics, followed by final holdout evaluation of the selected checkpoint. Cancellation prevents further reservations and cooperatively stops active training. All 126 local unit/training tests and nine real-service integration tests pass. Parallel trial dispatch and broader parameter/framework adapters remain later work.
 
 - Integrate Optuna's Bayesian optimization sampler and validate parameter types, ranges, and objective direction.
 - Enforce trial count, runtime, concurrency, and resource limits in workers.

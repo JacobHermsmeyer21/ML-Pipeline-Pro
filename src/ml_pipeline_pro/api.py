@@ -272,6 +272,12 @@ async def create_model_version(
         raise ApiError(
             409, "experiment_incomplete", "Model versions require a succeeded experiment"
         )
+    if not experiment.test_evaluated:
+        raise ApiError(
+            409,
+            "test_evaluation_required",
+            "Model versions require final test evaluation after selection",
+        )
     artifact = next((item for item in experiment.artifacts if item.name == "model.pt"), None)
     if artifact is None:
         raise ApiError(409, "artifact_not_found", "Experiment has no checkpoint")

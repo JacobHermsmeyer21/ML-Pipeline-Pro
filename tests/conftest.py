@@ -36,10 +36,15 @@ class FakePing:
 @pytest.fixture(autouse=True)
 def clean_environment(monkeypatch):
     for key in tuple(os.environ):
-        if key.startswith("MLPP_") and key not in {
-            "MLPP_RUN_INTEGRATION",
-            "MLPP_RUN_WORKER_INTEGRATION",
-        }:
+        if (
+            key.startswith("MLPP_")
+            and not key.startswith("MLPP_TEST_")
+            and key
+            not in {
+                "MLPP_RUN_INTEGRATION",
+                "MLPP_RUN_WORKER_INTEGRATION",
+            }
+        ):
             monkeypatch.delenv(key)
 
 

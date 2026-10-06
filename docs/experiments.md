@@ -110,7 +110,8 @@ dependency versions, and artifact hashes.
 
 Training has a cooperative runtime budget checked between batches, plus a Celery
 hard task limit of 630 seconds. The local worker container is limited to one CPU,
-1 GiB of memory, and one concurrent job. Cancellation and tuning are later work.
+1 GiB of memory, and one concurrent job. Standalone experiment cancellation is
+later work; [bounded tuning and its cancellation](tuning.md) are available.
 
 ## Download artifacts and register a version
 
@@ -180,6 +181,6 @@ Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
 These tests check real indexes, atomic claims, ownership recovery, Redis dispatch,
 training, artifact downloads, and model version registration. The complete suite
 passed [GitHub CI for commit 56f4a08](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384).
-Docker Engine remains unavailable on the initial Windows machine; its 88 local
-unit/training tests verify the real training adapter and API/worker contracts using
-deterministic repository substitutes.
+Docker Engine is now available on the Windows machine. The expanded suite has
+126 passing local unit/training tests and nine passing real-service integration
+tests, including bounded tuning, worker recovery, and active cancellation.

@@ -8,14 +8,11 @@ from dataclasses import dataclass
 from importlib.metadata import version
 from time import perf_counter
 
-from ml_pipeline_pro.artifacts import write_artifact
+from ml_pipeline_pro.artifacts import read_artifact, write_artifact
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.datasets import DatasetValidationError, load_dataset
 from ml_pipeline_pro.schemas import ArtifactReference, DatasetRecord, ExperimentRecord
-
-
-class TrainingError(ValueError):
-    pass
+from ml_pipeline_pro.training_control import TrainingBudgetExceeded, TrainingControl, TrainingError
 
 
 @dataclass
@@ -26,7 +23,14 @@ class TrainingResult:
 
 
 def train_classifier(
-    experiment: ExperimentRecord, dataset: DatasetRecord, token: str, settings: Settings
+    experiment: ExperimentRecord,
+    dataset: DatasetRecord,
+    token: str,
+    settings: Settings,
+    *,
+    control: TrainingControl | None = None,
+    evaluate_test: bool = True,
+    objective_metric: str = "validation_f1",
 ) -> TrainingResult:
     started = perf_counter()
     try:
@@ -37,9 +41,12 @@ def train_classifier(
     config = experiment.config
 
     def check_budget() -> None:
+        if control:
+            control.check()
         if perf_counter() - started > config.max_runtime_seconds:
-            raise TrainingError("Training exceeded its configured runtime budget")
+            raise TrainingBudgetExceeded("Training exceeded its configured runtime budget")
 
+    check_budget()
     loaded = load_dataset(dataset, settings)
     if loaded.sha256 != dataset.sha256:
         raise DatasetValidationError("Dataset changed after registration; register a new version")
@@ -66,20 +73,6 @@ def train_classifier(
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     loss_function = torch.nn.CrossEntropyLoss()
 
-    def evaluate(x, y) -> tuple[float, float]:
-        model.eval()
-        with torch.inference_mode():
-            predictions = model(x).argmax(dim=1)
-            accuracy = float((predictions == y).float().mean())
-            class_f1 = []
-            for label in range(loaded.num_classes):
-                true_positive = int(((predictions == label) & (y == label)).sum())
-                false_positive = int(((predictions == label) & (y != label)).sum())
-                false_negative = int(((predictions != label) & (y == label)).sum())
-                denominator = 2 * true_positive + false_positive + false_negative
-                class_f1.append(2 * true_positive / denominator if denominator else 0.0)
-            return accuracy, sum(class_f1) / len(class_f1)
-
     best_f1 = -1.0
     best_state = None
     best_epoch = 0
@@ -98,7 +91,8 @@ def train_classifier(
                 )
             loss.backward()
             optimizer.step()
-        _, score = evaluate(validation_x, validation_y)
+        accuracy, f1 = _scores(model, validation_x, validation_y, loaded.num_classes)
+        score = f1 if objective_metric == "validation_f1" else accuracy
         # Ties retain the first checkpoint; test labels never select a model.
         if score > best_f1:
             best_f1, best_epoch = score, epoch + 1
@@ -106,18 +100,21 @@ def train_classifier(
 
     check_budget()
     model.load_state_dict(best_state)
-    validation_accuracy, validation_f1 = evaluate(validation_x, validation_y)
-    test = loaded.splits["test"]
-    test_x = (torch.tensor(test.features, dtype=torch.float32) - mean) / std
-    test_y = torch.tensor(test.targets, dtype=torch.long)
-    test_accuracy, test_f1 = evaluate(test_x, test_y)
+    validation_accuracy, validation_f1 = _scores(
+        model, validation_x, validation_y, loaded.num_classes
+    )
     metrics = {
         "validation_accuracy": validation_accuracy,
         "validation_f1": validation_f1,
-        "test_accuracy": test_accuracy,
-        "test_f1": test_f1,
         "best_epoch": float(best_epoch),
     }
+    if evaluate_test:
+        check_budget()
+        test = loaded.splits["test"]
+        test_x = (torch.tensor(test.features, dtype=torch.float32) - mean) / std
+        test_y = torch.tensor(test.targets, dtype=torch.long)
+        test_accuracy, test_f1 = _scores(model, test_x, test_y, loaded.num_classes)
+        metrics.update(test_accuracy=test_accuracy, test_f1=test_f1)
     dependencies = {
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -145,8 +142,9 @@ def train_classifier(
         "config": config.model_dump(),
         "metrics": metrics,
         "dependencies": dependencies,
-        "selection_metric": "validation_f1",
+        "selection_metric": objective_metric,
         "selection_direction": "maximize",
+        "test_evaluated": evaluate_test,
     }
     check_budget()
     artifacts = [
@@ -163,3 +161,72 @@ def train_classifier(
         ),
     ]
     return TrainingResult(metrics, artifacts, dependencies)
+
+
+def _scores(model, features, targets, num_classes: int) -> tuple[float, float]:
+    import torch
+
+    model.eval()
+    with torch.inference_mode():
+        predictions = model(features).argmax(dim=1)
+        accuracy = float((predictions == targets).float().mean())
+        class_f1 = []
+        for label in range(num_classes):
+            tp = int(((predictions == label) & (targets == label)).sum())
+            fp = int(((predictions == label) & (targets != label)).sum())
+            fn = int(((predictions != label) & (targets == label)).sum())
+            denominator = 2 * tp + fp + fn
+            class_f1.append(2 * tp / denominator if denominator else 0.0)
+        return accuracy, sum(class_f1) / len(class_f1)
+
+
+def evaluate_checkpoint(
+    experiment: ExperimentRecord,
+    dataset: DatasetRecord,
+    token: str,
+    settings: Settings,
+    control: TrainingControl,
+) -> TrainingResult:
+    import torch
+
+    control.check()
+    loaded = load_dataset(dataset, settings)
+    if loaded.sha256 != dataset.sha256:
+        raise DatasetValidationError("Dataset changed after registration; register a new version")
+    reference = next(artifact for artifact in experiment.artifacts if artifact.name == "model.pt")
+    content = read_artifact(reference, experiment.project_id, experiment.id, settings)
+    checkpoint = torch.load(io.BytesIO(content), weights_only=True)
+    model = torch.nn.Sequential(
+        torch.nn.Linear(len(dataset.feature_columns), experiment.config.hidden_units),
+        torch.nn.ReLU(),
+        torch.nn.Linear(experiment.config.hidden_units, dataset.num_classes),
+    )
+    model.load_state_dict(checkpoint["state_dict"])
+    control.check()
+    test = loaded.splits["test"]
+    features = (torch.tensor(test.features, dtype=torch.float32) - checkpoint["mean"]) / checkpoint[
+        "std"
+    ]
+    accuracy, f1 = _scores(
+        model, features, torch.tensor(test.targets, dtype=torch.long), dataset.num_classes
+    )
+    control.check()
+    metrics = {**experiment.metrics, "test_accuracy": accuracy, "test_f1": f1}
+    original_manifest = next(
+        artifact for artifact in experiment.artifacts if artifact.name == "manifest.json"
+    )
+    manifest = json.loads(
+        read_artifact(original_manifest, experiment.project_id, experiment.id, settings)
+    )
+    manifest.update(
+        metrics=metrics, test_evaluated=True, final_tuning_job_id=experiment.tuning_job_id
+    )
+    updated_manifest = write_artifact(
+        json.dumps(manifest, indent=2, sort_keys=True).encode(),
+        "manifest.json",
+        experiment.project_id,
+        experiment.id,
+        token,
+        settings,
+    )
+    return TrainingResult(metrics, [reference, updated_manifest], experiment.dependencies)

@@ -31,6 +31,7 @@ class ExperimentRepository(MongoRepository[ExperimentRecord]):
         *,
         lease_seconds: int,
         max_attempts: int,
+        tuning_job_id: str | None = None,
     ) -> ExperimentRecord | None:
         now = datetime.now(UTC)
         eligible = {
@@ -39,7 +40,11 @@ class ExperimentRepository(MongoRepository[ExperimentRecord]):
                 {"status": "running", "lease_expires_at": {"$lte": now}},
             ]
         }
+        if tuning_job_id is not None:
+            eligible["$or"].append({"status": "running", "tuning_job_id": tuning_job_id})
         identity = {"_id": experiment_id, "project_id": project_id, **eligible}
+        if tuning_job_id is not None:
+            identity["tuning_job_id"] = tuning_job_id
         await self.collection.update_one(
             {**identity, "attempts": {"$gte": max_attempts}},
             {
@@ -95,8 +100,8 @@ class ExperimentRepository(MongoRepository[ExperimentRecord]):
     async def finish(
         self, project_id: str, experiment_id: str, token: str, *, values: dict[str, Any]
     ) -> bool:
-        if values.get("status") not in {"succeeded", "failed"}:
-            raise ValueError("Running experiments can only finish as succeeded or failed")
+        if values.get("status") not in {"succeeded", "failed", "cancelled"}:
+            raise ValueError("Running experiments require a terminal completion status")
         now = datetime.now(UTC)
         result = await self.collection.update_one(
             {
@@ -122,6 +127,7 @@ class ExperimentRepository(MongoRepository[ExperimentRecord]):
         cursor = (
             self.collection.find(
                 {
+                    "tuning_job_id": None,
                     "$or": [
                         {
                             "status": "queued",
@@ -131,13 +137,54 @@ class ExperimentRepository(MongoRepository[ExperimentRecord]):
                             ],
                         },
                         {"status": "running", "lease_expires_at": {"$lte": now}},
-                    ]
+                    ],
                 }
             )
             .sort("created_at", 1)
             .limit(100)
         )
         return [self._decode(document) async for document in cursor]
+
+    async def finish_tuning_test(
+        self, project_id: str, experiment_id: str, job_id: str, *, values: dict
+    ) -> bool:
+        result = await self.collection.update_one(
+            {
+                "_id": experiment_id,
+                "project_id": project_id,
+                "status": "succeeded",
+                "tuning_job_id": job_id,
+                "test_evaluated": {"$ne": True},
+            },
+            {"$set": {**values, "test_evaluated": True, "updated_at": datetime.now(UTC)}},
+        )
+        return result.matched_count == 1
+
+    async def stop_for_tuning(
+        self, project_id: str, job_id: str, status: str, reason: str, token: str | None = None
+    ) -> None:
+        if status not in {"failed", "cancelled"}:
+            raise ValueError("Interrupted tuning experiments must fail or be cancelled")
+        query = {
+            "project_id": project_id,
+            "tuning_job_id": job_id,
+            "status": {"$in": ["queued", "running"]},
+        }
+        if token is not None:
+            query["worker_token"] = token
+        await self.collection.update_many(
+            query,
+            {
+                "$set": {
+                    "status": status,
+                    "error_summary": reason,
+                    "completed_at": datetime.now(UTC),
+                    "updated_at": datetime.now(UTC),
+                    "worker_token": None,
+                    "lease_expires_at": None,
+                }
+            },
+        )
 
     async def filtered_list(
         self, project_id: str, *, limit: int, offset: int, status: str | None, model_id: str | None

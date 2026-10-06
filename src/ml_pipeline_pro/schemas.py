@@ -89,7 +89,7 @@ class ArtifactReference(RequestModel):
     size_bytes: int = Field(ge=1)
 
 
-ExperimentStatus = Literal["queued", "running", "succeeded", "failed"]
+ExperimentStatus = Literal["queued", "running", "succeeded", "failed", "cancelled"]
 
 
 class ExperimentResult(Record, ExperimentCreate):
@@ -102,6 +102,15 @@ class ExperimentResult(Record, ExperimentCreate):
     artifacts: list[ArtifactReference] = Field(default_factory=list)
     dependencies: dict[str, str] = Field(default_factory=dict)
     error_summary: str | None = None
+    tuning_job_id: str | None = None
+    tuning_trial_number: int | None = None
+    test_evaluated: bool = False
+
+    @model_validator(mode="after")
+    def infer_existing_test_evaluation(self):
+        if {"test_accuracy", "test_f1"}.issubset(self.metrics):
+            self.test_evaluated = True
+        return self
 
 
 class ExperimentRecord(ExperimentResult):
@@ -110,6 +119,8 @@ class ExperimentRecord(ExperimentResult):
     worker_token: str | None = None
     lease_expires_at: AwareDatetime | None = None
     last_dispatch_at: AwareDatetime | None = None
+    evaluate_test: bool = True
+    selection_metric: Literal["validation_f1", "validation_accuracy"] = "validation_f1"
 
 
 class ModelVersionCreate(RequestModel):
