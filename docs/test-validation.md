@@ -1,5 +1,11 @@
 # Ten-iteration validation: October 6, 2026
 
+This is a historical validation report for `3bf71af`; its counts and environment
+are preserved below. The later [project audit](project-status.md) against
+`0e37e6e` reran the current suites and identified tuning ownership gaps outside
+these cases. Repeated passing runs demonstrate the tested behavior, not complete
+process-loss recovery, concurrency safety, or production readiness.
+
 All ten consecutive full-suite iterations passed against commit
 `3bf71af9513a1fbf371771dd9fde2c21923a00d9`: **1,350 passed, zero failures,
 zero errors, and zero skipped tests**. Each iteration ran the same 135 cases:

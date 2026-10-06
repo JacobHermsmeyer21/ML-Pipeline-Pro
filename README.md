@@ -1,10 +1,10 @@
 # ML Pipeline Pro
 
-ML Pipeline Pro is an AI-assisted platform in development for creating, tracking, tuning, and monitoring machine learning pipelines. Engineers will use a conversational interface to turn natural language requests into structured pipeline actions, inspect experiments, and generate Python code for common workflows.
+ML Pipeline Pro currently provides a local REST API and CPU workers for reproducible classification experiments and bounded hyperparameter tuning. The broader product will add conversational pipeline management, monitoring, and reviewable Python code generation.
 
-**Project status:** Classification experiments and bounded Optuna tuning are implemented. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. All 126 local unit/training tests and nine real-service Docker integration tests pass, including tuning recovery and cancellation. Monitoring and conversational features remain planned.
+**Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit also identified ownership gaps during tuning recovery that need correction before expanding worker concurrency.
 
-See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and validation strategy.
+Read the [project audit and development status](docs/project-status.md) for verified capabilities, open findings, and immediate priorities. [PLAN.md](PLAN.md) defines the remaining milestones and acceptance criteria.
 
 Follow the [classification walkthrough](docs/experiments.md) for experiment requests, or the [tuning walkthrough](docs/tuning.md) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
 
@@ -14,67 +14,61 @@ Machine learning engineers often move between training scripts, experiment recor
 
 The supplied concept describes workflow pain points from 2025. This project will validate those assumptions with user feedback and measured benchmarks during implementation.
 
-## Planned capabilities
+## Capabilities and development state
 
-- **Conversational pipeline management:** Use LangChain to interpret requests, guide pipeline creation, and explain experiment results.
-- **Model and experiment tracking:** Record model versions, datasets, hyperparameters, evaluation metrics, and artifact references in MongoDB.
-- **Automated hyperparameter tuning:** Run bounded Bayesian optimization jobs and retain every trial's configuration and outcome.
-- **Performance monitoring:** Collect operational and model metrics, surface anomalies, and produce AI-assisted explanations linked to supporting evidence.
-- **Python code generation:** Draft pipeline snippets for engineer review and validation before execution.
-- **Deployment support:** Package services in Docker, start locally with Compose, and introduce Kubernetes after the core workflows are validated.
+- **Implemented - model and experiment tracking:** Project-scoped datasets/models, idempotent CPU training, validation-based comparison, explicit version registration, and verified artifacts.
+- **Implemented - bounded tuning:** Serial Optuna TPE searches with retained trial configurations/outcomes, cooperative cancellation, reservation replay, and final holdout evaluation of the selected checkpoint.
+- **Implemented - local deployment:** One Docker image, a five-service Compose stack, locked dependencies, and GitHub Actions checks.
+- **Planned - conversation:** LangChain/provider integration, structured API tools, project-scoped dialogue/action records, and evidence-linked explanations.
+- **Planned - monitoring:** Prometheus/Grafana, observations, drift/quality summaries, alerts, and evidence-grounded diagnosis.
+- **Planned - code generation and shared deployment:** Validated snippets, reviewed execution, identity/roles, object storage, backup/restore, and Kubernetes.
 
-## Proposed technology stack
+## Technology stack
 
-| Area | Initial choice | Purpose |
+| Area | Implemented | Planned extensions |
 | --- | --- | --- |
-| Language | Python | Service implementation and ML ecosystem integration |
-| REST APIs | FastAPI | Typed request validation and API documentation |
-| AI orchestration | LangChain with a configurable language model provider | Conversation handling and structured tool calls |
-| Model training | PyTorch initially; TensorFlow as a later adapter | Train and evaluate supported models |
-| Metadata | MongoDB with PyMongo | Store experiments, model versions, trial results, and conversations |
-| Optimization | Optuna with a Bayesian optimization sampler | Search hyperparameters within explicit resource budgets |
-| Background work | Celery with Redis | Execute long-running training and tuning jobs |
-| Artifacts | Local storage for development; object storage for deployment | Store datasets, checkpoints, and evaluation outputs outside MongoDB |
-| Observability | Prometheus and Grafana | Collect metrics and visualize system and model health |
-| Testing and CI | pytest and GitHub Actions | Validate behavior and automate checks |
-| Packaging and deployment | Docker Compose, then Kubernetes | Local development and scalable deployment |
+| Language and packaging | Python, Hatchling, uv, lockfile | Broader platform validation |
+| REST APIs | FastAPI, Pydantic, Uvicorn | Conversation and monitoring endpoints |
+| AI orchestration | None | LangChain and a configurable model provider |
+| Training | CPU PyTorch MLP classification, NumPy | Additional adapters; TensorFlow deferred |
+| Metadata | MongoDB with async PyMongo; six domain collections | Conversations, action audit, monitoring summaries/alerts |
+| Optimization | Seeded serial Optuna TPE | Additional search parameters and parallel trials |
+| Background work | Celery/Redis and scheduled recovery | Stronger recovery fencing and operational checks |
+| Data and artifacts | Local CSV references, atomic local artifact writes and verification | Immutable dataset storage, object storage, retention |
+| Diagnostics | JSON logs, redaction, dependency health endpoints | Prometheus/Grafana and worker/queue monitoring |
+| Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions | AI evaluations, process-loss/load/restore checks |
+| Deployment | Docker image and local Compose stack | Shared deployment controls and Kubernetes |
 
 FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, and a Redis client are core dependencies. The optional `training` extra adds NumPy, CPU PyTorch, and Optuna. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
 
-## Proposed architecture
+## Current architecture
 
-The current implementation is one FastAPI application in `src/ml_pipeline_pro`. Future model management, tuning, monitoring, and conversation modules will share explicit contracts in this application first. Separate deployment of services will follow measured scaling needs. The diagram describes the intended responsibilities and integrations.
+One modular FastAPI application in `src/ml_pipeline_pro` serves metadata and tuning APIs. Celery executes training, tuning, and recovery tasks; a separate Beat process schedules recovery. MongoDB owns durable metadata and job status; Redis transports tasks. The diagram shows only implemented components. Separate service deployment will follow measured scaling needs.
 
 ```mermaid
 flowchart TD
-    Engineer[Engineer / API client] --> Assistant[Conversation API / LangChain]
-    Engineer --> Models[Model management API]
-    Assistant --> Models
-    Assistant --> Tuning[Tuning API]
-    Assistant --> Monitoring[Monitoring API]
-    Models --> Mongo[(MongoDB metadata)]
-    Tuning --> Mongo
-    Monitoring --> Mongo
-    Tuning --> Queue[Redis job queue]
-    Models --> Queue
-    Queue --> Workers[Training and tuning workers]
+    Engineer[Engineer / API client] --> API[FastAPI: metadata and tuning APIs]
+    API --> Mongo[(MongoDB metadata and job state)]
+    API --> Queue[(Redis task broker)]
+    Scheduler[Celery Beat: recovery schedule] --> Queue
+    Queue --> Workers[Celery worker: training, tuning, recovery]
     Workers --> Mongo
-    Workers --> Artifacts[(Artifact storage)]
-    Workers --> Metrics[Prometheus]
-    Monitoring --> Metrics
-    Metrics --> Dashboards[Grafana]
+    API --> Data[Local CSV dataset directory]
+    Workers --> Data
+    Workers --> Artifacts[Shared local artifacts]
+    API --> Artifacts
 ```
 
-The model management service owns model and experiment records. The tuning service schedules optimization jobs and records trials. The monitoring service exposes performance history and alert context. The conversation service calls validated APIs and returns evidence-linked explanations. Background workers keep training workloads out of API request handlers.
+The tracking module owns datasets, models, experiments, and model versions. The tuning module owns jobs and trials and writes training results through tracking repositories. Background workers keep training workloads out of API request handlers. Monitoring and conversation modules are not present yet.
 
-MongoDB stores metadata and artifact references rather than large model binaries. Training metrics are available immediately; production quality metrics depend on obtaining ground-truth labels. Operational metrics, such as latency and error rate, are tracked separately from model quality and data drift.
+MongoDB stores metadata and artifact references rather than large model binaries. Completed experiments expose validation/test metrics. Production observations, quality history, and drift collection are future monitoring work. Registering a model version does not deploy it or provide inference serving.
 
 ## Example intended workflow
 
 1. Register a dataset and a model configuration.
 2. Ask: “Create a classification experiment using this dataset and track validation F1.”
 3. Review the assistant's structured configuration and submit the experiment.
-4. Ask: “Tune the learning rate and batch size for up to 20 trials within a two-hour budget.”
+4. Ask: “Tune the learning rate and batch size for up to 20 trials within a five-minute budget.”
 5. Compare trial results and register the selected model version.
 6. Inspect monitoring dashboards and ask for an explanation of a performance change.
 7. Request a Python integration snippet, review it, and run it in an isolated environment.
@@ -117,11 +111,13 @@ Readiness returns `503` with each dependency's status when either service is una
 
 Readiness checks MongoDB/Redis connectivity. Experiment status and heartbeat timestamps show worker progress separately.
 
-Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. This configuration is for local development. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. A complete identity/authorization design is still needed before shared deployment. Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
+Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. Compose explicitly sets `MLPP_ENVIRONMENT=development` and container connection/storage paths; an `.env` environment value does not override these settings. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. Shared deployment still needs the controls listed in the [audit](docs/project-status.md#deployment-and-operational-gaps). Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
+
+The checked-in CSV is included in the image. Custom data must be mounted at the same relative path under the dataset root for the API and worker. Registration records a hash and reference; it does not upload or copy the source file.
 
 ### Develop the API on your host
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/). The project defaults to Python 3.11; uv can provision it if needed. Versions 3.11 through 3.14 are allowed by the manifest. From the repository root:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/). The project defaults to Python 3.11; uv can provision it if needed. Versions 3.11 through 3.14 are allowed by the manifest, while CI tests 3.11/3.13 on Linux and local validation uses Windows/Python 3.11. From the repository root:
 
 ```powershell
 uv sync --locked
@@ -141,28 +137,34 @@ Configuration uses the `MLPP_` prefix. `.env.example` lists connection URLs, dat
 ### Run checks
 
 ```powershell
-uv run --locked ruff check .
-uv run --locked ruff format --check .
+uv sync --locked --extra training
+uv run --locked --extra training ruff check .
+uv run --locked --extra training ruff format --check .
 uv run --locked --extra training pytest -m "not integration" --cov
 uv pip check
 ```
 
-For integration tests, start MongoDB and Redis on the default local ports, then opt in:
+For all nine integration tests, start the full stack, then enable both flags:
 
 ```powershell
-docker compose up --wait mongo redis
-$env:MLPP_RUN_INTEGRATION = "1"
-uv run --locked pytest -m integration
-Remove-Item Env:MLPP_RUN_INTEGRATION
+docker compose up --build --wait --wait-timeout 300
+$env:MLPP_RUN_INTEGRATION = '1'
+$env:MLPP_RUN_WORKER_INTEGRATION = '1'
+try {
+    uv run --locked --extra training pytest -m integration
+} finally {
+    Remove-Item Env:MLPP_RUN_INTEGRATION
+    Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
+}
 ```
 
-On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integration`. These tests use the default local connection URLs and delete only their own generated test records.
+On macOS/Linux use `MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 uv run --locked --extra training pytest -m integration`. Omitting the worker flag skips three queued workflow cases. Omitting the training extra can skip real-training unit modules and prevents the direct tuning-recovery integration case from running successfully. Tests delete their own generated metadata; queued test artifacts remain in the shared artifact volume. See the [validation report](docs/test-validation.md#repeat-the-full-suite) for an isolated stack and endpoint overrides.
 
-GitHub Actions runs linting, formatting, unit/real-training/tuning tests on Python 3.11 and 3.13, installed dependency compatibility, dependency audits, and a Compose integration suite. All jobs passed [CI for tuning implementation cd5832c](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37540333222). The same 126 unit/training checks and nine real-service integration checks also pass locally. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the integration command.
+The October 6 audit reran **126 unit/API/training/tuning tests and all nine real-service tests successfully**, plus both demos, Ruff, installed dependency compatibility, and runtime dependency audits. GitHub Actions checks Python 3.11/3.13 and a rebuilt Compose stack. All three jobs passed for the latest audited baseline, [0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953). These passing checks do not cover the newly identified [ownership gaps](docs/project-status.md#open-audit-findings).
 
 The [ten-iteration validation report](docs/test-validation.md) records 1,350 passing test executions, including 90 real-service checks, with no failures or skips. It includes measured coverage, saved evidence locations, and commands for repeating the suite against an isolated test stack.
 
-`pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next milestone.
+`pyproject.toml` declares dependency ranges; `uv.lock` records exact versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. Keep the extra on subsequent `uv run` commands that need training so dependency synchronization retains it. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next feature milestone.
 
 ### Source layout
 
@@ -197,7 +199,9 @@ compose.yaml        # API and local dependencies
 .github/workflows/  # CI checks and Compose smoke test
 ```
 
-## Reliability and execution boundaries
+## Reliability and planned execution boundaries
+
+Today the backend validates typed requests, enforces project scoping and optional project keys, records hashes/configuration/dependencies, and bounds serial workers. Ownership fencing is implemented for many writes but still has the [audit findings](docs/project-status.md#open-audit-findings) to resolve. The following requirements for the future assistant and generated-code execution remain planned:
 
 - Validate AI-generated actions against typed schemas, authorized tools, and project access permissions.
 - Require engineer approval for generated code execution and model promotion.
@@ -222,4 +226,4 @@ Publish workload definitions, baselines, sample sizes, and results before making
 
 ## Documentation roadmap
 
-The foundation quickstart and [classification tutorial](docs/experiments.md) are included. Implementation will add a tuning guide, monitoring walkthrough, deployment guide, and troubleshooting notes. Full queued-workflow verification requires the Compose integration suite.
+The quickstart, [classification tutorial](docs/experiments.md), [tuning guide](docs/tuning.md), [project audit/status](docs/project-status.md), and [historical validation report](docs/test-validation.md) are included. Conversation, monitoring, code-generation, shared-deployment, backup/restore, and operations guides remain to be written as those features are implemented. See [PLAN.md](PLAN.md#immediate-development-priorities) for the next work and completion gates.

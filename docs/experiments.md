@@ -2,7 +2,12 @@
 
 Start the stack with `docker compose up --build --wait --wait-timeout 300`.
 Docker Compose 2.24 or later is required. Open `http://127.0.0.1:8000/docs` to
-inspect the API. Dataset and model endpoints require an `X-Project-ID` header.
+inspect the API. All metadata, experiment, and tuning endpoints require an
+`X-Project-ID` header and an `X-API-Key` when project keys are configured.
+
+This walkthrough covers the implemented CPU classification workflow. The
+[project audit](project-status.md) describes current limits, development status,
+and remaining recovery/deployment work.
 
 The checked-in `examples/data/classification.csv` is synthetic. Its 120 rows are
 explicitly split into 80 training, 20 validation, and 20 test examples. Each row
@@ -39,7 +44,10 @@ feature columns, number of classes, and row counts per split. The file is read
 from `MLPP_DATASET_ROOT`; its URI must be a relative `.csv` path inside that
 directory. Registration rejects files with invalid values, missing splits,
 unknown classes, or excessive size. Custom data must be available at the same
-relative path to the API and eventual training worker.
+relative path with identical contents to the API and eventual training worker.
+With Compose, mount the same custom directory at `/app/examples/data` for the
+API and worker. Registration records metadata and a hash; it does not upload,
+copy, or preserve the CSV. Keep each registered version's file unchanged.
 
 Dataset versions are unique within a project by `(name, version)`. Models are
 unique within a project by name. Repeating registration returns `409`; retrieve
@@ -88,18 +96,24 @@ do {
     $result = Invoke-RestMethod -Uri "$base/experiments/$($experiment.id)" -Headers $headers
 } while ($result.status -in @('queued', 'running') -and (Get-Date) -lt $deadline)
 $result
+if ($result.status -ne 'succeeded') {
+    throw "Training did not succeed before the polling deadline: $($result.status). Inspect the experiment status and error_summary."
+}
 ```
 
 Submission returns `202`. Use a new idempotency key for each intentional run;
 retry the same body/key after a connection error to avoid creating another
 experiment. Reusing a key with a different configuration returns `409`.
 
-The lifecycle is `queued → running → succeeded` or `failed`. A Redis outage during
+The standalone lifecycle is `queued → running → succeeded` or `failed`. Tuning
+child experiments can also become `cancelled`. A Redis outage during
 dispatch returns `503` with the persisted experiment ID. The scheduler retries
 undispatched jobs and queued jobs without progress after 60 seconds. Workers
 atomically claim a job and renew a 30-second ownership lease. Expired leases are
 recovered; repeated worker losses stop after three attempts by default. A stale
-worker cannot replace results recorded by its replacement.
+worker token is rejected by normal experiment completion writes. The audit found
+separate [tuning child-ownership gaps](project-status.md#open-audit-findings);
+do not assume every recovery write has equivalent protection yet.
 
 The worker rechecks the dataset hash before training. Preprocessing statistics
 come only from training rows. It trains a small CPU PyTorch MLP and selects the
@@ -108,8 +122,10 @@ after that selection. Failure responses include an error summary; successful
 responses include validation/test accuracy and macro F1, the selected epoch,
 dependency versions, and artifact hashes.
 
-Training has a cooperative runtime budget checked between batches, plus a Celery
-hard task limit of 630 seconds. The local worker container is limited to one CPU,
+Training has a cooperative runtime budget checked between batches, plus Celery
+soft/hard task limits of 620/630 seconds. The training clock is per attempt and
+excludes queue waiting; reclaiming a standalone experiment starts a new attempt.
+The local worker container is limited to one CPU,
 1 GiB of memory, and one concurrent job. Standalone experiment cancellation is
 later work; [bounded tuning and its cancellation](tuning.md) are available.
 
@@ -128,10 +144,11 @@ Invoke-RestMethod -Uri "$base/models/$($model.id)/versions" -Headers $headers
 ```
 
 The checkpoint contains model weights, preprocessing tensors, and architecture
-information. The manifest records the dataset snapshot, configuration, selection
+information. The manifest records dataset metadata/hash, configuration, selection
 rule, metrics, and dependency versions. Downloads and model version registration
 verify the stored hash and size. Version registration is an explicit API action
-and requires a successful experiment belonging to that model.
+and requires a successful experiment belonging to that model with final test
+evaluation. It does not deploy or serve the model.
 
 For a second run, create a new idempotency key. Compare the completed runs with:
 
@@ -154,8 +171,8 @@ uv run --locked --extra training python examples/train_local.py
 ```
 
 This prints metrics and saves checkpoint/manifest files under `artifacts/`.
-It does not register records in MongoDB. The initial Windows workspace already
-has the training dependencies installed, so it can also run:
+It does not register records in MongoDB. After installing the training extra,
+Windows users can also invoke the virtual environment directly:
 
 ```powershell
 .\.venv\Scripts\python.exe examples\train_local.py
@@ -173,14 +190,26 @@ With the full Compose stack running:
 ```powershell
 $env:MLPP_RUN_INTEGRATION = '1'
 $env:MLPP_RUN_WORKER_INTEGRATION = '1'
-uv run --locked --extra training pytest -m integration
-Remove-Item Env:MLPP_RUN_INTEGRATION
-Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
+try {
+    uv run --locked --extra training pytest -m integration
+} finally {
+    Remove-Item Env:MLPP_RUN_INTEGRATION
+    Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
+}
 ```
 
-These tests check real indexes, atomic claims, ownership recovery, Redis dispatch,
-training, artifact downloads, and model version registration. The complete suite
-passed [GitHub CI for commit 56f4a08](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384).
-Docker Engine is now available on the Windows machine. The expanded suite has
-126 passing local unit/training tests and nine passing real-service integration
-tests, including bounded tuning, worker recovery, and active cancellation.
+Install host test dependencies with `uv sync --locked --extra training` first.
+These tests check real indexes, atomic claims, lease/replay recovery, Redis
+dispatch, training, artifacts, version registration, tuning, and active
+cancellation. Both flags are needed to run all nine integration cases; the worker
+flag enables three queued workflow cases. The six remaining cases require
+MongoDB/Redis, and direct tuning recovery also needs the host training extra.
+
+The October 6 audit reran 126 unit/API/training/tuning cases and all nine
+integration cases successfully. Baseline [CI for 0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953)
+passed on Python 3.11/3.13 and a rebuilt Compose stack. Existing recovery tests
+simulate errors/expired leases; physical worker termination and the new ownership
+findings need additional coverage. See the [audit](project-status.md#validation-evidence)
+and [historical ten-iteration report](test-validation.md). The latter includes
+isolated ports and `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
+`MLPP_TEST_REDIS_URL` overrides.
