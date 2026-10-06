@@ -160,6 +160,8 @@ On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integra
 
 GitHub Actions runs linting, formatting, unit/real-training/tuning tests on Python 3.11 and 3.13, installed dependency compatibility, dependency audits, and a Compose integration suite. All jobs passed [CI for tuning implementation cd5832c](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37540333222). The same 126 unit/training checks and nine real-service integration checks also pass locally. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the integration command.
 
+The [ten-iteration validation report](docs/test-validation.md) records 1,350 passing test executions, including 90 real-service checks, with no failures or skips. It includes measured coverage, saved evidence locations, and commands for repeating the suite against an isolated test stack.
+
 `pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next milestone.
 
 ### Source layout

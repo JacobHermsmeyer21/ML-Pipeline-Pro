@@ -1,0 +1,18 @@
+x-validation: &validation
+  env_file: !override []
+  environment:
+    MLPP_ENVIRONMENT: test
+    MLPP_PROJECT_API_KEYS: "{}"
+
+services:
+  api:
+    <<: *validation
+    ports: !override ["127.0.0.1:18000:8000"]
+  worker:
+    <<: *validation
+  scheduler:
+    <<: *validation
+  mongo:
+    ports: !override ["127.0.0.1:37017:27017"]
+  redis:
+    ports: !override ["127.0.0.1:16379:6379"]
