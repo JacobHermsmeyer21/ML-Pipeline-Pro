@@ -46,3 +46,18 @@ def test_dotenv_configuration_is_supported(tmp_path):
     env_file.write_text("MLPP_MONGODB_DATABASE=from_dotenv\n", encoding="utf-8")
 
     assert Settings(_env_file=env_file).mongodb_database == "from_dotenv"
+
+
+def test_production_requires_project_access_keys():
+    with pytest.raises(ValidationError, match="Production requires"):
+        Settings(_env_file=None, environment="production")
+    settings = Settings(
+        _env_file=None, environment="production", project_api_keys={"demo": "long-test-project-key"}
+    )
+    assert "long-test-project-key" not in repr(settings)
+
+
+@pytest.mark.parametrize("keys", [{"demo": "short"}, {"invalid project": "long-test-project-key"}])
+def test_invalid_project_access_keys_are_rejected(keys):
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, project_api_keys=keys)

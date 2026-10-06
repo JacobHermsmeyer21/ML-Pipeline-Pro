@@ -1,6 +1,9 @@
 services:
   api:
     build: .
+    env_file:
+      - path: .env
+        required: false
     ports:
       - "127.0.0.1:8000:8000"
     environment:
@@ -11,6 +14,7 @@ services:
       MLPP_REDIS_URL: redis://redis:6379/0
       MLPP_DEPENDENCY_TIMEOUT_SECONDS: ${MLPP_DEPENDENCY_TIMEOUT_SECONDS:-2}
       MLPP_ARTIFACT_ROOT: /app/artifacts
+      MLPP_DATASET_ROOT: /app/examples/data
     volumes:
       - artifacts:/app/artifacts
     depends_on:

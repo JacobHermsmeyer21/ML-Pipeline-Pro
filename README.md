@@ -2,11 +2,11 @@
 
 ML Pipeline Pro is an AI-assisted platform in development for creating, tracking, tuning, and monitoring machine learning pipelines. Engineers will use a conversational interface to turn natural language requests into structured pipeline actions, inspect experiments, and generate Python code for common workflows.
 
-**Project status:** Development foundation implemented. The repository now includes a FastAPI backend, validated configuration, JSON logging with connection credential redaction, correlation-aware errors, project-scoped MongoDB repository contracts, Docker Compose, a dependency lockfile, and CI configuration. Training, tuning, monitoring, and conversational features remain planned. The API starts without provider credentials.
+**Project status:** Development foundation plus dataset and model registration implemented. The FastAPI backend validates local classification CSVs, records content hashes and explicit splits, stores project-scoped metadata with unique indexes, and supports project API keys. Training, tuning, monitoring, and conversational features remain planned. The API starts without provider credentials.
 
 See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and validation strategy.
 
-The next milestone is one reproducible workflow: register a dataset and model, queue a small classification experiment, then retrieve its status, metrics, and artifacts. Start with that workflow before adding tuning and conversational tools.
+Follow the [classification walkthrough](docs/experiments.md) to register a dataset and model. The next step is queued training and experiment result retrieval.
 
 ## Problem and purpose
 
@@ -85,7 +85,7 @@ These examples illustrate planned behavior; no runnable conversational interface
 
 ### Run the whole local stack
 
-Install Docker with the Compose v2 plugin, then run from the repository root:
+Install Docker with Compose 2.24 or later, then run from the repository root:
 
 ```powershell
 docker compose up --build --wait --wait-timeout 180
@@ -98,10 +98,14 @@ Open [the API documentation](http://127.0.0.1:8000/docs). The current endpoints 
 | --- | --- |
 | `GET /api/v1/health/live` | Process is running; does not contact dependencies |
 | `GET /api/v1/health/ready` | MongoDB and Redis both respond within the configured timeout |
+| `POST /api/v1/datasets` | Validate a local CSV and register its content hash and split metadata |
+| `GET /api/v1/datasets` and `GET /api/v1/datasets/{id}` | List or retrieve datasets within a project |
+| `POST /api/v1/models` | Register a PyTorch classification model |
+| `GET /api/v1/models` and `GET /api/v1/models/{id}` | List or retrieve models within a project |
 
 Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
 
-Compose publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. This configuration is for local development; authentication and project authorization must be implemented before shared deployment. Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
+Compose publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. This configuration is for local development. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. A complete identity/authorization design is still needed before shared deployment. Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
 
 ### Develop the API on your host
 

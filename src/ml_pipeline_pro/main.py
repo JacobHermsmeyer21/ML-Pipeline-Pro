@@ -14,6 +14,7 @@ from starlette.middleware.base import RequestResponseEndpoint
 from starlette.responses import Response
 
 from ml_pipeline_pro import __version__
+from ml_pipeline_pro.api import router
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import check_readiness, open_connections
 from ml_pipeline_pro.errors import ApiError, ErrorResponse, install_error_handlers
@@ -50,13 +51,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ML Pipeline Pro",
-        description="Development foundation. Experiment workflows are the next milestone.",
+        description="Project-scoped registration for reproducible classification experiments.",
         version=__version__,
         lifespan=lifespan,
         responses={422: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},
     )
     app.state.settings = settings
     install_error_handlers(app)
+    app.include_router(router)
 
     @app.middleware("http")
     async def correlate_request(request: Request, call_next: RequestResponseEndpoint) -> Response:

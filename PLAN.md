@@ -8,7 +8,7 @@ This is the implementation roadmap. Milestones are ordered by dependency, with n
 
 The development foundation is implemented: a packaged FastAPI application, environment validation, async MongoDB/Redis clients, bounded readiness checks, structured logging with connection credential redaction, consistent errors, project-scoped repository contracts, locked dependencies, local Compose configuration, and GitHub Actions checks. Unit tests, linting, dependency compatibility, and the runtime dependency vulnerability audit have been run locally. Docker image startup and real-service integration verification remain pending because Docker is not installed on the initial development machine; the CI workflow includes those checks.
 
-Next, implement milestone 2 as one end-to-end classification workflow. Add dataset/model records and indexes first, then experiment submission and a Celery training worker, then metrics/artifact retrieval and a reproducibility tutorial. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+Milestone 2 now includes dataset/model registration and project-scoped MongoDB indexes. Local CSV validation captures content hashes, feature definitions, class counts, and explicit train/validation/test splits. Project API keys are optional for local development and required by production configuration. Next add experiment submission, a Celery training worker, and metrics/artifact retrieval. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
 ## MVP boundaries
 
@@ -83,6 +83,8 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 **Acceptance:** A documented command starts the local services; readiness detects missing dependencies; CI runs on a clean checkout without real provider credentials.
 
 ### 2. Deliver reproducible experiment tracking
+
+**Status:** Dataset/model registration and indexes are implemented with unit tests and a synthetic CSV example. Queued training and experiment results are in progress. Real-service integration checks remain pending locally.
 
 - Implement the initial dataset, model, model version, and experiment schemas and indexes.
 - Build a PyTorch adapter with a small classification example, explicit train/validation/test splits, and a fixed seed.

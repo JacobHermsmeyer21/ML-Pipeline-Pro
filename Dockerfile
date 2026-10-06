@@ -12,6 +12,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --locked --no-dev --no-install-project
 COPY src ./src
+COPY examples ./examples
 RUN uv sync --locked --no-dev --no-editable \
     && useradd --create-home --uid 10001 app \
     && mkdir -p /app/artifacts \

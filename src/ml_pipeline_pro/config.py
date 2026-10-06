@@ -1,10 +1,11 @@
 """Validated, environment-based configuration."""
 
+import re
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, SecretStr, ValidationInfo, field_validator
+from pydantic import Field, SecretStr, ValidationInfo, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,6 +27,28 @@ class Settings(BaseSettings):
     redis_url: SecretStr = SecretStr("redis://127.0.0.1:6379/0")
     dependency_timeout_seconds: float = Field(default=2.0, gt=0, le=30)
     artifact_root: Path = Path("artifacts")
+    dataset_root: Path = Path("examples/data")
+    dataset_max_bytes: int = Field(default=10_000_000, ge=1, le=100_000_000)
+    dataset_max_rows: int = Field(default=100_000, ge=3, le=1_000_000)
+    project_api_keys: dict[str, SecretStr] = Field(default_factory=dict)
+
+    @field_validator("project_api_keys")
+    @classmethod
+    def validate_project_keys(cls, value: dict[str, SecretStr]) -> dict[str, SecretStr]:
+        if any(
+            not re.fullmatch(r"[a-zA-Z0-9_-]{1,128}", project) or len(key.get_secret_value()) < 16
+            for project, key in value.items()
+        ):
+            raise ValueError(
+                "Project IDs must be valid and API keys must have at least 16 characters"
+            )
+        return value
+
+    @model_validator(mode="after")
+    def production_requires_project_keys(self):
+        if self.environment == "production" and not self.project_api_keys:
+            raise ValueError("Production requires project API keys")
+        return self
 
     @field_validator("mongodb_uri", "redis_url")
     @classmethod

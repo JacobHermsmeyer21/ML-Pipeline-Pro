@@ -67,3 +67,40 @@ def test_real_repository_scoping_pagination_and_timestamp_round_trip():
                 )
 
     asyncio.run(exercise())
+
+
+def test_real_registration_indexes_and_project_isolation():
+    project_id = f"test_{uuid4().hex}"
+    settings = Settings(_env_file=None)
+    try:
+        with TestClient(create_app(settings), headers={"X-Project-ID": project_id}) as client:
+            body = {"name": "classifier"}
+            response = client.post("/api/v1/models", json=body)
+            assert response.status_code == 201, response.text
+            assert client.post("/api/v1/models", json=body).status_code == 409
+            assert (
+                client.get(
+                    f"/api/v1/models/{response.json()['id']}", headers={"X-Project-ID": "other"}
+                ).status_code
+                == 404
+            )
+            dataset = client.post(
+                "/api/v1/datasets",
+                json={
+                    "name": "classification",
+                    "version": "v1",
+                    "uri": "classification.csv",
+                    "feature_columns": ["feature_1", "feature_2"],
+                },
+            )
+            assert dataset.status_code == 201, dataset.text
+            assert dataset.json()["row_counts"] == {"train": 80, "validation": 20, "test": 20}
+    finally:
+
+        async def cleanup():
+            async with open_connections(settings) as connections:
+                database = connections.mongo.get_database(settings.mongodb_database)
+                for name in ("models", "datasets"):
+                    await database[name].delete_many({"project_id": project_id})
+
+        asyncio.run(cleanup())

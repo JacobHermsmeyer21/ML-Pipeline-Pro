@@ -45,7 +45,7 @@ class JsonFormatter(logging.Formatter):
 
 
 def configure_logging(settings: Settings) -> None:
-    secrets = []
+    secrets = [key.get_secret_value() for key in settings.project_api_keys.values()]
     for connection_url in (settings.mongodb_uri, settings.redis_url):
         password = urlsplit(connection_url.get_secret_value()).password
         if password:

@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from pymongo.errors import DuplicateKeyError, PyMongoError
 from starlette.exceptions import HTTPException
 
 logger = logging.getLogger(__name__)
@@ -60,6 +61,21 @@ def error_response(
 
 
 def install_error_handlers(app: FastAPI) -> None:
+    @app.exception_handler(DuplicateKeyError)
+    async def handle_duplicate(request: Request, exc: DuplicateKeyError) -> JSONResponse:
+        return error_response(
+            request, 409, "record_conflict", "A record with this identity already exists"
+        )
+
+    @app.exception_handler(PyMongoError)
+    async def handle_storage_error(request: Request, exc: PyMongoError) -> JSONResponse:
+        logger.warning(
+            "Storage operation failed", extra={"correlation_id": request.state.correlation_id}
+        )
+        return error_response(
+            request, 503, "storage_unavailable", "Metadata storage is unavailable"
+        )
+
     @app.exception_handler(ApiError)
     async def handle_api_error(request: Request, exc: ApiError) -> JSONResponse:
         return error_response(request, exc.status_code, exc.code, exc.message, exc.details)
