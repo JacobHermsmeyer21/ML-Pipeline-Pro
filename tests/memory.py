@@ -134,8 +134,47 @@ class FakePublisher:
     def __init__(self):
         self.published = []
         self.error = None
+        self.published_tuning = []
 
     def publish(self, project_id, experiment_id):
         if self.error:
             raise self.error
         self.published.append((project_id, experiment_id))
+
+    def publish_tuning(self, project_id, job_id):
+        if self.error:
+            raise self.error
+        self.published_tuning.append((project_id, job_id))
+
+
+class MemoryTuningJobs(MemoryExperiments):
+    async def request_cancel(self, project_id, job_id):
+        record = self.records.get(job_id)
+        if record is None or record.project_id != project_id:
+            return None
+        if record.status == "queued":
+            record.status = "cancelled"
+            record.phase = "complete"
+            record.completed_at = datetime.now(UTC)
+            record.stop_reason = "cancelled"
+        elif record.status == "running":
+            record.status = "cancel_requested"
+            record.stop_reason = "cancelled"
+        return record.model_copy(deep=True)
+
+
+class MemoryTrials(MemoryRepository):
+    async def for_job(self, project_id, job_id, *, limit=50, offset=0):
+        records = [
+            record.model_copy(deep=True)
+            for record in self.records.values()
+            if record.project_id == project_id and record.tuning_job_id == job_id
+        ]
+        records.sort(key=lambda record: record.number)
+        return records[offset : offset + limit]
+
+
+class MemoryTuningStore:
+    def __init__(self):
+        self.jobs = MemoryTuningJobs(("project_id", "submission_key"))
+        self.trials = MemoryTrials(("project_id", "tuning_job_id", "number"))

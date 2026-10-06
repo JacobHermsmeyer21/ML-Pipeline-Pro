@@ -95,6 +95,8 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 
 ### 3. Automate bounded tuning
 
+**Status:** In progress. Typed search spaces and limits, project-scoped job/trial records and indexes, idempotent submission, and cancellation contracts are implemented. The Optuna worker, validation-only trial execution, final test evaluation, recovery, and end-to-end tuning verification are next.
+
 - Integrate Optuna's Bayesian optimization sampler and validate parameter types, ranges, and objective direction.
 - Enforce trial count, runtime, concurrency, and resource limits in workers.
 - Persist successful, failed, and cancelled trials and preserve completed results after restart.

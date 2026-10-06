@@ -19,6 +19,7 @@ from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import check_readiness, open_connections
 from ml_pipeline_pro.errors import ApiError, ErrorResponse, install_error_handlers
 from ml_pipeline_pro.logging import configure_logging
+from ml_pipeline_pro.tuning_api import router as tuning_router
 
 logger = logging.getLogger(__name__)
 _CORRELATION_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")
@@ -59,6 +60,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     install_error_handlers(app)
     app.include_router(router)
+    app.include_router(tuning_router)
 
     @app.middleware("http")
     async def correlate_request(request: Request, call_next: RequestResponseEndpoint) -> Response:

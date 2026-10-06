@@ -10,7 +10,8 @@ from ml_pipeline_pro import main
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.queue import get_publisher
 from ml_pipeline_pro.tracking import get_store
-from tests.memory import FakePublisher, MemoryStore
+from ml_pipeline_pro.tuning_store import get_tuning_store
+from tests.memory import FakePublisher, MemoryStore, MemoryTuningStore
 
 
 class FakePing:
@@ -109,3 +110,10 @@ def experiment_body(tracking_client, dataset_body):
     assert dataset.status_code == 201
     assert model.status_code == 201
     return {"dataset_id": dataset.json()["id"], "model_id": model.json()["id"]}
+
+
+@pytest.fixture
+def tuning_store(app):
+    store = MemoryTuningStore()
+    app.dependency_overrides[get_tuning_store] = lambda: store
+    return store

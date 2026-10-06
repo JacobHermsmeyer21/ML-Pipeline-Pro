@@ -8,6 +8,8 @@ See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and valid
 
 Follow the [classification walkthrough](docs/experiments.md) for API requests, result retrieval, and a training demo that runs without Docker. The next feature milestone is bounded hyperparameter tuning.
 
+Bounded tuning is in progress: [job API and storage contracts](docs/tuning.md) are implemented; the Optuna worker is the next step.
+
 ## Problem and purpose
 
 Machine learning engineers often move between training scripts, experiment records, tuning tools, and monitoring dashboards to understand how a model was built and why its performance changed. ML Pipeline Pro aims to connect these workflows through shared experiment metadata and an AI assistant that grounds its suggestions in recorded results.

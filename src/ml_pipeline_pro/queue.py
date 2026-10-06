@@ -49,6 +49,15 @@ class Publisher:
             retry=False,
         )
 
+    def publish_tuning(self, project_id: str, job_id: str) -> None:
+        self.app.send_task(
+            "ml_pipeline_pro.tune",
+            args=[project_id, job_id],
+            task_id=job_id,
+            queue="training",
+            retry=False,
+        )
+
 
 def get_publisher(request: Request) -> Publisher:
     if not hasattr(request.app.state, "publisher"):
