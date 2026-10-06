@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.12.23"
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run --locked ruff check .
+      - run: uv run --locked ruff format --check .
+      - run: uv run --locked pytest -m "not integration" --cov --cov-report=term-missing
+      - run: uv pip check
+      - if: matrix.python-version == '3.11'
+        run: |
+          uv export --locked --no-dev --no-emit-project --output-file /tmp/requirements.txt
+          uv run --locked pip-audit -r /tmp/requirements.txt --require-hashes --disable-pip
+
+  compose-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.12.23"
+          python-version: "3.11"
+          enable-cache: true
+      - run: uv sync --locked
+      - run: docker compose config --quiet
+      - run: docker compose up --build --wait --wait-timeout 180
+      - run: curl --fail http://127.0.0.1:8000/api/v1/health/ready
+      - run: uv run --locked pytest -m integration
+        env:
+          MLPP_RUN_INTEGRATION: "1"
+      - if: failure()
+        run: docker compose logs
+      - if: always()
+        run: docker compose down
