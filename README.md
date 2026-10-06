@@ -2,11 +2,11 @@
 
 ML Pipeline Pro is an AI-assisted platform in development for creating, tracking, tuning, and monitoring machine learning pipelines. Engineers will use a conversational interface to turn natural language requests into structured pipeline actions, inspect experiments, and generate Python code for common workflows.
 
-**Project status:** Initial classification experiment workflow implemented. Register datasets and models, submit idempotent Celery training jobs, inspect results, compare validation metrics, download verified artifacts, and register model versions. The CPU PyTorch adapter is tested locally with a synthetic dataset. Docker and real-service integration execution remain unverified on the initial Windows machine. Tuning, monitoring, and conversational features remain planned.
+**Project status:** Initial classification experiment workflow implemented and verified. Register datasets and models, submit idempotent Celery training jobs, inspect results, compare validation metrics, download verified artifacts, and register model versions. All 88 unit/training tests pass locally, and the full Docker workflow passed [GitHub CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384). The initial Windows machine can run the training demo; its Docker Engine remains unavailable. Tuning, monitoring, and conversational features remain planned.
 
 See [PLAN.md](PLAN.md) for implementation phases, acceptance criteria, and validation strategy.
 
-Follow the [classification walkthrough](docs/experiments.md) for API requests, result retrieval, and a training demo that runs without Docker. The next feature milestone is bounded hyperparameter tuning, after real-service integration verification.
+Follow the [classification walkthrough](docs/experiments.md) for API requests, result retrieval, and a training demo that runs without Docker. The next feature milestone is bounded hyperparameter tuning.
 
 ## Problem and purpose
 
@@ -154,7 +154,7 @@ Remove-Item Env:MLPP_RUN_INTEGRATION
 
 On macOS or Linux, use `MLPP_RUN_INTEGRATION=1 uv run --locked pytest -m integration`. These tests use the default local connection URLs and delete only their own generated test records.
 
-GitHub Actions is configured for linting, formatting, unit/real-training tests on Python 3.11 and 3.13, installed dependency compatibility, a vulnerability audit of locked runtime dependencies and the PyTorch release, and a Compose build/readiness/queued-training integration smoke test. The container and real-service checks require Docker and have not yet been run on the initial Windows development machine. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the full worker integration command.
+GitHub Actions runs linting, formatting, unit/real-training tests on Python 3.11 and 3.13, installed dependency compatibility, a vulnerability audit of locked runtime dependencies and the PyTorch release, and a Compose build/readiness/queued-training integration smoke test. All jobs passed for implementation commit `56f4a08`. The [walkthrough](docs/experiments.md#validate-the-full-stack) includes the full worker integration command; Docker is needed to repeat those integration checks locally.
 
 `pyproject.toml` declares supported dependency ranges; `uv.lock` records exact resolved versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training and its tests. PyTorch comes from its CPU index on Windows/Linux. Optuna and LangChain/provider integrations will follow in later milestones.
 

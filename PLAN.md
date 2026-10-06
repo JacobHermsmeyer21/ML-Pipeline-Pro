@@ -6,9 +6,9 @@ Build a Python platform that combines reproducible model experiments, automated 
 
 This is the implementation roadmap. Milestones are ordered by dependency, with no assumed delivery dates or staffing levels.
 
-The development foundation is implemented: a packaged FastAPI application, environment validation, async MongoDB/Redis clients, bounded readiness checks, structured logging with connection credential redaction, consistent errors, project-scoped repository contracts, locked dependencies, local Compose configuration, and GitHub Actions checks. Unit tests, linting, dependency compatibility, and the runtime dependency vulnerability audit have been run locally. Docker image startup and real-service integration verification remain pending because Docker is not installed on the initial development machine; the CI workflow includes those checks.
+The development foundation is implemented: a packaged FastAPI application, environment validation, async MongoDB/Redis clients, bounded readiness checks, structured logging with connection credential redaction, consistent errors, project-scoped repository contracts, locked dependencies, local Compose configuration, and GitHub Actions checks. Unit tests, linting, dependency compatibility, and dependency audits pass locally. Docker startup and real-service integration have been verified in GitHub CI, even though the initial Windows machine does not have a Docker Engine.
 
-Milestone 2 implementation now includes dataset/model registration, indexed experiment/model version records, idempotent job submission, a Celery CPU training worker, lease/heartbeat recovery, metric comparison, and verified artifact downloads. Local CSV validation captures content hashes, feature definitions, class counts, and explicit train/validation/test splits. Project API keys are optional for local development and required by production configuration. Unit and real-training checks pass locally; full MongoDB/Redis/worker integration requires Docker and remains pending on the initial Windows machine. Verify that suite before starting bounded tuning. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+Milestone 2 includes dataset/model registration, indexed experiment/model version records, idempotent job submission, a Celery CPU training worker, lease/heartbeat recovery, metric comparison, and verified artifact downloads. Local CSV validation captures content hashes, feature definitions, class counts, and explicit train/validation/test splits. Project API keys are optional for local development and required by production configuration. All 88 unit/training tests pass locally; Python 3.11/3.13 checks and the full MongoDB/Redis/worker integration suite passed [CI for commit 56f4a08](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384) on October 6, 2026. The next milestone is bounded tuning. Keep these responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
 ## MVP boundaries
 
@@ -73,7 +73,7 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 
 ### 1. Establish the development foundation
 
-**Status:** Implementation and local unit checks are in place. Complete the Docker/real-service smoke test to verify the full startup acceptance criterion.
+**Status:** Complete. Local checks and GitHub CI verify clean dependency installation, container startup, health endpoints, and integration without model-provider credentials.
 
 - Create Python package structure, compatible dependency constraints, lockfile, and development tooling.
 - Add `.env.example`, ignore rules, configuration validation, and structured logging with secret redaction.
@@ -84,7 +84,7 @@ Long-running jobs use explicit states: `queued`, `running`, `succeeded`, `failed
 
 ### 2. Deliver reproducible experiment tracking
 
-**Status:** Implementation is in place, with local API/worker contract tests and real PyTorch training checks. Repeated runs produce identical checkpoint bytes and metrics in the tested environment; altered test labels do not affect selected weights. A synthetic tutorial and full queued integration suite are provided. Real-service integration execution and the full acceptance check remain pending locally because Docker is unavailable.
+**Status:** Complete for the initial CPU classification workflow. Repeated runs produce identical checkpoint bytes and metrics in the tested environment; altered test labels do not affect selected weights. The synthetic tutorial, real database indexes and atomic claims, queued training, artifact retrieval, and model version registration are verified by local tests and GitHub CI. Docker integration remains a CI-based check on the initial Windows machine. Cancellation, monitoring, shared-deployment identity, and scalable artifact storage remain later work.
 
 - Implement the initial dataset, model, model version, and experiment schemas and indexes.
 - Build a PyTorch adapter with a small classification example, explicit train/validation/test splits, and a fixed seed.

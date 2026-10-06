@@ -178,6 +178,8 @@ Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
 ```
 
 These tests check real indexes, atomic claims, ownership recovery, Redis dispatch,
-training, artifact downloads, and model version registration. Docker remains
-unavailable on the initial Windows machine; local verification covers the real
-training adapter and API/worker contracts using deterministic repository substitutes.
+training, artifact downloads, and model version registration. The complete suite
+passed [GitHub CI for commit 56f4a08](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37529542384).
+Docker Engine remains unavailable on the initial Windows machine; its 88 local
+unit/training tests verify the real training adapter and API/worker contracts using
+deterministic repository substitutes.
