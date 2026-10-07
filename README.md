@@ -6,6 +6,8 @@ ML Pipeline Pro currently provides a local REST API and CPU workers for reproduc
 
 Read the [project audit and development status](docs/project-status.md) for verified capabilities, open findings, and immediate priorities. [PLAN.md](PLAN.md) defines the remaining milestones and acceptance criteria.
 
+Development follows the [AI-assisted engineering method](docs/development-methodology.md): clarify and challenge ideas, commit design plans for human review, then implement with continuous verification. [AGENTS.md](AGENTS.md) carries the shared rules and checks; [project memory](docs/memory/README.md) preserves evidence-linked findings.
+
 Follow the [classification walkthrough](docs/experiments.md) for experiment requests, or the [tuning walkthrough](docs/tuning.md) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
 
 ## Problem and purpose

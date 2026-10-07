@@ -10,6 +10,20 @@ Milestones 1-3 have delivered a working local backend: a packaged FastAPI applic
 
 The full MVP remains incomplete. Conversation is the next feature milestone; monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). The [serial recovery gate](docs/recovery.md) now covers physical worker loss and dependency outages through Beat-driven recovery. Concurrent-load and network-partition validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
+## Development workflow
+
+Apply the [development methodology](docs/development-methodology.md) to each
+substantive change: clarify and critique the proposal, commit a dated design plan
+using [the template](docs/plans/template.md), obtain human review, then implement
+with continuous verification. Define acceptance evidence before implementation.
+The roadmap orders work; each design still needs its own review. Local edits use
+the compressed workflow with the same relevant verification discipline.
+
+[AGENTS.md](AGENTS.md) holds shared contracts and pre-commit checks.
+[Project memory](docs/memory/README.md) preserves confirmed mechanisms and approaches
+that should not be rediscovered. Keep review records and raw execution provenance
+with each outcome; disclose unperformed checks or unavailable independent review.
+
 ## MVP boundaries
 
 The MVP will support one classification dataset format, one PyTorch training adapter, model and experiment metadata, bounded Bayesian tuning, experiment comparison, basic monitoring, and conversational access to those workflows. A small API client and documented requests are sufficient for initial use.
