@@ -2,7 +2,7 @@
 
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
-ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. The baseline audit's recovery ownership bugs are now fixed; process-loss/outage validation and storage lifecycle work remain open.
+ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. The baseline audit's recovery ownership bugs are fixed, and controlled process-loss/dependency-outage validation is delivered. Concurrent-load/partition validation and storage lifecycle work remain open.
 
 The baseline audit reviewed the tracked application modules, examples, tests/fixtures, dependency manifest/lockfile, Docker/Compose configuration, CI, and documentation. It also checked the saved validation evidence and local demo manifests, ran the baseline suites/demos, inspected the running services, and probed ownership boundaries in a disposable MongoDB database. That audit changed documentation only; subsequent application fixes and their checks are documented in [ownership fix validation](#ownership-fix-validation).
 
@@ -12,7 +12,7 @@ The baseline audit reviewed the tracked application modules, examples, tests/fix
 | --- | --- | --- |
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
-| 3. Bounded tuning | Initial serial TPE scope and transactional ownership fixes complete | Stronger failure/restart tests, later parallel dispatch |
+| 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
 | 4. Conversational workflows | Not started; next feature milestone | Provider adapter, typed tools, dialogue/action records, grounded responses, evaluations |
 | 5. Monitoring and diagnosis | Not started | Observations, Prometheus/Grafana, drift/quality summaries, alert evidence |
 | 6. Reviewable code generation | Not started | Templates, validation/provenance, explicit review, optional isolated execution |
@@ -32,7 +32,7 @@ These states describe delivered scope, not a percentage estimate or a production
 | Experiment workflow | Idempotent submission, filtered/paginated reads, same-dataset validation comparison, artifact download, explicit version registration | No standalone cancel/delete/update API, inference server, deployment, or automatic promotion |
 | Tuning | Seeded Optuna TPE over learning rate/batch size/hidden units; maximized validation F1 or accuracy; persisted reservations/trials | 1-50 trials, 2-600 seconds overall, concurrency exactly 1; no arbitrary parameters or minimization |
 | Selection and evaluation | Test labels excluded from preprocessing/checkpoint/trial selection; only the selected tuning checkpoint receives final holdout metrics | Final evaluation can be skipped when budget expires; registration is then blocked |
-| Job reliability | Durable dispatch state, unique submission/trial identities, atomic parent claims, transactional child ownership, leases/heartbeats, bounded attempts, replay of saved training | Physical worker loss and full recovery have not been exercised end to end |
+| Job reliability | Durable dispatch state, unique submission/trial identities, atomic parent claims, transactional child ownership, leases/heartbeats, bounded attempts, replay of saved training; controlled worker kills and dependency restarts recover through Beat | Serial CPU scope; concurrent load and arbitrary partitions remain untested |
 | Artifacts | Atomic writes under project/experiment/attempt directories; downloads verify hash and size | Local storage only; no cleanup, retention, backup, or remote storage adapter |
 | Project access | Required project header, project-scoped references, optional constant-time API-key checks; keys mandatory in production settings | Development without keys trusts caller-selected projects; no user identity, roles, or key lifecycle |
 | Local deployment | Non-root app image; API/worker/Beat/MongoDB/Redis; localhost ports; persistent volumes | Development configuration; CPU/memory/concurrency limits apply to the worker |
@@ -84,9 +84,9 @@ This demonstrates missing guards at the repository boundary. It is not an observ
 
 ### 2. Medium priority: recovery validation stops short of process-loss recovery
 
-The recovery tests simulate storage errors and explicitly expire leases before invoking execution again. Live integration verifies queued execution and cancellation, but does not kill a worker during training/final evaluation and wait for Beat-driven recovery. Redis/MongoDB outages during heartbeats and late commits also need focused coverage. The host unit suite uses in-memory repositories, so passing it alone does not validate MongoDB ownership predicates.
+**Baseline finding; addressed by the [controlled recovery gate](#process-loss-and-dependency-outage-validation).** At the audit baseline, recovery tests simulated storage errors and explicitly expired leases before invoking execution again. Live integration verified queued execution and cancellation, but did not kill a worker during training/final evaluation and wait for Beat-driven recovery. Redis/MongoDB outages during heartbeats and late commits also needed focused coverage. The host unit suite uses in-memory repositories, so passing it alone does not validate MongoDB ownership predicates.
 
-**Required follow-up:** Add controlled worker termination/restart and dependency outage cases, verify scheduler redispatch and attempt exhaustion, and verify no duplicated successful results or accepted stale writes. Collect worker/scheduler coverage or document it separately; CI currently prints coverage without enforcing a threshold.
+**Delivered follow-up:** Controlled worker termination/restart and dependency outage cases now verify scheduler redispatch, attempt exhaustion, preserved training/artifacts/deadlines, and rejection of an expired final commit. The earlier real-MongoDB transaction takeover tests separately reject stale child writes. Worker/scheduler execution is evidenced by logs and state assertions; host coverage still excludes those container processes. CI prints coverage without enforcing a threshold.
 
 ### 3. Medium priority: reproducibility depends on keeping the source CSV
 
@@ -135,15 +135,14 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 
 ## Next work, in order
 
-1. **Exercise process-loss and dependency-outage recovery.** Ownership fixes and transaction-boundary regressions are delivered. Preserve the current serial limits until the remaining recovery gates pass.
-2. **Start milestone 4 with a provider-independent tool contract.** Map experiment/tuning reads, comparison, submission, and cancellation onto existing schemas/project access; use deterministic provider stubs first.
-3. **Add the conversational slice.** Configure the provider, persist project-scoped dialogue/action evidence, request missing inputs/budgets, and evaluate grounded responses and unauthorized/invalid actions.
-4. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
-5. **Implement milestone 6 code generation.** Provide validated supported snippets with provenance and review boundaries; define isolation before enabling execution.
-6. **Finish milestone 7 for shared deployment.** Identity/roles/TLS, authenticated services, immutable data/object storage, retention, restore tests, operational probes, deployment manifests, and onboarding.
-7. **Run the measurement plan.** Establish baselines and reproducible workload results before using the proposed improvement percentages.
+1. **Start milestone 4 with a provider-independent tool contract.** Map experiment/tuning reads, comparison, submission, and cancellation onto existing schemas/project access; use deterministic provider stubs first.
+2. **Add the conversational slice.** Configure the provider, persist project-scoped dialogue/action evidence, request missing inputs/budgets, and evaluate grounded responses and unauthorized/invalid actions.
+3. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
+4. **Implement milestone 6 code generation.** Provide validated supported snippets with provenance and review boundaries; define isolation before enabling execution.
+5. **Finish milestone 7 for shared deployment.** Identity/roles/TLS, authenticated services, immutable data/object storage, retention, restore tests, operational probes, deployment manifests, and onboarding.
+6. **Run the measurement plan.** Establish baselines and reproducible workload results before using the proposed improvement percentages.
 
-The next feature remains conversation; completing recovery validation and measuring its behavior are prerequisites for expanding execution safely. The full release criteria remain in [PLAN.md](../PLAN.md#completion-criteria).
+Keep the transaction ownership and controlled recovery gates passing in CI. The next feature is conversation. Preserve serial execution until concurrent-load and partition behavior are measured. The full release criteria remain in [PLAN.md](../PLAN.md#completion-criteria).
 
 ## Ownership fix validation
 
@@ -169,7 +168,8 @@ deadline, and allows the replacement to proceed. These tests cover both audited
 child claims and final test persistence, plus insertion, completion, heartbeat,
 and cleanup. They use real MongoDB; the in-memory suite also follows the stricter
 repository contracts. Physical worker termination and real dependency outage
-coverage remain separate open work.
+coverage were separate open work at this stage; they are now covered by the
+[subsequent recovery gate](#process-loss-and-dependency-outage-validation).
 
 The execution-boundary tests also exposed a manifest overwrite during final
 evaluation: training and evaluation used the same attempt directory, so an
@@ -187,6 +187,41 @@ verified downloads, and model registration. Ruff lint/format, all 86 installed
 packages' dependency compatibility, and 56 local documentation links/anchors
 also passed. JUnit reports are retained in ignored
 `artifacts/bugfix-validation/`. The existing TestClient deprecation warning remains.
+
+## Process-loss and dependency-outage validation
+
+The [recovery suite](recovery.md) adds ten isolated Compose cases with a dedicated
+image built from the current checkout. It kills the whole worker container with
+`SIGKILL` during a real optimizer step, selected-checkpoint evaluation, or final
+manifest persistence. Beat redispatches work after natural lease expiry. The tests
+never edit leases or invoke recovery/execution directly.
+
+Recovered searches preserve reservation configurations/experiment IDs and both
+original deadlines, reuse completed training, retain validation-only trial
+metrics, and evaluate exactly one winner. Both standalone and tuning jobs fail
+after two actual worker losses in the test configuration; tuning children close
+without scheduling another trial. Hash-verified downloads remain available.
+
+MongoDB is stopped during tuning ownership checks and final commit. The ownership
+watch records an actual driver error. A final transaction can retry internally;
+the test verifies that the expired owner's eventual commit is rejected before the
+replacement completes, with no repeated training. Redis is stopped during both
+submission types: the API returns `503`, retains one queued record, and Beat
+dispatches it after Redis restarts without a client resubmission.
+
+Validation on October 6, 2026: **129 local tests, 20 ordinary real-service tests,
+and all ten controlled recovery cases passed**, with no selected-case skips.
+Ruff lint/format, locked dependency consistency, installed compatibility for all
+86 packages, and local documentation links passed. Evidence is retained in ignored
+`artifacts/recovery-validation/`, including JUnit, MongoDB snapshots, and service
+logs. CI now runs the recovery gate and uploads its evidence. The new CI run's
+outcome is separate from this local validation.
+
+The gate retains one CPU, 1 GiB, and one concurrent worker job. Test leases are ten
+seconds and the attempt limit is two; production defaults remain thirty seconds
+and three attempts. It uses separate ports, database, image, and volumes from the
+development stack. Container execution remains outside host coverage statistics.
+Concurrent load, arbitrary partitions, and restore exercises remain open.
 
 ## Reading a local tuning manifest
 

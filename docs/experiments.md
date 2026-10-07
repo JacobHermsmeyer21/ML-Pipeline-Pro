@@ -191,7 +191,7 @@ With the full Compose stack running:
 $env:MLPP_RUN_INTEGRATION = '1'
 $env:MLPP_RUN_WORKER_INTEGRATION = '1'
 try {
-    uv run --locked --extra training pytest -m integration
+    uv run --locked --extra training pytest -m "integration and not recovery"
 } finally {
     Remove-Item Env:MLPP_RUN_INTEGRATION
     Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
@@ -208,9 +208,13 @@ Direct tuning recovery also needs the host training extra.
 
 The October 6 audit reran 126 unit/API/training/tuning cases and all nine
 integration cases successfully. Baseline [CI for 0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953)
-passed on Python 3.11/3.13 and a rebuilt Compose stack. Existing recovery tests
-simulate errors/expired leases; physical worker termination needs additional
-coverage. The ownership races now have [transaction-boundary regression coverage](project-status.md#ownership-fix-validation). See the [audit](project-status.md#validation-evidence)
+passed on Python 3.11/3.13 and a rebuilt Compose stack. The ownership races now have
+[transaction-boundary regression coverage](project-status.md#ownership-fix-validation).
+The separate [recovery suite](recovery.md) verifies worker termination, attempt
+exhaustion, and dependency restarts through Beat-driven recovery after natural
+lease expiry. It builds and removes its own isolated stack; enable it with
+`MLPP_RUN_RECOVERY_INTEGRATION=1` and `pytest -m recovery`.
+See the [audit](project-status.md#process-loss-and-dependency-outage-validation)
 and [historical ten-iteration report](test-validation.md). The latter includes
 isolated ports and `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
 `MLPP_TEST_REDIS_URL` overrides.

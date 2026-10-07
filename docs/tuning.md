@@ -153,8 +153,10 @@ with training/tuning, so queue load can delay redispatch. Current tests exercise
 saved reservations/training with forced lease expiry and simulated storage errors.
 Ten real-MongoDB transaction-boundary regression cases now verify rejection of
 stale child claims, final evaluation commits, and other child mutations after
-parent takeover. Actual worker termination/restart and dependency outage tests
-remain [follow-up work](project-status.md#open-audit-findings).
+parent takeover. Ten additional [isolated Compose recovery cases](recovery.md)
+verify actual worker termination during training/final evaluation/persistence,
+natural lease expiry and Beat redispatch, attempt exhaustion, and MongoDB/Redis
+restarts. They preserve the original deadlines and reuse completed training.
 
 The sampler uses two successful startup trials before TPE proposals. Proposals
 reconstruct the study from saved outcomes with a seed derived from the sampler
@@ -180,6 +182,9 @@ checks, dependency audits, and rebuilt Docker integration also passed
 [baseline CI for 0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953).
 The subsequent [ownership fix validation](project-status.md#ownership-fix-validation)
 covers the identified ownership findings.
+The subsequent [recovery gate](project-status.md#process-loss-and-dependency-outage-validation)
+passes 129 local cases, 20 ordinary integration cases, and ten controlled failure
+cases. Enable its separate flag and follow [recovery.md](recovery.md) to repeat it.
 The [historical validation report](test-validation.md) preserves ten repeated runs
 against its original commit.
 

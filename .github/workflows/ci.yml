@@ -50,10 +50,18 @@ jobs:
       - run: docker compose config --quiet
       - run: docker compose up --build --wait --wait-timeout 300
       - run: curl --fail http://127.0.0.1:8000/api/v1/health/ready
-      - run: uv run --locked --extra training pytest -m integration
+      - run: uv run --locked --extra training pytest -m "integration and not recovery"
         env:
           MLPP_RUN_INTEGRATION: "1"
           MLPP_RUN_WORKER_INTEGRATION: "1"
+      - run: uv run --locked --extra training pytest -m recovery --junitxml=artifacts/recovery-validation/junit.xml
+        env:
+          MLPP_RUN_RECOVERY_INTEGRATION: "1"
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: recovery-validation
+          path: artifacts/recovery-validation/
       - if: failure()
         run: docker compose logs
       - if: always()

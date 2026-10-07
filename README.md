@@ -153,14 +153,16 @@ docker compose up --build --wait --wait-timeout 300
 $env:MLPP_RUN_INTEGRATION = '1'
 $env:MLPP_RUN_WORKER_INTEGRATION = '1'
 try {
-    uv run --locked --extra training pytest -m integration
+    uv run --locked --extra training pytest -m "integration and not recovery"
 } finally {
     Remove-Item Env:MLPP_RUN_INTEGRATION
     Remove-Item Env:MLPP_RUN_WORKER_INTEGRATION
 }
 ```
 
-On macOS/Linux use `MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 uv run --locked --extra training pytest -m integration`. Omitting the worker flag skips three queued workflow cases. Omitting the training extra can skip real-training unit modules and prevents the direct tuning-recovery integration case from running successfully. Tests delete their own generated metadata; queued test artifacts remain in the shared artifact volume. See the [validation report](docs/test-validation.md#repeat-the-full-suite) for an isolated stack and endpoint overrides.
+On macOS/Linux use `MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 uv run --locked --extra training pytest -m "integration and not recovery"`. Omitting the worker flag skips three queued workflow cases. Omitting the training extra can skip real-training unit modules and prevents the direct tuning-recovery integration case from running successfully. Tests delete their own generated metadata; queued test artifacts remain in the shared artifact volume. See the [validation report](docs/test-validation.md#repeat-the-full-suite) for an isolated stack and endpoint overrides.
+
+The separate [recovery suite](docs/recovery.md) builds the current checkout into its own Compose stack to kill workers and stop MongoDB/Redis at controlled boundaries. Run it serially with `MLPP_RUN_RECOVERY_INTEGRATION=1` and `pytest -m recovery`. It verifies Beat-driven recovery after natural lease expiry, preserved tuning results/deadlines, attempt exhaustion, and retained submissions after queue outages. CI uploads its state snapshots, logs, and JUnit report.
 
 The October 6 baseline audit reran **126 unit/API/training/tuning tests and all nine real-service tests successfully**, plus both demos, Ruff, installed dependency compatibility, and runtime dependency audits. GitHub Actions checks Python 3.11/3.13 and a rebuilt Compose stack. All three jobs passed for the audited baseline, [0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953). These baseline checks predate the ownership fix described below.
 
@@ -231,4 +233,4 @@ Publish workload definitions, baselines, sample sizes, and results before making
 
 ## Documentation roadmap
 
-The quickstart, [classification tutorial](docs/experiments.md), [tuning guide](docs/tuning.md), [project audit/status](docs/project-status.md), and [historical validation report](docs/test-validation.md) are included. Conversation, monitoring, code-generation, shared-deployment, backup/restore, and operations guides remain to be written as those features are implemented. See [PLAN.md](PLAN.md#immediate-development-priorities) for the next work and completion gates.
+The quickstart, [classification tutorial](docs/experiments.md), [tuning guide](docs/tuning.md), [recovery validation guide](docs/recovery.md), [project audit/status](docs/project-status.md), and [historical validation report](docs/test-validation.md) are included. Conversation, monitoring, code-generation, shared-deployment, backup/restore, and operations guides remain to be written as those features are implemented. See [PLAN.md](PLAN.md#immediate-development-priorities) for the next work and completion gates.

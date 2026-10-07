@@ -110,7 +110,7 @@ $resultDirectory = Join-Path (Get-Location) ('artifacts/test-validation/' + [gui
 New-Item -ItemType Directory -Path $resultDirectory | Out-Null
 try {
     foreach ($iteration in 1..10) {
-        $testArguments = @('-q', '--durations=10', "--junitxml=$resultDirectory/iteration-$iteration.xml")
+        $testArguments = @('-q', '-m', 'not recovery', '--durations=10', "--junitxml=$resultDirectory/iteration-$iteration.xml")
         if ($iteration -eq 10) {
             $testArguments += @('--cov=ml_pipeline_pro', "--cov-report=html:$resultDirectory/coverage-html")
         }

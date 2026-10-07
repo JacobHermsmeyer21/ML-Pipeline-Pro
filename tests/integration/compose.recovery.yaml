@@ -1,0 +1,26 @@
+x-recovery: &recovery
+  image: ml-pipeline-pro:recovery
+  env_file: !override []
+  environment:
+    MLPP_ENVIRONMENT: test
+    MLPP_PROJECT_API_KEYS: "{}"
+    MLPP_MONGODB_DATABASE: mlpp_recovery
+    MLPP_WORKER_LEASE_SECONDS: "10"
+    MLPP_WORKER_MAX_ATTEMPTS: "2"
+
+services:
+  api:
+    <<: *recovery
+    ports: !override ["127.0.0.1:28000:8000"]
+  worker:
+    <<: *recovery
+    command: ["python", "/app/recovery_worker.py", "worker", "--loglevel=INFO", "--concurrency=1", "--queues=training,celery"]
+    volumes:
+      - ./tests/integration/recovery_worker.py:/app/recovery_worker.py:ro
+      - ./artifacts/recovery-validation/control:/recovery-control
+  scheduler:
+    <<: *recovery
+  mongo:
+    ports: !override ["127.0.0.1:47017:27017"]
+  redis:
+    ports: !override ["127.0.0.1:26379:6379"]

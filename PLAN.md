@@ -8,7 +8,7 @@ This is the implementation roadmap, updated October 6, 2026 against baseline `0e
 
 Milestones 1-3 have delivered a working local backend: a packaged FastAPI application, project-scoped dataset/model/experiment/version records, CPU PyTorch training, bounded serial Optuna tuning, explicit final test evaluation, and verified artifacts. Compose and CI are implemented. The audit reran 126 unit/API/training/tuning cases and all nine live-service integration cases successfully; baseline [CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953) also passed Python 3.11/3.13 checks and a rebuilt Compose stack.
 
-The full MVP remains incomplete. Conversation is the next feature milestone; monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). Process-loss and dependency-outage validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+The full MVP remains incomplete. Conversation is the next feature milestone; monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). The [serial recovery gate](docs/recovery.md) now covers physical worker loss and dependency outages through Beat-driven recovery. Concurrent-load and network-partition validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
 ## MVP boundaries
 
@@ -100,14 +100,14 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 
 ### 3. Automate bounded tuning
 
-**Status:** Initial bounded serial CPU scope and audited ownership fixes complete, with further recovery validation open. Optuna TPE uses typed ranges and trial/runtime limits. Reservations fix configurations/experiment IDs; tested replay reuses completed training and preserves deadlines. Selection uses validation metrics followed by final holdout evaluation, subject to budget. Cancellation is cooperative. Transactional parent fences and ten real-MongoDB boundary regressions address stale child claims and final evaluation persistence after parent ownership replacement. Physical worker loss/outage validation, parallel trials, and broader adapters remain later work.
+**Status:** Initial bounded serial CPU scope, audited ownership fixes, and controlled process-loss/outage validation complete. Optuna TPE uses typed ranges and trial/runtime limits. Reservations fix configurations/experiment IDs; tested replay reuses completed training and preserves deadlines. Selection uses validation metrics followed by final holdout evaluation, subject to budget. Cancellation is cooperative. Transactional parent fences and ten real-MongoDB boundary regressions address stale child claims and final evaluation persistence after parent ownership replacement. Ten isolated Compose recovery cases cover worker kills, final evaluation/persistence, attempt exhaustion, and MongoDB/Redis restarts. Concurrent-load validation, parallel trials, and broader adapters remain later work.
 
 - Integrate Optuna's Bayesian optimization sampler and validate parameter types, ranges, and objective direction.
 - Enforce trial count, runtime, concurrency, and resource limits in workers.
 - Persist successful, failed, and cancelled trials and preserve completed results after restart.
 - Implement cancellation, retry behavior, and best-trial selection with an explicit policy for invalid metrics.
 
-**Acceptance:** A job stops scheduling at its trial/search limits, records each trial, selects the best valid outcome, and honors cancellation. Runtime enforcement is cooperative with a hard task fallback, not an exact wall-clock guarantee. Recovery preserves completed training and deadlines, rejects stale parent/child writes, and is verified under actual process loss. Search uses validation metrics; final test evaluation happens after selection, or reports skipped budget explicitly. The process-loss/outage gates remain open.
+**Acceptance:** A job stops scheduling at its trial/search limits, records each trial, selects the best valid outcome, and honors cancellation. Runtime enforcement is cooperative with a hard task fallback, not an exact wall-clock guarantee. Recovery preserves completed training and deadlines, rejects stale parent/child writes, and is verified under actual process loss. Search uses validation metrics; final test evaluation happens after selection, or reports skipped budget explicitly. The controlled serial process-loss/outage gate is delivered; retain it in CI.
 
 ### 4. Add conversational workflows
 
@@ -158,16 +158,16 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 ## Immediate development priorities
 
 1. Keep transactional parent ownership fencing and its real-MongoDB boundary regressions passing; the audited stale-child-write bugs are fixed.
-2. Exercise worker termination/restart and dependency outages with scheduler-driven recovery, including final evaluation and attempt exhaustion.
-3. Define provider-independent conversation tool contracts using the implemented API schemas, project checks, and idempotency semantics.
+2. Keep the controlled worker-loss/dependency-outage recovery gate passing in CI, including final evaluation and attempt exhaustion. Concurrent load and network partitions remain prerequisites for parallel execution.
+3. Define provider-independent conversation tool contracts using the implemented API schemas, project checks, and idempotency semantics; this is the next development slice.
 4. Implement a small conversation slice with deterministic provider stubs, project-scoped dialogue/action evidence, missing-input handling, and grounded explanations; then add opt-in live evaluation.
-5. Proceed to monitoring, reviewed code generation, and shared-deployment requirements in milestones 5-7. Keep the current serial CPU limits until recovery gates pass.
+5. Proceed to monitoring, reviewed code generation, and shared-deployment requirements in milestones 5-7. Keep the current serial CPU limits.
 
 The [audit](docs/project-status.md#next-work-in-order) records the source evidence and unfinished infrastructure work. No delivery dates or quantitative completion percentage are assumed.
 
 ## Testing strategy
 
-**Implemented checks:** 129 unit/API/training/tuning cases and 20 opt-in real-service cases after the ownership/manifest recovery fixes. CI checks Python 3.11/3.13, lint/format, installed compatibility, runtime advisories, and rebuilt Compose workflows. The [ten-iteration report](docs/test-validation.md) preserves historical repeated functional validation. The following list is the target strategy; provider, monitoring, full-process-loss, load, restore, and generated-code isolation tests remain to be built.
+**Implemented checks:** 129 unit/API/training/tuning cases, 20 ordinary opt-in real-service cases, and ten separately enabled isolated worker/dependency recovery cases. CI checks Python 3.11/3.13, lint/format, installed compatibility, runtime advisories, rebuilt Compose workflows, and the recovery gate with uploaded evidence. The [ten-iteration report](docs/test-validation.md) preserves historical repeated functional validation. The following list is the target strategy; provider, monitoring, concurrent-load, network-partition, restore, and generated-code isolation tests remain to be built.
 
 - **Unit tests:** Schema validation, tuning budgets, objective selection, job transitions, authorization checks, and provider-independent tool dispatch.
 - **Integration tests:** Real MongoDB and Redis, queued worker execution, index behavior, restart recovery, cancellation, and artifact persistence.

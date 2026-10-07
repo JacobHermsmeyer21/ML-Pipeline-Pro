@@ -50,7 +50,10 @@ select = ["E", "F", "I", "UP", "B", "ASYNC"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
-markers = ["integration: requires real MongoDB and Redis (set MLPP_RUN_INTEGRATION=1)"]
+markers = [
+    "integration: requires real MongoDB and Redis (set MLPP_RUN_INTEGRATION=1)",
+    "recovery: stops services in a disposable Compose stack (set MLPP_RUN_RECOVERY_INTEGRATION=1)",
+]
 
 [tool.coverage.run]
 source = ["ml_pipeline_pro"]
