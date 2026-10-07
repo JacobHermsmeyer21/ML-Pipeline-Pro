@@ -10,6 +10,10 @@ There is no model provider, natural-language conversation endpoint, dialogue
 store, or durable action audit yet. See the [approved design](plans/2026-10-06-conversation-tools-plan.md)
 for scope and verification.
 
+The next [conversation workflow plan](plans/2026-10-06-conversation-workflows-plan.md)
+is awaiting review. It proposes an OpenAI adapter, project-scoped dialogue, and
+separately confirmed actions over these tools; that scope is not implemented.
+
 ## Try the contract without services
 
 ```powershell

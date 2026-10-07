@@ -138,7 +138,7 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 The [approved conversation tool slice](plans/2026-10-06-conversation-tools-plan.md)
 is delivered. Retain its schema, access, budget, retry, and evidence checks.
 
-1. **Add the conversational slice.** Configure the provider, persist project-scoped dialogue/action evidence, request missing inputs/budgets, and evaluate grounded responses and unauthorized/invalid actions.
+1. **Review the [conversation workflow plan](plans/2026-10-06-conversation-workflows-plan.md), then implement the approved scope.** The draft proposes an OpenAI provider, project-scoped dialogue/action evidence, missing-input handling, and separately confirmed actions. Implementation approval is pending.
 2. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
 3. **Implement milestone 6 code generation.** Provide validated supported snippets with provenance and review boundaries; define isolation before enabling execution.
 4. **Finish milestone 7 for shared deployment.** Identity/roles/TLS, authenticated services, immutable data/object storage, retention, restore tests, operational probes, deployment manifests, and onboarding.
