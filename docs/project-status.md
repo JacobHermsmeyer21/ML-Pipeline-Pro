@@ -2,9 +2,9 @@
 
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
-ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. Recovery ownership findings below are open engineering work even though the initial tuning workflow is delivered.
+ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. The baseline audit's recovery ownership bugs are now fixed; process-loss/outage validation and storage lifecycle work remain open.
 
-This audit reviewed the tracked application modules, examples, tests/fixtures, dependency manifest/lockfile, Docker/Compose configuration, CI, and documentation. It also checked the saved validation evidence and local demo manifests, ran the current suites/demos, inspected the running services, and probed ownership boundaries in a disposable MongoDB database. Application behavior was not changed by this documentation update.
+The baseline audit reviewed the tracked application modules, examples, tests/fixtures, dependency manifest/lockfile, Docker/Compose configuration, CI, and documentation. It also checked the saved validation evidence and local demo manifests, ran the baseline suites/demos, inspected the running services, and probed ownership boundaries in a disposable MongoDB database. That audit changed documentation only; subsequent application fixes and their checks are documented in [ownership fix validation](#ownership-fix-validation).
 
 ## Where development stands
 
@@ -12,7 +12,7 @@ This audit reviewed the tracked application modules, examples, tests/fixtures, d
 | --- | --- | --- |
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
-| 3. Bounded tuning | Initial serial TPE scope complete | Recovery ownership fixes, stronger failure/restart tests, later parallel dispatch |
+| 3. Bounded tuning | Initial serial TPE scope and transactional ownership fixes complete | Stronger failure/restart tests, later parallel dispatch |
 | 4. Conversational workflows | Not started; next feature milestone | Provider adapter, typed tools, dialogue/action records, grounded responses, evaluations |
 | 5. Monitoring and diagnosis | Not started | Observations, Prometheus/Grafana, drift/quality summaries, alert evidence |
 | 6. Reviewable code generation | Not started | Templates, validation/provenance, explicit review, optional isolated execution |
@@ -32,7 +32,7 @@ These states describe delivered scope, not a percentage estimate or a production
 | Experiment workflow | Idempotent submission, filtered/paginated reads, same-dataset validation comparison, artifact download, explicit version registration | No standalone cancel/delete/update API, inference server, deployment, or automatic promotion |
 | Tuning | Seeded Optuna TPE over learning rate/batch size/hidden units; maximized validation F1 or accuracy; persisted reservations/trials | 1-50 trials, 2-600 seconds overall, concurrency exactly 1; no arbitrary parameters or minimization |
 | Selection and evaluation | Test labels excluded from preprocessing/checkpoint/trial selection; only the selected tuning checkpoint receives final holdout metrics | Final evaluation can be skipped when budget expires; registration is then blocked |
-| Job reliability | Durable dispatch state, unique submission/trial identities, atomic parent claims, leases/heartbeats, bounded attempts, replay of saved training | Ownership gaps below; physical worker loss and full recovery have not been exercised end to end |
+| Job reliability | Durable dispatch state, unique submission/trial identities, atomic parent claims, transactional child ownership, leases/heartbeats, bounded attempts, replay of saved training | Physical worker loss and full recovery have not been exercised end to end |
 | Artifacts | Atomic writes under project/experiment/attempt directories; downloads verify hash and size | Local storage only; no cleanup, retention, backup, or remote storage adapter |
 | Project access | Required project header, project-scoped references, optional constant-time API-key checks; keys mandatory in production settings | Development without keys trusts caller-selected projects; no user identity, roles, or key lifecycle |
 | Local deployment | Non-root app image; API/worker/Beat/MongoDB/Redis; localhost ports; persistent volumes | Development configuration; CPU/memory/concurrency limits apply to the worker |
@@ -66,6 +66,10 @@ Indexes are created lazily for the APIs and explicitly in worker tasks. There ar
 ## Open audit findings
 
 ### 1. High priority: parent ownership does not fence every tuning child write
+
+**Status: fixed after the baseline audit.** The description and probe evidence below
+preserve the original finding. [Ownership fix validation](#ownership-fix-validation)
+documents the implementation and regression results.
 
 Existing experiment completion and tuning job updates check worker tokens, and the suites cover several stale-owner rejection cases. Two related boundaries still permit operations from a worker whose parent tuning lease has been replaced:
 
@@ -131,7 +135,7 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 
 ## Next work, in order
 
-1. **Correct the recovery ownership findings and add boundary regression tests.** Preserve the current serial limits until stale claims/final evaluation writes are rejected reliably.
+1. **Exercise process-loss and dependency-outage recovery.** Ownership fixes and transaction-boundary regressions are delivered. Preserve the current serial limits until the remaining recovery gates pass.
 2. **Start milestone 4 with a provider-independent tool contract.** Map experiment/tuning reads, comparison, submission, and cancellation onto existing schemas/project access; use deterministic provider stubs first.
 3. **Add the conversational slice.** Configure the provider, persist project-scoped dialogue/action evidence, request missing inputs/budgets, and evaluate grounded responses and unauthorized/invalid actions.
 4. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
@@ -139,7 +143,50 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 6. **Finish milestone 7 for shared deployment.** Identity/roles/TLS, authenticated services, immutable data/object storage, retention, restore tests, operational probes, deployment manifests, and onboarding.
 7. **Run the measurement plan.** Establish baselines and reproducible workload results before using the proposed improvement percentages.
 
-The next feature remains conversation; fixing recovery and measuring its behavior are prerequisites for expanding execution safely. The full release criteria remain in [PLAN.md](../PLAN.md#completion-criteria).
+The next feature remains conversation; completing recovery validation and measuring its behavior are prerequisites for expanding execution safely. The full release criteria remain in [PLAN.md](../PLAN.md#completion-criteria).
+
+## Ownership fix validation
+
+Tuning child insertion, claims, heartbeats, completion, final holdout persistence,
+and interrupted-child cleanup now use a MongoDB transaction. Each transaction
+increments an internal `ownership_revision` on the matching parent token before
+mutating the child. This parent write forces conflicts with takeover, cancellation,
+and terminal job updates; reading the token alone under snapshot isolation would
+leave the original race. Expired parent leases cannot authorize child writes.
+Cleanup without a token is allowed only for a failed/cancelled parent with no owner.
+Standalone experiment tasks cannot claim tuning children.
+
+Compose now initializes a single-node `mlpp` replica set for transaction support.
+Existing local volumes are retained on recreation. Host clients need
+`?directConnection=true` to connect through the published port while the replica
+set advertises `mongo:27017`. External databases must be replica sets or sharded
+clusters to run tuning.
+
+Ten new integration regressions establish an old-owner transaction snapshot, pause
+before its parent/child write, replace the parent owner, and resume the old worker.
+Each rejected mutation leaves child state unchanged, preserves the original
+deadline, and allows the replacement to proceed. These tests cover both audited
+child claims and final test persistence, plus insertion, completion, heartbeat,
+and cleanup. They use real MongoDB; the in-memory suite also follows the stricter
+repository contracts. Physical worker termination and real dependency outage
+coverage remain separate open work.
+
+The execution-boundary tests also exposed a manifest overwrite during final
+evaluation: training and evaluation used the same attempt directory, so an
+uncommitted evaluated manifest invalidated the recorded trial hash. Evaluation
+now writes under a separate `WORKER_TOKEN-evaluation` directory. The checkpoint
+and trial manifest remain intact until the evaluated references are committed;
+recovery can retry evaluation after either storage failure or rejected ownership.
+A real-MongoDB replay case interrupts final persistence and verifies the original
+artifacts remain readable, training is reused, and the deadline is preserved.
+
+Validation on October 6, 2026: **129 local tests and all 20 real-service cases
+passed**, with no selected-case skips. The integration run used a rebuilt isolated
+five-service Compose stack and included queued training/tuning, active cancellation,
+verified downloads, and model registration. Ruff lint/format, all 86 installed
+packages' dependency compatibility, and 56 local documentation links/anchors
+also passed. JUnit reports are retained in ignored
+`artifacts/bugfix-validation/`. The existing TestClient deprecation warning remains.
 
 ## Reading a local tuning manifest
 

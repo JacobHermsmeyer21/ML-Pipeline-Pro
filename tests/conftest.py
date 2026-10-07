@@ -118,7 +118,8 @@ def experiment_body(tracking_client, dataset_body):
 
 
 @pytest.fixture
-def tuning_store(app):
-    store = MemoryTuningStore()
-    app.dependency_overrides[get_tuning_store] = lambda: store
-    return store
+def tuning_store(app, store):
+    tuning = MemoryTuningStore()
+    store.experiments.tuning_jobs = tuning.jobs
+    app.dependency_overrides[get_tuning_store] = lambda: tuning
+    return tuning

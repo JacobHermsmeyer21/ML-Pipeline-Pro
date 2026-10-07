@@ -2,7 +2,7 @@
 
 ML Pipeline Pro currently provides a local REST API and CPU workers for reproducible classification experiments and bounded hyperparameter tuning. The broader product will add conversational pipeline management, monitoring, and reviewable Python code generation.
 
-**Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit also identified ownership gaps during tuning recovery that need correction before expanding worker concurrency.
+**Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit's tuning recovery ownership bugs are fixed with transactional parent/child writes; process-loss and outage validation remain before expanding worker concurrency.
 
 Read the [project audit and development status](docs/project-status.md) for verified capabilities, open findings, and immediate priorities. [PLAN.md](PLAN.md) defines the remaining milestones and acceptance criteria.
 
@@ -33,7 +33,7 @@ The supplied concept describes workflow pain points from 2025. This project will
 | Training | CPU PyTorch MLP classification, NumPy | Additional adapters; TensorFlow deferred |
 | Metadata | MongoDB with async PyMongo; six domain collections | Conversations, action audit, monitoring summaries/alerts |
 | Optimization | Seeded serial Optuna TPE | Additional search parameters and parallel trials |
-| Background work | Celery/Redis and scheduled recovery | Stronger recovery fencing and operational checks |
+| Background work | Celery/Redis, scheduled recovery, transactional tuning ownership | Process-loss/outage validation and operational checks |
 | Data and artifacts | Local CSV references, atomic local artifact writes and verification | Immutable dataset storage, object storage, retention |
 | Diagnostics | JSON logs, redaction, dependency health endpoints | Prometheus/Grafana and worker/queue monitoring |
 | Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions | AI evaluations, process-loss/load/restore checks |
@@ -113,6 +113,8 @@ Readiness checks MongoDB/Redis connectivity. Experiment status and heartbeat tim
 
 Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. Compose explicitly sets `MLPP_ENVIRONMENT=development` and container connection/storage paths; an `.env` environment value does not override these settings. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. Shared deployment still needs the controls listed in the [audit](docs/project-status.md#deployment-and-operational-gaps). Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
 
+Tuning requires MongoDB transactions. Compose initializes a single-node `mlpp` replica set and waits for a writable primary. When upgrading an existing local stack, run `docker compose up --build --wait --wait-timeout 300`; the existing MongoDB volume is retained. Host connections to this container must use `mongodb://127.0.0.1:27017/?directConnection=true`, including an existing `.env`, because the replica set advertises its container hostname. External MongoDB deployments must support transactions through a replica set or sharded cluster; standalone MongoDB can still serve ordinary experiments but cannot execute tuning.
+
 The checked-in CSV is included in the image. Custom data must be mounted at the same relative path under the dataset root for the API and worker. Registration records a hash and reference; it does not upload or copy the source file.
 
 ### Develop the API on your host
@@ -144,7 +146,7 @@ uv run --locked --extra training pytest -m "not integration" --cov
 uv pip check
 ```
 
-For all nine integration tests, start the full stack, then enable both flags:
+For all integration tests, start the full stack, then enable both flags:
 
 ```powershell
 docker compose up --build --wait --wait-timeout 300
@@ -160,7 +162,9 @@ try {
 
 On macOS/Linux use `MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 uv run --locked --extra training pytest -m integration`. Omitting the worker flag skips three queued workflow cases. Omitting the training extra can skip real-training unit modules and prevents the direct tuning-recovery integration case from running successfully. Tests delete their own generated metadata; queued test artifacts remain in the shared artifact volume. See the [validation report](docs/test-validation.md#repeat-the-full-suite) for an isolated stack and endpoint overrides.
 
-The October 6 audit reran **126 unit/API/training/tuning tests and all nine real-service tests successfully**, plus both demos, Ruff, installed dependency compatibility, and runtime dependency audits. GitHub Actions checks Python 3.11/3.13 and a rebuilt Compose stack. All three jobs passed for the latest audited baseline, [0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953). These passing checks do not cover the newly identified [ownership gaps](docs/project-status.md#open-audit-findings).
+The October 6 baseline audit reran **126 unit/API/training/tuning tests and all nine real-service tests successfully**, plus both demos, Ruff, installed dependency compatibility, and runtime dependency audits. GitHub Actions checks Python 3.11/3.13 and a rebuilt Compose stack. All three jobs passed for the audited baseline, [0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953). These baseline checks predate the ownership fix described below.
+
+The subsequent ownership and manifest recovery fixes pass **129 local tests and 20 real-service tests** against a rebuilt isolated Compose stack. These include ten real-MongoDB cases that transfer parent ownership between a transaction's snapshot read and child mutation, plus interrupted final-evaluation persistence. See the [updated audit](docs/project-status.md#ownership-fix-validation) for validation of the fixed behavior.
 
 The [ten-iteration validation report](docs/test-validation.md) records 1,350 passing test executions, including 90 real-service checks, with no failures or skips. It includes measured coverage, saved evidence locations, and commands for repeating the suite against an isolated test stack.
 
@@ -176,6 +180,7 @@ src/ml_pipeline_pro/
   errors.py         # Consistent API errors
   logging.py        # JSON request logs and credential redaction
   repositories.py   # Record schema and project-scoped repository contract
+  ownership.py      # Transactional parent fences for tuning child writes
   schemas.py        # Dataset, model, experiment, and model version schemas
   api.py            # Metadata, experiment, comparison, and artifact endpoints
   access.py         # Project selection and optional API key enforcement
@@ -201,7 +206,7 @@ compose.yaml        # API and local dependencies
 
 ## Reliability and planned execution boundaries
 
-Today the backend validates typed requests, enforces project scoping and optional project keys, records hashes/configuration/dependencies, and bounds serial workers. Ownership fencing is implemented for many writes but still has the [audit findings](docs/project-status.md#open-audit-findings) to resolve. The following requirements for the future assistant and generated-code execution remain planned:
+Today the backend validates typed requests, enforces project scoping and optional project keys, records hashes/configuration/dependencies, and bounds serial workers. Tuning child writes now check and write the owning parent within the same MongoDB transaction, rejecting stale claims and results across collections. Further recovery and deployment work remains in the [audit](docs/project-status.md#open-audit-findings). The following requirements for the future assistant and generated-code execution remain planned:
 
 - Validate AI-generated actions against typed schemas, authorized tools, and project access permissions.
 - Require engineer approval for generated code execution and model promotion.

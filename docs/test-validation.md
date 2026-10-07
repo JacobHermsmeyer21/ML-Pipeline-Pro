@@ -104,7 +104,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Validation stack failed to start.' }
 $env:MLPP_RUN_INTEGRATION = '1'
 $env:MLPP_RUN_WORKER_INTEGRATION = '1'
 $env:MLPP_TEST_API_BASE_URL = 'http://127.0.0.1:18000/api/v1'
-$env:MLPP_TEST_MONGODB_URI = 'mongodb://127.0.0.1:37017'
+$env:MLPP_TEST_MONGODB_URI = 'mongodb://127.0.0.1:37017/?directConnection=true'
 $env:MLPP_TEST_REDIS_URL = 'redis://127.0.0.1:16379/0'
 $resultDirectory = Join-Path (Get-Location) ('artifacts/test-validation/' + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $resultDirectory | Out-Null

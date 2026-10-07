@@ -152,6 +152,8 @@ async def execute_tuning(tuning, tracking, project_id: str, job_id: str, setting
                     trial = await tuning.trials.get(project_id, reservation.trial_id)
             if trial.status in {"queued", "running"}:
                 trial = await tuning.trials.claim(project_id, trial.id, token)
+                if trial is None:
+                    raise OwnershipLost()
                 experiment = await tracking.experiments.get(project_id, trial.experiment_id)
                 if experiment is None:
                     record = ExperimentRecord(
@@ -186,6 +188,7 @@ async def execute_tuning(tuning, tracking, project_id: str, job_id: str, setting
                     )
                     if result == "ownership_lost":
                         raise OwnershipLost()
+                    _check_owner(await tuning.jobs.get(project_id, job_id), token, control)
                     experiment = await tracking.experiments.get(project_id, experiment.id)
                 if experiment.status not in {"succeeded", "failed", "cancelled"}:
                     raise TrainingError("A tuning trial could not obtain its experiment")
@@ -262,19 +265,21 @@ async def execute_tuning(tuning, tracking, project_id: str, job_id: str, setting
             try:
                 control.check()
                 evaluated = await asyncio.to_thread(
-                    evaluate_checkpoint, best, dataset, token, settings, control
+                    evaluate_checkpoint, best, dataset, f"{token}-evaluation", settings, control
                 )
                 _check_owner(await tuning.jobs.get(project_id, job_id), token, control)
                 if not await tracking.experiments.finish_tuning_test(
                     project_id,
                     best.id,
                     job_id,
+                    token,
                     values={
                         "metrics": evaluated.metrics,
                         "artifacts": [artifact.model_dump() for artifact in evaluated.artifacts],
                         "dependencies": evaluated.dependencies,
                     },
                 ):
+                    _check_owner(await tuning.jobs.get(project_id, job_id), token, control)
                     refreshed = await tracking.experiments.get(project_id, best.id)
                     if not refreshed.test_evaluated:
                         raise TrainingError("Final test evaluation could not be saved")
@@ -373,6 +378,6 @@ async def _stop_pending(
         current = await tuning.jobs.get(project_id, job_id)
         if current is None or current.worker_token != token:
             return False
-    await tuning.trials.stop_incomplete(project_id, job_id, status, reason, token)
-    await tracking.experiments.stop_for_tuning(project_id, job_id, status, reason, token)
-    return True
+    if not await tuning.trials.stop_incomplete(project_id, job_id, status, reason, token):
+        return False
+    return await tracking.experiments.stop_for_tuning(project_id, job_id, status, reason, token)

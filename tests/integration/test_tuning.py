@@ -9,6 +9,7 @@ import httpx
 import pytest
 from pymongo.errors import AutoReconnect, DuplicateKeyError
 
+from ml_pipeline_pro.artifacts import read_artifact
 from ml_pipeline_pro.connections import open_connections
 from ml_pipeline_pro.datasets import load_dataset
 from ml_pipeline_pro.schemas import DatasetCreate, DatasetRecord, ModelRecord, TrainingConfig
@@ -76,6 +77,19 @@ def test_tuning_indexes_claim_deadlines_and_cancellation_fence():
                 assert resumed.started_at == claimed.started_at
                 assert resumed.deadline_at == claimed.deadline_at
                 assert resumed.scheduled_trials == 1
+                trial = await store.trials.insert(
+                    TrialRecord(
+                        project_id=project_id,
+                        tuning_job_id=job.id,
+                        number=0,
+                        experiment_id="experiment",
+                        parameters={},
+                        config=TrainingConfig(),
+                        worker_token="resumed",
+                    )
+                )
+                with pytest.raises(DuplicateKeyError):
+                    await store.trials.insert(trial.model_copy(update={"id": str(uuid4())}))
                 cancelled = await store.jobs.request_cancel(project_id, job.id)
                 assert cancelled.status == "cancel_requested"
                 assert not await store.jobs.reserve(
@@ -85,25 +99,16 @@ def test_tuning_indexes_claim_deadlines_and_cancellation_fence():
                     project_id, job.id, "resumed", values={"status": "succeeded"}
                 )
                 assert (await store.jobs.get(project_id, job.id)).status == "cancelled"
-                trial = await store.trials.insert(
-                    TrialRecord(
-                        project_id=project_id,
-                        tuning_job_id=job.id,
-                        number=0,
-                        experiment_id="experiment",
-                        parameters={},
-                        config=TrainingConfig(),
-                    )
-                )
-                with pytest.raises(DuplicateKeyError):
-                    await store.trials.insert(trial.model_copy(update={"id": str(uuid4())}))
             finally:
                 await connections.mongo.drop_database(settings.mongodb_database)
 
     asyncio.run(run())
 
 
-def test_real_tuning_recovery_preserves_completed_training_and_original_deadline(tmp_path):
+@pytest.mark.parametrize("boundary", ["trial_commit", "final_commit"])
+def test_real_tuning_recovery_preserves_completed_training_and_original_deadline(
+    tmp_path, boundary
+):
     async def run():
         settings = integration_settings(
             mongodb_database=f"mlpp_tuning_{uuid4().hex}", artifact_root=tmp_path
@@ -146,22 +151,34 @@ def test_real_tuning_recovery_preserves_completed_training_and_original_deadline
                         search_space={"learning_rate": {"low": 0.01, "high": 0.05}},
                     )
                 )
-                finish = tuning.trials.finish
+                repository, method = (
+                    (tuning.trials, "finish")
+                    if boundary == "trial_commit"
+                    else (tracking.experiments, "finish_tuning_test")
+                )
+                finish = getattr(repository, method)
                 interrupted = False
 
                 async def crash_after_training(*args, **kwargs):
                     nonlocal interrupted
                     if not interrupted:
                         interrupted = True
-                        raise AutoReconnect("Simulated storage outage after training completed")
+                        raise AutoReconnect("Simulated storage outage before result persistence")
                     return await finish(*args, **kwargs)
 
-                tuning.trials.finish = crash_after_training
+                setattr(repository, method, crash_after_training)
                 with pytest.raises(AutoReconnect):
                     await execute_tuning(tuning, tracking, "demo", job.id, settings)
                 before = await tuning.jobs.get("demo", job.id)
-                experiment_id = before.reservation.experiment_id
-                assert (await tracking.experiments.get("demo", experiment_id)).status == "succeeded"
+                experiment_id = (
+                    before.reservation.experiment_id
+                    if before.reservation is not None
+                    else before.best_experiment_id
+                )
+                saved = await tracking.experiments.get("demo", experiment_id)
+                assert saved.status == "succeeded" and not saved.test_evaluated
+                for artifact in saved.artifacts:
+                    assert read_artifact(artifact, "demo", experiment_id, settings)
                 assert experiment_id not in {
                     record.id for record in await tracking.experiments.pending_recovery()
                 }

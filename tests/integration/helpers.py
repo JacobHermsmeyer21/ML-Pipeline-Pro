@@ -7,7 +7,9 @@ from ml_pipeline_pro.config import Settings
 
 def integration_settings(**overrides) -> Settings:
     values = {
-        "mongodb_uri": os.getenv("MLPP_TEST_MONGODB_URI", "mongodb://127.0.0.1:27017"),
+        "mongodb_uri": os.getenv(
+            "MLPP_TEST_MONGODB_URI", "mongodb://127.0.0.1:27017/?directConnection=true"
+        ),
         "redis_url": os.getenv("MLPP_TEST_REDIS_URL", "redis://127.0.0.1:6379/0"),
         **overrides,
     }

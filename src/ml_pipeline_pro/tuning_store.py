@@ -6,7 +6,9 @@ from datetime import UTC, datetime, timedelta
 from fastapi import Request
 from pymongo import ASCENDING, DESCENDING, ReturnDocument
 
+from ml_pipeline_pro.ownership import tuning_write
 from ml_pipeline_pro.repositories import MongoRepository
+from ml_pipeline_pro.training_control import OwnershipLost
 from ml_pipeline_pro.tuning_schemas import TrialRecord, TrialReservation, TuningRecord
 
 
@@ -249,6 +251,23 @@ class TuningJobRepository(MongoRepository[TuningRecord]):
 
 
 class TrialRepository(MongoRepository[TrialRecord]):
+    async def insert(self, record: TrialRecord) -> TrialRecord:
+        if record.worker_token is None:
+            raise OwnershipLost()
+
+        async def write(session):
+            document = record.model_dump()
+            document["_id"] = document.pop("id")
+            await self.collection.insert_one(document, session=session)
+            return record
+
+        result = await tuning_write(
+            self.database, record.project_id, record.tuning_job_id, record.worker_token, write
+        )
+        if result is None:
+            raise OwnershipLost()
+        return result
+
     async def for_job(self, project_id: str, job_id: str, *, limit: int = 50, offset: int = 0):
         cursor = (
             self.collection.find({"project_id": project_id, "tuning_job_id": job_id})
@@ -259,35 +278,67 @@ class TrialRepository(MongoRepository[TrialRecord]):
         return [self._decode(document) async for document in cursor]
 
     async def claim(self, project_id: str, trial_id: str, token: str):
-        now = datetime.now(UTC)
-        document = await self.collection.find_one_and_update(
-            {"_id": trial_id, "project_id": project_id, "status": {"$in": ["queued", "running"]}},
-            {
-                "$set": {"status": "running", "worker_token": token, "updated_at": now},
-            },
-            return_document=ReturnDocument.AFTER,
-        )
-        return self._decode(document) if document else await self.get(project_id, trial_id)
+        trial = await self.get(project_id, trial_id)
+        if trial is None:
+            return None
+
+        async def write(session):
+            document = await self.collection.find_one_and_update(
+                {
+                    "_id": trial_id,
+                    "project_id": project_id,
+                    "status": {"$in": ["queued", "running"]},
+                },
+                {
+                    "$set": {
+                        "status": "running",
+                        "worker_token": token,
+                        "updated_at": datetime.now(UTC),
+                    }
+                },
+                return_document=ReturnDocument.AFTER,
+                session=session,
+            )
+            return self._decode(document) if document else None
+
+        return await tuning_write(self.database, project_id, trial.tuning_job_id, token, write)
 
     async def finish(self, project_id: str, trial_id: str, token: str, *, values: dict) -> bool:
         if values.get("status") not in {"succeeded", "failed", "cancelled"}:
             raise ValueError("Trial completion requires a terminal status")
-        result = await self.collection.update_one(
-            {"_id": trial_id, "project_id": project_id, "status": "running", "worker_token": token},
-            {
-                "$set": {
-                    **values,
-                    "completed_at": datetime.now(UTC),
-                    "worker_token": None,
-                    "updated_at": datetime.now(UTC),
-                }
-            },
+        trial = await self.get(project_id, trial_id)
+        if trial is None:
+            return False
+
+        async def write(session):
+            result = await self.collection.update_one(
+                {
+                    "_id": trial_id,
+                    "project_id": project_id,
+                    "status": "running",
+                    "worker_token": token,
+                },
+                {
+                    "$set": {
+                        **values,
+                        "completed_at": datetime.now(UTC),
+                        "worker_token": None,
+                        "updated_at": datetime.now(UTC),
+                    }
+                },
+                session=session,
+            )
+            return result.matched_count == 1
+
+        return bool(
+            await tuning_write(self.database, project_id, trial.tuning_job_id, token, write)
         )
-        return result.matched_count == 1
 
     async def stop_incomplete(
         self, project_id: str, job_id: str, status: str, reason: str, token: str | None = None
-    ) -> None:
+    ) -> bool:
+        if status not in {"failed", "cancelled"}:
+            raise ValueError("Interrupted tuning trials must fail or be cancelled")
         query = {
             "project_id": project_id,
             "tuning_job_id": job_id,
@@ -295,16 +346,27 @@ class TrialRepository(MongoRepository[TrialRecord]):
         }
         if token is not None:
             query["worker_token"] = token
-        await self.collection.update_many(
-            query,
-            {
-                "$set": {
-                    "status": status,
-                    "error_summary": reason,
-                    "completed_at": datetime.now(UTC),
-                    "worker_token": None,
-                }
-            },
+
+        async def write(session):
+            await self.collection.update_many(
+                query,
+                {
+                    "$set": {
+                        "status": status,
+                        "error_summary": reason,
+                        "completed_at": datetime.now(UTC),
+                        "worker_token": None,
+                        "updated_at": datetime.now(UTC),
+                    }
+                },
+                session=session,
+            )
+            return True
+
+        return bool(
+            await tuning_write(
+                self.database, project_id, job_id, token, write, terminal=token is None
+            )
         )
 
 

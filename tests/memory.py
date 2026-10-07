@@ -4,12 +4,30 @@ from datetime import UTC, datetime, timedelta
 
 from pymongo.errors import DuplicateKeyError
 
+from ml_pipeline_pro.training_control import OwnershipLost
+
 
 class MemoryRepository:
     def __init__(self, unique_fields=()) -> None:
         self.records = {}
         self.unique_fields = unique_fields
         self.error = None
+
+    def _owns_tuning(self, project_id, job_id, token, *, terminal=False):
+        jobs = getattr(self, "tuning_jobs", None)
+        job = jobs.records.get(job_id) if jobs is not None else None
+        return bool(
+            job
+            and job.project_id == project_id
+            and job.worker_token == token
+            and (
+                job.status in {"failed", "cancelled"}
+                if terminal
+                else job.status in {"running", "cancel_requested"}
+                and token is not None
+                and job.lease_expires_at > datetime.now(UTC)
+            )
+        )
 
     async def insert(self, record):
         if self.error:
@@ -50,6 +68,14 @@ class MemoryVersions(MemoryRepository):
 
 
 class MemoryExperiments(MemoryRepository):
+    async def insert(self, record):
+        job_id = getattr(record, "tuning_job_id", None)
+        if job_id is not None and not self._owns_tuning(
+            record.project_id, job_id, record.worker_token
+        ):
+            raise OwnershipLost()
+        return await super().insert(record)
+
     async def by_submission(self, project_id, submission_key):
         return next(
             (
@@ -73,7 +99,11 @@ class MemoryExperiments(MemoryRepository):
         if (
             record is None
             or record.project_id != project_id
-            or (tuning_job_id is not None and record.tuning_job_id != tuning_job_id)
+            or record.tuning_job_id != tuning_job_id
+            or (
+                tuning_job_id is not None
+                and not self._owns_tuning(project_id, tuning_job_id, token)
+            )
         ):
             return None
         if record.status != "queued" and not (
@@ -100,6 +130,10 @@ class MemoryExperiments(MemoryRepository):
             or record.project_id != project_id
             or record.worker_token != token
             or record.status != "running"
+            or (
+                record.tuning_job_id is not None
+                and not self._owns_tuning(project_id, record.tuning_job_id, token)
+            )
         ):
             return False
         record.heartbeat_at = datetime.now(UTC)
@@ -113,6 +147,10 @@ class MemoryExperiments(MemoryRepository):
             or record.project_id != project_id
             or record.worker_token != token
             or record.status != "running"
+            or (
+                record.tuning_job_id is not None
+                and not self._owns_tuning(project_id, record.tuning_job_id, token)
+            )
         ):
             return False
         self.records[experiment_id] = type(record).model_validate(
@@ -136,7 +174,7 @@ class MemoryExperiments(MemoryRepository):
         ]
         return filtered[offset : offset + limit]
 
-    async def finish_tuning_test(self, project_id, experiment_id, job_id, *, values):
+    async def finish_tuning_test(self, project_id, experiment_id, job_id, token, *, values):
         record = self.records.get(experiment_id)
         if (
             record is None
@@ -144,6 +182,7 @@ class MemoryExperiments(MemoryRepository):
             or record.tuning_job_id != job_id
             or record.status != "succeeded"
             or record.test_evaluated
+            or not self._owns_tuning(project_id, job_id, token)
         ):
             return False
         self.records[experiment_id] = type(record).model_validate(
@@ -152,6 +191,8 @@ class MemoryExperiments(MemoryRepository):
         return True
 
     async def stop_for_tuning(self, project_id, job_id, status, reason, token=None):
+        if not self._owns_tuning(project_id, job_id, token, terminal=token is None):
+            return False
         for record in self.records.values():
             if (
                 record.project_id == project_id
@@ -164,6 +205,7 @@ class MemoryExperiments(MemoryRepository):
                 record.completed_at = datetime.now(UTC)
                 record.worker_token = None
                 record.lease_expires_at = None
+        return True
 
 
 class FakePublisher:
@@ -311,6 +353,11 @@ class MemoryTuningJobs(MemoryExperiments):
 
 
 class MemoryTrials(MemoryRepository):
+    async def insert(self, record):
+        if not self._owns_tuning(record.project_id, record.tuning_job_id, record.worker_token):
+            raise OwnershipLost()
+        return await super().insert(record)
+
     async def for_job(self, project_id, job_id, *, limit=50, offset=0):
         records = [
             record.model_copy(deep=True)
@@ -322,9 +369,15 @@ class MemoryTrials(MemoryRepository):
 
     async def claim(self, project_id, trial_id, token):
         record = self.records.get(trial_id)
-        if record and record.project_id == project_id and record.status in {"queued", "running"}:
-            record.status = "running"
-            record.worker_token = token
+        if (
+            record is None
+            or record.project_id != project_id
+            or record.status not in {"queued", "running"}
+            or not self._owns_tuning(project_id, record.tuning_job_id, token)
+        ):
+            return None
+        record.status = "running"
+        record.worker_token = token
         return await self.get(project_id, trial_id)
 
     async def finish(self, project_id, trial_id, token, *, values):
@@ -334,6 +387,7 @@ class MemoryTrials(MemoryRepository):
             or record.project_id != project_id
             or record.worker_token != token
             or record.status != "running"
+            or not self._owns_tuning(project_id, record.tuning_job_id, token)
         ):
             return False
         self.records[trial_id] = type(record).model_validate(
@@ -347,6 +401,8 @@ class MemoryTrials(MemoryRepository):
         return True
 
     async def stop_incomplete(self, project_id, job_id, status, reason, token=None):
+        if not self._owns_tuning(project_id, job_id, token, terminal=token is None):
+            return False
         for record in self.records.values():
             if (
                 record.project_id == project_id
@@ -358,9 +414,11 @@ class MemoryTrials(MemoryRepository):
                 record.error_summary = reason
                 record.worker_token = None
                 record.completed_at = datetime.now(UTC)
+        return True
 
 
 class MemoryTuningStore:
     def __init__(self):
         self.jobs = MemoryTuningJobs(("project_id", "submission_key"))
         self.trials = MemoryTrials(("project_id", "tuning_job_id", "number"))
+        self.trials.tuning_jobs = self.jobs

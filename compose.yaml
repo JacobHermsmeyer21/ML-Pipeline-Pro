@@ -7,7 +7,7 @@ x-app: &app
   environment:
     MLPP_ENVIRONMENT: development
     MLPP_LOG_LEVEL: ${MLPP_LOG_LEVEL:-INFO}
-    MLPP_MONGODB_URI: mongodb://mongo:27017
+    MLPP_MONGODB_URI: mongodb://mongo:27017/?directConnection=true
     MLPP_MONGODB_DATABASE: ${MLPP_MONGODB_DATABASE:-ml_pipeline_pro}
     MLPP_REDIS_URL: redis://redis:6379/0
     MLPP_DEPENDENCY_TIMEOUT_SECONDS: ${MLPP_DEPENDENCY_TIMEOUT_SECONDS:-2}
@@ -45,12 +45,18 @@ services:
 
   mongo:
     image: mongo:8.0
+    command: ["mongod", "--replSet", "mlpp", "--bind_ip_all"]
     ports:
       - "127.0.0.1:27017:27017"
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "quit(db.adminCommand({ping: 1}).ok ? 0 : 1)"]
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "try { rs.status(); } catch (e) { if (e.code !== 94) throw e; rs.initiate({_id: 'mlpp', members: [{_id: 0, host: 'mongo:27017'}]}); } quit(db.hello().isWritablePrimary ? 0 : 1)"
       interval: 5s
       timeout: 5s
       retries: 10

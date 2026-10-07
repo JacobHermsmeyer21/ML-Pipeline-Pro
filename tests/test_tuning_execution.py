@@ -374,7 +374,6 @@ def test_exhausted_recovery_stops_pending_trials_without_starting_training(
         job = tuning.jobs.records[job_id]
         job.attempts = settings.worker_max_attempts
         job.scheduled_trials = 1
-        job.lease_expires_at = datetime.now(UTC) - timedelta(seconds=1)
         await tuning.trials.insert(
             TrialRecord(
                 project_id="demo",
@@ -398,6 +397,7 @@ def test_exhausted_recovery_stops_pending_trials_without_starting_training(
                 worker_token="old",
             )
         )
+        job.lease_expires_at = datetime.now(UTC) - timedelta(seconds=1)
 
     asyncio.run(prepare())
 
@@ -427,3 +427,40 @@ def test_stale_worker_failure_does_not_close_replacement_worker_trials(job_conte
     assert tuning.jobs.records[job_id].status == "running"
     assert next(iter(tuning.trials.records.values())).status == "running"
     assert next(iter(tuning.trials.records.values())).worker_token == "replacement"
+
+
+@pytest.mark.parametrize("boundary", ["trial_claim", "experiment_claim", "final_test"])
+def test_rejected_child_write_returns_ownership_lost_and_can_be_recovered(
+    job_context, monkeypatch, boundary
+):
+    tuning, tracking, _ = job_context[2:]
+    repository, method = {
+        "trial_claim": (tuning.trials, "claim"),
+        "experiment_claim": (tracking.experiments, "claim"),
+        "final_test": (tracking.experiments, "finish_tuning_test"),
+    }[boundary]
+    original = getattr(repository, method)
+    interrupted = False
+    job_id = create(job_context, trials=1)
+
+    async def replace_before_write(*args, **kwargs):
+        nonlocal interrupted
+        if not interrupted:
+            interrupted = True
+            tuning.jobs.records[job_id].worker_token = "replacement"
+        return await original(*args, **kwargs)
+
+    monkeypatch.setattr(repository, method, replace_before_write)
+    assert run(job_context, job_id) == "ownership_lost"
+    job = tuning.jobs.records[job_id]
+    assert job.status == "running" and job.error_summary is None
+    assert not any(
+        experiment.test_evaluated for experiment in tracking.experiments.records.values()
+    )
+    deadline = job.deadline_at
+    job.lease_expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    assert run(job_context, job_id) == "succeeded"
+    recovered = tuning.jobs.records[job_id]
+    assert recovered.deadline_at == deadline
+    assert recovered.scheduled_trials == recovered.completed_trials == 1
+    assert recovered.final_evaluation == "succeeded"

@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
-    mongodb_uri: SecretStr = SecretStr("mongodb://127.0.0.1:27017")
+    mongodb_uri: SecretStr = SecretStr("mongodb://127.0.0.1:27017/?directConnection=true")
     mongodb_database: str = Field(
         default="ml_pipeline_pro", min_length=1, max_length=63, pattern=r"^[a-zA-Z0-9_-]+$"
     )

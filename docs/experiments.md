@@ -111,9 +111,9 @@ dispatch returns `503` with the persisted experiment ID. The scheduler retries
 undispatched jobs and queued jobs without progress after 60 seconds. Workers
 atomically claim a job and renew a 30-second ownership lease. Expired leases are
 recovered; repeated worker losses stop after three attempts by default. A stale
-worker token is rejected by normal experiment completion writes. The audit found
-separate [tuning child-ownership gaps](project-status.md#open-audit-findings);
-do not assume every recovery write has equivalent protection yet.
+worker token is rejected by normal experiment completion writes. Tuning child
+writes also check parent ownership in a MongoDB transaction; Compose initializes
+the required replica set. See the [ownership fix](project-status.md#ownership-fix-validation).
 
 The worker rechecks the dataset hash before training. Preprocessing statistics
 come only from training rows. It trains a small CPU PyTorch MLP and selects the
@@ -201,15 +201,16 @@ try {
 Install host test dependencies with `uv sync --locked --extra training` first.
 These tests check real indexes, atomic claims, lease/replay recovery, Redis
 dispatch, training, artifacts, version registration, tuning, and active
-cancellation. Both flags are needed to run all nine integration cases; the worker
-flag enables three queued workflow cases. The six remaining cases require
-MongoDB/Redis, and direct tuning recovery also needs the host training extra.
+cancellation. Both flags are needed to run all integration cases; the worker
+flag enables three queued workflow cases. The other cases require MongoDB/Redis,
+including ten parent/child ownership regressions against real transactions.
+Direct tuning recovery also needs the host training extra.
 
 The October 6 audit reran 126 unit/API/training/tuning cases and all nine
 integration cases successfully. Baseline [CI for 0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953)
 passed on Python 3.11/3.13 and a rebuilt Compose stack. Existing recovery tests
-simulate errors/expired leases; physical worker termination and the new ownership
-findings need additional coverage. See the [audit](project-status.md#validation-evidence)
+simulate errors/expired leases; physical worker termination needs additional
+coverage. The ownership races now have [transaction-boundary regression coverage](project-status.md#ownership-fix-validation). See the [audit](project-status.md#validation-evidence)
 and [historical ten-iteration report](test-validation.md). The latter includes
 isolated ports and `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
 `MLPP_TEST_REDIS_URL` overrides.

@@ -111,6 +111,7 @@ class TuningRecord(TuningResult):
     lease_expires_at: AwareDatetime | None = None
     last_dispatch_at: AwareDatetime | None = None
     reservation: TrialReservation | None = None
+    ownership_revision: int = 0
 
 
 class TrialResult(Record):

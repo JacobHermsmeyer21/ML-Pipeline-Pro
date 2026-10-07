@@ -33,6 +33,7 @@ class MongoRepository(Generic[RecordT]):
     def __init__(
         self, database: AsyncDatabase, collection_name: str, record_type: type[RecordT]
     ) -> None:
+        self.database = database
         self.collection = database.get_collection(collection_name)
         self.record_type = record_type
 

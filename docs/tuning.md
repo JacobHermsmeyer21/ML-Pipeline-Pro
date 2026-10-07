@@ -4,8 +4,10 @@ Bounded Optuna TPE searches run through the existing Celery worker. Each trial
 uses training/validation data. After the search is frozen, the selected checkpoint
 receives final test evaluation. Job and trial state are stored in MongoDB.
 
-The initial serial workflow is implemented. See the [project audit](project-status.md)
-for development status and open ownership/recovery findings before scaling it.
+The initial serial workflow and transactional parent/child ownership fixes are
+implemented. Tuning requires MongoDB transactions; Compose initializes a single-node
+replica set. See the [project audit](project-status.md) for remaining recovery work
+before scaling it.
 
 Tuning uses a registered dataset/model from the [experiment walkthrough](experiments.md).
 Endpoints require `X-Project-ID`, an `X-API-Key` when configured, and an
@@ -149,8 +151,10 @@ workers reuse it and completed training without resetting the budget.
 Beat schedules recovery every 15 seconds, but its recovery tasks share the worker
 with training/tuning, so queue load can delay redispatch. Current tests exercise
 saved reservations/training with forced lease expiry and simulated storage errors.
-Actual worker termination/restart tests and the audit's child-claim/final-commit
-ownership gaps remain [follow-up work](project-status.md#open-audit-findings).
+Ten real-MongoDB transaction-boundary regression cases now verify rejection of
+stale child claims, final evaluation commits, and other child mutations after
+parent takeover. Actual worker termination/restart and dependency outage tests
+remain [follow-up work](project-status.md#open-audit-findings).
 
 The sampler uses two successful startup trials before TPE proposals. Proposals
 reconstruct the study from saved outcomes with a seed derived from the sampler
@@ -174,7 +178,8 @@ final test evaluation, and active cancellation.
 The audit reran both suites and the five-trial demo successfully. Python 3.11/3.13
 checks, dependency audits, and rebuilt Docker integration also passed
 [baseline CI for 0e37e6e](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953).
-Passing existing cases does not close the newly identified ownership findings.
+The subsequent [ownership fix validation](project-status.md#ownership-fix-validation)
+covers the identified ownership findings.
 The [historical validation report](test-validation.md) preserves ten repeated runs
 against its original commit.
 

@@ -137,6 +137,7 @@ def test_trial_listing_is_scoped_ordered_and_paginated(
     job_id = submit_tuning(tracking_client, experiment_body).json()["id"]
 
     async def insert():
+        await tuning_store.jobs.claim("demo", job_id, "worker", lease_seconds=30, max_attempts=3)
         for number in (2, 0, 1):
             await tuning_store.trials.insert(
                 TrialRecord(
@@ -146,6 +147,7 @@ def test_trial_listing_is_scoped_ordered_and_paginated(
                     experiment_id=f"trial-{number}",
                     parameters={"learning_rate": 0.01},
                     config=TrainingConfig(),
+                    worker_token="worker",
                 )
             )
 
