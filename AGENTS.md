@@ -4,6 +4,18 @@ The user requests a commit and push after every major change. Run the relevant
 checks, commit the completed change, and push the working branch to `origin`.
 Report any push failure so the user knows whether the commit reached the remote.
 
+## Course scope
+
+Read [the supplied course requirements](docs/course-requirements.md) before
+planning feature work. They are the acceptance checklist for this class project.
+The target uses LangChain with locally served pre-trained language models;
+paid external model APIs and training a code language model are not required.
+Separate model-management, tuning, and monitoring services, AI-generated Python
+snippets, Docker, Kubernetes, and CI/CD are required course work. Keep missing
+features marked outstanding; service separation is not conditional on commercial
+scale, and templates alone do not establish AI code generation. Implementation
+still follows reviewed plans and the contracts below.
+
 ## Development method
 
 Follow [the development method](docs/development-methodology.md), adapted from

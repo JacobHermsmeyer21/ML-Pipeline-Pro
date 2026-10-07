@@ -6,6 +6,29 @@ ML Pipeline Pro has a working local classification experiment and tuning backend
 
 The baseline audit reviewed the tracked application modules, examples, tests/fixtures, dependency manifest/lockfile, Docker/Compose configuration, CI, and documentation. It also checked the saved validation evidence and local demo manifests, ran the baseline suites/demos, inspected the running services, and probed ownership boundaries in a disposable MongoDB database. That audit changed documentation only; subsequent application fixes and their checks are documented in [ownership fix validation](#ownership-fix-validation).
 
+## Course scope alignment
+
+On October 6, 2026 the user supplied the nine
+[course implementation instructions](course-requirements.md) and requested
+documentation correction against source baseline `ba6334f`. The course target
+uses LangChain with local pre-trained inference; a paid external model API or
+training a code language model is not required. The unapproved OpenAI draft was
+revised in the [conversation plan](plans/2026-10-06-conversation-workflows-plan.md);
+per-action confirmation and retained dialogue/evidence remain proposed contracts.
+
+The final course workflow requires three independently deployable domain REST
+services, LangChain guidance/suggestions, live monitoring/visualization with
+generated summaries and proposed fixes, AI-generated Python snippets, and
+Kubernetes with exercised deployment CI/CD. The existing one-API Compose stack,
+logs/health, and checked-in examples do not establish those requirements. See the
+[coverage checklist](course-requirements.md#requirement-coverage-and-acceptance-evidence)
+for evidence needed to close all nine rows. Commercial shared-production
+hardening and proposed resume improvement percentages are separate work.
+
+This correction changes documentation only. Existing validation below retains
+its original dates/revisions; it is not a new application run or proof of course
+completion. Feature implementation still requires explicit review of its plan.
+
 ## Where development stands
 
 | Milestone | Current state | Remaining scope |
@@ -13,10 +36,10 @@ The baseline audit reviewed the tracked application modules, examples, tests/fix
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
 | 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Provider-independent tool layer implemented; conversation still pending | Provider adapter, dialogue/action records, grounded responses, evaluations |
-| 5. Monitoring and diagnosis | Not started | Observations, Prometheus/Grafana, drift/quality summaries, alert evidence |
-| 6. Reviewable code generation | Not started | Templates, validation/provenance, explicit review, optional isolated execution |
-| 7. Deployment and onboarding | Local Docker/Compose and CI delivered | Identity/roles, infrastructure authentication, object storage, backup/restore, operations, Kubernetes |
+| 4. Conversational workflows | Provider-independent tools implemented; LangChain/local-model conversation pending | Pre-trained local adapter, guided dialogue/history, tuning suggestions, confirmed actions, real-model evaluation |
+| 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
+| 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
+| 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
 
 These states describe delivered scope, not a percentage estimate or a production-readiness certification. Detailed acceptance criteria are in [PLAN.md](../PLAN.md#implementation-milestones).
 
@@ -138,13 +161,19 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 The [approved conversation tool slice](plans/2026-10-06-conversation-tools-plan.md)
 is delivered. Retain its schema, access, budget, retry, and evidence checks.
 
-1. **Review the [conversation workflow plan](plans/2026-10-06-conversation-workflows-plan.md), then implement the approved scope.** The draft proposes an OpenAI provider, project-scoped dialogue/action evidence, missing-input handling, and separately confirmed actions. Implementation approval is pending.
-2. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
-3. **Implement milestone 6 code generation.** Provide validated supported snippets with provenance and review boundaries; define isolation before enabling execution.
-4. **Finish milestone 7 for shared deployment.** Identity/roles/TLS, authenticated services, immutable data/object storage, retention, restore tests, operational probes, deployment manifests, and onboarding.
-5. **Run the measurement plan.** Establish baselines and reproducible workload results before using the proposed improvement percentages.
+1. **Review the [revised local conversation plan](plans/2026-10-06-conversation-workflows-plan.md), then implement only the approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. Select/evaluate the local artifact; implementation approval remains pending.
+2. **Review required domain-service extraction.** Deliver independently deployable model-management, tuning, and monitoring REST APIs; preserve `/api/v1`, project access, and the shared MongoDB ownership fence. Separate services are a course requirement, independent of training concurrency or commercial scale.
+3. **Implement milestone 5 monitoring.** Demonstrate running observations and dashboard/alert updates within a reviewed interval, then LangChain summaries and proposed fixes grounded in metric/log evidence.
+4. **Implement milestone 6 AI code generation.** Generate Python integration snippets from conversation using LangChain/local inference, validate/provide provenance, and retain review boundaries. Templates alone are insufficient; execution remains optional.
+5. **Finish course deployment and documentation.** Containerize the required services; exercise GitHub Actions CI/CD rollout/smoke tests in a Kubernetes test cluster. Complete clean-checkout onboarding and advanced optimization tutorials, then verify every row of the course checklist.
+6. **Complete additional shared-production work before shared use.** Identity/roles/TLS, authenticated services, immutable storage, retention/deletion, restore tests, operational probes, and public deployment procedures remain open.
+7. **Run the measurement plan.** Establish reproducible baselines before using proposed improvement percentages. These claims do not replace course acceptance evidence.
 
-Keep the transaction ownership and controlled recovery gates passing in CI. The next feature is conversation. Preserve serial execution until concurrent-load and partition behavior are measured. The full release criteria remain in [PLAN.md](../PLAN.md#completion-criteria).
+Keep transaction ownership and controlled recovery gates passing in CI. The next
+feature is the reviewed local conversation slice. Preserve serial CPU training
+until concurrent-load and partition behavior are measured, including during
+service extraction. Course completion and additional production scope remain
+distinct in [PLAN.md](../PLAN.md#completion-criteria).
 
 ## Ownership fix validation
 

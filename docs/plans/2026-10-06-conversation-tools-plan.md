@@ -12,6 +12,13 @@
 
 ## Proposed behavior and purpose
 
+Course alignment note, October 6, 2026: this implemented plan's approval covers
+the provider-independent tool library only. The supplied
+[course instructions](../course-requirements.md) and separate
+[local conversation plan](2026-10-06-conversation-workflows-plan.md) now target
+LangChain with local pre-trained inference. That follow-up is awaiting review;
+this note neither extends the original approval nor changes recorded results.
+
 Provide a small Python tool catalog and dispatcher that a future conversation
 provider can call to inspect experiments, compare validation results, submit
 bounded jobs, and cancel tuning. A trusted application supplies project access

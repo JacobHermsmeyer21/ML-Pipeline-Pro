@@ -6,13 +6,17 @@ returns public records with evidence references, and preserves API project
 access, correlation IDs, job budgets, and submission idempotency.
 
 This is the first slice of [milestone 4](../PLAN.md#implementation-milestones).
-There is no model provider, natural-language conversation endpoint, dialogue
+There is no language-model adapter, natural-language conversation endpoint, dialogue
 store, or durable action audit yet. See the [approved design](plans/2026-10-06-conversation-tools-plan.md)
 for scope and verification.
 
 The next [conversation workflow plan](plans/2026-10-06-conversation-workflows-plan.md)
-is awaiting review. It proposes an OpenAI adapter, project-scoped dialogue, and
-separately confirmed actions over these tools; that scope is not implemented.
+is awaiting review. It proposes LangChain with a locally served pre-trained model,
+project-scoped guided dialogue/history, tuning suggestions, and separately
+confirmed actions. The [course instructions](course-requirements.md) require
+pre-trained-model integration, not paid external inference or training a code
+language model. This library can support the local adapter, but neither the
+adapter nor real conversational inference is implemented by this tool slice.
 
 ## Try the contract without services
 
@@ -64,7 +68,7 @@ the project, key, origin, headers, correlation ID, or submission key.
 The origin accepts HTTP(S), an optional port, and an optional trailing slash;
 credentials, additional paths, queries, and fragments are rejected. The adapter
 adds `/api/v1` itself. Resource IDs accept 1-128 letters, digits, underscores, or
-hyphens, including current UUIDs. A future provider receives catalog schemas and
+hyphens, including current UUIDs. A future model adapter receives catalog schemas and
 supplies tool calls; the host constructs context independently.
 
 ## Supported operations
@@ -97,7 +101,7 @@ experiment cancellation, and code execution are outside this catalog.
 
 Mutations default to denied. The host sets `allow_mutations=True` after its
 application has authorized that action. This is an execution permission, not a
-new user identity/role or durable approval system. A live autonomous provider
+new user identity/role or durable approval system. A live language-model application
 needs the later reviewed approval and action-audit design.
 
 The tool requires an explicit training runtime budget. Tuning additionally
@@ -143,7 +147,7 @@ The envelope reports that the tool request succeeded. Job status is in
 Comparison evidence identifies the winner, tuning identifies selected records
 when present, and trial evidence identifies its job and experiment. Private
 persistence fields are rejected, and returned text redacts the bound key and
-connection credentials. Record text remains untrusted data for provider prompts.
+connection credentials. Record text remains untrusted data for model prompts.
 The parser requires record IDs, project/schema metadata, and timestamps from the
 API; it cannot generate evidence metadata from schema defaults.
 

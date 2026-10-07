@@ -15,7 +15,10 @@ its original project; use this repository's contracts and commands here.
 
 1. **State the idea.** Identify the user problem and the smallest checkable change.
    Read the relevant source, [status](project-status.md), [roadmap](../PLAN.md),
-   and [memory](memory/README.md) before proposing mechanisms.
+   [course requirements](course-requirements.md), and [memory](memory/README.md)
+   before proposing mechanisms. Map the idea and acceptance evidence to the
+   supplied requirements; keep the course deliverable separate from later
+   shared-production hardening.
 2. **Clarify and challenge.** Surface every unresolved requirement: intended users,
    inputs, defaults, compatibility, failure behavior, access, resource limits, and
    success criteria. Answer source questions through inspection; ask the user about

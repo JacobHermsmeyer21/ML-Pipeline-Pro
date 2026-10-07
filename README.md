@@ -1,6 +1,10 @@
 # ML Pipeline Pro
 
-ML Pipeline Pro currently provides a local REST API and CPU workers for reproducible classification experiments and bounded hyperparameter tuning. The broader product will add conversational pipeline management, monitoring, and reviewable Python code generation.
+ML Pipeline Pro is a machine learning class project for model management,
+automated tuning, monitoring, conversational pipeline guidance, and AI-generated
+Python integration snippets. It currently provides a local REST API and CPU
+workers for reproducible classification experiments and bounded tuning. The
+[course requirements](docs/course-requirements.md) define the remaining deliverable.
 
 **Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit's tuning recovery ownership bugs and controlled process-loss/outage validation are addressed; concurrent-load and network-partition evidence remain before expanding worker concurrency.
 
@@ -10,7 +14,12 @@ Development follows the [AI-assisted engineering method](docs/development-method
 
 Follow the [classification walkthrough](docs/experiments.md) for experiment requests, or the [tuning walkthrough](docs/tuning.md) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
 
-The [conversation tool guide](docs/conversation-tools.md) covers the first milestone 4 slice: 13 provider-independent tools for reads, comparison, bounded submission, and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py` for a service-free contract demo. Provider-backed chat and dialogue/action persistence remain planned.
+The [conversation tool guide](docs/conversation-tools.md) covers the first milestone
+4 slice: 13 provider-independent tools for reads, comparison, bounded submission,
+and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py`
+for a service-free contract demo. LangChain/local-model conversation and
+dialogue/action persistence remain planned under the
+[revised design](docs/plans/2026-10-06-conversation-workflows-plan.md), awaiting review.
 
 ## Problem and purpose
 
@@ -18,37 +27,62 @@ Machine learning engineers often move between training scripts, experiment recor
 
 The supplied concept describes workflow pain points from 2025. This project will validate those assumptions with user feedback and measured benchmarks during implementation.
 
+## Course scope
+
+The nine [supplied implementation instructions and coverage checklist](docs/course-requirements.md)
+are the course acceptance baseline. Choose PyTorch, FastAPI, Bayesian optimization,
+and GitHub Actions from the stated alternatives. Add LangChain with a locally
+served pre-trained language model for natural-language commands, history-based
+guidance, monitoring summaries/proposed fixes, and Python snippet generation.
+The course workflow requires no paid external model API or language-model
+training/fine-tuning; local inference still uses compute and memory.
+
+Separate model-management, tuning, and monitoring REST services, Docker,
+Kubernetes, and an exercised CI/CD deployment are required deliverables. The
+current single domain API and Compose stack are the development baseline, not
+proof of course completion. Templates may support AI generation; static examples
+alone do not meet the generation requirement. Public/shared-production hardening
+is tracked separately from the course's local/test-cluster demonstration.
+
 ## Capabilities and development state
 
 - **Implemented - model and experiment tracking:** Project-scoped datasets/models, idempotent CPU training, validation-based comparison, explicit version registration, and verified artifacts.
 - **Implemented - bounded tuning:** Serial Optuna TPE searches with retained trial configurations/outcomes, cooperative cancellation, reservation replay, and final holdout evaluation of the selected checkpoint.
 - **Implemented - local deployment:** One Docker image, a five-service Compose stack, locked dependencies, and GitHub Actions checks.
 - **Implemented - conversation tools:** Provider-independent typed API tools, trusted project/mutation context, explicit submission budgets and retry keys, and public record evidence.
-- **Planned - conversation:** LangChain/provider integration, project-scoped dialogue/action records, and evidence-linked explanations.
-- **Planned - monitoring:** Prometheus/Grafana, observations, drift/quality summaries, alerts, and evidence-grounded diagnosis.
-- **Planned - code generation and shared deployment:** Validated snippets, reviewed execution, identity/roles, object storage, backup/restore, and Kubernetes.
+- **Required/planned - conversation:** LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, confirmed actions, and record-grounded explanations.
+- **Required/planned - monitoring:** A separate REST service, observations, Prometheus/Grafana visualization, defined update intervals, and LangChain summaries with evidence-linked proposed fixes.
+- **Required/planned - AI code generation:** Model-generated Python snippets through LangChain, validation/provenance, and review; execution is optional.
+- **Required/planned - course service deployment:** Separate model-management/tuning/monitoring APIs and an exercised Kubernetes/CI/CD rollout.
+- **Additional planned shared-production work:** Identity/roles, authenticated dependencies, immutable storage, retention, and backup/restore.
 
 ## Technology stack
 
 | Area | Implemented | Planned extensions |
 | --- | --- | --- |
 | Language and packaging | Python, Hatchling, uv, lockfile | Broader platform validation |
-| REST APIs | FastAPI, Pydantic, Uvicorn | Conversation and monitoring endpoints |
-| AI orchestration | Provider-independent API tool catalog/dispatcher | LangChain and a configurable model provider |
+| REST APIs | One FastAPI app, Pydantic, Uvicorn | Separate required domain services; conversation and monitoring endpoints |
+| AI orchestration | Provider-independent API tool catalog/dispatcher | LangChain/ChatOllama with a locally served pre-trained model |
 | Training | CPU PyTorch MLP classification, NumPy | Additional adapters; TensorFlow deferred |
 | Metadata | MongoDB with async PyMongo; six domain collections | Conversations, action audit, monitoring summaries/alerts |
 | Optimization | Seeded serial Optuna TPE | Additional search parameters and parallel trials |
 | Background work | Celery/Redis, scheduled recovery, transactional tuning ownership and controlled recovery gate | Concurrent-load/partition validation and operational checks |
 | Data and artifacts | Local CSV references, atomic local artifact writes and verification | Immutable dataset storage, object storage, retention |
-| Diagnostics | JSON logs, redaction, dependency health endpoints | Prometheus/Grafana and worker/queue monitoring |
-| Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions, controlled recovery gate | AI evaluations, concurrent-load/partition/restore checks |
-| Deployment | Docker image and local Compose stack | Shared deployment controls and Kubernetes |
+| Diagnostics | JSON logs, redaction, dependency health endpoints | Prometheus/Grafana, observations, and LangChain summaries/fixes |
+| Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions, controlled recovery gate | Real local-model/service/monitoring/generation checks and Kubernetes deployment CI/CD |
+| Deployment | Docker image and local Compose stack | Required independent domain services and Kubernetes test-cluster rollout; later shared-production controls |
 
 FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, Redis, and HTTPX are core dependencies. HTTPX supports the conversation tools' API transport. The optional `training` extra adds NumPy, CPU PyTorch, and Optuna. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
 
 ## Current architecture
 
-One modular FastAPI application in `src/ml_pipeline_pro` serves metadata and tuning APIs. Celery executes training, tuning, and recovery tasks; a separate Beat process schedules recovery. MongoDB owns durable metadata and job status; Redis transports tasks. The diagram shows only implemented components. Separate service deployment will follow measured scaling needs.
+One modular FastAPI application in `src/ml_pipeline_pro` serves metadata and
+tuning APIs. Celery executes training, tuning, and recovery; Beat schedules
+recovery. MongoDB owns durable metadata/job status; Redis transports tasks. The
+diagram shows implemented components only. The three domain REST services
+required by the course are not yet separate; extraction needs a reviewed design
+that preserves their shared MongoDB ownership transactions. Increasing training
+concurrency remains separately gated on measured load/recovery behavior.
 
 ```mermaid
 flowchart TD
@@ -64,7 +98,12 @@ flowchart TD
     API --> Artifacts
 ```
 
-The tracking module owns datasets, models, experiments, and model versions. The tuning module owns jobs and trials and writes training results through tracking repositories. Background workers keep training workloads out of API request handlers. The conversation tool library calls existing HTTP routes; provider-backed dialogue and monitoring modules are not present yet.
+The tracking module owns datasets, models, experiments, and model versions. The
+tuning module owns jobs and trials and writes through tracking repositories.
+Workers keep training out of API handlers. The conversation tools call existing
+HTTP routes; LangChain/local-model dialogue and monitoring are absent. Compose's
+API, worker, scheduler, MongoDB, and Redis processes do not establish the required
+model-management/tuning/monitoring service separation.
 
 MongoDB stores metadata and artifact references rather than large model binaries. Completed experiments expose validation/test metrics. Production observations, quality history, and drift collection are future monitoring work. Registering a model version does not deploy it or provide inference serving.
 
@@ -175,7 +214,7 @@ The subsequent ownership and manifest recovery fixes pass **129 local tests and 
 
 The [ten-iteration validation report](docs/test-validation.md) records 1,350 passing test executions, including 90 real-service checks, with no failures or skips. It includes measured coverage, saved evidence locations, and commands for repeating the suite against an isolated test stack.
 
-`pyproject.toml` declares dependency ranges; `uv.lock` records exact versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. Keep the extra on subsequent `uv run` commands that need training so dependency synchronization retains it. PyTorch comes from its CPU index on Windows/Linux. LangChain/provider integrations will follow in the next feature milestone.
+`pyproject.toml` declares dependency ranges; `uv.lock` records exact versions and hashes. Use `uv sync --locked` for the API or `uv sync --locked --extra training` for training/tuning and their tests. Keep the extra on subsequent `uv run` commands that need training so dependency synchronization retains it. PyTorch comes from its CPU index on Windows/Linux. LangChain/local-model dependencies and runtime setup will be documented when the reviewed conversation slice is implemented; these commands do not install a language model today.
 
 ### Source layout
 
@@ -238,4 +277,13 @@ Publish workload definitions, baselines, sample sizes, and results before making
 
 ## Documentation roadmap
 
-The quickstart, [classification tutorial](docs/experiments.md), [tuning guide](docs/tuning.md), [recovery validation guide](docs/recovery.md), [project audit/status](docs/project-status.md), and [historical validation report](docs/test-validation.md) are included. Conversation, monitoring, code-generation, shared-deployment, backup/restore, and operations guides remain to be written as those features are implemented. See [PLAN.md](PLAN.md#immediate-development-priorities) for the next work and completion gates.
+The [course checklist](docs/course-requirements.md), quickstart,
+[classification tutorial](docs/experiments.md), [tuning guide](docs/tuning.md),
+[recovery guide](docs/recovery.md), [tool guide](docs/conversation-tools.md),
+[status record](docs/project-status.md), and
+[historical validation report](docs/test-validation.md) are included. Required
+local-model/LangChain, monitoring, AI snippet, independent-service, and
+Kubernetes/CI/CD tutorials remain to be delivered with those features. Include
+common use cases and advanced history-based optimization in the final course
+walkthrough. Shared-production/restore/operations guides are separate follow-up
+work. See [PLAN.md](PLAN.md#immediate-development-priorities) for review and evidence gates.

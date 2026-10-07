@@ -2,13 +2,33 @@
 
 ## Objective and scope
 
-Build a Python platform that combines reproducible model experiments, automated hyperparameter tuning, performance monitoring, and LangChain-based conversational assistance. Deliver an end-to-end local workflow before adding scalable deployment and advanced AI features.
+Build the machine learning class platform specified in the
+[supplied course requirements](docs/course-requirements.md): model management,
+Bayesian tuning, monitoring, LangChain conversation with a local pre-trained
+language model, and AI-generated Python integration snippets. Deliver separate
+model-management, tuning, and monitoring REST services, Docker containers,
+Kubernetes deployment, CI/CD, tests, and onboarding as part of the course scope.
 
-This is the implementation roadmap, updated October 6, 2026 against baseline `0e37e6e`. Milestones are ordered by dependency, with no assumed delivery dates or staffing levels. The [project audit](docs/project-status.md) records the implemented behavior, current validation, and open findings.
+This roadmap was aligned to the user-supplied instructions on October 6-7, 2026
+against documentation baseline `ba6334f`. Existing validation retains its own
+source revisions in the [project audit](docs/project-status.md). Milestones are
+ordered by dependency, with no assumed delivery dates or staffing levels. The
+[course checklist](docs/course-requirements.md#requirement-coverage-and-acceptance-evidence)
+records incomplete requirements without treating roadmap decisions as approval.
 
 Milestones 1-3 have delivered a working local backend: a packaged FastAPI application, project-scoped dataset/model/experiment/version records, CPU PyTorch training, bounded serial Optuna tuning, explicit final test evaluation, and verified artifacts. Compose and CI are implemented. The audit reran 126 unit/API/training/tuning cases and all nine live-service integration cases successfully; baseline [CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953) also passed Python 3.11/3.13 checks and a rebuilt Compose stack.
 
-The full MVP remains incomplete. Provider-independent conversation tools are implemented; provider-backed conversation is the next feature slice. Monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). The [serial recovery gate](docs/recovery.md) now covers physical worker loss and dependency outages through Beat-driven recovery. Concurrent-load and network-partition validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+The course deliverable remains incomplete. Provider-independent conversation tools
+are implemented; local LangChain conversation is the next feature slice under the
+[revised plan](docs/plans/2026-10-06-conversation-workflows-plan.md), awaiting review.
+Monitoring and AI code generation are not started. Deployment/onboarding is
+complete only for the existing local backend. The current modular FastAPI
+application is a development baseline; required domain-service separation must
+be delivered regardless of commercial scaling needs. Preserve the
+[transactional ownership fixes](docs/project-status.md#ownership-fix-validation)
+and [serial recovery gate](docs/recovery.md). Concurrent-load and network-partition
+validation remain prerequisites for increasing training concurrency, independent
+of separating API services.
 
 ## Development workflow
 
@@ -26,9 +46,28 @@ with each outcome; disclose unperformed checks or unavailable independent review
 
 ## MVP boundaries
 
-The MVP will support one classification dataset format, one PyTorch training adapter, model and experiment metadata, bounded Bayesian tuning, experiment comparison, basic monitoring, and conversational access to those workflows. A small API client and documented requests are sufficient for initial use.
+The course MVP will support one classification dataset format, one PyTorch
+training adapter, metadata/version storage, bounded Bayesian tuning with
+LangChain suggestions, comparison, monitoring/visualization with evidence-linked
+summaries and proposed fixes, guided dialogue/history, and LangChain-generated
+Python snippets. A small API client and documented requests are sufficient;
+separate domain services and an exercised Kubernetes/CI/CD deployment are still
+required. The classification workload and the pre-trained language model are
+distinct; custom language-model training/fine-tuning is optional research work.
 
-TensorFlow support, reinforcement learning for tuning, a full web interface, automatic model promotion, and production inference serving are later extensions. The initial monitoring integration will accept metrics from workers and a sample inference client; it will not imply a complete model serving platform.
+Use a locally served pre-trained model through LangChain, with external inference
+and cloud fallback disabled for the course workflow. A paid hosted API is not a
+dependency of course completion. Select and test the model/runtime, record their
+versions and artifact identity, and document inference memory/runtime limits.
+Local inference still consumes compute. Model installation and real-model
+evaluation cannot be replaced by a deterministic stub demonstration.
+
+TensorFlow, reinforcement learning, a full web UI, automatic model promotion, and
+production serving of the managed classification models are later extensions.
+PyTorch and Bayesian optimization choose alternatives permitted by the supplied
+instructions. The monitoring demo accepts worker metrics and sample inference
+observations; commercial multi-tenant hardening is separate from the local
+course/test-cluster acceptance.
 
 ## Architecture and ownership
 
@@ -36,12 +75,20 @@ TensorFlow support, reinforcement learning for tuning, a full web interface, aut
 | --- | --- | --- |
 | Tracking module | Implemented: register datasets/versions, create experiments, compare results, resolve artifacts | Datasets, models, model versions, experiments |
 | Tuning module | Implemented: validate bounded serial searches, persist reservations/trials, cancel jobs | Tuning jobs and trials |
-| Monitoring module | Planned: ingest observations, query history, evaluate alert rules | Planned monitoring summaries and alerts |
+| Monitoring module | Required/planned: separate monitoring REST service, observations, visualization, alert evidence, and LangChain summaries/fixes | Planned monitoring summaries and alerts |
 | Conversation tool library | Implemented: 13 typed HTTP operations, trusted context, budgets/keys, public record evidence | Calls existing APIs; no owned durable records |
-| Conversation module | Planned: dialogue using typed tools, evidence-linked explanations and code proposals | Planned conversations and action audit records |
+| Conversation module | Required/planned: local pre-trained model through LangChain, guided dialogue/history, validated actions, and AI-generated code proposals | Planned conversations, turns, and action records |
 | Celery workers | Implemented training, tuning, recovery, and transactional tuning ownership | Write through the domain repository interfaces |
 
-Keep service contracts explicit even when components share a MongoDB deployment. Use domain repository interfaces for writes. The tuning ownership transaction coordinates tuning and tracking records within the same MongoDB deployment; preserve that atomic boundary when considering service separation. Pass record IDs and correlation IDs between components. Use Redis for queued work and artifact storage for binary outputs.
+Implement separately deployable model-management, tuning, and monitoring REST
+services under a reviewed extraction plan. A shared repository/image/database is
+allowed; three modules in one API process are not the required service topology.
+The conversation layer can remain a bounded orchestration entry point. Preserve
+`/api/v1` compatibility through reviewed routing and keep domain repositories
+responsible for writes. Tuning/tracking records must stay in a MongoDB deployment
+supporting their shared ownership transaction; replacing it with independent
+HTTP writes would lose the fence. Pass record/correlation IDs between services;
+retain Redis for queued work and separate artifact storage.
 
 ## Data model: implemented and planned
 
@@ -62,10 +109,17 @@ See [schemas.py](src/ml_pipeline_pro/schemas.py), [tuning_schemas.py](src/ml_pip
 | --- | --- | --- |
 | `monitoring_summaries` | Project, model version, window bounds, metric aggregates, label availability | `(project_id, model_version_id, window_start)` |
 | `alerts` | Project, model version, rule, observed value, status, evidence references | `(project_id, model_version_id, created_at)` |
-| `conversations` | Project, user ID, messages, tool references, retention timestamp | `(project_id, user_id, updated_at)` |
-| `action_audit` | Project, actor, action, resource IDs, approval reference, outcome, correlation ID | `(project_id, created_at)` |
+| `conversations`, `conversation_turns` | Project, revision/turn claims, dialogue, verified record snapshots, correlations | Project/request ID and project/conversation/sequence uniqueness; history lookups |
+| `conversation_actions` | Project, immutable arguments/hash, confirmation, submission key, attempt claims/outcomes, evidence | Project/conversation/action lookups |
 
-Continue using explicit request and persistence schemas. Define configurable retention for artifacts, datasets, conversations, summaries, and logs. The monitoring design will keep high-volume time series in Prometheus, with selected aggregates and alert evidence in MongoDB. Index uniqueness is tested, but representative query-plan and latency benchmarks remain to be implemented.
+Continue using explicit request and persistence schemas. The
+[conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) proposes
+project access and retained dialogue/action evidence, without inventing a user
+identity system or approval already given. Define dataset/artifact/summary/log
+retention and deletion before shared use. Monitoring will use Prometheus for time
+series, Grafana for visualization, and MongoDB for selected aggregates and alert
+evidence. Index uniqueness is tested; representative query/latency benchmarks
+remain unmeasured.
 
 ## API contracts and remaining additions
 
@@ -84,7 +138,7 @@ Implemented endpoints use `/api/v1`, consistent errors/correlation IDs, project-
 | `POST /tuning-jobs/{id}/cancel` | Implemented | Cancel queued work or cooperatively stop running work |
 | `POST /monitoring/observations` | Planned | Ingest timestamped model observations |
 | `GET /monitoring/models/{version_id}/summary` | Planned | Return a bounded monitoring summary and evidence |
-| `POST /chat` | Planned | Interpret requests and invoke validated authorized tools |
+| `POST /chat` | Planned | Use LangChain/local pre-trained inference for guided dialogue, grounded suggestions, and exact-action confirmation |
 | `GET /health/live`, `GET /health/ready` | Implemented | Process liveness and MongoDB/Redis connectivity |
 
 Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, and `cancelled`; experiment records also support `cancelled` for tuning children but have no standalone cancellation endpoint. Submission retries are idempotent, leases/heartbeats are persisted, and recovery claims are bounded. Tuning child writes share a transaction with a parent ownership fence; MongoDB replica set/sharded-cluster support is required. Preserve these contracts while strengthening outage/restart coverage. A succeeded tuning job can report `final_evaluation: skipped_budget`; version registration still requires an evaluated experiment.
@@ -126,15 +180,27 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 
 ### 4. Add conversational workflows
 
-**Status:** First tool slice implemented; conversational interface remains planned. A provider-independent catalog/dispatcher and HTTP adapter expose 13 existing API operations with explicit budgets, trusted mutation permission/keys, and record evidence. There is no LangChain/provider dependency, `/chat` route, conversation store, or live-provider evaluation suite yet. See the [tool guide](docs/conversation-tools.md) and [approved design](docs/plans/2026-10-06-conversation-tools-plan.md).
+**Status:** First tool slice implemented; local conversational interface remains
+planned. The provider-independent layer exposes 13 existing API operations with
+budgets, trusted context/retry keys, and record evidence. No LangChain/local-model
+dependency, `/chat` route, dialogue store, or real-model evaluation exists yet.
+The [implemented tool design](docs/plans/2026-10-06-conversation-tools-plan.md) and
+[revised local conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md)
+have different approval scopes. Course C3/C5 still need evidence.
 
-- Configure a LangChain model-provider adapter and structured tools for experiment queries and job submission.
-- Store project-scoped dialogue state and retrieve relevant experiment history.
+- Configure LangChain's local pre-trained model adapter and structured tools; document model installation, artifact/version identity, and inference limits without paid external calls.
+- Store project-scoped dialogue/action state and retrieve relevant experiment/trial history to guide pipeline creation and enhancement.
 - Ask for missing dataset, objective, or budget values before submitting incomplete configurations.
-- Validate proposed actions through API schemas and authorization checks; audit mutating actions.
+- Suggest supported tuning configurations from history and documented practices; preserve explicit budgets, validation-only selection, and worker enforcement.
+- Validate proposed actions through API schemas and project checks; confirm each exact mutation separately and audit its decision/outcome.
 - Return explanations with experiment IDs, trial IDs, or metric windows as evidence.
 
-**Acceptance:** A user can create an experiment and tuning job through conversation, compare results, and inspect supporting records. Invalid tool arguments and unauthorized resources are rejected. Provider failure does not prevent direct API use. Tests use deterministic provider stubs plus a small opt-in live evaluation suite.
+**Acceptance:** A real locally served pre-trained model through LangChain guides
+pipeline steps, asks for missing inputs, suggests bounded tuning from saved
+history, and supports confirmed experiment/tuning submission and comparison with
+record evidence. Invalid/unauthorized actions fail at the intended boundary;
+model failure leaves direct API use available. Deterministic tests and an opt-in
+real local-model evaluation both pass; retain actual model/resource provenance.
 
 ### 5. Add monitoring and diagnosis
 
@@ -143,54 +209,87 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 - Export service latency, errors, queue depth, worker health, and training duration to Prometheus.
 - Ingest sample inference observations and track prediction distributions, feature drift, and quality metrics where labels exist.
 - Build Grafana dashboards and configurable alert windows and thresholds.
-- Generate summaries grounded in alert evidence, distinguishing measured change from a possible cause.
+- Define an observable update interval and ingest observations while the sample workload runs; demonstrate dashboard/alert updates within that reviewed interval.
+- Use LangChain and the local pre-trained model to summarize metric/log evidence and propose checks or fixes, distinguishing observed changes from possible causes.
 
-**Acceptance:** A sample workload triggers a configured alert and exposes the relevant metric window. Missing or delayed labels are visible in summaries. Assistant explanations cite evidence and propose checks without presenting an inferred root cause as established fact.
+**Acceptance:** The separate monitoring service receives a running workload's
+observations, updates Prometheus/Grafana within the specified interval, and
+exposes a triggered alert's metric/log window. LangChain/local-model summaries
+cite evidence and propose fixes/checks without asserting an inferred root cause.
+Missing/delayed labels remain visible. Logs/health alone do not meet course C6.
 
 ### 6. Generate reviewable pipeline code
 
 **Status:** Not started. Checked-in Python demos are examples, not a generated-code capability or execution sandbox.
 
 - Define supported snippet templates and record assumptions, dependency requirements, and provenance.
+- Use LangChain with a local pre-trained language model to generate Python pipeline-integration snippets directly from conversational requests. Templates can guide or validate generation; static templates/examples alone do not meet course C7.
 - Check syntax, supported imports, API usage, and secret handling.
 - Present generated code for explicit review before any execution.
 - Provide isolated execution with resource and network controls if execution is enabled.
 
-**Acceptance:** Supported requests produce usable snippets validated against the documented API. Generated code cannot execute solely because the assistant proposed it. Unsafe or unsupported snippets are rejected with a useful explanation.
+**Acceptance:** Natural-language requests produce AI-generated Python snippets
+through LangChain/local inference with recorded model/prompt provenance. Supported
+snippets satisfy syntax, import, API, and secret-handling checks; unsupported
+output is rejected. Show real-model examples and deterministic validation tests.
+Execution remains optional and requires explicit review and isolation if enabled.
 
 ### 7. Prepare deployment and onboarding
 
-**Status:** Partially delivered for local use. A non-root Docker image, Compose, CI image startup/integration checks, quickstart, classification/tuning guides, and validation report exist. Shared-deployment and restore criteria remain open.
+**Status:** Partially delivered for the local backend. Docker/Compose, GitHub
+Actions checks, tutorials, and validation records exist. Required separate domain
+services, Kubernetes deployment, and deployment CI/CD remain outstanding (C2/C8);
+shared-production controls and restore criteria are additional open work.
 
-- Extend the existing image/Compose setup with operational probes and authenticated dependencies; add Kubernetes manifests with resource limits and external secret references.
+- Review and extract separately deployable model-management, tuning, and monitoring REST services; preserve public contracts and shared transactional ownership.
+- Containerize the required services and extend Compose/local tutorials; add Kubernetes manifests with resources, probes, model/storage configuration, and external secret references for a documented test cluster.
+- Demonstrate the supported replica scaling of stateless APIs, including request replay/project access across replicas. Preserve serial training workers and bound inference separately; API separation/scaling does not authorize extra concurrent training.
 - Define authentication and project-level authorization, backup/restore, artifact retention, and recovery procedures before shared deployment.
 - Add immutable dataset/object storage, schema migrations, and tested metadata/artifact restore procedures.
-- Extend existing CI image/integration checks into a deployment gate and verify a test-cluster rollout.
+- Extend GitHub Actions checks into a CI/CD deployment gate and exercise rollout/smoke tests in the Kubernetes test cluster. Merely adding YAML does not establish deployment.
 - Add conversation, monitoring, generated-code, troubleshooting, and operations guides as those workflows ship.
 
-**Acceptance:** A clean environment can run the documented example with Compose. Kubernetes deployment passes a smoke test in a test cluster. A restore exercise recovers metadata and resolves retained artifacts. Engineers can complete the tutorial using only the documentation.
+**Course acceptance:** A clean environment runs all required independent domain
+services, uses the local model through LangChain, and completes the documented
+workflow. Docker builds, supported stateless API replica scaling, and a
+CI/CD-triggered Kubernetes test-cluster rollout/smoke test pass with retained
+evidence. Tutorials cover common use and advanced
+optimization. **Additional shared-production acceptance:** identity/access,
+authenticated dependencies, immutable storage/retention, and a restore exercise
+that resolves retained metadata/artifacts are verified before shared use.
 
 ## Immediate development priorities
 
 1. Keep transactional parent ownership fencing and its real-MongoDB boundary regressions passing; the audited stale-child-write bugs are fixed.
 2. Keep the controlled worker-loss/dependency-outage recovery gate passing in CI, including final evaluation and attempt exhaustion. Concurrent load and network partitions remain prerequisites for parallel execution.
 3. Retain the provider-independent conversation tool contracts, project checks, explicit budgets, and idempotency tests in the [approved tool slice](docs/plans/2026-10-06-conversation-tools-plan.md).
-4. Implement a small conversation slice with deterministic provider stubs, project-scoped dialogue/action evidence, missing-input handling, and grounded explanations; then add opt-in live evaluation.
-5. Proceed to monitoring, reviewed code generation, and shared-deployment requirements in milestones 5-7. Keep the current serial CPU limits.
+4. Review the local conversation plan, select/evaluate an installed pre-trained model, and implement only the approved scope: LangChain, guided dialogue/history, bounded suggestions, confirmed actions, and grounded explanations.
+5. Review domain-service extraction early; deliver the three required independent REST services, monitoring with LangChain summaries/fixes, AI snippet generation, and Kubernetes/CI/CD evidence. These are course obligations, not optional commercial-scale work. Keep current serial CPU training limits.
+6. Complete every row of the supplied course checklist and its onboarding demonstration. Track shared-production hardening and quantitative research claims separately.
 
 The [audit](docs/project-status.md#next-work-in-order) records the source evidence and unfinished infrastructure work. No delivery dates or quantitative completion percentage are assumed.
 
 ## Testing strategy
 
-**Implemented checks:** 211 local unit/API/training/tuning/tool cases, 21 ordinary opt-in real-service cases, and ten separately enabled isolated worker/dependency recovery cases. CI checks Python 3.11/3.13, lint/format, installed compatibility, runtime advisories, rebuilt Compose workflows, and the recovery gate with uploaded evidence. The [ten-iteration report](docs/test-validation.md) preserves historical repeated functional validation. The following list is the target strategy; provider, monitoring, concurrent-load, network-partition, restore, and generated-code isolation tests remain to be built.
+**Implemented checks:** 211 local unit/API/training/tuning/tool cases, 21 ordinary
+real-service cases, and ten isolated recovery cases, with provenance in the
+[status record](docs/project-status.md) and historical
+[ten-iteration report](docs/test-validation.md). No suites were rerun for this
+documentation alignment. The target strategy still needs local-model, separate
+service, monitoring, AI generation, Kubernetes/deployment, concurrent-load,
+partition, restore, and generated-code isolation evidence.
 
 - **Unit tests:** Schema validation, tuning budgets, objective selection, job transitions, authorization checks, and provider-independent tool dispatch.
 - **Integration tests:** Real MongoDB and Redis, queued worker execution, index behavior, restart recovery, cancellation, and artifact persistence.
 - **End-to-end tests:** Dataset registration through training, tuning, model version registration, monitoring, and conversational queries.
 - **AI evaluations:** Representative prompts, incomplete requests, ambiguous objectives, hostile instructions embedded in retrieved records, unsupported actions, and evidence citation accuracy.
-- **Operational tests:** Concurrency limits, provider timeouts, queue outages, database failures, backup recovery, and isolation of generated code.
+- **Operational tests:** Existing serial limits, local model timeouts/memory/context limits, queue/database outages, service routing, Kubernetes rollout, restore, and generated-code isolation when execution is enabled.
 
-Use deterministic fixtures and a small synthetic dataset in CI. Keep live language model checks opt-in with cost budgets. Avoid requiring exact wording from probabilistic responses; assess validated actions, permissions, and factual grounding instead.
+Use deterministic fixtures and a small synthetic dataset in normal CI. Keep
+real local-model checks opt-in with explicit request/token/runtime/resource
+budgets and an installed artifact; retain a successful run for course acceptance.
+No paid API or model download is required during ordinary CI. Assess validated
+actions, permissions, grounding, and snippet correctness rather than exact wording.
 
 ## Measurement and reporting
 
@@ -204,7 +303,7 @@ Treat all supplied resume percentages as hypotheses until measured. Establish ba
 | 25% higher coding efficiency | Define efficiency first; measure correct completed integration tasks per hour and report defects and review time |
 | 50% higher model throughput | Increase in successful completed model workflows per hour under fixed compute, task mix, and quality requirements |
 
-For reduction metrics, use `(baseline - assisted) / baseline`. For throughput improvements, use `(assisted - baseline) / baseline`. Report spread across runs and confidence intervals where sample sizes support them. Record failures and provider costs alongside speed. State how human tasks were assigned to control for learning effects.
+For reduction metrics, use `(baseline - assisted) / baseline`. For throughput improvements, use `(assisted - baseline) / baseline`. Report spread across runs and confidence intervals where sample sizes support them. Record failures, compute/resource usage, and known operating costs alongside speed; label unknown costs. State how human tasks were assigned to control for learning effects.
 
 Only write resume bullets in the past tense after the relevant capability exists. Attach measured quantitative claims to their benchmark conditions. Until then, describe the platform as planned or in development.
 
@@ -216,11 +315,20 @@ Only write resume bullets in the past tense after the relevant capability exists
 | Tuning consumes excessive resources | Worker-enforced budgets, concurrency limits, cancellation, and bounded retries |
 | Duplicate jobs or inconsistent results | Idempotent submissions, atomic state transitions, unique trial indexes, and durable result recording |
 | Data leakage inflates evaluation results | Versioned splits, preprocessing fitted on training data, and a held-out test set |
-| Sensitive data reaches model providers or logs | Minimized context, redaction, explicit access controls, and configurable retention |
+| Sensitive data reaches model context or logs | Local inference without cloud fallback, minimized context, redaction, access controls, and reviewed retention |
 | Model quality is confused with infrastructure health | Separate quality, drift, and operational metrics; disclose label availability |
-| Microservice overhead slows initial delivery | Small service boundaries, shared typed contracts, and one local Compose workflow |
-| Provider behavior or dependencies change | Locked compatible dependencies, provider adapters, contract tests, and recorded model/configuration identifiers |
+| Required microservices disrupt domain ownership | Reviewed extraction, shared typed/repository contracts, preserved transactions, and real-service/recovery regressions |
+| Local model/runtime behavior changes or does not fit hardware | Locked compatible dependencies, recorded model digest/runtime/context, real-model evaluation, and measured resource limits |
 
 ## Completion criteria
 
-The initial release is complete when an engineer can follow the quickstart to register a dataset, train and tune a model, compare results, register a version, inspect monitoring, and query the recorded evidence through conversation. Required tests pass, deployment and recovery procedures are exercised, generated code respects review boundaries, and reported performance claims are supported by reproducible measurements.
+The course deliverable is complete when every row of the
+[course checklist](docs/course-requirements.md#requirement-coverage-and-acceptance-evidence)
+has retained acceptance evidence. An engineer follows the tutorials to register
+inputs, train/tune with LangChain suggestions, compare/register a version, inspect
+live monitoring and its generated diagnosis, query history through a real local
+pre-trained model, and obtain validated AI-generated Python snippets. The three
+domain REST services run independently, Docker and CI/CD Kubernetes rollout/smoke
+tests pass, and existing ownership/recovery contracts remain verified. Production
+hardening and proposed resume percentages are separate claims with their own
+evidence; they do not substitute for any course requirement.
