@@ -1,14 +1,14 @@
 # Local conversational workflows with LangChain
 
-- Status: awaiting review; implementation has not started
+- Status: approved; implementation in progress
 - Date: 2026-10-06
-- Last revised: 2026-10-07 for course alignment; implementation approval pending
+- Last revised: 2026-10-07; human implementation approval recorded
 - Source baseline for this revision: `ba6334f7c968f01d544cc513e76b3e65d96c63df` / `main`
 - Request: align the next milestone 4 slice with the supplied
   [course requirements](../course-requirements.md) and local pre-trained inference.
   The [conversation tools](../conversation-tools.md) are already delivered.
-- Human reviewer/approval: pending. The request to write this plan does not
-  approve its implementation or extend the earlier tool-layer approval.
+- Human reviewer/approval: repository user, 2026-10-07, approved this revised
+  local LangChain/Ollama plan in this conversation before implementation.
 - Independent review: pending for state transitions, ownership predicates,
   retry behavior, and resource arithmetic; no independent review is claimed.
 
@@ -342,26 +342,27 @@ upgrade or rollback; later schema changes require a reviewed migration.
 
 ## Human review and approval
 
-- Reviewer/date/decision: pending.
+- Reviewer/date/decision: repository user, 2026-10-07, approved implementation.
 - Clarifications: per-action confirmation and stored dialogue/action evidence,
   October 6, 2026. The user later supplied the course instructions and requested
   relevant documents be corrected; this revises the earlier unapproved OpenAI
   proposal to local pre-trained inference through LangChain.
-- Approval scope to review: routes, local model/runtime/dependencies, project access,
+- Approved scope: routes, local model/runtime/dependencies, project access,
   per-action confirmation, persisted text/evidence and retention, state/claim/retry
   behavior, resource limits, and acceptance gates above.
-- Model artifact, detailed limits/contracts, and independent reviewer: pending
-  review or operator configuration as specified above; no local inference
-  evaluation or performance measurement is claimed.
-- Explicit implementation approval reference and requested revisions: not yet given.
-  Material changes require plan revision and renewed review under the
+- Approval reference: user message, "use the previous model instead and i aprove
+  the plan". Retain the existing LangChain/ChatOllama direction and native tool
+  protocol; the proposed DeepSeek-specific JSON adapter is not adopted. The
+  preceding plan did not select an exact model tag; the installed artifact and
+  target-machine evaluation remain required. The documented contracts and limits
+  are approved; independent review remains outstanding.
+- Material changes require plan revision and renewed review under the
   [development method](../development-methodology.md#the-five-stage-loop).
 
 ## Implementation outcome
 
-Not implemented. The October 6 documentation correction is authorized; the
-revised feature design still awaits explicit implementation approval. After
-approval, record source revisions, actual dependency/model
+Implementation started after the October 7 approval recorded above. Record
+source revisions, actual dependency/model
 versions, commands/environment, requirement-mapped results/skips/warnings, raw
 evidence/archive locations, justified test changes, independent review and
 resolutions, deviations/reapproval, durable findings, and completion commit/push.
