@@ -174,6 +174,7 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 1. Keep transactional parent ownership fencing and its real-MongoDB boundary regressions passing; the audited stale-child-write bugs are fixed.
 2. Keep the controlled worker-loss/dependency-outage recovery gate passing in CI, including final evaluation and attempt exhaustion. Concurrent load and network partitions remain prerequisites for parallel execution.
 3. Define provider-independent conversation tool contracts using the implemented API schemas, project checks, and idempotency semantics; this is the next development slice.
+   The [conversation tool design](docs/plans/2026-10-06-conversation-tools-plan.md) is awaiting human review; implementation remains pending approval.
 4. Implement a small conversation slice with deterministic provider stubs, project-scoped dialogue/action evidence, missing-input handling, and grounded explanations; then add opt-in live evaluation.
 5. Proceed to monitoring, reviewed code generation, and shared-deployment requirements in milestones 5-7. Keep the current serial CPU limits.
 

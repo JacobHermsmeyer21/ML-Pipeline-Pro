@@ -136,6 +136,7 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 ## Next work, in order
 
 1. **Start milestone 4 with a provider-independent tool contract.** Map experiment/tuning reads, comparison, submission, and cancellation onto existing schemas/project access; use deterministic provider stubs first.
+   The [written design](plans/2026-10-06-conversation-tools-plan.md) is awaiting review; the tool layer has not been implemented.
 2. **Add the conversational slice.** Configure the provider, persist project-scoped dialogue/action evidence, request missing inputs/budgets, and evaluate grounded responses and unauthorized/invalid actions.
 3. **Implement milestone 5 monitoring.** Add operational metrics and sample inference observations before dashboards, alert windows, and evidence-linked diagnosis.
 4. **Implement milestone 6 code generation.** Provide validated supported snippets with provenance and review boundaries; define isolation before enabling execution.
