@@ -1,11 +1,11 @@
 # Provider-independent conversation tools
 
-- Status: awaiting review
+- Status: implemented
 - Date: 2026-10-06
 - Source baseline: `ec174e575e15c29af7a2ed2eede181a76312b099` / `main`
 - Request: follow the roadmap and implement its next conversation tool slice.
-- Human reviewer/approval: pending; the roadmap and implementation request do
-  not establish review of the design choices below.
+- Human reviewer/approval: repository user, 2026-10-06, approved this written plan
+  with "i approve the plan start working" in the review handoff.
 - Independent review: not performed. This slice introduces no worker concurrency,
   ownership mechanism, state machine, or rate/size arithmetic. Human design and
   implementation review remain required under the [development method](../development-methodology.md).
@@ -31,7 +31,8 @@ and [tuning routes](../../src/ml_pipeline_pro/tuning_api.py) already implement t
 operations, project reference checks, submission idempotency, comparison rules,
 and cancellation. [Project access](../../src/ml_pipeline_pro/access.py) checks
 configured keys; development without keys still trusts the selected project.
-There is no conversation module, provider dependency, or approved feature plan.
+At the source baseline there was no conversation module, provider dependency,
+or approved feature plan.
 
 Proposed decisions requiring human review:
 
@@ -196,17 +197,85 @@ version compatibility changes are planned.
 
 ## Human review and approval
 
-- Reviewer: pending.
-- Decision/date/reference: pending.
-- Approved scope: none yet; proposed scope is F1-F7/N1-N2 and the design above.
-- Requested revisions: pending.
-- Implementation begins only after explicit review/approval of this written
-  plan, per [AGENTS.md](../../AGENTS.md#development-method).
+- Reviewer: repository user.
+- Decision/date/reference: approved on 2026-10-06 in this conversation with
+  "i approve the plan start working", after the plan was committed/pushed as
+  `7c3f77d7abd86cd100f5cc83e3cd5b1b6499d22d`.
+- Approved scope: F1-F7/N1-N2 and the design above, including explicit tool
+  budgets, caller-controlled mutation permission/keys, and the HTTP adapter.
+- Requested revisions: none.
+- Approval is recorded before implementation, per
+  [AGENTS.md](../../AGENTS.md#development-method).
 
 ## Implementation outcome
 
-Implementation has not started. Plan preparation at the source baseline above
-changed this document and added review links to roadmap/status only.
+The approved tool slice is implemented. Full milestone 4 conversation remains
+pending. Implementation started from approval commit
+`7c3f77d7abd86cd100f5cc83e3cd5b1b6499d22d`; saved source hashes identify the
+application files and lockfile validated in the working checkout.
+
+| Requirement | Outcome evidence |
+| --- | --- |
+| F1/F4 | Catalog/argument tests reject unsupported/extra input, missing budgets, denied mutation, and missing host keys before transport. |
+| F2/F3 | Real-app and queued real-service tests cover all reads, pagination/filtering, validation comparison, and winner evidence. |
+| F5 | Training/tuning retries retain one record; changed bodies conflict; queued/running/terminal cancellation behavior is preserved. |
+| F6 | Configured-key tests reach forbidden access and authenticated foreign-reference rejection; context/path overrides never dispatch. |
+| F7 | Public response/evidence tests retain IDs, correlation, and saved queue-error job IDs; credentials/private fields and fabricated metadata are rejected/redacted. |
+| N1 | HTTP failure/timeout/redirect/malformed response and cleanup tests pass; the service-free scripted example executes without a provider. |
+| N2 | 211 local, 21 ordinary integration, and ten isolated recovery cases pass, with no selected-case skips; existing assertions and service gates remain intact. |
+
+- Changed scope: three tool modules, deterministic example, tool guide, roadmap/
+  status/memory, 82 new local cases, and one real-service tool workflow. HTTPX
+  moved from dev to runtime requirements without changing any locked version.
+  CI now saves/uploads JUnit reports for its existing local and ordinary gates;
+  its existing recovery artifact upload remains in place.
+- Commands: used repository-local `.tools/uv/bin/uv.exe` (0.12.23) with
+  `--offline --cache-dir .cache/uv` for locked sync/run/build; ran Ruff lint and
+  format checks, `pytest -m "not integration" --cov`, `uv pip check`, and `uv build`.
+  Installed compatibility passed for 86 packages. Wheel and source archives
+  were inspected: ignored caches/tools/venv/artifacts are absent, and wheel tool
+  modules match source bytes.
+- Real services: rebuilt `mlpp-tools-validation` with `compose.yaml` and
+  `tests/integration/compose.validation.yaml`; API/MongoDB/Redis used ports
+  18000/37017/16379 and both ordinary opt-ins. Ran all 21 ordinary cases, then all
+  ten recovery cases serially with the separate recovery opt-in. Recovery used
+  its own disposable project/image/ports and natural lease expiry. No development
+  service was stopped. The validation stack was removed after checks.
+- Environment: host Windows 10 / Python 3.11.5; ordinary containers Python 3.11.17;
+  HTTPX 0.28.1, FastAPI 0.142.2, Pydantic 2.13.5, PyMongo 4.18.2, Redis 6.4.0,
+  Celery 5.6.3, CPU PyTorch 2.14.1, NumPy 2.4.6, Optuna 5.0.0, pytest 9.1.1,
+  Ruff 0.16.10. Ordinary image identity was
+  `sha256:3433b898b331df97c6d6ff94a609f9b99834531c64444d40527eb5f476b2ff2d`.
+  Assistant model version metadata is unavailable.
+- Results/warnings: all selected cases pass. Host combined statement/branch
+  coverage rounds to 78%; container execution is outside that measurement. The
+  existing TestClient deprecation warning remains. `uv build` warned about an
+  in-tree cache; archive inspection confirmed that no ignored directories were
+  packaged. No live-provider evaluation or performance claim is included.
+- Raw evidence: ignored `artifacts/conversation-tools-validation/` contains
+  `unit.xml`, `focused.xml`, `integration.xml`, `recovery.xml`, the failing
+  before-fix `missing-fields-before.xml`, `demo.json`, `ordinary-services.log`,
+  package versions, documentation checks, and source hashes. Recovery snapshots/
+  logs are in `artifacts/recovery-validation/mlpp-recovery-36e59baff6e4/`.
+  Future CI uploads unit/ordinary/recovery reports; the post-push CI result is
+  separate from this local validation.
+- Test changes: existing tests, assertions, and skips were untouched. New cases
+  check the requirements above. Three failing-boundary cases demonstrated
+  generated IDs/timestamps from shared record defaults; the parser now requires
+  upstream metadata before schema parsing, and the same assertions pass.
+- Review: implementing assistant self-reviewed catalog/path construction,
+  context isolation, credential/errors, response provenance, explicit budgets,
+  idempotent replay, and cleanup after checks. Independent implementation review
+  was not performed and is not claimed; worker ownership/concurrency/state/rate
+  arithmetic implementations were not changed. Human design approval is recorded
+  above; the guide/example supports human review of the delivered behavior.
+- Deviations: none requiring renewed design review. Requiring returned metadata
+  implements F7; CI report retention implements the evidence requirement.
+- Durable finding: [API defaults must not invent tool evidence](../memory/conversation-response-evidence.md).
+- Completion commit/push: the containing implementation commit on `main`; exact
+  commit and `origin/main` push result are reported in the final handoff.
+
+The original plan-preparation evidence is retained below for provenance.
 
 - Documentation validation: Python 3.11.5 on Windows 10, using
   `.venv/Scripts/python.exe artifacts/conversation-plan-validation/check_plan.py`.
@@ -222,7 +291,6 @@ changed this document and added review links to roadmap/status only.
 - Installed HTTPX 0.28.1 constructor/timeout documentation was inspected for the
   proposed adapter behavior. The tool shell does not currently find `uv` on PATH;
   locate the executable before application verification.
-- Application acceptance tests, example execution, runtime lock/build checks,
-  real-service gates, and independent implementation review are pending. None
-  is claimed for this documentation-only preparation.
+- No application checks were claimed for the earlier documentation-only
+  preparation; the implementation results above are separate executions.
 - Plan commit/push result: reported in the review handoff and Git history.

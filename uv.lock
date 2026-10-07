@@ -717,6 +717,7 @@ source = { editable = "." }
 dependencies = [
     { name = "celery", extra = ["redis"] },
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "pydantic-settings" },
     { name = "pymongo" },
     { name = "redis" },
@@ -734,7 +735,6 @@ training = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "httpx" },
     { name = "pip-audit" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -745,6 +745,7 @@ dev = [
 requires-dist = [
     { name = "celery", extras = ["redis"], specifier = ">=5.5,<6" },
     { name = "fastapi", specifier = ">=0.115,<1" },
+    { name = "httpx", specifier = ">=0.27,<1" },
     { name = "numpy", marker = "extra == 'training'", specifier = ">=2,<3" },
     { name = "optuna", marker = "extra == 'training'", specifier = ">=4.6,<6" },
     { name = "pydantic-settings", specifier = ">=2.6,<3" },
@@ -758,7 +759,6 @@ provides-extras = ["training"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "httpx", specifier = ">=0.27,<1" },
     { name = "pip-audit", specifier = ">=2.7,<3" },
     { name = "pytest", specifier = ">=8,<10" },
     { name = "pytest-cov", specifier = ">=6,<8" },

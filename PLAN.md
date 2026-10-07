@@ -8,7 +8,7 @@ This is the implementation roadmap, updated October 6, 2026 against baseline `0e
 
 Milestones 1-3 have delivered a working local backend: a packaged FastAPI application, project-scoped dataset/model/experiment/version records, CPU PyTorch training, bounded serial Optuna tuning, explicit final test evaluation, and verified artifacts. Compose and CI are implemented. The audit reran 126 unit/API/training/tuning cases and all nine live-service integration cases successfully; baseline [CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/37541937953) also passed Python 3.11/3.13 checks and a rebuilt Compose stack.
 
-The full MVP remains incomplete. Conversation is the next feature milestone; monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). The [serial recovery gate](docs/recovery.md) now covers physical worker loss and dependency outages through Beat-driven recovery. Concurrent-load and network-partition validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
+The full MVP remains incomplete. Provider-independent conversation tools are implemented; provider-backed conversation is the next feature slice. Monitoring and code generation are not started. Deployment/onboarding is complete only for local development. The audited tuning ownership bugs are fixed with [transactional parent/child writes and boundary regressions](docs/project-status.md#ownership-fix-validation). The [serial recovery gate](docs/recovery.md) now covers physical worker loss and dependency outages through Beat-driven recovery. Concurrent-load and network-partition validation remain before expanding worker concurrency. Keep domain responsibilities in one modular FastAPI deployment initially; split services when measurements justify it.
 
 ## Development workflow
 
@@ -37,7 +37,8 @@ TensorFlow support, reinforcement learning for tuning, a full web interface, aut
 | Tracking module | Implemented: register datasets/versions, create experiments, compare results, resolve artifacts | Datasets, models, model versions, experiments |
 | Tuning module | Implemented: validate bounded serial searches, persist reservations/trials, cancel jobs | Tuning jobs and trials |
 | Monitoring module | Planned: ingest observations, query history, evaluate alert rules | Planned monitoring summaries and alerts |
-| Conversation module | Planned: dialogue, typed tools, evidence-linked explanations and code proposals | Planned conversations and action audit records |
+| Conversation tool library | Implemented: 13 typed HTTP operations, trusted context, budgets/keys, public record evidence | Calls existing APIs; no owned durable records |
+| Conversation module | Planned: dialogue using typed tools, evidence-linked explanations and code proposals | Planned conversations and action audit records |
 | Celery workers | Implemented training, tuning, recovery, and transactional tuning ownership | Write through the domain repository interfaces |
 
 Keep service contracts explicit even when components share a MongoDB deployment. Use domain repository interfaces for writes. The tuning ownership transaction coordinates tuning and tracking records within the same MongoDB deployment; preserve that atomic boundary when considering service separation. Pass record IDs and correlation IDs between components. Use Redis for queued work and artifact storage for binary outputs.
@@ -125,7 +126,7 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 
 ### 4. Add conversational workflows
 
-**Status:** Not started; next feature milestone. There is no LangChain/provider dependency, `/chat` route, conversation store, or AI evaluation suite yet.
+**Status:** First tool slice implemented; conversational interface remains planned. A provider-independent catalog/dispatcher and HTTP adapter expose 13 existing API operations with explicit budgets, trusted mutation permission/keys, and record evidence. There is no LangChain/provider dependency, `/chat` route, conversation store, or live-provider evaluation suite yet. See the [tool guide](docs/conversation-tools.md) and [approved design](docs/plans/2026-10-06-conversation-tools-plan.md).
 
 - Configure a LangChain model-provider adapter and structured tools for experiment queries and job submission.
 - Store project-scoped dialogue state and retrieve relevant experiment history.
@@ -173,8 +174,7 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 
 1. Keep transactional parent ownership fencing and its real-MongoDB boundary regressions passing; the audited stale-child-write bugs are fixed.
 2. Keep the controlled worker-loss/dependency-outage recovery gate passing in CI, including final evaluation and attempt exhaustion. Concurrent load and network partitions remain prerequisites for parallel execution.
-3. Define provider-independent conversation tool contracts using the implemented API schemas, project checks, and idempotency semantics; this is the next development slice.
-   The [conversation tool design](docs/plans/2026-10-06-conversation-tools-plan.md) is awaiting human review; implementation remains pending approval.
+3. Retain the provider-independent conversation tool contracts, project checks, explicit budgets, and idempotency tests in the [approved tool slice](docs/plans/2026-10-06-conversation-tools-plan.md).
 4. Implement a small conversation slice with deterministic provider stubs, project-scoped dialogue/action evidence, missing-input handling, and grounded explanations; then add opt-in live evaluation.
 5. Proceed to monitoring, reviewed code generation, and shared-deployment requirements in milestones 5-7. Keep the current serial CPU limits.
 
@@ -182,7 +182,7 @@ The [audit](docs/project-status.md#next-work-in-order) records the source eviden
 
 ## Testing strategy
 
-**Implemented checks:** 129 unit/API/training/tuning cases, 20 ordinary opt-in real-service cases, and ten separately enabled isolated worker/dependency recovery cases. CI checks Python 3.11/3.13, lint/format, installed compatibility, runtime advisories, rebuilt Compose workflows, and the recovery gate with uploaded evidence. The [ten-iteration report](docs/test-validation.md) preserves historical repeated functional validation. The following list is the target strategy; provider, monitoring, concurrent-load, network-partition, restore, and generated-code isolation tests remain to be built.
+**Implemented checks:** 211 local unit/API/training/tuning/tool cases, 21 ordinary opt-in real-service cases, and ten separately enabled isolated worker/dependency recovery cases. CI checks Python 3.11/3.13, lint/format, installed compatibility, runtime advisories, rebuilt Compose workflows, and the recovery gate with uploaded evidence. The [ten-iteration report](docs/test-validation.md) preserves historical repeated functional validation. The following list is the target strategy; provider, monitoring, concurrent-load, network-partition, restore, and generated-code isolation tests remain to be built.
 
 - **Unit tests:** Schema validation, tuning budgets, objective selection, job transitions, authorization checks, and provider-independent tool dispatch.
 - **Integration tests:** Real MongoDB and Redis, queued worker execution, index behavior, restart recovery, cancellation, and artifact persistence.

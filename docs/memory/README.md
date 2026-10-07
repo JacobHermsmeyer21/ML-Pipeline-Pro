@@ -8,6 +8,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | --- | --- |
 | [A read-only parent check cannot fence tuning child writes](tuning-parent-fence.md) | MongoDB transactions and ownership takeover |
 | [Final evaluation must preserve recorded training artifacts](evaluation-artifacts.md) | Artifact persistence and recovery |
+| [API response defaults must not invent tool evidence](conversation-response-evidence.md) | Conversation tools and public record provenance |
 
 Keep one durable finding per file. Include date, evidence, limits, and when to
 revisit it. Index new findings here. Record rejected approaches only when source

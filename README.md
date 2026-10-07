@@ -2,13 +2,15 @@
 
 ML Pipeline Pro currently provides a local REST API and CPU workers for reproducible classification experiments and bounded hyperparameter tuning. The broader product will add conversational pipeline management, monitoring, and reviewable Python code generation.
 
-**Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit's tuning recovery ownership bugs are fixed with transactional parent/child writes; process-loss and outage validation remain before expanding worker concurrency.
+**Development status, October 6, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit's tuning recovery ownership bugs and controlled process-loss/outage validation are addressed; concurrent-load and network-partition evidence remain before expanding worker concurrency.
 
 Read the [project audit and development status](docs/project-status.md) for verified capabilities, open findings, and immediate priorities. [PLAN.md](PLAN.md) defines the remaining milestones and acceptance criteria.
 
 Development follows the [AI-assisted engineering method](docs/development-methodology.md): clarify and challenge ideas, commit design plans for human review, then implement with continuous verification. [AGENTS.md](AGENTS.md) carries the shared rules and checks; [project memory](docs/memory/README.md) preserves evidence-linked findings.
 
 Follow the [classification walkthrough](docs/experiments.md) for experiment requests, or the [tuning walkthrough](docs/tuning.md) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
+
+The [conversation tool guide](docs/conversation-tools.md) covers the first milestone 4 slice: 13 provider-independent tools for reads, comparison, bounded submission, and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py` for a service-free contract demo. Provider-backed chat and dialogue/action persistence remain planned.
 
 ## Problem and purpose
 
@@ -21,7 +23,8 @@ The supplied concept describes workflow pain points from 2025. This project will
 - **Implemented - model and experiment tracking:** Project-scoped datasets/models, idempotent CPU training, validation-based comparison, explicit version registration, and verified artifacts.
 - **Implemented - bounded tuning:** Serial Optuna TPE searches with retained trial configurations/outcomes, cooperative cancellation, reservation replay, and final holdout evaluation of the selected checkpoint.
 - **Implemented - local deployment:** One Docker image, a five-service Compose stack, locked dependencies, and GitHub Actions checks.
-- **Planned - conversation:** LangChain/provider integration, structured API tools, project-scoped dialogue/action records, and evidence-linked explanations.
+- **Implemented - conversation tools:** Provider-independent typed API tools, trusted project/mutation context, explicit submission budgets and retry keys, and public record evidence.
+- **Planned - conversation:** LangChain/provider integration, project-scoped dialogue/action records, and evidence-linked explanations.
 - **Planned - monitoring:** Prometheus/Grafana, observations, drift/quality summaries, alerts, and evidence-grounded diagnosis.
 - **Planned - code generation and shared deployment:** Validated snippets, reviewed execution, identity/roles, object storage, backup/restore, and Kubernetes.
 
@@ -31,17 +34,17 @@ The supplied concept describes workflow pain points from 2025. This project will
 | --- | --- | --- |
 | Language and packaging | Python, Hatchling, uv, lockfile | Broader platform validation |
 | REST APIs | FastAPI, Pydantic, Uvicorn | Conversation and monitoring endpoints |
-| AI orchestration | None | LangChain and a configurable model provider |
+| AI orchestration | Provider-independent API tool catalog/dispatcher | LangChain and a configurable model provider |
 | Training | CPU PyTorch MLP classification, NumPy | Additional adapters; TensorFlow deferred |
 | Metadata | MongoDB with async PyMongo; six domain collections | Conversations, action audit, monitoring summaries/alerts |
 | Optimization | Seeded serial Optuna TPE | Additional search parameters and parallel trials |
-| Background work | Celery/Redis, scheduled recovery, transactional tuning ownership | Process-loss/outage validation and operational checks |
+| Background work | Celery/Redis, scheduled recovery, transactional tuning ownership and controlled recovery gate | Concurrent-load/partition validation and operational checks |
 | Data and artifacts | Local CSV references, atomic local artifact writes and verification | Immutable dataset storage, object storage, retention |
 | Diagnostics | JSON logs, redaction, dependency health endpoints | Prometheus/Grafana and worker/queue monitoring |
-| Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions | AI evaluations, process-loss/load/restore checks |
+| Testing and CI | pytest/coverage, Ruff, dependency audits, GitHub Actions, controlled recovery gate | AI evaluations, concurrent-load/partition/restore checks |
 | Deployment | Docker image and local Compose stack | Shared deployment controls and Kubernetes |
 
-FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, and a Redis client are core dependencies. The optional `training` extra adds NumPy, CPU PyTorch, and Optuna. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
+FastAPI, PyMongo, configuration tooling, Uvicorn, Celery, Redis, and HTTPX are core dependencies. HTTPX supports the conversation tools' API transport. The optional `training` extra adds NumPy, CPU PyTorch, and Optuna. The remaining stack will be introduced as its workflows are built. Reinforcement learning for tuning is deferred until there is evidence it improves on the Bayesian baseline.
 
 ## Current architecture
 
@@ -61,7 +64,7 @@ flowchart TD
     API --> Artifacts
 ```
 
-The tracking module owns datasets, models, experiments, and model versions. The tuning module owns jobs and trials and writes training results through tracking repositories. Background workers keep training workloads out of API request handlers. Monitoring and conversation modules are not present yet.
+The tracking module owns datasets, models, experiments, and model versions. The tuning module owns jobs and trials and writes training results through tracking repositories. Background workers keep training workloads out of API request handlers. The conversation tool library calls existing HTTP routes; provider-backed dialogue and monitoring modules are not present yet.
 
 MongoDB stores metadata and artifact references rather than large model binaries. Completed experiments expose validation/test metrics. Production observations, quality history, and drift collection are future monitoring work. Registering a model version does not deploy it or provide inference serving.
 

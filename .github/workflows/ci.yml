@@ -25,7 +25,12 @@ jobs:
       - run: uv sync --locked --extra training
       - run: uv run --locked --extra training ruff check .
       - run: uv run --locked --extra training ruff format --check .
-      - run: uv run --locked --extra training pytest -m "not integration" --cov --cov-report=term-missing
+      - run: uv run --locked --extra training pytest -m "not integration" --cov --cov-report=term-missing --junitxml=artifacts/test-reports/unit.xml
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: unit-validation-python-${{ matrix.python-version }}
+          path: artifacts/test-reports/unit.xml
       - run: uv pip check
       - if: matrix.python-version == '3.11'
         run: |
@@ -50,13 +55,18 @@ jobs:
       - run: docker compose config --quiet
       - run: docker compose up --build --wait --wait-timeout 300
       - run: curl --fail http://127.0.0.1:8000/api/v1/health/ready
-      - run: uv run --locked --extra training pytest -m "integration and not recovery"
+      - run: uv run --locked --extra training pytest -m "integration and not recovery" --junitxml=artifacts/test-reports/integration.xml
         env:
           MLPP_RUN_INTEGRATION: "1"
           MLPP_RUN_WORKER_INTEGRATION: "1"
       - run: uv run --locked --extra training pytest -m recovery --junitxml=artifacts/recovery-validation/junit.xml
         env:
           MLPP_RUN_RECOVERY_INTEGRATION: "1"
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ordinary-integration-validation
+          path: artifacts/test-reports/integration.xml
       - if: always()
         uses: actions/upload-artifact@v7
         with:
