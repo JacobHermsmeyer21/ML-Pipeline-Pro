@@ -14,8 +14,10 @@ At source baseline `ba6334f`, [main.py](../../src/ml_pipeline_pro/main.py) inclu
 tracking and tuning routers in one API, [Compose](../../compose.yaml) has process
 and dependency services rather than the required separate domain APIs, and the
 [manifest](../../pyproject.toml) has no LangChain integration. The
-[course-aligned plan](../plans/2026-10-06-conversation-workflows-plan.md) is awaiting
-review. These are documented requirements and source findings, not evidence that
+[course-aligned plan](../plans/2026-10-06-conversation-workflows-plan.md) was
+awaiting review at that baseline. It was approved October 7, 2026; an October 8
+source check at `c28ae06` confirms implementation remains outstanding. These are
+documented requirements and source findings, not evidence that
 the outstanding features or local model have been implemented or evaluated.
 
 Revisit if the user supplies a revised course instruction or approves a different

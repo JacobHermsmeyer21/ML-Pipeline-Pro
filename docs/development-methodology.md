@@ -71,10 +71,10 @@ unit/API/training/tuning suite, and installed dependency compatibility. Packagin
 changes additionally require a successful build. Warnings require inspection;
 record pre-existing warnings and distinguish them from newly introduced ones.
 
-Use [ordinary integration checks](../README.md#run-checks) for real MongoDB/Redis,
+Use [ordinary integration checks](verification.md#ordinary-integration) for real MongoDB/Redis,
 API, and queued-worker behavior. Ownership changes need the transaction-boundary
 regressions in [test_tuning_ownership.py](../tests/integration/test_tuning_ownership.py).
-Worker/recovery changes need the [isolated recovery gate](recovery.md).
+Worker/recovery changes need the [isolated recovery gate](verification.md#worker-and-dependency-recovery-validation).
 Unit fakes alone cannot establish transaction or process-loss correctness.
 
 Select checks from the requirements before implementing. A skipped selected case,

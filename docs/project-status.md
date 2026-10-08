@@ -2,6 +2,13 @@
 
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
+**Documentation source check, October 8, 2026:** baseline `c28ae06`. The
+conversation workflow design was approved October 7, but this checkout still has
+no LangChain dependencies, model adapter, chat routes, or dialogue/action store.
+The dated validation below is historical; no application suite was rerun for this
+documentation consolidation. [Verification](verification.md) owns execution setup;
+[workflows](workflows.md) owns runnable tutorials.
+
 ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. The baseline audit's recovery ownership bugs are fixed, and controlled process-loss/dependency-outage validation is delivered. Concurrent-load/partition validation and storage lifecycle work remain open.
 
 The baseline audit reviewed the tracked application modules, examples, tests/fixtures, dependency manifest/lockfile, Docker/Compose configuration, CI, and documentation. It also checked the saved validation evidence and local demo manifests, ran the baseline suites/demos, inspected the running services, and probed ownership boundaries in a disposable MongoDB database. That audit changed documentation only; subsequent application fixes and their checks are documented in [ownership fix validation](#ownership-fix-validation).
@@ -14,7 +21,7 @@ documentation correction against source baseline `ba6334f`. The course target
 uses LangChain with local pre-trained inference; a paid external model API or
 training a code language model is not required. The unapproved OpenAI draft was
 revised in the [conversation plan](plans/2026-10-06-conversation-workflows-plan.md);
-per-action confirmation and retained dialogue/evidence remain proposed contracts.
+per-action confirmation and retained dialogue/evidence were approved October 7; their implementation remains outstanding.
 
 The final course workflow requires three independently deployable domain REST
 services, LangChain guidance/suggestions, live monitoring/visualization with
@@ -88,6 +95,11 @@ Indexes are created lazily for the APIs and explicitly in worker tasks. There ar
 
 ## Open audit findings
 
+Findings 1 and 2 retain the original audit diagnosis and their delivered follow-up.
+They are resolved within the serial, controlled recovery scope described below.
+The source CSV and deployment gaps remain open; arbitrary partitions and
+concurrent-load safety remain unverified.
+
 ### 1. High priority: parent ownership does not fence every tuning child write
 
 **Status: fixed after the baseline audit.** The description and probe evidence below
@@ -152,7 +164,7 @@ The audit ran against the source baseline above and the existing local Compose s
 | Repository ownership probes | Confirmed the open findings above; dedicated database cleaned up |
 | Documentation checks | 52 local links/anchors valid, README covers all 21 API operations, and 17 PowerShell examples parse successfully |
 
-The current unit-only coverage output rounds combined statement/branch coverage to 77%. The earlier full-suite report measured 84.93% in the host process; it does not include worker/scheduler execution inside containers. These are different measurements and should not be treated as a coverage regression. See [test-validation.md](test-validation.md) for the original environment, counts, and repeat commands.
+The baseline audit's unit-only coverage output rounds combined statement/branch coverage to 77%. The earlier full-suite report measured 84.93% in the host process; it does not include worker/scheduler execution inside containers. These are different measurements and should not be treated as a coverage regression. See the [historical ten-iteration report](verification.md#ten-iteration-validation-october-6-2026) for the original environment, counts, and repeat commands.
 
 Both current suites emit the existing TestClient deprecation warning. No live model-provider evaluations, production workload benchmarks, physical worker-loss recovery tests, or restore exercises were run. Dependency advisory results are scoped to the audited releases and date, not a guarantee about application security.
 
@@ -161,7 +173,7 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 The [approved conversation tool slice](plans/2026-10-06-conversation-tools-plan.md)
 is delivered. Retain its schema, access, budget, retry, and evidence checks.
 
-1. **Review the [revised local conversation plan](plans/2026-10-06-conversation-workflows-plan.md), then implement only the approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. Select/evaluate the local artifact; implementation approval remains pending.
+1. **Implement the [approved local conversation plan](plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. Select/evaluate the local artifact; implementation was approved October 7, 2026; the adapter and acceptance runs remain outstanding.
 2. **Review required domain-service extraction.** Deliver independently deployable model-management, tuning, and monitoring REST APIs; preserve `/api/v1`, project access, and the shared MongoDB ownership fence. Separate services are a course requirement, independent of training concurrency or commercial scale.
 3. **Implement milestone 5 monitoring.** Demonstrate running observations and dashboard/alert updates within a reviewed interval, then LangChain summaries and proposed fixes grounded in metric/log evidence.
 4. **Implement milestone 6 AI code generation.** Generate Python integration snippets from conversation using LangChain/local inference, validate/provide provenance, and retain review boundaries. Templates alone are insufficient; execution remains optional.
@@ -221,7 +233,7 @@ also passed. JUnit reports are retained in ignored
 
 ## Process-loss and dependency-outage validation
 
-The [recovery suite](recovery.md) adds ten isolated Compose cases with a dedicated
+The [recovery suite](verification.md#worker-and-dependency-recovery-validation) adds ten isolated Compose cases with a dedicated
 image built from the current checkout. It kills the whole worker container with
 `SIGKILL` during a real optimizer step, selected-checkpoint evaluation, or final
 manifest persistence. Beat redispatches work after natural lease expiry. The tests
@@ -256,7 +268,7 @@ Concurrent load, arbitrary partitions, and restore exercises remain open.
 
 ## Conversation tool validation
 
-The [provider-independent library](conversation-tools.md) implements 13 existing
+The [provider-independent library](workflows.md#conversation-tool-layer) implements 13 existing
 API operations for reads, comparison, bounded submission, and tuning cancellation.
 The host binds project credentials, mutation permission, correlation, and retry
 keys separately from tool arguments. Missing submission budgets/objectives are
@@ -291,3 +303,33 @@ implementation review or live-provider evaluation is claimed.
 A manifest containing `test_evaluated: false` and only validation metrics is expected for a tuning trial. Trial records keep validation-only outcomes even after selection. The winner's experiment receives the test metrics after final evaluation.
 
 The service-free tuning demo writes trial artifacts under `artifacts/demo/EXPERIMENT_ID/local/`, then writes an updated winner manifest under `artifacts/demo/EXPERIMENT_ID/final/`. The original `local/manifest.json` remains unchanged, even for the winner. Use the artifact references in `artifacts/local-tuning/JOB_ID/summary.json` to find the final manifest. API clients should follow the selected experiment's current `artifacts` references or download endpoint. If `final_evaluation` is `skipped_budget`, no evaluated winner is available for version registration.
+
+## Documentation consolidation: October 8, 2026
+
+Audited all 19 Markdown files at `c28ae06`; consolidated them into 16.
+Classification, tuning, and tool tutorials now share `docs/workflows.md`.
+Recovery instructions and the original ten-iteration report now share
+`docs/verification.md`. Removed the five replaced files and updated incoming
+links. README owns setup, endpoint discovery, and the document map; this status
+record owns capability/evidence inventories; the course checklist owns acceptance;
+PLAN.md owns milestones and measurement criteria. Removed repeated README
+summaries and roadmap inventories. Retained separate design approval/outcome
+records and short technical memory findings under the development method.
+
+Corrected stale conversation-approval statements against the October 7 approval
+record. Labelled the baseline audit and resolved ownership/recovery findings so
+historical test counts cannot be read as a new run. Source inspection confirmed
+21 API operations, the single domain API, the 13-tool library, and the absence of
+LangChain, monitoring, code generation, and Kubernetes implementation. Outstanding
+course requirements remain outstanding; no application behavior changed.
+
+Documentation checks passed: all 16 Markdown documents' local links/anchors,
+18 PowerShell code blocks parsed, both Python examples matched their previously
+verified source exactly, and README covered all 21 API operations. Self-review
+checked the moved historical results and plan approval/acceptance records against
+the originals. Raw checker, results, and baseline provenance are retained locally
+in ignored `artifacts/docs-consolidation/`. Python syntax was not re-parsed because
+this checkout has no usable Python environment; the example code is unchanged.
+No application, real-service, recovery, or model evaluation suite was run for
+this documentation-only change. Whitespace and commit/push results are reported
+in the completion handoff.

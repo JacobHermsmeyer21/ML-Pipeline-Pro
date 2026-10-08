@@ -20,13 +20,13 @@ Milestones 1-3 have delivered a working local backend: a packaged FastAPI applic
 
 The course deliverable remains incomplete. Provider-independent conversation tools
 are implemented; local LangChain conversation is the next feature slice under the
-[revised plan](docs/plans/2026-10-06-conversation-workflows-plan.md), awaiting review.
+[revised plan](docs/plans/2026-10-06-conversation-workflows-plan.md), approved October 7, 2026; implementation remains outstanding.
 Monitoring and AI code generation are not started. Deployment/onboarding is
 complete only for the existing local backend. The current modular FastAPI
 application is a development baseline; required domain-service separation must
 be delivered regardless of commercial scaling needs. Preserve the
 [transactional ownership fixes](docs/project-status.md#ownership-fix-validation)
-and [serial recovery gate](docs/recovery.md). Concurrent-load and network-partition
+and [serial recovery gate](docs/verification.md#worker-and-dependency-recovery-validation). Concurrent-load and network-partition
 validation remain prerequisites for increasing training concurrency, independent
 of separating API services.
 
@@ -94,15 +94,6 @@ retain Redis for queued work and separate artifact storage.
 
 Every project-scoped record includes a `project_id`, timestamps, and a schema version. Authorization checks must apply to referenced records as well as the initial request.
 
-| Implemented collection | Core persisted fields | Implemented indexes |
-| --- | --- | --- |
-| `datasets` | Name/version, local `uri`, `sha256`, column definitions, `num_classes`, `row_counts` | Unique project/name/version; project/created time/ID |
-| `models` | Name, framework, task, architecture | Unique project/name; project/created time/ID |
-| `model_versions` | Model/version, source experiment, checkpoint reference, `dependencies` | Unique project/model/version; project/created time/ID |
-| `experiments` | Input IDs, config/seed, submission key/hash, status/attempts/leases, metrics/artifacts/dependencies, tuning linkage, test-evaluation flag | Unique project/submission key; project/model or status/created time; recovery; project/created time/ID |
-| `tuning_jobs` | Objective/space/limits, status/phase, claims/deadlines, reservation/progress, selected config/trial/experiment/value, final evaluation/stop reason | Unique project/submission key; project/status/created time; recovery; project/created time/ID |
-| `trials` | Job ID, zero-based `number`, parameters/config, experiment ID, metrics/objective, duration/status/error | Unique `(project_id, tuning_job_id, number)` |
-
 See [schemas.py](src/ml_pipeline_pro/schemas.py), [tuning_schemas.py](src/ml_pipeline_pro/tuning_schemas.py), and the [audit record inventory](docs/project-status.md#architecture-and-durable-records) for the exact contracts. Dataset registration persists a reference and hash, not CSV bytes. Binary artifacts stay outside MongoDB. Schema-version fields exist; migration and retention procedures do not.
 
 | Planned collection | Proposed core fields | Proposed indexes |
@@ -113,9 +104,9 @@ See [schemas.py](src/ml_pipeline_pro/schemas.py), [tuning_schemas.py](src/ml_pip
 | `conversation_actions` | Project, immutable arguments/hash, confirmation, submission key, attempt claims/outcomes, evidence | Project/conversation/action lookups |
 
 Continue using explicit request and persistence schemas. The
-[conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) proposes
+[conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) specifies
 project access and retained dialogue/action evidence, without inventing a user
-identity system or approval already given. Define dataset/artifact/summary/log
+identity system or treating model proposals as confirmed actions. Define dataset/artifact/summary/log
 retention and deletion before shared use. Monitoring will use Prometheus for time
 series, Grafana for visualization, and MongoDB for selected aggregates and alert
 evidence. Index uniqueness is tested; representative query/latency benchmarks
@@ -123,23 +114,13 @@ remain unmeasured.
 
 ## API contracts and remaining additions
 
-Implemented endpoints use `/api/v1`, consistent errors/correlation IDs, project-scoped access, and list pagination. The [README endpoint inventory](README.md#development-setup) and generated `/docs` describe the full current surface. The milestone contracts below distinguish existing routes from planned ones.
+Implemented endpoints use `/api/v1`, consistent errors/correlation IDs, project-scoped access, and list pagination. The [README endpoint inventory](README.md#development-setup) and generated `/docs` describe the full current surface. The table below lists future routes; their exact contracts require reviewed designs.
 
 | Endpoint | State | Behavior |
 | --- | --- | --- |
-| `POST /datasets` | Implemented | Register a validated local CSV reference/version |
-| `POST /models` | Implemented | Create an MLP classification model record |
-| `POST /experiments` | Implemented | Validate and queue idempotent training; return `202` |
-| `GET /experiments/{id}`, `GET /experiments` | Implemented | Retrieve status/metrics/artifacts; filter and paginate |
-| `GET /experiments/compare` | Implemented | Compare succeeded experiments on the same dataset using validation metrics |
-| `POST /models/{id}/versions` | Implemented | Register a verified checkpoint after successful final test evaluation |
-| `POST /tuning-jobs` | Implemented | Queue an idempotent bounded serial search; return `202` |
-| `GET /tuning-jobs/{id}`, `GET /tuning-jobs/{id}/trials` | Implemented | Return progress/best outcome and paginated saved trials |
-| `POST /tuning-jobs/{id}/cancel` | Implemented | Cancel queued work or cooperatively stop running work |
 | `POST /monitoring/observations` | Planned | Ingest timestamped model observations |
 | `GET /monitoring/models/{version_id}/summary` | Planned | Return a bounded monitoring summary and evidence |
 | `POST /chat` | Planned | Use LangChain/local pre-trained inference for guided dialogue, grounded suggestions, and exact-action confirmation |
-| `GET /health/live`, `GET /health/ready` | Implemented | Process liveness and MongoDB/Redis connectivity |
 
 Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, and `cancelled`; experiment records also support `cancelled` for tuning children but have no standalone cancellation endpoint. Submission retries are idempotent, leases/heartbeats are persisted, and recovery claims are bounded. Tuning child writes share a transaction with a parent ownership fence; MongoDB replica set/sharded-cluster support is required. Preserve these contracts while strengthening outage/restart coverage. A succeeded tuning job can report `final_evaluation: skipped_budget`; version registration still requires an evaluated experiment.
 
@@ -263,7 +244,7 @@ that resolves retained metadata/artifacts are verified before shared use.
 1. Keep transactional parent ownership fencing and its real-MongoDB boundary regressions passing; the audited stale-child-write bugs are fixed.
 2. Keep the controlled worker-loss/dependency-outage recovery gate passing in CI, including final evaluation and attempt exhaustion. Concurrent load and network partitions remain prerequisites for parallel execution.
 3. Retain the provider-independent conversation tool contracts, project checks, explicit budgets, and idempotency tests in the [approved tool slice](docs/plans/2026-10-06-conversation-tools-plan.md).
-4. Review the local conversation plan, select/evaluate an installed pre-trained model, and implement only the approved scope: LangChain, guided dialogue/history, bounded suggestions, confirmed actions, and grounded explanations.
+4. Implement the approved local conversation plan, select/evaluate an installed pre-trained model, and implement only the approved scope: LangChain, guided dialogue/history, bounded suggestions, confirmed actions, and grounded explanations.
 5. Review domain-service extraction early; deliver the three required independent REST services, monitoring with LangChain summaries/fixes, AI snippet generation, and Kubernetes/CI/CD evidence. These are course obligations, not optional commercial-scale work. Keep current serial CPU training limits.
 6. Complete every row of the supplied course checklist and its onboarding demonstration. Track shared-production hardening and quantitative research claims separately.
 
@@ -274,7 +255,7 @@ The [audit](docs/project-status.md#next-work-in-order) records the source eviden
 **Implemented checks:** 211 local unit/API/training/tuning/tool cases, 21 ordinary
 real-service cases, and ten isolated recovery cases, with provenance in the
 [status record](docs/project-status.md) and historical
-[ten-iteration report](docs/test-validation.md). No suites were rerun for this
+[ten-iteration report](docs/verification.md#ten-iteration-validation-october-6-2026). No suites were rerun for this
 documentation alignment. The target strategy still needs local-model, separate
 service, monitoring, AI generation, Kubernetes/deployment, concurrent-load,
 partition, restore, and generated-code isolation evidence.

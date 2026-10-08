@@ -86,8 +86,8 @@ changes, validate local links/anchors, example syntax, factual sources, and
 `git diff --check`. Build package changes with `uv build`.
 
 Changes involving MongoDB, queues, workers, tuning ownership, or recovery also
-require the affected real-service gates: follow [ordinary integration setup](README.md#run-checks)
-and [isolated recovery setup](docs/recovery.md#run-the-suite). Ordinary integration
+require the affected real-service gates: follow [ordinary integration setup](docs/verification.md#ordinary-integration)
+and [isolated recovery setup](docs/verification.md#run-the-suite). Ordinary integration
 requires both `MLPP_RUN_INTEGRATION=1` and `MLPP_RUN_WORKER_INTEGRATION=1`;
 recovery uses `MLPP_RUN_RECOVERY_INTEGRATION=1` separately and runs serially.
 Record missing services or selected-case skips as verification gaps, not passes.

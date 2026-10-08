@@ -6,7 +6,7 @@
 - Source baseline for this revision: `ba6334f7c968f01d544cc513e76b3e65d96c63df` / `main`
 - Request: align the next milestone 4 slice with the supplied
   [course requirements](../course-requirements.md) and local pre-trained inference.
-  The [conversation tools](../conversation-tools.md) are already delivered.
+  The [conversation tools](../workflows.md#conversation-tool-layer) are already delivered.
 - Human reviewer/approval: repository user, 2026-10-07, approved this revised
   local LangChain/Ollama plan in this conversation before implementation.
 - Independent review: pending for state transitions, ownership predicates,
@@ -293,7 +293,7 @@ real local-model evaluations. Run focused tests after each step, retaining failu
    ordinary integration with **both** `MLPP_RUN_INTEGRATION=1` and
    `MLPP_RUN_WORKER_INTEGRATION=1`, following [README setup](../../README.md#run-checks).
    Run the existing isolated recovery suite serially with
-   `MLPP_RUN_RECOVERY_INTEGRATION=1` using [recovery setup](../recovery.md#run-the-suite).
+   `MLPP_RUN_RECOVERY_INTEGRATION=1` using [recovery setup](../verification.md#run-the-suite).
    Missing services or selected-case skips are verification gaps.
 5. Add `evaluations/test_conversation_model.py` outside default `tests/`
    discovery, with a separately registered `local_model_eval` marker, requiring
