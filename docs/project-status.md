@@ -43,7 +43,7 @@ completion. Feature implementation still requires explicit review of its plan.
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
 | 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Provider-independent tools implemented; LangChain/local-model conversation pending | Pre-trained local adapter, guided dialogue/history, tuning suggestions, confirmed actions, real-model evaluation |
+| 4. Conversational workflows | Provider-independent tools, schemas/settings, and deterministically tested LangChain/Ollama adapter implemented | Installed-artifact token verification, guided dialogue/history, tuning suggestions, confirmed actions, real-model evaluation |
 | 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
 | 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
@@ -53,9 +53,10 @@ These states describe delivered scope, not a percentage estimate or a production
 Person A's October 8 [conversation foundation](conversation-development.md) adds
 strict request/public-action/model-reply schemas, canonical finite-JSON
 fingerprints, the injected model interface/native tool descriptions, approved
-chat settings, and locked LangChain dependencies. The local inference adapter,
-routes, persistence, and live evaluation remain outstanding. The existing API
-and worker code are unchanged. Validation for this slice is recorded in the
+chat settings, and locked LangChain dependencies. The next A1 slice adds a local
+LangChain/Ollama adapter and SDK/HTTP boundary tests. Routes, persistence,
+installed-artifact token verification, and live evaluation remain outstanding.
+The existing API and worker code are unchanged. Validation for these slices is recorded in the
 [approved plan's outcome](plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
 the earlier counts below remain historical.
 
@@ -182,7 +183,7 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 The [approved conversation tool slice](plans/2026-10-06-conversation-tools-plan.md)
 is delivered. Retain its schema, access, budget, retry, and evidence checks.
 
-1. **Implement the [approved local conversation plan](plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. Select/evaluate the local artifact; implementation was approved October 7, 2026; the adapter and acceptance runs remain outstanding.
+1. **Implement the [approved local conversation plan](plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. The deterministically tested adapter is implemented; select the local artifact, verify its tokenizer/template counter, and complete dialogue/actions/routes and acceptance runs. Implementation was approved October 7, 2026.
 2. **Review required domain-service extraction.** Deliver independently deployable model-management, tuning, and monitoring REST APIs; preserve `/api/v1`, project access, and the shared MongoDB ownership fence. Separate services are a course requirement, independent of training concurrency or commercial scale.
 3. **Implement milestone 5 monitoring.** Demonstrate running observations and dashboard/alert updates within a reviewed interval, then LangChain summaries and proposed fixes grounded in metric/log evidence.
 4. **Implement milestone 6 AI code generation.** Generate Python integration snippets from conversation using LangChain/local inference, validate/provide provenance, and retain review boundaries. Templates alone are insufficient; execution remains optional.

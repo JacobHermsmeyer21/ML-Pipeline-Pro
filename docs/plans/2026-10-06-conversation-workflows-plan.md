@@ -422,6 +422,73 @@ arithmetic and does not substitute for Person B/human review. These gaps remain
 before A1/course C3/C5 can be called delivered. The approved contracts, defaults,
 and acceptance criteria remain unchanged.
 
+### Person A local adapter, October 8, 2026
+
+The repository user requested the next Person A step on baseline `8637173`,
+branch `person-a/conversation-foundation`. This continues A1's recorded October 7
+approval. The adapter uses the real locked `ChatOllama.bind_tools` and native
+protocol against a deterministic HTTP runtime in tests; no unfinished stash code
+was restored. It performs lazy local-artifact/capability/context inspection,
+returns one proposal or strict final reply, bounds requests/responses/usage and
+deadlines, redacts known secrets, disables tracing/cloud-key inheritance,
+redirects/proxies/retries, and closes both SDK clients. The host still owns
+argument validation, citations, persistence, confirmation, and dispatch.
+
+Token admission receives the actual SDK-normalized HTTP payload and reserves
+the full output allowance. A failing exact-payload comparison exposed differences
+in pre-SDK messages/tools; moving admission to the HTTP request hook corrected
+the mechanism. Raw response hooks reject incomplete replies and malformed native
+arguments before SDK normalization. Generation requires an injected,
+artifact-specific tokenizer/template counter; no unverified generic estimate or
+counter is supplied. Artifact/tokenization and actual overflow evaluation remain
+open. This implements the admission interface within the approved limits; it does
+not establish a working installed model or change approved API/default contracts.
+
+Windows/PowerShell, Python 3.11.5, uv 0.12.23: locked training sync, Ruff lint,
+format (**81 files**), **336 fast tests** (44 added: 37 adapter and seven logging;
+31 integration cases deselected; zero selected skips), and compatibility of
+105 installed packages passed. Both distributions built; package contents were
+inspected for the new adapter and ignored-file exclusions. `langsmith 0.14.5` is
+now a direct dependency for the tracing-disable context; no locked package
+version changed. LangChain/Ollama versions remain those in the foundation record.
+The build retains uv's general workspace-cache warning; inspected archives
+exclude caches. An initial editable-build attempt could not contact PyPI under
+the sandbox network restriction; cached offline sync succeeded, and the final
+standard locked sync and offline package build passed.
+
+Added tests verify lazy inspection/identity, exact native request/tool payloads,
+incomplete mutation proposals without execution, partial/multiple/malformed
+responses, forged fact values, usage limits, exact UTF-8 context and decoded
+response byte boundaries (including gzip/chunks), output-token reservation,
+safe errors/no retries, absolute inference timeout/cancellation/cleanup,
+redirect/cloud-key/tracing isolation, and configured secret redaction. Existing
+assertions and live-service gates were preserved. Logger tests save/restore all
+modified logger state. These tests prove adapter boundaries, not natural-language
+understanding, citation support, real tokenizer correctness, or model quality.
+
+Retained [source/execution/package provenance](../evidence/2026-10-08-conversation-adapter/results.json)
+and [raw fast-test output](../evidence/2026-10-08-conversation-adapter/unit.txt)
+are checked in. Local JUnit/output remain in ignored
+`artifacts/conversation-adapter-validation/`. The
+[SDK finding](../memory/conversation-ollama-boundary.md) records the durable
+normalization/credential behavior. README, environment comments, development
+guide, roadmap, course checklist and status retain the distinction between this
+tested implementation step and outstanding A1/course evidence. Documentation
+links/examples and staged whitespace are checked before commit/push; Git history
+and the task response record whether the remote received the change.
+
+**Outstanding:** selected installed artifact/license/runtime evidence, verified
+tokenizer/template counter, cold/warm resource observations and ten-scenario
+real-model evaluation; dialogue/action persistence and claims; host loop and
+grounding; decisions and routes/lifespan/Compose integration; MongoDB races and
+lost-response/process recovery. The Ollama endpoint at `127.0.0.1:11434` was
+unavailable. Docker's daemon pipe was absent, so ordinary integration and isolated
+recovery could not run; this slice changes no MongoDB/queue/worker/recovery code.
+No live-model inference, clean-checkout setup, remote CI, or course-row closure is
+claimed. Independent review is unavailable in this session; self-review covered
+payload/token arithmetic, raw SDK normalization, failure paths and cleanup and
+is not independent review. Person B/human review remains required for A1.
+
 Original draft preparation checks (October 6, 2026, original baseline `32df698`,
 Windows/PowerShell):
 local Markdown validation passed for 17 documents and 144 links/anchors; the two

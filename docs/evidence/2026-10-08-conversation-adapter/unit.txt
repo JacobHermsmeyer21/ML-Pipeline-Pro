@@ -1,0 +1,66 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 367 items / 31 deselected / 336 selected
+
+tests\test_config.py ................                                    [  4%]
+tests\test_conversation_config.py ...................................... [ 16%]
+..............                                                           [ 20%]
+tests\test_conversation_model.py ..                                      [ 20%]
+tests\test_conversation_ollama.py .....................................  [ 31%]
+tests\test_conversation_schemas.py ...........................           [ 39%]
+tests\test_datasets.py .............                                     [ 43%]
+tests\test_errors.py .....                                               [ 45%]
+tests\test_experiments.py ..................                             [ 50%]
+tests\test_health.py .............                                       [ 54%]
+tests\test_logging.py .........                                          [ 57%]
+tests\test_registration.py ..............                                [ 61%]
+tests\test_tool_transport.py ..................................          [ 71%]
+tests\test_tools.py ................................................     [ 85%]
+tests\test_training.py .......                                           [ 87%]
+tests\test_tuning_api.py ......................                          [ 94%]
+tests\test_tuning_execution.py ...................                       [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\conversation-adapter-validation\unit.xml -
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.11.5-final-0 _______________
+
+Name                                          Stmts   Miss Branch BrPart  Cover   Missing
+-----------------------------------------------------------------------------------------
+src\ml_pipeline_pro\__init__.py                   1      0      0      0   100%
+src\ml_pipeline_pro\access.py                    13      0      4      0   100%
+src\ml_pipeline_pro\api.py                      147     10     46      6    91%   131-134, 178, 220, 239, 267, 270, 283
+src\ml_pipeline_pro\artifacts.py                 40      5      4      1    86%   22-23, 36, 55-56
+src\ml_pipeline_pro\config.py                   105      0     18      0   100%
+src\ml_pipeline_pro\connections.py               35      7      0      0    80%   26-44
+src\ml_pipeline_pro\conversation_model.py         7      0      0      0   100%
+src\ml_pipeline_pro\conversation_ollama.py      193      7     78      7    95%   166, 172, 207, 241, 315, 322, 330
+src\ml_pipeline_pro\conversation_schemas.py      98      0      6      0   100%
+src\ml_pipeline_pro\datasets.py                  72      4     22      1    95%   49-50, 79, 83
+src\ml_pipeline_pro\errors.py                    51      0      0      0   100%
+src\ml_pipeline_pro\execution.py                 47      3      8      0    91%   44-47, 93
+src\ml_pipeline_pro\jobs.py                      90     70     24      0    18%   16-32, 35-38, 41-42, 62-83, 86-117, 122-136, 139-151, 156-159, 181-201, 206-220, 225-252, 261-272
+src\ml_pipeline_pro\logging.py                   49      0     18      0   100%
+src\ml_pipeline_pro\main.py                      66      0      2      0   100%
+src\ml_pipeline_pro\ownership.py                 14     10      4      0    22%   18-37
+src\ml_pipeline_pro\queue.py                     18      9      2      0    45%   10-36, 41, 44, 53, 63-65
+src\ml_pipeline_pro\repositories.py              35     15      2      0    54%   36-38, 41-44, 47-48, 51-59, 62-63
+src\ml_pipeline_pro\schemas.py                  105      1      6      1    98%   45
+src\ml_pipeline_pro\tool_schemas.py              89      0      4      0   100%
+src\ml_pipeline_pro\tool_transport.py            60      0     12      0   100%
+src\ml_pipeline_pro\tools.py                    144      7     76      7    94%   220, 270, 283, 291, 395, 399, 405
+src\ml_pipeline_pro\tracking.py                  39     27      8      0    26%   15-20, 23-64, 68-75, 80-86
+src\ml_pipeline_pro\training.py                 124      4     20      2    96%   38-39, 89, 195
+src\ml_pipeline_pro\training_control.py          23      1      6      1    93%   32
+src\ml_pipeline_pro\tuning_api.py                61      4     18      0    92%   54-57
+src\ml_pipeline_pro\tuning_execution.py         188     44     80     20    73%   95-96, 97->99, 100-105, 107, 114, 118, 124, 129-130, 134, 151-152, 153->230, 177-178, 190, 192, 194, 229, 234, 239, 243, 246, 259, 264->288, 283-285, 304, 310-338, 353, 382
+src\ml_pipeline_pro\tuning_sampler.py            19      0      2      0   100%
+src\ml_pipeline_pro\tuning_schemas.py            95      0      6      0   100%
+src\ml_pipeline_pro\tuning_store.py             124     94     22      0    21%   17-20, 23-24, 30-54, 59-124, 127, 135-146, 151-167, 172-179, 182-214, 217, 228-250, 255-269, 272-278, 281-304, 307-333, 340-366, 375-378, 381-410, 414-421
+src\ml_pipeline_pro\worker.py                    58     58      4      0     0%   3-76
+-----------------------------------------------------------------------------------------
+TOTAL                                          2210    380    502     46    81%
+===================== 336 passed, 31 deselected in 23.66s =====================

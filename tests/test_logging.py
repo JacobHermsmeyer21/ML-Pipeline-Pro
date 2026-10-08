@@ -1,7 +1,10 @@
 import json
 import logging
 
-from ml_pipeline_pro.logging import JsonFormatter
+import pytest
+
+from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.logging import JsonFormatter, configure_logging
 
 
 def test_logs_are_json_and_preserve_request_context():
@@ -38,3 +41,53 @@ def test_log_credentials_are_redacted_from_messages_and_tracebacks():
         assert secret not in encoded
         assert secret not in payload["message"]
     assert "[REDACTED]" in payload["exception"]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "langchain",
+        "langchain_core",
+        "langchain_ollama",
+        "langsmith",
+        "ollama",
+        "httpx",
+        "httpcore",
+    ],
+)
+def test_model_and_http_client_loggers_use_configured_secret_redaction(name):
+    names = (
+        "ml_pipeline_pro",
+        "pymongo",
+        "redis",
+        "uvicorn",
+        "celery",
+        "kombu",
+        "langchain",
+        "langchain_core",
+        "langchain_ollama",
+        "langsmith",
+        "ollama",
+        "httpx",
+        "httpcore",
+        "uvicorn.error",
+        "uvicorn.access",
+    )
+    originals = {
+        item: (
+            logging.getLogger(item).handlers[:],
+            logging.getLogger(item).level,
+            logging.getLogger(item).propagate,
+        )
+        for item in names
+    }
+    logger = logging.getLogger(name)
+    try:
+        configure_logging(Settings(_env_file=None, project_api_keys={"demo": "fixture-known-key"}))
+        record = logging.LogRecord(name, logging.ERROR, __file__, 1, "fixture-known-key", (), None)
+        assert logger.propagate is False
+        assert "fixture-known-key" not in logger.handlers[0].formatter.format(record)
+    finally:
+        for item, original in originals.items():
+            restored = logging.getLogger(item)
+            restored.handlers, restored.level, restored.propagate = original

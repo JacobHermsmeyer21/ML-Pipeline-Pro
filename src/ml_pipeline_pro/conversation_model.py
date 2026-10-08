@@ -1,4 +1,4 @@
-"""Model interface and native tool schemas, without inference or tool execution."""
+"""Model interface and native tool schemas; the host owns tool execution."""
 
 from typing import Any, Protocol
 

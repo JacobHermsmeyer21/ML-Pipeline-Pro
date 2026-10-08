@@ -44,16 +44,34 @@ class JsonFormatter(logging.Formatter):
         return value
 
 
-def configure_logging(settings: Settings) -> None:
+def configured_secrets(settings: Settings) -> tuple[str, ...]:
+    """Known project keys and encoded/decoded connection passwords."""
     secrets = [key.get_secret_value() for key in settings.project_api_keys.values()]
     for connection_url in (settings.mongodb_uri, settings.redis_url):
         password = urlsplit(connection_url.get_secret_value()).password
         if password:
             secrets.extend((password, unquote(password)))
+    return tuple(secrets)
 
+
+def configure_logging(settings: Settings) -> None:
     handler = logging.StreamHandler()
-    handler.setFormatter(JsonFormatter(tuple(secrets)))
-    for name in ("ml_pipeline_pro", "pymongo", "redis", "uvicorn", "celery", "kombu"):
+    handler.setFormatter(JsonFormatter(configured_secrets(settings)))
+    for name in (
+        "ml_pipeline_pro",
+        "pymongo",
+        "redis",
+        "uvicorn",
+        "celery",
+        "kombu",
+        "langchain",
+        "langchain_core",
+        "langchain_ollama",
+        "langsmith",
+        "ollama",
+        "httpx",
+        "httpcore",
+    ):
         logger = logging.getLogger(name)
         logger.handlers = [handler]
         logger.setLevel(settings.log_level)

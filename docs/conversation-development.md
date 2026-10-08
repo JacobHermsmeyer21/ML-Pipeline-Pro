@@ -7,8 +7,12 @@ strict request/public-action/model-reply schemas, canonical fingerprints,
 injected model interface, native descriptions of the existing 13 tools,
 validated configuration, and locked `langchain-core` / `langchain-ollama` dependencies.
 
-There is no chat route, conversation persistence, inference adapter, or automatic
-tool execution in this slice. `MLPP_CHAT_ENABLED=true` does not enable chat yet.
+The next A1 slice adds [the local adapter](../src/ml_pipeline_pro/conversation_ollama.py)
+with native tool proposals, installed-artifact inspection, deadline/byte/token
+admission, fixed safe errors, redaction, and client cleanup. Deterministic tests
+exercise the real locked SDK against an in-memory HTTP transport.
+There is no chat route, conversation persistence, or automatic
+tool execution in these slices. `MLPP_CHAT_ENABLED=true` does not enable chat yet.
 Direct tracking/tuning routes continue to use their existing contracts. Course
 C3/C5 remain outstanding; installing dependencies and scripted tests do not
 establish a working pre-trained model.
@@ -16,8 +20,8 @@ establish a working pre-trained model.
 ## Configuration
 
 Settings follow the approved design and are listed in [.env.example](../.env.example).
-Environment variables override `.env`. Inference settings become active when
-the adapter/service is implemented; the settings below are validated now.
+Environment variables override `.env`. The adapter consumes inference settings;
+the API does not construct it yet.
 
 | Setting | Default and validation |
 | --- | --- |
@@ -32,15 +36,16 @@ the adapter/service is implemented; the settings below are validated now.
 | `MLPP_CHAT_MAX_MODEL_CALLS` | 5; integer 1-10. |
 | `MLPP_CHAT_MAX_TOOL_CALLS` | 4; integer 1-8. |
 | `MLPP_CHAT_MAX_OUTPUT_TOKENS` | 1024; integer 128-4096, less than context size. |
-| `MLPP_CHAT_CONTEXT_TOKENS` | 8192; integer 1024-16384; installed-model support and actual tokenization still need adapter/evaluation checks. |
+| `MLPP_CHAT_CONTEXT_TOKENS` | 8192; integer 1024-16384; adapter checks advertised model support and requires an artifact-specific token counter. Actual tokenization/overflow evidence is still outstanding. |
 
 Call/token settings accept decimal integer strings from environment files and
 reject booleans or fractional values. These are approved limits, not measured
 capacity. Schema validation enforces the 8 KiB UTF-8 user-message limit and
 requires exactly one tool call or final reply per model step. The 64 KiB request
 and context, 128 KiB tool response, 256 KiB saved-record, and ten-turn history
-caps are constants for the upcoming service; schema definitions alone do not
-enforce those whole-payload/transport/history boundaries.
+caps belong to the approved service design. The adapter enforces 64 KiB serialized
+context including instructions/tools; the upcoming service must enforce the
+request, tool, saved-record, and history boundaries.
 
 ## Model and action boundaries
 
@@ -58,12 +63,54 @@ fingerprints use sorted, compact, finite JSON encoded as UTF-8 after existing to
 validation expands defaults. Required runtime/objective/tuning limits retain the
 existing tool rules.
 
-The adapter will use the [official LangChain ChatOllama integration](https://docs.langchain.com/oss/python/integrations/chat/ollama)
+The adapter uses the [official LangChain ChatOllama integration](https://docs.langchain.com/oss/python/integrations/chat/ollama)
 and native `bind_tools` protocol. Run the separately installed Ollama server with
 `OLLAMA_NO_CLOUD=1` in **its** environment, per [Ollama's local-only setup](https://docs.ollama.com/faq#how-do-i-disable-ollama-cloud-features).
-Artifact selection, digest/license/runtime recording, tokenization checks, cold
-and warm inference, and the approved ten-scenario live evaluation remain
+Artifact selection, retained digest/license/runtime evidence, tokenization checks,
+cold and warm inference, and the approved ten-scenario live evaluation remain
 outstanding. No model download or inference belongs in the ordinary test gate.
+
+## Adapter lifecycle and admission
+
+Construct `OllamaConversationModel(settings, count_input_tokens=counter)` only
+after the host has selected the local artifact. Construction opens no network
+requests. An async context manager calls `prepare()` and closes both clients on
+exit, including inspection failure and cancellation. Inspection reads `/api/tags`,
+`/api/show`, and `/api/version`; it requires the configured installed tag/digest,
+native tool capability, and advertised context support. Provenance captures the
+reported digest/runtime, package versions, and license/template/instruction/tool
+hashes. A missing license remains `null`; the evaluation must retain and inspect
+the actual artifact license. Inspection does not establish model quality or
+immutability of an operator-retagged artifact.
+
+The `counter` receives the exact SDK-normalized Ollama request at the HTTP request
+hook, including messages and tools. It must use the selected artifact's tokenizer
+and runtime chat/tool template, including special tokens. Verify it against
+runtime prompt counts and overflow tests before integrating the adapter into a
+chat route. No counter is supplied in this slice: inspection still works, but
+generation fails with `model_unavailable`. Tests inject synthetic counts to prove
+admission boundaries; they do not establish tokenization accuracy. Admission
+reserves the entire output allowance before the HTTP inference request.
+
+The adapter submits a single non-streaming call, sets `num_ctx` and `num_predict`,
+and checks reported token usage. Response hooks count decoded chunks up to the
+256 KiB record cap before JSON parsing, including compressed/chunked responses.
+Partial replies, token-limit termination, malformed native arguments, multiple
+calls, invalid JSON, duplicate keys, and model-supplied fact values are rejected.
+Final replies are strict `ModelReply` JSON; tool arguments stay incomplete for
+the host's typed validation/missing-input guidance. No tool is dispatched here,
+and citation support still requires the host's evidence check.
+
+Known configured keys/passwords and recognized credential patterns are redacted
+from submitted context and returned replies/arguments. The future service must
+also redact stored dialogue and public evidence. Redaction does not detect every
+free-text secret. Clients disable proxy inheritance, redirects, automatic
+transport retries, cache, thinking output, and LangSmith tracing; inherited
+`OLLAMA_API_KEY` headers are removed from both SDK clients. `langsmith` is declared
+directly to use its tracing-disable context, with no package-version change.
+LangChain debug printing fails closed before inference. Application logging adds
+model/HTTP logger namespaces to its configured redaction. Timeout/cancellation
+stops the local request; it cannot undo runtime work already started.
 
 ## Verify this slice and continue A1
 
@@ -72,16 +119,20 @@ From the repository root:
 ```powershell
 uv sync --locked --extra training
 uv run --locked --extra training pytest tests/test_conversation_schemas.py tests/test_conversation_model.py tests/test_conversation_config.py
+uv run --locked --extra training pytest tests/test_conversation_ollama.py tests/test_logging.py
 ```
 
 The tests cover UTF-8 boundaries, trusted-context exclusion, exact decision shape,
-fact references, native LangChain tool compatibility, and configuration failures.
+fact references, native LangChain tool compatibility, configuration failures,
+SDK-normalized token admission, response limits, error/retry behavior,
+credential/tracing isolation, and cleanup.
 They supplement the [full fast gate](verification.md#fast-checks), dependency
 compatibility, and package build. No existing assertion or live-service gate is
 relaxed. This slice makes no MongoDB, queue, worker, or recovery changes.
 
-Continue the approved plan in reviewable steps: implement/evaluate the local
-adapter; durable turn claims/replay; the bounded read loop; saved proposals and
+Continue the approved plan in reviewable steps: select the artifact and verify
+its tokenizer/runtime behavior; durable turn claims/replay; the bounded read
+loop; saved proposals and
 exact decisions; API/lifespan/docs integration with Person B; real-MongoDB races
 and lost-response/process recovery; and the opt-in live-model gate. The stash
 named `Before requested origin reset 2026-10-08` is preserved as unfinished source,

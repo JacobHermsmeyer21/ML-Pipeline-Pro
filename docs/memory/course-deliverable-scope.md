@@ -21,9 +21,11 @@ documented requirements and source findings, not evidence that
 the outstanding features or local model have been implemented or evaluated.
 
 Person A's October 8 [foundation](../conversation-development.md) introduces
-locked LangChain dependencies, schemas, a model interface, and settings. It does
-not supply inference, routes, persistence, or live-model evidence; C3/C5 remain
-outstanding. The preceding absent-dependency finding remains historical to its
+locked LangChain dependencies, schemas, a model interface, and settings. Its
+next A1 slice adds a deterministically tested LangChain/Ollama adapter.
+Installed-artifact token verification, routes, persistence, and live-model evidence
+remain outstanding; C3/C5 are still open. The preceding absent-dependency finding
+remains historical to its
 stated baseline.
 
 Revisit if the user supplies a revised course instruction or approves a different

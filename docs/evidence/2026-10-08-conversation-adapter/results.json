@@ -1,0 +1,113 @@
+{
+  "recorded_at_utc": "2026-10-08T23:32:32.880689+00:00",
+  "client_date": "2026-10-08",
+  "scope": "Person A A1 local adapter only; no routes, persistence, verified tokenizer, or live-model evidence",
+  "source_baseline": "8637173401396d221b0dfe7bca1dc421239da1bc",
+  "branch": "person-a/conversation-foundation",
+  "tested_source_sha256": {
+    "src/ml_pipeline_pro/conversation_ollama.py": "92d1dbd1f77c0780e06abf39bc698c4e59435e8f7e65f098b6a89febefb0547d",
+    "src/ml_pipeline_pro/conversation_model.py": "b73bec51a27c0b943a7382ef0e3bb9a824f5cdeebfd485e1372c797f4c019c6b",
+    "src/ml_pipeline_pro/logging.py": "06e77f76115784bff1a4b47fcaf95f510d1d342dd3b6f11d8fbcd022bd852dd7",
+    "tests/test_conversation_ollama.py": "d3fe93749b4665144b101e56ca1faaae120ae0e726fb05ced6568af3953907f5",
+    "tests/test_logging.py": "0fa8c09bbaf7dbd97e6141e365550cb347eec42df942443e6ce8a380c7ca659b",
+    "pyproject.toml": "03ed9e72212fae12bf180aa01d6ae31e0b55077a6378f30c6a4547df41f022da",
+    "uv.lock": "4b9aebd7705ed49ce1be35eb7d788964d051743d5b534067c0e5c8c1abb7122f",
+    ".env.example": "5a522c5d4159d840043ddbbfa053a45c20efe9f1465f2fb26ac4331939ab258b"
+  },
+  "environment": {
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.5",
+    "uv": "0.12.23",
+    "shell": "PowerShell",
+    "uv_executable": ".tools/uv/bin/uv.exe",
+    "uv_cache_dir": ".cache/uv"
+  },
+  "packages": {
+    "langchain-core": "1.6.9",
+    "langchain-ollama": "1.1.0",
+    "ollama": "0.6.3",
+    "langsmith": "0.14.5",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10"
+  },
+  "commands_observed": [
+    {
+      "command": "uv lock --offline",
+      "exit_code": 0,
+      "package_versions_changed": false
+    },
+    {
+      "command": "uv sync --locked --extra training",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv run --locked --extra training ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "uv run --locked --extra training ruff format --check .",
+      "exit_code": 0,
+      "files": 81
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"not integration\" --cov --junitxml=artifacts/conversation-adapter-validation/unit.xml",
+      "exit_code": 0,
+      "junit_counts": {
+        "tests": 336,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0
+      },
+      "integration_deselected": 31,
+      "raw_output": "unit.txt"
+    },
+    {
+      "command": "uv pip check",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv build --offline",
+      "exit_code": 0,
+      "warning": "Workspace cache warning; inspected distributions exclude caches"
+    }
+  ],
+  "build_inspection": {
+    "wheel_members": 34,
+    "sdist_members": 99,
+    "new_adapter_in_both_archives": true,
+    "ignored_paths_excluded": true
+  },
+  "initial_failures": [
+    "Pre-SDK token payload differed from actual HTTP JSON; admission moved to request hook and exact equality regression passes.",
+    "Initial editable rebuild could not contact PyPI in sandbox; cached offline sync succeeded before final standard locked sync."
+  ],
+  "gaps": [
+    "Ollama endpoint unavailable at 127.0.0.1:11434; no installed-artifact or real-model acceptance evidence.",
+    "Artifact-specific tokenizer/template counter absent; production generation fails closed without one.",
+    "Docker daemon pipe absent; ordinary integration and isolated recovery not run.",
+    "Independent review unavailable; implementing-assistant self-review only.",
+    "No remote CI or clean-checkout setup run."
+  ],
+  "review": {
+    "reviewer": "Implementing assistant (self-review)",
+    "independent": false,
+    "submitted_scope": "Adapter, SDK/native payload boundary, byte/token arithmetic, logging, tests and lock metadata",
+    "findings_and_resolutions": [
+      "Admission now observes exact SDK HTTP JSON.",
+      "Both SDK client authorization headers stripped and both clients closed.",
+      "Raw native response checked before SDK normalization.",
+      "Decoded response cap checked before JSON parsing.",
+      "Logging tests restore all modified logger state."
+    ]
+  },
+  "documentation_checks": {
+    "markdown_documents": 19,
+    "local_links_and_anchors": 227,
+    "python_fences": 2,
+    "powershell_fences": 19,
+    "env_example_valid": true
+  }
+}

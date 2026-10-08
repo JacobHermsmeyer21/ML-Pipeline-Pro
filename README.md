@@ -19,8 +19,10 @@ The [conversation tool guide](docs/workflows.md#conversation-tool-layer) covers 
 and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py`
 for a service-free contract demo. Person A's initial conversation foundation adds
 locked LangChain dependencies, strict conversation schemas, the model interface,
-and validated chat settings. The local inference adapter, chat routes,
-dialogue/action persistence, and real-model evaluation remain outstanding under
+and validated chat settings. The next A1 slice supplies a tested local inference
+adapter with native tool proposals and bounded requests. Chat routes,
+dialogue/action persistence, installed-artifact token verification, and real-model
+evaluation remain outstanding under
 the [approved design](docs/plans/2026-10-06-conversation-workflows-plan.md).
 See [conversation development](docs/conversation-development.md) for this slice's
 boundaries, configuration, and next steps.
@@ -123,6 +125,7 @@ src/ml_pipeline_pro/
   training_control.py # Deadlines, cancellation, and ownership checks
   conversation_schemas.py # Strict chat/action/fact contracts; no routes or storage yet
   conversation_model.py # Injected model interface and native tool descriptions
+  conversation_ollama.py # Local LangChain adapter; artifact-specific token counter required
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies
