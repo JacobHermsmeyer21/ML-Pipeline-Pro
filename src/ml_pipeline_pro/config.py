@@ -1,8 +1,9 @@
 """Validated, environment-based configuration."""
 
+import ipaddress
 import re
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 from urllib.parse import urlsplit
 
 from pydantic import Field, SecretStr, ValidationInfo, field_validator, model_validator
@@ -33,6 +34,108 @@ class Settings(BaseSettings):
     project_api_keys: dict[str, SecretStr] = Field(default_factory=dict)
     worker_lease_seconds: int = Field(default=30, ge=10, le=300)
     worker_max_attempts: int = Field(default=3, ge=1, le=10)
+    chat_enabled: bool = False
+    chat_backend: Literal["ollama"] = "ollama"
+    chat_model: str | None = Field(default=None, min_length=1, max_length=128)
+    chat_model_origin: str = "http://127.0.0.1:11434"
+    chat_api_origin: str = "http://127.0.0.1:8000"
+    chat_timeout_seconds: float = Field(default=60, gt=0, le=120, allow_inf_nan=False)
+    chat_model_timeout_seconds: float = Field(default=20, gt=0, le=60, allow_inf_nan=False)
+    chat_action_timeout_seconds: float = Field(default=30, gt=0, le=60, allow_inf_nan=False)
+    chat_max_model_calls: int = Field(default=5, strict=True, ge=1, le=10)
+    chat_max_tool_calls: int = Field(default=4, strict=True, ge=1, le=8)
+    chat_max_output_tokens: int = Field(default=1024, strict=True, ge=128, le=4096)
+    chat_context_tokens: int = Field(default=8192, strict=True, ge=1024, le=16384)
+
+    @field_validator(
+        "chat_max_model_calls",
+        "chat_max_tool_calls",
+        "chat_max_output_tokens",
+        "chat_context_tokens",
+        mode="before",
+    )
+    @classmethod
+    def chat_integer_setting(cls, value: Any) -> Any:
+        # Environment/dotenv values are strings; retain strict rejection of
+        # booleans and fractional numbers after parsing decimal integer settings.
+        if isinstance(value, str) and re.fullmatch(r"[0-9]+", value):
+            return int(value)
+        return value
+
+    @field_validator("chat_model")
+    @classmethod
+    def local_model_tag(cls, value: str | None) -> str | None:
+        if value is not None and (
+            not re.fullmatch(r"[a-zA-Z0-9_][a-zA-Z0-9_./-]*:[a-zA-Z0-9_][a-zA-Z0-9_.-]*", value)
+            or "cloud" in value.lower()
+        ):
+            raise ValueError("Chat model must be an explicit local model tag")
+        return value
+
+    @field_validator("chat_model_origin")
+    @classmethod
+    def private_model_origin(cls, value: str) -> str:
+        try:
+            parsed = urlsplit(value)
+            host = parsed.hostname or ""
+            local = host in {"localhost", "ollama", "host.docker.internal"}
+            try:
+                address = ipaddress.ip_address(host)
+                local = address.is_loopback or any(
+                    address in ipaddress.ip_network(network)
+                    for network in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fc00::/7")
+                )
+            except ValueError:
+                local = local or bool(
+                    re.fullmatch(
+                        r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\."
+                        r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.svc\.cluster\.local",
+                        host,
+                    )
+                )
+            if not local:
+                raise ValueError
+        except ValueError:
+            raise ValueError("Model origin must use an explicit local/private host") from None
+        return cls._http_origin(value)
+
+    @field_validator("chat_api_origin")
+    @classmethod
+    def api_origin(cls, value: str) -> str:
+        # The existing tool transport accepts operator-configured HTTP(S) origins.
+        return cls._http_origin(value)
+
+    @staticmethod
+    def _http_origin(value: str) -> str:
+        try:
+            parsed = urlsplit(value)
+            if (
+                not (
+                    parsed.scheme in {"http", "https"}
+                    and parsed.hostname
+                    and parsed.username is None
+                    and parsed.password is None
+                    and parsed.path in {"", "/"}
+                    and not parsed.query
+                    and not parsed.fragment
+                )
+                or parsed.port == 0
+            ):
+                raise ValueError
+        except ValueError:
+            raise ValueError(
+                "Chat origin must be HTTP(S) without credentials, path, query or fragment"
+            ) from None
+        return value
+
+    @model_validator(mode="after")
+    def chat_limits(self):
+        if self.chat_model_timeout_seconds > self.chat_timeout_seconds:
+            raise ValueError("Model timeout cannot exceed the overall chat timeout")
+        if self.chat_max_output_tokens >= self.chat_context_tokens:
+            raise ValueError("Chat context must leave space for input tokens")
+        # Missing model configuration must leave the direct API able to start.
+        return self
 
     @field_validator("project_api_keys")
     @classmethod

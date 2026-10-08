@@ -367,6 +367,61 @@ versions, commands/environment, requirement-mapped results/skips/warnings, raw
 evidence/archive locations, justified test changes, independent review and
 resolutions, deviations/reapproval, durable findings, and completion commit/push.
 
+### Person A foundation, October 8, 2026
+
+The repository user identified themselves as Person A and requested starting that
+work. On baseline `f0ec2ad`, branch `person-a/conversation-foundation`, this first
+approved implementation step adds strict conversation/model/public-action schemas,
+canonical finite-JSON fingerprints, the injected model interface and 13 native
+tool descriptions, validated chat settings, and locked LangChain dependencies.
+The earlier stash was inspected; schema/interface ideas were reused and corrected,
+while its unfinished adapter/store/service/routes were not restored. The stash
+remains intact. There is no new design approval or expansion into A2/A3.
+
+Windows/PowerShell, Python 3.11.5, uv 0.12.23: locked training sync, Ruff lint and
+format, **292 fast tests** (81 new; 31 integration cases deselected; zero selected
+skips), and compatibility of 105 installed packages passed. Both distributions
+built. Native tool descriptions passed LangChain compatibility checks while
+retaining required budgets and the existing catalog. Dependency versions include
+`langchain-core 1.6.9`, `langchain-ollama 1.1.0`, and `ollama 0.6.3`.
+
+Package inspection found a leftover `.uv-cache` included in the first source
+archive. Adding root Git/Docker exclusions reduced the rebuilt archive from
+1602 to 92 members. Inspection confirmed the new modules in the wheel and no
+cache, virtual environment, local tools, `.env`, or artifact paths in the source
+archive. uv still emits its general warning about a cache inside the workspace;
+the inspected distributions exclude it. Both CI-style dependency audits found
+no known vulnerabilities: the runtime audit could not query the CPU-suffixed
+PyTorch package, and the separate base-release audit passed with its standard
+`--no-deps` advisory warning.
+
+Tests were added for UTF-8 boundaries, trusted-context exclusion, exact decision
+shape, host-supplied fact values, one-call/reply output, stable action fingerprints,
+native tool descriptions, origins/tags, and setting budgets. A failing dotenv
+test established that strict integer fields rejected environment strings; parsing
+decimal strings fixed this while preserving boolean/fraction rejection. No
+existing assertions, skips, worker limits, or live-service gates changed.
+
+Retained [execution/source/package provenance](../evidence/2026-10-08-conversation-foundation/results.json)
+and [raw fast-test output](../evidence/2026-10-08-conversation-foundation/unit.txt)
+are checked in. The original JUnit and local outputs are in ignored
+`artifacts/conversation-foundation-validation/`; the existing CI will retain its
+own unit/integration/recovery reports when run. Remote CI results are not yet
+claimed. Documentation links/anchors, the example environment, and whitespace
+are validated with this change; final commit/push is recorded in Git history and
+the task response.
+
+**Outstanding:** inference adapter/artifact setup, durable dialogue/action claims,
+bounded read/confirmation loops, chat routes/lifespan/Compose integration,
+real-MongoDB race and process-loss evidence, and live-model evaluation. Docker
+Desktop's Linux engine was unavailable, so ordinary integration and isolated
+recovery were not run; this slice changes no MongoDB/queue/worker/recovery code.
+No clean-checkout setup or model inference is claimed. Independent review is
+unavailable in this session; self-review covered schema, origin and byte-limit
+arithmetic and does not substitute for Person B/human review. These gaps remain
+before A1/course C3/C5 can be called delivered. The approved contracts, defaults,
+and acceptance criteria remain unchanged.
+
 Original draft preparation checks (October 6, 2026, original baseline `32df698`,
 Windows/PowerShell):
 local Markdown validation passed for 17 documents and 144 links/anchors; the two

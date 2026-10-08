@@ -5,6 +5,7 @@
 - Source baseline: `840d51c9c683da0a58d6631477af8e16c5faf0dc` / `main`, after reset and pull from `origin/main`
 - Request: inspect the synchronized repository and divide remaining work between two people.
 - Human reviewer/approval: pending for this allocation and new designs; existing conversation approval remains valid within its recorded scope.
+- Person A assignment: repository user, October 8, 2026, identified themselves as Person A and requested starting that work. A1 begins under its existing approval; the remaining allocation and new feature designs still need review.
 - Independent review: the other person reviews each change; additional review of ownership/state/resource arithmetic must be recorded. No independent review occurred during this inspection.
 
 ## Proposed behavior and purpose
@@ -219,7 +220,9 @@ date, scope and requested changes here or in the relevant feature plan.
 
 ## Implementation outcome
 
-Planning artifact only; course features remain outstanding. Source inspection
+The allocation was a planning artifact; Person A has since started the approved
+A1 foundation, recorded in the [conversation outcome](2026-10-06-conversation-workflows-plan.md#implementation-outcome).
+Course features remain outstanding. Original source inspection
 used Windows/PowerShell at the baseline above. Reset/pull reached `origin/main`;
 there were zero local-only commits. Unfinished tracked/untracked conversation
 edits were removed from the working tree and preserved in named local stash

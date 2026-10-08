@@ -3,6 +3,7 @@
 .venv
 .tools
 .cache
+.uv-cache
 .env
 .env.*
 __pycache__

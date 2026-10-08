@@ -3,7 +3,7 @@
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
 **Documentation source check, October 8, 2026:** baseline `c28ae06`. The
-conversation workflow design was approved October 7, but this checkout still has
+conversation workflow design was approved October 7, but that checkout still had
 no LangChain dependencies, model adapter, chat routes, or dialogue/action store.
 The dated validation below is historical; no application suite was rerun for this
 documentation consolidation. [Verification](verification.md) owns execution setup;
@@ -49,6 +49,15 @@ completion. Feature implementation still requires explicit review of its plan.
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
 
 These states describe delivered scope, not a percentage estimate or a production-readiness certification. Detailed acceptance criteria are in [PLAN.md](../PLAN.md#implementation-milestones).
+
+Person A's October 8 [conversation foundation](conversation-development.md) adds
+strict request/public-action/model-reply schemas, canonical finite-JSON
+fingerprints, the injected model interface/native tool descriptions, approved
+chat settings, and locked LangChain dependencies. The local inference adapter,
+routes, persistence, and live evaluation remain outstanding. The existing API
+and worker code are unchanged. Validation for this slice is recorded in the
+[approved plan's outcome](plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
+the earlier counts below remain historical.
 
 ## Implemented behavior and limits
 

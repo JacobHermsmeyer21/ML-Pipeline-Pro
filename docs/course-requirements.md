@@ -75,9 +75,15 @@ Rechecked against `c28ae06` on October 8, 2026: coverage remains unchanged.
 The conversation design now has October 7 human approval, but the required
 local-model integration and its acceptance evidence remain outstanding.
 
+Person A's October 8 foundation adds locked LangChain/Ollama dependencies,
+conversation schemas, the model interface, and chat settings. The
+[development guide](conversation-development.md) records the limited scope;
+local inference, dialogue/actions, real-model evidence, and clean-checkout
+onboarding remain outstanding. No course row is closed by this slice.
+
 | ID | Requirement | Current coverage | Evidence needed to close the requirement |
 | --- | --- | --- | --- |
-| C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, and PyMongo exist; LangChain is absent. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../pyproject.toml) and [setup](../README.md#development-setup). |
+| C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, PyMongo, and locked LangChain/Ollama dependencies exist; local runtime setup and clean-checkout evidence remain outstanding. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../pyproject.toml) and [setup](../README.md#development-setup). |
 | C2 | Separate model-management, tuning, and monitoring services | Outstanding: one FastAPI application serves tracking/tuning; monitoring is absent. | Start each domain service independently; integration proves REST interactions and preserved transaction/project boundaries. See [current app](../src/ml_pipeline_pro/main.py) and [Compose](../compose.yaml). |
 | C3 | LangChain, pre-trained model, guided dialogue/history | Outstanding: 13 typed tools exist, but no model adapter or dialogue store. | A real local pre-trained model guides pipeline steps, requests missing inputs, uses recorded history, and returns grounded commands/insights. Deterministic tests alone cannot establish model integration. See [tool guide](workflows.md#conversation-tool-layer). |
 | C4 | MongoDB parameters, versions, tuning results/metrics, indexes | Initial classification scope delivered; representative query performance remains unmeasured. | Retain schema/index/persistence regressions and demonstrate retrieval of saved configurations, versions, trials, and metrics. See [tracking](../src/ml_pipeline_pro/tracking.py), [tuning store](../src/ml_pipeline_pro/tuning_store.py), and [status](project-status.md#architecture-and-durable-records). |

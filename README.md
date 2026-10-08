@@ -17,9 +17,13 @@ Follow the [classification walkthrough](docs/workflows.md#classification-experim
 The [conversation tool guide](docs/workflows.md#conversation-tool-layer) covers the first milestone
 4 slice: 13 provider-independent tools for reads, comparison, bounded submission,
 and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py`
-for a service-free contract demo. LangChain/local-model conversation and
-dialogue/action persistence remain planned under the
-[revised design](docs/plans/2026-10-06-conversation-workflows-plan.md), approved October 7; implementation and real-model evaluation remain outstanding.
+for a service-free contract demo. Person A's initial conversation foundation adds
+locked LangChain dependencies, strict conversation schemas, the model interface,
+and validated chat settings. The local inference adapter, chat routes,
+dialogue/action persistence, and real-model evaluation remain outstanding under
+the [approved design](docs/plans/2026-10-06-conversation-workflows-plan.md).
+See [conversation development](docs/conversation-development.md) for this slice's
+boundaries, configuration, and next steps.
 
 ## Development setup
 
@@ -80,7 +84,7 @@ The API runs at `http://127.0.0.1:8000`. Select `.venv/Scripts/python.exe` as th
 
 If Docker or the dependency services are not installed yet, the API still starts: liveness and `/docs` work, and readiness returns `503`. The foundation's unit tests also run without MongoDB, Redis, or language model credentials.
 
-Configuration uses the `MLPP_` prefix. `.env.example` lists connection URLs, dataset/artifact directories, data limits, project keys, and worker recovery limits. Environment variables override `.env`. Credentials belong in `.env` or the environment, outside source control. Connection URLs are treated as secrets; configured passwords and project keys are redacted from application and client logs.
+Configuration uses the `MLPP_` prefix. `.env.example` lists connection URLs, dataset/artifact directories, data limits, project keys, worker recovery limits, and the [conversation settings](docs/conversation-development.md#configuration). Environment variables override `.env`. Credentials belong in `.env` or the environment, outside source control. Connection URLs are treated as secrets; configured passwords and project keys are redacted from application and client logs.
 
 ### Run checks
 
@@ -117,6 +121,8 @@ src/ml_pipeline_pro/
   tuning_sampler.py # Seeded TPE suggestions from durable history
   tuning_execution.py # Serial search and final holdout evaluation
   training_control.py # Deadlines, cancellation, and ownership checks
+  conversation_schemas.py # Strict chat/action/fact contracts; no routes or storage yet
+  conversation_model.py # Injected model interface and native tool descriptions
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies
@@ -128,6 +134,7 @@ compose.yaml        # API and local dependencies
 | Document | Owns |
 | --- | --- |
 | [Workflow guide](docs/workflows.md) | Classification, bounded tuning, and typed tool tutorials |
+| [Conversation development](docs/conversation-development.md) | Person A's foundation, configuration, and outstanding A1 implementation |
 | [Verification](docs/verification.md) | Test setup, recovery boundaries, historical ten-iteration report |
 | [Project status](docs/project-status.md) | Implemented capabilities, limitations, audit findings, dated execution evidence |
 | [Course requirements](docs/course-requirements.md) | Supplied acceptance checklist and evidence needed to close each requirement |

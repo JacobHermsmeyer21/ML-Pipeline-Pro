@@ -166,10 +166,13 @@ Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, 
 
 ### 4. Add conversational workflows
 
-**Status:** First tool slice implemented; local conversational interface remains
-planned. The provider-independent layer exposes 13 existing API operations with
-budgets, trusted context/retry keys, and record evidence. No LangChain/local-model
-dependency, `/chat` route, dialogue store, or real-model evaluation exists yet.
+**Status:** Tool slice and initial conversation foundation implemented; the local
+conversational interface remains in development. The provider-independent layer
+exposes 13 existing API operations with budgets, trusted context/retry keys, and
+record evidence. Locked LangChain dependencies, strict conversation schemas,
+the model interface, and chat settings now exist. The inference adapter, `/chat`
+route, dialogue store, and real-model evaluation remain outstanding. See the
+[development guide](docs/conversation-development.md).
 The [implemented tool design](docs/plans/2026-10-06-conversation-tools-plan.md) and
 [revised local conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md)
 have different approval scopes. Course C3/C5 still need evidence.

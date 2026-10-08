@@ -1,0 +1,104 @@
+{
+  "recorded_at_utc": "2026-10-08T23:08:49.486392+00:00",
+  "client_date": "2026-10-08",
+  "scope": "Person A A1 foundation only; inference/routes/persistence remain outstanding",
+  "source_baseline": "f0ec2ad22d4cc5c57fd3537fd0c76c3cbb0f7a1c",
+  "branch": "person-a/conversation-foundation",
+  "tested_source_sha256": {
+    "src/ml_pipeline_pro/config.py": "60e9c96df9650039bd7f67a3f21b6325afd9977868f59395cce88c5f6bbe7b09",
+    "src/ml_pipeline_pro/conversation_model.py": "e3bc65156405e227d5a14ae4e70e8acc7e9db57b94158a9bcf4cd6cdcb49d381",
+    "src/ml_pipeline_pro/conversation_schemas.py": "3bb920e9747d3dce196a64d74a9ab65bde960af1886e59dbab7ed1990c5e434a",
+    "tests/test_conversation_config.py": "7f6c175c7c2f26c3d9975d4ada655da3270d948247fe1a50f860e0ba74d7cda4",
+    "tests/test_conversation_model.py": "8b7d166aee6d7b4029f25a64c6e724c6b065c6129a3ab0620c57803e2b0998ac",
+    "tests/test_conversation_schemas.py": "42d389c5d3a6bf00c943675d9414d47179802201e8e76048cd6d61ff14033fba",
+    "pyproject.toml": "5a700ad4f0fb86e6a84b23f37ed11985ab08e4281bc5166d1222492a9fc70ae3",
+    "uv.lock": "4b6d0770026669ef6f0ad8aa61c04e45bdfa0dd0c45ad5d93b7c9a1b1b1a3f3b",
+    ".env.example": "b642c6d9ce4fd5e545e43d55fb3db9731327099822011c5ea066ec0beb688913",
+    ".gitignore": "0a82f61df4e58b3ee12229fde54aacc4b22918a92b297f382be6103602355715",
+    ".dockerignore": "a9cb55c29986ca74e650a4a99a66355426e3c9a14dfb607f02c4d7b21622416f"
+  },
+  "environment": {
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.5",
+    "uv": "0.12.23",
+    "shell": "PowerShell",
+    "uv_executable": ".tools/uv/bin/uv.exe",
+    "uv_cache_dir": ".cache/uv"
+  },
+  "packages": {
+    "langchain-core": "1.6.9",
+    "langchain-ollama": "1.1.0",
+    "ollama": "0.6.3",
+    "langsmith": "0.14.5",
+    "httpx": "0.28.1",
+    "pydantic": "2.13.5",
+    "pydantic-settings": "2.15.0",
+    "torch": "2.14.1+cpu",
+    "ruff": "0.16.10",
+    "pytest": "9.1.1"
+  },
+  "commands_observed": [
+    {
+      "command": "uv sync --locked --extra training",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv run --locked --extra training ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "uv run --locked --extra training ruff format --check .",
+      "exit_code": 0,
+      "files": 78
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"not integration\" --cov --junitxml=artifacts/conversation-foundation-validation/unit.xml",
+      "exit_code": 0,
+      "junit_counts": {
+        "tests": 292,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0
+      },
+      "integration_deselected": 31,
+      "raw_output": "unit.txt"
+    },
+    {
+      "command": "uv pip check",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv build",
+      "exit_code": 0,
+      "warning": "workspace cache directory may be included; inspected archives exclude it"
+    },
+    {
+      "command": "pip-audit -r requirements.txt --require-hashes --disable-pip",
+      "exit_code": 0,
+      "result": "No known vulnerabilities found; torch CPU suffix unavailable on PyPI"
+    },
+    {
+      "command": "pip-audit -r torch-audit.txt --no-deps --disable-pip",
+      "exit_code": 0,
+      "result": "No known vulnerabilities found; advisory warning about --no-deps"
+    }
+  ],
+  "build_inspection": {
+    "sdist_members": 92,
+    "wheel_members": 33,
+    "forbidden_paths_present": false,
+    "archives_sha256": {
+      "ml_pipeline_pro-0.1.0.tar.gz": "de72ba49dfc852d3b67f2268dc0085522f469b12b37ce3d66f6b5a918ca535c9",
+      "ml_pipeline_pro-0.1.0-py3-none-any.whl": "23e65655ed01c82e443e8aa65b94abf327b2a5f4bcf30df7df1da7ff4a235ef5"
+    }
+  },
+  "gaps": [
+    "Docker Desktop Linux engine unavailable; ordinary integration and isolated recovery not run",
+    "No real model adapter/artifact/evaluation in this slice",
+    "Independent review unavailable in this session; human review of resource arithmetic remains pending",
+    "Clean-checkout setup not exercised; locked sync used the existing environment",
+    "Remote CI results not known at evidence capture"
+  ]
+}

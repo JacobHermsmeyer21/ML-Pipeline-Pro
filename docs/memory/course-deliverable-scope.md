@@ -20,6 +20,12 @@ source check at `c28ae06` confirms implementation remains outstanding. These are
 documented requirements and source findings, not evidence that
 the outstanding features or local model have been implemented or evaluated.
 
+Person A's October 8 [foundation](../conversation-development.md) introduces
+locked LangChain dependencies, schemas, a model interface, and settings. It does
+not supply inference, routes, persistence, or live-model evidence; C3/C5 remain
+outstanding. The preceding absent-dependency finding remains historical to its
+stated baseline.
+
 Revisit if the user supplies a revised course instruction or approves a different
 deployment/model scope. Do not make microservices or Kubernetes conditional on
 commercial scale, count templates as AI generation, or infer implementation
