@@ -30,6 +30,11 @@ and [serial recovery gate](docs/verification.md#worker-and-dependency-recovery-v
 validation remain prerequisites for increasing training concurrency, independent
 of separating API services.
 
+The [two-person completion plan](docs/plans/2026-10-08-two-person-course-completion-plan.md)
+proposes owners, interface handoffs, dependency checkpoints, and evidence for all
+remaining course requirements. That allocation awaits review and preserves the
+existing conversation approval; new feature designs still require their own review.
+
 ## Development workflow
 
 Apply the [development methodology](docs/development-methodology.md) to each
