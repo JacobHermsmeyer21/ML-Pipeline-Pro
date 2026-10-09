@@ -1,8 +1,9 @@
 # Workflow guide
 
 Use these workflows after the [README setup](../README.md#development-setup).
-The examples cover the implemented backend; natural-language conversation is
-approved for implementation but has no adapter, routes, or durable history yet.
+The examples cover the implemented backend. Conversation routes, durable history,
+grounded reads and confirmed actions now exist; real local-model/tokenizer
+acceptance remains open. See [conversation development](conversation-development.md).
 
 - [Classification experiments](#classification-experiment-walkthrough): register inputs, train, compare, download, and register versions.
 - [Bounded tuning](#bounded-classification-tuning): run a search, inspect trials, cancel, and register the evaluated winner.

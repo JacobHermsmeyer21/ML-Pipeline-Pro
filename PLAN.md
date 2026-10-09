@@ -125,7 +125,6 @@ Implemented endpoints use `/api/v1`, consistent errors/correlation IDs, project-
 | --- | --- | --- |
 | `POST /monitoring/observations` | Planned | Ingest timestamped model observations |
 | `GET /monitoring/models/{version_id}/summary` | Planned | Return a bounded monitoring summary and evidence |
-| `POST /chat` | Planned | Use LangChain/local pre-trained inference for guided dialogue, grounded suggestions, and exact-action confirmation |
 
 Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, and `cancelled`; experiment records also support `cancelled` for tuning children but have no standalone cancellation endpoint. Submission retries are idempotent, leases/heartbeats are persisted, and recovery claims are bounded. Tuning child writes share a transaction with a parent ownership fence; MongoDB replica set/sharded-cluster support is required. Preserve these contracts while strengthening outage/restart coverage. A succeeded tuning job can report `final_evaluation: skipped_budget`; version registration still requires an evaluated experiment.
 
@@ -173,8 +172,10 @@ record evidence. Locked LangChain dependencies, strict conversation schemas,
 the model interface, and chat settings now exist. The local inference adapter has
 deterministic SDK/HTTP tests; durable turn/proposal storage has real-MongoDB
 claim/replay/takeover coverage. The bounded host loop grounds supplied API facts
-and preflights saved proposals. `/chat`, action decisions/dispatch,
-artifact-specific token verification, and real-model evaluation remain outstanding. See the
+and preflights saved proposals. Authenticated chat/history/action routes and
+confirmed dispatch now include same-key retries and killed-chat-process recovery.
+Artifact-specific token verification, real-model evaluation, independent review
+and clean-checkout onboarding remain outstanding. See the
 [development guide](docs/conversation-development.md).
 The [implemented tool design](docs/plans/2026-10-06-conversation-tools-plan.md) and
 [revised local conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md)
@@ -263,11 +264,14 @@ The [audit](docs/project-status.md#next-work-in-order) records the source eviden
 
 ## Testing strategy
 
-**Implemented checks:** 211 local unit/API/training/tuning/tool cases, 21 ordinary
-real-service cases, and ten isolated recovery cases, with provenance in the
+**Latest retained conversation checks:** 402 local unit/API/training/tuning/tool
+cases, 56 ordinary real-service cases, and ten isolated recovery cases, with
+source hashes and raw results in the
+[action-slice evidence](docs/evidence/2026-10-08-conversation-actions/results.json).
+Earlier counts retain their own revisions in the
 [status record](docs/project-status.md) and historical
-[ten-iteration report](docs/verification.md#ten-iteration-validation-october-6-2026). No suites were rerun for this
-documentation alignment. The target strategy still needs local-model, separate
+[ten-iteration report](docs/verification.md#ten-iteration-validation-october-6-2026).
+The target strategy still needs local-model, separate
 service, monitoring, AI generation, Kubernetes/deployment, concurrent-load,
 partition, restore, and generated-code isolation evidence.
 

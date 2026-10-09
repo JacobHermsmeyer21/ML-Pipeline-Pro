@@ -2,22 +2,24 @@
 
 Person A starts with A1 in the [two-person allocation](plans/2026-10-08-two-person-course-completion-plan.md).
 Its [conversation design](plans/2026-10-06-conversation-workflows-plan.md)
-already has October 7 implementation approval. This first slice supplies the
+already has October 7 implementation approval. The foundation supplies the
 strict request/public-action/model-reply schemas, canonical fingerprints,
 injected model interface, native descriptions of the existing 13 tools,
 validated configuration, and locked `langchain-core` / `langchain-ollama` dependencies.
 
-The next A1 slice adds [the local adapter](../src/ml_pipeline_pro/conversation_ollama.py)
+The implemented A1 slices include [the local adapter](../src/ml_pipeline_pro/conversation_ollama.py)
 with native tool proposals, installed-artifact inspection, deadline/byte/token
 admission, fixed safe errors, redaction, and client cleanup. Deterministic tests
 exercise the real locked SDK against an in-memory HTTP transport.
-A third A1 slice adds [the durable store](../src/ml_pipeline_pro/conversation_store.py)
+[The durable store](../src/ml_pipeline_pro/conversation_store.py) provides support
 for turn claims/replay, scoped history, and immutable pending proposals, with
-real-MongoDB transaction-race coverage. The next slice adds the bounded
+real-MongoDB transaction-race coverage. The bounded
 [host loop](../src/ml_pipeline_pro/conversation_service.py) and
-[fact renderer](../src/ml_pipeline_pro/conversation_grounding.py), with scripted
-model tests and real HTTP/MongoDB orchestration tests. Chat routes and action
-decisions/dispatch remain pending. `MLPP_CHAT_ENABLED=true` does not expose chat yet.
+[fact renderer](../src/ml_pipeline_pro/conversation_grounding.py) have scripted
+model tests and real HTTP/MongoDB orchestration tests. Authenticated chat/history/
+action routes and exact confirmed dispatch now exist, with transaction-race and
+killed-chat-process recovery coverage. Live inference still needs an installed
+artifact and its verified tokenizer/runtime counter.
 Direct tracking/tuning routes continue to use their existing contracts. Course
 C3/C5 remain outstanding; installing dependencies and scripted tests do not
 establish a working pre-trained model.
@@ -25,8 +27,10 @@ establish a working pre-trained model.
 ## Configuration
 
 Settings follow the approved design and are listed in [.env.example](../.env.example).
-Environment variables override `.env`. The adapter consumes inference settings;
-the API does not construct it yet.
+Environment variables override `.env`. When chat is enabled and a model tag is
+configured, the API constructs the adapter offline and prepares it lazily during
+generation. Its default counter remains unset, so inference fails closed until
+the selected artifact's verified counter is supplied.
 
 | Setting | Default and validation |
 | --- | --- |
@@ -50,17 +54,19 @@ requires exactly one tool call or final reply per model step. The 64 KiB request
 and context, 128 KiB tool response, 256 KiB saved-record, and ten-turn history
 caps belong to the approved service design. The adapter enforces 64 KiB serialized
 context including instructions/tools; the store enforces saved-record limits.
-The upcoming service must enforce request, tool-response, and model-history boundaries.
+The API and host loop enforce request, tool-response, and model-history boundaries.
 
 ## Model and action boundaries
 
-The model interface describes calls; the host will bind trusted project/key,
+The model interface describes calls; the host binds trusted project/key,
 correlation, submission key, and mutation permission. Chat request bodies cannot
 supply those fields. A decision accepts only `approve`/`reject` and the exact
 saved fingerprint; edited arguments need a new proposal. The schema cannot
 authorize an action or prove that a citation is supported. Turn claims/completion
 and pending proposals are persisted now; the host renders supplied facts and
-preflights mutation references. Action decisions and dispatch remain pending.
+preflights mutation references. Exact decisions and dispatch use the saved action,
+transactional attempt ownership, and original submission key; inference does not
+participate in confirmation.
 
 Model replies request record IDs and field references, without supplying verified
 fact values. Actual values must come from successful public tool evidence. Action
@@ -158,9 +164,8 @@ proposal. Reads/replays/new reservations reconcile expired running turns to
 after 15 minutes or are superseded by a newer turn. These transitions also
 write the parent in the same transaction. History/replay hydrate the current
 action state while retaining the originating turn outcome. Audit records remain
-until explicit operator deletion. This slice provides no action approval,
-execution claims, dispatch, unknown-outcome retry, or attempt reconciliation.
-Those state transitions and chat-process loss tests remain required A1 work.
+until explicit operator deletion. The action slice below adds exact decisions,
+execution claims, dispatch, unknown-outcome retries and attempt reconciliation.
 
 ## Bounded host loop and supplied evidence
 
@@ -170,8 +175,8 @@ with the saved execution correlation and no submission key, even if its caller
 supplied mutation permission. `MLPP_CHAT_ENABLED=false` rejects generation before
 model/store calls. Exact request replay returns the saved turn without inference,
 including when the injected model is unavailable. The caller's lifespan owns
-and closes the injected model and HTTP transport; no new routes or app factory
-changes are supplied in this slice.
+and closes the injected model and HTTP transport. The HTTP integration below
+binds this service to the app lifespan.
 
 The service includes at most ten previous terminal user/assistant pairs, labelled
 historical, and discloses omitted history. It selects public tool snapshots,
@@ -254,10 +259,119 @@ is unchanged. Store tests use real sessions and controlled interleavings;
 local pure-boundary tests alone do not establish snapshot-isolation correctness.
 
 Continue the approved plan in reviewable steps: select the artifact and verify
-its tokenizer/runtime behavior; implement exact action decisions/execution
-claims; API/lifespan/docs
-integration with Person B; further action races and lost-response/chat-process
-recovery; and the opt-in live-model gate. The stash
+its tokenizer/runtime behavior, complete the opt-in live-model gate and resource
+observations, and verify clean-checkout onboarding with Person B. The stash
 named `Before requested origin reset 2026-10-08` is preserved as unfinished source,
 not acceptance evidence. Review every reused portion rather than applying it in
 bulk. Independent review of state/claim/retry/resource arithmetic remains pending.
+
+## Confirmed actions and HTTP routes
+
+The app now exposes the four approved routes in the README. Generation and
+decisions require `MLPP_CHAT_ENABLED=true`; authenticated audit reads work while
+generation is disabled. The app lifespan closes both the tool transport and
+model. Construction is offline and readiness still checks MongoDB/Redis only.
+An embedding host can pass `chat_model_factory` to `create_app` to supply the
+selected artifact's verified token counter to `OllamaConversationModel`.
+The default adapter fails closed without that counter; the installed artifact,
+counter and real-model gate remain unfinished acceptance work.
+The native adapter is prepared lazily inside the first bounded generation call;
+artifact identity is captured after inspection, including failed generation.
+Startup, saved replays and decisions do not inspect or call inference.
+
+The store's `decide` method checks the saved immutable tool fingerprint and
+project/conversation scope, then writes the parent and action in one transaction.
+Only a newly committed `ActionClaim` carries a private attempt token and the
+original submission key. The service dispatches outside the transaction, with
+host-bound authentication and permission. Rejection, active replays and terminal
+replays make no tool or inference call. First approval conflicts with a newer
+turn or stale proposal; retry of an approved unknown action retains its identity
+after the conversation advances.
+
+Each attempt has the original absolute dispatch deadline. Completion fences the
+unexpired token with another parent write; reads reconcile expired running
+attempts to `unknown`. Transport failures, malformed responses and upstream 5xx
+also retain uncertainty, including accepted IDs returned by queue failures.
+A later 4xx does not resolve an earlier uncertain attempt. Explicit repeat
+approval retries with the same body/key, to a maximum of three attempts;
+exhaustion requires operator investigation. No retry occurs automatically.
+Cancellation repeats only the original target through existing API semantics.
+History hydrates current action state while retaining the originating turn.
+
+Chat and decision HTTP bodies are limited to 64 KiB before JSON parsing, including
+chunked requests. Successful saved evidence is never shortened to fit a record;
+an oversized post-dispatch audit returns a minimal unknown result explicitly
+marked `evidence_not_saved`, retaining known accepted job IDs. Storage loss preserves uncertainty and reports
+known conversation/action IDs.
+
+Example for an already displayed proposal (use its actual IDs and fingerprint):
+
+```powershell
+$proposalId = 'saved-action-id'
+$conversationId = 'saved-conversation-id'
+$argumentsHash = 'displayed-64-character-sha256'
+$headers = @{ 'X-Project-ID' = 'demo' }
+$decision = @{ decision = 'approve'; arguments_hash = $argumentsHash } | ConvertTo-Json
+Invoke-RestMethod "http://127.0.0.1:8000/api/v1/conversations/$conversationId/actions/$proposalId/decision" `
+    -Method Post -Headers $headers -ContentType 'application/json' -Body $decision
+```
+
+The [real dispatch tests](../tests/integration/test_conversation_dispatch.py)
+confirm training, tuning and cancellation through the scoped API. The process
+test pauses a disposable chat API after a real accepted response, kills it,
+waits for natural attempt expiry, and restarts it: explicit same-action replay
+retains one job and the original key. Controlled
+[transaction cases](../tests/integration/test_conversation_actions.py) cover
+competing snapshots, stale proposals and expired attempt owners. These are
+host/state evidence; they do not establish real model understanding or an
+independent review.
+
+## Opt-in installed-model evaluation
+
+The [evaluation gate](../evaluations/test_conversation_model.py) runs ten synthetic
+scenarios in one bounded session: guided read, validation comparison/history-based
+tuning proposal, missing dataset/model, missing runtime, missing objective,
+missing tuning limits, unsupported action, foreign project, hostile record and
+queued/status evidence. Fixture metrics are synthetic values, not measured
+training. The gate never dispatches mutations and performs no model downloads.
+Normal test discovery excludes `evaluations/`; its opt-in marker is registered.
+An unselected gate is a verification gap, not a real-model pass.
+
+Supply an explicit installed tag and a reviewed local `module:factory` token
+counter. The factory receives the inspected public model provenance and returns
+a callable counter for the exact SDK request payload. Its `identity` dictionary
+must match `artifact_digest`, `runtime_version` and `template_hash`. The gate
+records the counter source hash and checks its counts against actual prompt usage.
+No generic token estimate or default counter is provided. Completing this module
+for a chosen tokenizer/runtime, overflow verification and real execution remain
+required A1 work.
+
+The gate admits at most 50 generation calls, reserving the configured full context
+allowance before each (default 409,600 total reserved tokens), with 512 output
+tokens per call and one 600-second suite deadline including preparation.
+Per-turn/per-model/tool limits remain the approved settings. Failed calls consume
+reservations; failed scenarios are retained without retries. The JSON report saves
+safe turns, prompt/payload hashes, observed token counts/timings, model identity,
+counter hash and loaded-model resource observations. Model prose still needs
+human quality review. Ollama documents
+[prompt token counts](https://docs.ollama.com/api/chat) and
+[loaded-model observations](https://docs.ollama.com/api/ps); those returned values
+are observations, not performance or resource-capacity guarantees.
+
+After installing/selecting the artifact and verifying its counter:
+
+```powershell
+$env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+try {
+    uv run --locked --extra training pytest evaluations/test_conversation_model.py -m local_model_eval `
+        --local-model 'your-installed-model:explicit-tag' --token-counter 'reviewed_counter:create_counter' `
+        --eval-output 'artifacts/local-model-evaluation/results.json'
+} finally {
+    Remove-Item Env:MLPP_RUN_LOCAL_MODEL_EVAL
+}
+```
+
+Archive the successful JSON/JUnit/model/license/resource evidence with its source
+manifest; ignored local output alone does not establish shared acceptance.
+The default local Ollama probe timed out and no installed tag/verified counter
+was selected, so no live evaluation or course-row closure is claimed.

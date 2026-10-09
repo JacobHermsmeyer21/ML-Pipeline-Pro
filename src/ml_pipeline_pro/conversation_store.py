@@ -14,6 +14,8 @@ from pymongo.write_concern import WriteConcern
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_schemas import (
     RECORD_BYTES,
+    ActionAttempt,
+    ActionDecision,
     ChatRequest,
     ConversationAction,
     ConversationHistory,
@@ -23,7 +25,7 @@ from ml_pipeline_pro.conversation_schemas import (
 )
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
-from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext
+from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext, ToolResult
 from ml_pipeline_pro.tools import validated_proposal
 
 
@@ -35,6 +37,20 @@ class TurnClaim:
     owner_token: str | None
     deadline: datetime
     replayed: bool
+
+
+@dataclass(frozen=True)
+class ActionClaim:
+    """Only a newly committed attempt carries dispatch authority."""
+
+    action: ConversationAction
+    owner_token: str | None = None
+    submission_key: str | None = None
+    deadline: datetime | None = None
+
+
+def _action_conflict() -> ApiError:
+    return ApiError(409, "action_conflict", "Action decision, fingerprint or ownership changed")
 
 
 def _conflict() -> ApiError:
@@ -61,7 +77,8 @@ class ConversationStore:
     Reservation/completion and reconciliation serialize on a conversation write.
     Transaction callbacks may retry and contain database work only. IDs, hashes,
     redaction, validated proposals and submission keys are prepared outside them.
-    Decision/dispatch-attempt operations belong to the next implementation slice.
+    Action decisions and attempt completion also write that parent. HTTP calls
+    occur only after the attempt transaction has committed.
     """
 
     def __init__(
@@ -141,7 +158,13 @@ class ConversationStore:
             "public.expires_at": {"$lte": now},
         }
         expired_action = await self.actions.find_one(expired_actions, session=session)
-        if expired_turn or expired_action:
+        expired_executions = {
+            **scope,
+            "public.status": "running",
+            "deadline": {"$lte": now},
+        }
+        executions = await self.actions.find(expired_executions, session=session).to_list()
+        if expired_turn or expired_action or executions:
             # A parent write makes transitions conflict with completion/decisions.
             update = {"$inc": {"fence_revision": 1}, "$set": {"updated_at": now}}
             if expired_turn:
@@ -185,6 +208,21 @@ class ConversationStore:
                 {"$set": {"public.status": "expired", "updated_at": now}},
                 session=session,
             )
+            for execution in executions:
+                public = ConversationAction.model_validate(execution["public"])
+                public.status = "unknown"
+                public.attempts[-1].status = "unknown"
+                await self.actions.update_one(
+                    {**expired_executions, "_id": execution["_id"]},
+                    {
+                        "$set": {
+                            "public": public.model_dump(),
+                            "owner_token": None,
+                            "updated_at": now,
+                        }
+                    },
+                    session=session,
+                )
             conversation = await self.conversations.find_one(query, session=session)
         return conversation
 
@@ -412,13 +450,183 @@ class ConversationStore:
             if action_document is not None:
                 await self.actions.insert_one(action_document, session=session)
             changed = await self.turns.update_one(
-                query,
+                {**query, "deadline": {"$gt": self._now()}},
                 {"$set": {"public": public, "owner_token": None, "updated_at": self._now()}},
                 session=session,
             )
             if changed.matched_count != 1:
                 raise _conflict()
             return result.model_copy(deep=True)
+
+        return await self._transaction(commit)
+
+    async def decide(
+        self,
+        context: ToolContext,
+        conversation_id: str,
+        action_id: str,
+        decision: ActionDecision,
+        *,
+        deadline: datetime,
+    ) -> ActionClaim:
+        """Commit an exact decision/attempt; repeated decisions never steal a claim."""
+        decision = ActionDecision.model_validate(decision.model_dump())
+        deadline = _mongodb_time(deadline)
+        if deadline - self._now() > timedelta(seconds=self._settings.chat_action_timeout_seconds):
+            raise ValueError("Action deadline exceeds configured timeout")
+        token = str(uuid4())
+
+        async def commit(session):
+            parent = await self._reconcile(context.project_id, conversation_id, session)
+            query = {**self._scope(context.project_id, conversation_id), "_id": action_id}
+            saved = await self.actions.find_one(query, session=session)
+            if saved is None:
+                raise ApiError(404, "action_not_found", "Action was not found")
+            action = ConversationAction.model_validate(saved["public"])
+            if decision.arguments_hash != action.arguments_hash or (
+                fingerprint(validated_proposal(action.tool).model_dump()) != action.arguments_hash
+            ):
+                raise _action_conflict()
+            if action.status in {"expired", "superseded"}:
+                raise _action_conflict()
+            if action.status != "pending_confirmation":
+                if action.decision is None or action.decision["decision"] != decision.decision:
+                    raise _action_conflict()
+                if action.status != "unknown":
+                    return ActionClaim(action)
+                if len(action.attempts) >= 3:
+                    raise ApiError(
+                        409,
+                        "action_attempts_exhausted",
+                        "Uncertain action requires operator investigation",
+                    )
+            elif parent["revision"] != action.revision or parent["owner_token"] is not None:
+                raise _action_conflict()
+            now = self._now()
+            if deadline <= now:
+                raise ApiError(504, "chat_timeout", "Action deadline expired before claim")
+            changed = await self.conversations.update_one(
+                {
+                    "_id": conversation_id,
+                    "project_id": context.project_id,
+                    "revision": parent["revision"],
+                    "fence_revision": parent["fence_revision"],
+                },
+                {"$inc": {"fence_revision": 1}, "$set": {"updated_at": now}},
+                session=session,
+            )
+            if changed.matched_count != 1:
+                raise _action_conflict()
+            if deadline <= self._now():
+                raise ApiError(504, "chat_timeout", "Action deadline expired during claim")
+            if action.decision is None:
+                action.decision = {
+                    "decision": decision.decision,
+                    "correlation_id": context.correlation_id,
+                    "authentication": (
+                        "project_key"
+                        if context.api_key and self._settings.project_api_keys
+                        else "local_project"
+                    ),
+                    "decided_at": now,
+                }
+            if decision.decision == "reject":
+                action.status = "rejected"
+                owner = None
+            else:
+                action.status = "running"
+                action.attempts.append(
+                    ActionAttempt(
+                        number=len(action.attempts) + 1,
+                        correlation_id=context.correlation_id,
+                        deadline=deadline,
+                        status="running",
+                    )
+                )
+                owner = token
+            document = _bounded(
+                {
+                    **saved,
+                    "public": action.model_dump(),
+                    "owner_token": owner,
+                    "deadline": deadline if owner else None,
+                    "updated_at": now,
+                }
+            )
+            await self.actions.update_one(
+                query,
+                {"$set": {key: value for key, value in document.items() if key != "_id"}},
+                session=session,
+            )
+            return ActionClaim(
+                action,
+                owner,
+                saved["submission_key"] if owner else None,
+                deadline if owner else None,
+            )
+
+        return await self._transaction(commit)
+
+    async def finish_action(
+        self,
+        context: ToolContext,
+        claim: ActionClaim,
+        outcome: ToolResult,
+        *,
+        status: str,
+    ) -> ConversationAction:
+        """Fence the unexpired attempt and retain every public attempt outcome."""
+        if not claim.owner_token or status not in {"succeeded", "failed", "unknown"}:
+            raise _action_conflict()
+
+        async def commit(session):
+            action = claim.action
+            scope = self._scope(context.project_id, action.conversation_id)
+            query = {
+                **scope,
+                "_id": action.action_id,
+                "owner_token": claim.owner_token,
+                "public.status": "running",
+                "deadline": {"$gt": self._now()},
+            }
+            saved = await self.actions.find_one(query, session=session)
+            if saved is None:
+                raise _action_conflict()
+            public = ConversationAction.model_validate(saved["public"])
+            # A later 4xx cannot establish that an earlier uncertain submission
+            # was never accepted. Only successful same-key replay resolves it.
+            public.status = (
+                "unknown"
+                if status == "failed"
+                and any(attempt.status == "unknown" for attempt in public.attempts[:-1])
+                else status
+            )
+            public.outcome = outcome
+            public.attempts[-1].status = status
+            public.attempts[-1].outcome = outcome
+            public = ConversationAction.model_validate(self._safe(public.model_dump(), context))
+            _bounded({**saved, "public": public.model_dump()})
+            parent = await self.conversations.update_one(
+                {"_id": action.conversation_id, "project_id": context.project_id},
+                {"$inc": {"fence_revision": 1}, "$set": {"updated_at": self._now()}},
+                session=session,
+            )
+            if parent.matched_count != 1:
+                raise _action_conflict()
+            changed = await self.actions.update_one(
+                {**query, "deadline": {"$gt": self._now()}},
+                {
+                    "$set": {
+                        "public": public.model_dump(),
+                        "owner_token": None,
+                        "updated_at": self._now(),
+                    }
+                },
+                session=session,
+            )
+            if changed.matched_count != 1:
+                raise _action_conflict()
+            return public
 
         return await self._transaction(commit)
 

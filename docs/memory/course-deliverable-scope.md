@@ -25,9 +25,10 @@ locked LangChain dependencies, schemas, a model interface, and settings. Its
 next A1 slices add a deterministically tested LangChain/Ollama adapter and durable
 turn/proposal storage with real-MongoDB claims/replay/takeover coverage. The
 bounded host loop now grounds supplied current-turn facts and saves proposals.
-Installed-artifact token verification, action decisions/dispatch,
-routes, and live-model evidence
-remain outstanding; C3/C5 are still open. The preceding absent-dependency finding
+Authenticated routes and confirmed action dispatch/recovery are now implemented
+in the [action slice](conversation-action-uncertainty.md). Installed-artifact
+token verification and live-model evidence remain outstanding; C3/C5 are still open.
+The preceding absent-dependency finding
 remains historical to its
 stated baseline.
 

@@ -17,7 +17,10 @@ from ml_pipeline_pro import __version__
 from ml_pipeline_pro.api import router
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import check_readiness, open_connections
-from ml_pipeline_pro.errors import ApiError, ErrorResponse, install_error_handlers
+from ml_pipeline_pro.conversation_api import ModelFactory, conversation_clients
+from ml_pipeline_pro.conversation_api import router as conversation_router
+from ml_pipeline_pro.conversation_schemas import REQUEST_BYTES
+from ml_pipeline_pro.errors import ApiError, ErrorResponse, error_response, install_error_handlers
 from ml_pipeline_pro.logging import configure_logging
 from ml_pipeline_pro.tuning_api import router as tuning_router
 
@@ -36,7 +39,11 @@ class ReadinessResponse(BaseModel):
     correlation_id: str
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def create_app(
+    settings: Settings | None = None,
+    *,
+    chat_model_factory: ModelFactory | None = None,
+) -> FastAPI:
     settings = settings if settings is not None else Settings()
 
     @asynccontextmanager
@@ -44,11 +51,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         configure_logging(settings)
         async with open_connections(settings) as connections:
             app.state.connections = connections
-            logger.info("API started")
-            try:
-                yield
-            finally:
-                logger.info("API stopping")
+            async with conversation_clients(settings, model_factory=chat_model_factory) as clients:
+                app.state.conversation_model, app.state.conversation_transport = clients
+                logger.info("API started")
+                try:
+                    yield
+                finally:
+                    logger.info("API stopping")
 
     app = FastAPI(
         title="ML Pipeline Pro",
@@ -61,6 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_error_handlers(app)
     app.include_router(router)
     app.include_router(tuning_router)
+    app.include_router(conversation_router)
 
     @app.middleware("http")
     async def correlate_request(request: Request, call_next: RequestResponseEndpoint) -> Response:
@@ -68,6 +78,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         correlation_id = supplied_id if _CORRELATION_ID.fullmatch(supplied_id) else str(uuid4())
         request.state.correlation_id = correlation_id
         started = perf_counter()
+        path = request.url.path
+        if request.method == "POST" and (
+            path == "/api/v1/chat"
+            or (path.startswith("/api/v1/conversations/") and path.endswith("/decision"))
+        ):
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > REQUEST_BYTES:
+                    return error_response(
+                        request,
+                        422,
+                        "chat_limit_exceeded",
+                        "Conversation request exceeds byte limit",
+                    )
+                body.extend(chunk)
+            request._body = bytes(body)
         status_code = 500
         try:
             response = await call_next(request)

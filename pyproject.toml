@@ -56,6 +56,7 @@ addopts = "-ra --strict-markers"
 markers = [
     "integration: requires real MongoDB and Redis (set MLPP_RUN_INTEGRATION=1)",
     "recovery: stops services in a disposable Compose stack (set MLPP_RUN_RECOVERY_INTEGRATION=1)",
+    "local_model_eval: opt-in installed local-model evaluation, outside ordinary test discovery",
 ]
 
 [tool.coverage.run]

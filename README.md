@@ -23,7 +23,8 @@ and validated chat settings. The next A1 slice supplies a tested local inference
 adapter with native tool proposals and bounded requests. A durable turn/proposal
 store now supplies fenced reservation/completion and replay. The bounded host
 loop reads scoped evidence, renders verified facts and saves exact proposals.
-Chat routes, action decisions/dispatch, installed-artifact token verification, and real-model
+Authenticated chat/history/action routes, exact-action decisions and bounded
+dispatch/recovery now exist. Installed-artifact token verification and real-model
 evaluation remain outstanding under
 the [approved design](docs/plans/2026-10-06-conversation-workflows-plan.md).
 See [conversation development](docs/conversation-development.md) for this slice's
@@ -60,10 +61,25 @@ Open [the API documentation](http://127.0.0.1:8000/docs). The current endpoints 
 | `GET /api/v1/tuning-jobs` and `GET /api/v1/tuning-jobs/{id}` | Retrieve tuning status, budgets, and the selected configuration |
 | `GET /api/v1/tuning-jobs/{id}/trials` | Inspect trial parameters, metrics, durations, and failures |
 | `POST /api/v1/tuning-jobs/{id}/cancel` | Cancel queued tuning or cooperatively stop an active trial |
+| `POST /api/v1/chat` | Generate or replay a bounded project conversation; enabled chat required |
+| `GET /api/v1/conversations/{id}` | Read ascending saved turns (`limit=50`, maximum 100; `offset=0`) |
+| `GET /api/v1/conversations/{id}/actions/{action_id}` | Inspect the saved proposal, decision, attempts and outcome |
+| `POST /api/v1/conversations/{id}/actions/{action_id}/decision` | Approve/reject the exact saved fingerprint without inference |
 
 Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
 
 Readiness checks MongoDB/Redis connectivity. Experiment status and heartbeat timestamps show worker progress separately.
+
+Conversation generation and decisions default to disabled (`MLPP_CHAT_ENABLED=false`);
+authenticated history/action reads remain available. All four routes use the existing
+project headers. A repeated request ID must retain its original body; an action
+decision sends only `decision` and the displayed `arguments_hash`. Running replays
+return 202; saved outcomes retain their original execution correlation while the
+HTTP header carries the current request correlation. Explicit retries of uncertain
+actions reuse the original submission key and stop after three dispatch attempts.
+See the [conversation guide](docs/conversation-development.md#confirmed-actions-and-http-routes).
+The default adapter still requires an artifact-specific verified token counter;
+enabling chat alone does not establish working local inference.
 
 Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. Compose explicitly sets `MLPP_ENVIRONMENT=development` and container connection/storage paths; an `.env` environment value does not override these settings. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. Shared deployment still needs the controls listed in the [audit](docs/project-status.md#deployment-and-operational-gaps). Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
 
@@ -125,12 +141,14 @@ src/ml_pipeline_pro/
   tuning_sampler.py # Seeded TPE suggestions from durable history
   tuning_execution.py # Serial search and final holdout evaluation
   training_control.py # Deadlines, cancellation, and ownership checks
-  conversation_schemas.py # Strict chat/action/fact contracts; no routes or storage yet
+  conversation_schemas.py # Strict chat/action/fact contracts
   conversation_model.py # Injected model interface and native tool descriptions
   conversation_ollama.py # Local LangChain adapter; artifact-specific token counter required
   conversation_store.py # Transactional turn claims/replay and immutable saved proposals
   conversation_service.py # Bounded read loop and proposal preflight; no mutation dispatch
   conversation_grounding.py # Facts from supplied current-turn API fields
+  conversation_actions.py # Confirmed dispatch and bounded uncertain-outcome retry
+  conversation_api.py # Authenticated chat/history/actions and client lifecycle
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies

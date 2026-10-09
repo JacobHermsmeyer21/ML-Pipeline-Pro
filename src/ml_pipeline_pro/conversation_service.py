@@ -35,6 +35,21 @@ from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext, ToolSuccess
 from ml_pipeline_pro.tool_transport import HttpToolTransport, ToolTransport
 from ml_pipeline_pro.tools import ToolDispatcher, tool_catalog, validated_proposal
 
+PUBLIC_MODEL_PROVENANCE = {
+    "backend",
+    "model_tag",
+    "packages",
+    "context_tokens",
+    "max_output_tokens",
+    "tools_hash",
+    "instructions_hash",
+    "artifact_digest",
+    "runtime_version",
+    "supported_context_tokens",
+    "license_sha256",
+    "template_hash",
+}
+
 HOST_INSTRUCTIONS = (
     "Guide registered dataset/model selection, explicit budgets, validation objectives, progress "
     "and comparison. Use current read tools to refresh historical records before citing facts. "
@@ -166,25 +181,11 @@ class ConversationService:
                 )
                 if self.model is None:
                     raise ApiError(503, "model_unavailable", "Conversation model is unavailable")
-                provenance_keys = {
-                    "backend",
-                    "model_tag",
-                    "packages",
-                    "context_tokens",
-                    "max_output_tokens",
-                    "tools_hash",
-                    "instructions_hash",
-                    "artifact_digest",
-                    "runtime_version",
-                    "supported_context_tokens",
-                    "license_sha256",
-                    "template_hash",
-                }
                 turn.model_provenance = self._safe(
                     {
                         key: value
                         for key, value in self.model.provenance.items()
-                        if key in provenance_keys
+                        if key in PUBLIC_MODEL_PROVENANCE
                     },
                     trusted,
                 )
@@ -360,6 +361,19 @@ class ConversationService:
                 raise
             except Exception:
                 raise ConversationModelError("model_unavailable", "Model call failed") from None
+            finally:
+                # Lazy inspection can finish during the first invocation, even
+                # when generation fails. Retain the observed artifact identity.
+                turn.model_provenance.update(
+                    self._safe(
+                        {
+                            key: value
+                            for key, value in self.model.provenance.items()
+                            if key in PUBLIC_MODEL_PROVENANCE
+                        },
+                        context,
+                    )
+                )
             step = ModelStep.model_validate(
                 self._safe(step.model_dump() if isinstance(step, ModelStep) else step, context)
             )

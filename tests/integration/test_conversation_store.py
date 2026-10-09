@@ -456,3 +456,43 @@ def test_transaction_retry_reuses_proposal_identity_and_submission_key(monkeypat
         ].status == "awaiting_confirmation"
 
     exercise(run)
+
+
+def test_completion_rechecks_deadline_after_reading_turn_snapshot(monkeypatch):
+    async def run(store, database, settings, clock):
+        claim = await reserve(store)
+        original = AsyncCollection.find_one
+        paused, resume = asyncio.Event(), asyncio.Event()
+        intercepted = False
+
+        async def pause(collection, query, *args, **kwargs):
+            nonlocal intercepted
+            saved = await original(collection, query, *args, **kwargs)
+            if (
+                not intercepted
+                and collection.full_name == store.turns.full_name
+                and query.get("owner_token") == claim.owner_token
+            ):
+                intercepted = True
+                paused.set()
+                await asyncio.wait_for(resume.wait(), 5)
+            return saved
+
+        monkeypatch.setattr(AsyncCollection, "find_one", pause)
+        task = asyncio.create_task(store.finish(CONTEXT, claim, completed(claim)))
+        try:
+            await asyncio.wait_for(paused.wait(), 5)
+            clock.now = claim.deadline
+            resume.set()
+            with pytest.raises(ApiError) as caught:
+                await task
+            assert caught.value.code == "conversation_conflict"
+            history = await store.history("demo", claim.turn.conversation_id)
+            assert history.turns[0].status == "interrupted" and not history.turns[0].message
+        finally:
+            resume.set()
+            if not task.done():
+                task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+
+    exercise(run)

@@ -21,7 +21,8 @@ documentation correction against source baseline `ba6334f`. The course target
 uses LangChain with local pre-trained inference; a paid external model API or
 training a code language model is not required. The unapproved OpenAI draft was
 revised in the [conversation plan](plans/2026-10-06-conversation-workflows-plan.md);
-per-action confirmation and retained dialogue/evidence were approved October 7; their implementation remains outstanding.
+per-action confirmation and retained dialogue/evidence were approved October 7.
+The implementation slices below retain their separate evidence and open gates.
 
 The final course workflow requires three independently deployable domain REST
 services, LangChain guidance/suggestions, live monitoring/visualization with
@@ -43,7 +44,7 @@ completion. Feature implementation still requires explicit review of its plan.
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
 | 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Tools, schemas/settings, tested local adapter, durable storage and bounded grounded host loop implemented | Installed-artifact token verification, real-model dialogue/suggestions, action decisions/dispatch, chat routes, live evaluation |
+| 4. Conversational workflows | Tools, tested local adapter, durable grounded conversations, authenticated routes and confirmed action dispatch/recovery implemented | Installed-artifact token verification, real-model dialogue/suggestions, live evaluation, independent review and clean-checkout onboarding |
 | 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
 | 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
@@ -56,9 +57,11 @@ fingerprints, the injected model interface/native tool descriptions, approved
 chat settings, and locked LangChain dependencies. The next A1 slice adds a local
 LangChain/Ollama adapter and SDK/HTTP boundary tests. The durable store now has
 real-MongoDB claim/replay/takeover coverage. The bounded host loop grounds supplied
-API facts and preflights saved proposals. Routes,
-action decisions/dispatch, installed-artifact token verification, and live evaluation remain outstanding.
-The existing API and worker code are unchanged. Validation for these slices is recorded in the
+API facts and preflights saved proposals. Authenticated routes and exact-action
+dispatch now add parent-fenced decisions, bounded same-key retries and killed-chat-
+process recovery. Installed-artifact token verification and live evaluation remain
+outstanding. Existing tracking/tuning contracts and worker behavior are preserved.
+Validation for these slices is recorded in the
 [approved plan's outcome](plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
 the earlier counts below remain historical.
 
@@ -66,7 +69,7 @@ the earlier counts below remain historical.
 
 | Area | Verified implementation | Current boundary |
 | --- | --- | --- |
-| API foundation | FastAPI app factory, versioned routes, validated settings, async clients, consistent errors/correlation IDs, JSON logs and redaction | One application; no conversation or monitoring routes |
+| API foundation | FastAPI app factory, versioned domain/conversation routes, validated settings, async clients, consistent errors/correlation IDs, JSON logs and redaction | One application; no monitoring routes or verified live-model setup |
 | Dataset registration | Local CSV validation, SHA-256, class/feature metadata, explicit nonempty splits | References existing files; no upload, immutable copy, remote URI, or split generation |
 | Data format | 1-128 numeric feature columns; contiguous training class IDs starting at zero; 2-64 classes | No categorical/text/image features, regression, missing-value imputation, or framework selection |
 | Model registration | Project-scoped PyTorch classification MLP records | One hidden layer; model registration stores metadata, not a trained model |

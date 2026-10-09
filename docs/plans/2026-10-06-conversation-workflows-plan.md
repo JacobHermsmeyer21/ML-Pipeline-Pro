@@ -672,6 +672,154 @@ and checked, and `git diff --check` passed. These are documentation checks;
 application, real-service, and live-provider acceptance evidence was pending.
 Those counts describe the original draft, not validation of this revision.
 
+### Person A confirmed actions and HTTP integration, October 8, 2026
+
+The user's request to finish Person A continues the existing October 7 A1
+approval on source baseline `2b9dfaf`, branch `person-a/conversation-foundation`.
+The separately pushed A2-A4 designs await human review; they do not expand A1.
+
+Added exact project-scoped approval/rejection, transactional action claims and
+parent-fenced completion; dispatch occurs only after the claim commits and never
+inside a retryable transaction. Active and terminal decision replays dispatch
+nothing. Pending expiry/supersession conflicts with approval. Explicit retry of
+an approved unknown action retains its original body/key after later turns, with
+three total attempts. Expired owners, malformed/transport responses and upstream
+5xx retain uncertainty; later 4xx cannot erase an earlier uncertain submission.
+Queue errors retain accepted IDs and a scoped refresh when available. No model
+call participates in confirmation, cancellation or outcome inspection.
+
+The four approved routes now use existing project authentication, schemas,
+error/correlation handling and paginated history. Disabled chat rejects generation
+and decisions while keeping authenticated audit reads. Running replays return
+202; the HTTP correlation remains current while saved executions remain original.
+The app lifespan closes model/HTTP clients without contacting inference at
+construction or adding model availability to readiness. Chunked chat/decision
+bodies are capped before JSON parsing. The app integration patch is available
+for Person B's later service extraction; no worker concurrency change is included.
+A real locked-SDK/mock-HTTP regression reproduced unprepared generation at the
+new route boundary. Native artifact preparation is now lazy inside generation;
+safe provenance is refreshed even on generation failure. The unchanged new
+assertion verifies a completed turn with the inspected digest and no startup
+requests. [Before-fix evidence](../evidence/2026-10-08-conversation-actions/lazy-model-before.txt)
+is retained; the counter/runtime values in this test are fixtures.
+
+Controlled MongoDB snapshots reproduced late action completion at natural expiry
+without takeover: a deadline predicate captured before an await was reused at the
+final write. The same mechanism was confirmed in existing turn completion.
+Both final mutations now rebuild their deadline predicates using current time.
+Retained [action failure](../evidence/2026-10-08-conversation-actions/expired-completion-before.txt)
+and [turn failure](../evidence/2026-10-08-conversation-actions/expired-turn-before.txt)
+show the unchanged failing assertions; the same tests pass after correction.
+An additional [timeout regression](../evidence/2026-10-08-conversation-actions/refresh-timeout-before.txt)
+confirmed that optional record refresh could consume the deadline before saving
+a known accepted ID. Refresh now uses one dependency-timeout allowance only when
+two remain, reserving time for audit persistence; missing refresh is explicit.
+The unchanged new assertion now reaches and verifies saved accepted-ID evidence.
+The [durable finding](../memory/conversation-action-uncertainty.md) records this
+mechanism and uncertain-response behavior.
+
+New tests cover exact hashes, valid foreign-project access, redaction, replay,
+three-attempt exhaustion, later-4xx uncertainty, forced competing approvals/new
+turns, expired completion snapshots and preserved active turn ownership. The
+real-service gate confirms training, tuning and queued cancellation through the
+API. A disposable chat API process pauses after real domain acceptance, is killed,
+then restarted after natural attempt expiry; same-action confirmation resolves
+to exactly one job with the original key. New HTTP tests cover disabled audit
+reads, body streaming, project keys, 202 replay and client cleanup. Existing
+assertions/gates remain unchanged; one new existing-store regression verifies
+the confirmed deadline mechanism. The cancellation fixture is deliberately
+unqueued to test cancellation independently of worker timing.
+
+The opt-in ten-scenario live-model gate is now supplied outside default test
+discovery, with a registered marker, explicit installed tag/counter factory,
+50-call/context-reservation budget and one 600-second suite deadline. It retains
+safe turns, usage/timing, source/counter/model identity and resource observations;
+checks compare counter counts with actual runtime prompt usage. Four deterministic
+harness regressions cover request/deadline admission, counter mismatch and missing
+total tuning budget versus a supplied per-trial runtime. The gate is skipped here
+because no installed artifact/counter was selected; this is not acceptance evidence.
+
+Final verification passed on Windows/Python 3.11.5 with the locked dependencies:
+402 fast cases (76% host coverage), 56 ordinary integration cases with both flags,
+ten isolated recovery cases run serially, and 27 targeted store/action boundary
+cases. These selected gates had zero failures/skips. Locked sync, Ruff lint/format,
+dependency compatibility and source/wheel builds passed. The separate live gate
+had one opt-in skip representing the unexecuted ten-scenario session; this remains
+a gap. Initial restricted-network package builds failed fetching build metadata;
+authorized builds succeeded and the final cache is outside the source tree.
+
+[Source/config/package/image manifests and native exit codes](../evidence/2026-10-08-conversation-actions/results.json),
+[fast output](../evidence/2026-10-08-conversation-actions/unit.txt),
+[ordinary output](../evidence/2026-10-08-conversation-actions/integration.txt),
+[recovery output](../evidence/2026-10-08-conversation-actions/recovery.txt),
+JUnit and the [recovery state/log archive](../evidence/2026-10-08-conversation-actions/recovery-state-logs.tar.gz)
+retain shared evidence. Final records distinguish current-source verification
+from the earlier historical runs. Documentation links/examples and endpoint
+inventory were checked; the current wheel contains 36 canonical application
+modules and its source archive excludes private/cache/ignored artifact paths.
+Remote CI is not claimed. Authentication provenance now records project-key mode
+only when keys are enforced; its regression explicitly configures the key fixture
+and separately checks optional-key local mode without weakening the assertion.
+An [oversized-audit regression](../evidence/2026-10-08-conversation-actions/oversized-id-before.txt)
+also preserves known accepted IDs in the minimal explicit unknown result;
+the unchanged new assertion passes after the before-fix failure.
+
+**Outstanding:** selected installed artifact and verified tokenizer/template
+counter, opt-in ten-scenario real-model evaluation, resource observations and
+clean-checkout onboarding. Local `127.0.0.1:11434/api/tags` did not respond within
+two seconds, including an unsandboxed probe; no runtime/model was installed or
+downloaded here. The default Ollama adapter still fails closed without a verified
+counter. C3/C5 remain open. Independent review is unavailable in this session;
+implementing-assistant review is self-review, covering states, deadline predicates,
+project/permission binding, private keys, uncertain outcomes and payload limits.
+Person B/human review remains required. Commit/push outcome is recorded in Git
+and the task response after final verification.
+
+### Person A continuation review, October 9, 2026
+
+The user's request to continue Person A resumes the approved A1 work on
+`9675b28`. The action/routes slice was still uncommitted. Source inspection covered
+exact fingerprints, project/authentication binding, transaction parent writes,
+expiry predicates, attempt exhaustion, same-key replay, uncertain outcomes,
+client cleanup and the live-evaluation admission arithmetic. This is implementing-
+assistant self-review; no independent reviewer is available in this session.
+Independent review remains outstanding before closing A1.
+
+All 78 source/test/evaluation file hashes and 22 raw evidence hashes matched the
+October 8 action-slice manifest. The repository review reran locked sync, Ruff
+lint/format, the full fast suite (402 passed, 66 integration/recovery cases
+deselected, 76% coverage), and dependency compatibility successfully. The saved
+56 ordinary integration and ten serial recovery passes apply to the unchanged
+application/test files; those suites were not rerun during this continuation.
+No assertions, skips or gates changed.
+
+Forward-looking guide text, the example environment comment and roadmap counts
+were corrected to match the implemented routes/actions and retained evidence.
+The earlier manifest remains historical, including its original configuration
+and package hashes; only documentation and the `.env.example` comment changed
+after source verification. A new offline source/wheel build passed. Its inside-
+source cache warning was checked against the archive: private/cache/ignored
+paths are absent and the wheel includes all 36 canonical application modules.
+Documentation checks validated 25 documents, 283 local links/anchors, two Python
+examples, 21 PowerShell examples and whitespace before this outcome addition;
+the final link/whitespace checks are repeated before commit.
+
+Staged-file verification found Git's LF normalization changed three raw evidence
+files (`format.txt`, `images.txt`, `lint.txt`) from their recorded hashes.
+This action-slice evidence folder now disables text normalization in
+`.gitattributes`, keeping execution evidence byte-for-byte. Its native CRLF line
+endings are recognized by whitespace checks; other whitespace rules remain
+enabled and earlier evidence folders retain their existing attributes.
+Source hashes already matched the staged files;
+all raw evidence and archive hashes are checked again after restaging.
+
+The target has 31.1 GiB RAM, an AMD Ryzen 7 7800X3D CPU and an AMD Radeon RX 9070;
+these observations do not establish inference capacity or latency. The default
+Ollama origin remains unavailable. Artifact selection, a verified counter and
+retained real-model execution/onboarding remain pending; no model download or
+course-row closure is claimed. A2-A4 remain under their separately written plans
+and have no recorded design approval.
+
 Course-alignment documentation checks (October 6-7, 2026, baseline `ba6334f`,
 Windows/PowerShell): 19 Markdown documents and 192 local links/anchors validated;
 two Python examples and nine PowerShell commands/examples parsed. Source checks
