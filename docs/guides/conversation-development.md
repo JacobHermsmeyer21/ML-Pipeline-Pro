@@ -382,3 +382,7 @@ retains all six attempts. The stock 7B profile reached five of ten passing
 scenarios after prompt revisions; its explicit JSON-tools profile reached six,
 and the 14B profile reached three. All acceptance runs failed. No course row is
 closed by token verification or partial scenario passes.
+
+The [typed completion plan](../plans/2026-10-09-conversation-typed-completion-plan.md)
+proposes one native reply function to address formatting failures. It awaits
+human approval and preserves all existing budget/evidence acceptance checks.

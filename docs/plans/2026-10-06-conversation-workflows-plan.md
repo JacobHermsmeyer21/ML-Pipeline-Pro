@@ -903,3 +903,7 @@ here is implementing-assistant self-review; no independent reviewer is available
 The [runtime memory](../memory/conversation-qwen-runtime.md) records the confirmed
 mechanism and rejected approaches. A typed completion tool remains an unimplemented
 design hypothesis requiring renewed review. A2-A4 remain pending approval.
+
+The [typed completion follow-up](2026-10-09-conversation-typed-completion-plan.md)
+defines that bounded protocol experiment and preserves the original semantic
+acceptance gates. Its approval remains pending; it has not been implemented.
