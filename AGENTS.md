@@ -4,6 +4,12 @@ The user requests a commit and push after every major change. Run the relevant
 checks, commit the completed change, and push the working branch to `origin`.
 Report any push failure so the user knows whether the commit reached the remote.
 
+Check for incoming changes between pushes: fetch `origin` before starting each
+major change and again before pushing. Compare the working branch with its
+upstream and inspect `origin/main`. Pull or integrate applicable incoming commits,
+preserving local work and collaborators' published history, then rerun affected
+checks. Never force-push to bypass incoming changes.
+
 ## Course scope
 
 Read [the supplied course requirements](docs/course-requirements.md) before
