@@ -1,8 +1,9 @@
 """Model interface and native tool schemas; the host owns tool execution."""
 
+import json
 from typing import Any, Protocol
 
-from ml_pipeline_pro.conversation_schemas import ModelStep
+from ml_pipeline_pro.conversation_schemas import ModelReply, ModelStep
 from ml_pipeline_pro.tools import tool_catalog
 
 REPLY_INSTRUCTIONS = (
@@ -13,7 +14,34 @@ REPLY_INSTRUCTIONS = (
     "Ask for missing dataset/model, runtime, tuning objective, trial count and total budget; "
     "do not invent them. Use validation metrics for comparisons and tuning suggestions. "
     "Mutations are proposals requiring separate exact-action human confirmation. "
-    "Do not claim a queued job has completed or invent history or evidence."
+    "Do not claim a queued job has completed or invent history or evidence. "
+    "Every final reply MUST be a JSON object, including replies after tool results, "
+    "refusals and requests for missing inputs. Never return ordinary prose or Markdown. "
+    'The exact shape is {"message":"your explanation","citations":[],"facts":[],'
+    '"required_inputs":[]}. A fact has only {"record_id":"record-id","field":"status"}; '
+    "the host supplies its value. Cite only IDs from successful reads in this turn. "
+    "For missing inputs, put their field locations in required_inputs and do not propose "
+    "a mutation. If the current user says a budget, objective or identifier is missing, "
+    "ask for it even if a previous turn supplied a value. Do not borrow budgets or "
+    "objectives from earlier turns unless the current user explicitly requests reuse. "
+    "When a request asks for comparison or history-grounded suggestions, perform those "
+    "reads before proposing an action. Refuse unsupported operations using the same "
+    "final-reply JSON shape, with empty facts and required_inputs."
+    " Put ALL explanation and pipeline guidance inside the message string. "
+    "citations is a flat array of record-ID strings, NEVER objects. Stop immediately "
+    "after the final JSON closing brace; no text before or after the JSON. "
+    "The final JSON must validate against this exact host schema: "
+    + json.dumps(ModelReply.model_json_schema(), separators=(",", ":"))
+    + " Required-input locations use the tool's full path: dataset_id, model_id, "
+    "config.max_runtime_seconds, objective_metric, limits.max_trials, "
+    "limits.max_runtime_seconds. A request for a record's metrics or status requires "
+    "reading that record and including its requested FactRequest; user text alone "
+    "is not record evidence. Comparisons use the compare_experiments tool so one "
+    "call can retrieve multiple experiment IDs. Emit one native call per response."
+    " For tuning, config.max_runtime_seconds is the per-trial training budget; "
+    "limits.max_runtime_seconds is the total tuning budget. Copy each explicit "
+    "number to its own path. Never substitute the total budget for the per-trial "
+    "budget or derive a new per-trial budget by dividing the total."
 )
 
 

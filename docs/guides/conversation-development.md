@@ -18,8 +18,8 @@ real-MongoDB transaction-race coverage. The bounded
 [fact renderer](../../src/ml_pipeline_pro/conversation_grounding.py) have scripted
 model tests and real HTTP/MongoDB orchestration tests. Authenticated chat/history/
 action routes and exact confirmed dispatch now exist, with transaction-race and
-killed-chat-process recovery coverage. Live inference still needs an installed
-artifact and its verified tokenizer/runtime counter.
+killed-chat-process recovery coverage. An explicit installed Qwen profile now
+has a verified tokenizer/runtime counter; its live conversation gate fails.
 Direct tracking/tuning routes continue to use their existing contracts. Course
 C3/C5 remain outstanding; installing dependencies and scripted tests do not
 establish a working pre-trained model.
@@ -45,7 +45,7 @@ the selected artifact's verified counter is supplied.
 | `MLPP_CHAT_MAX_MODEL_CALLS` | 5; integer 1-10. |
 | `MLPP_CHAT_MAX_TOOL_CALLS` | 4; integer 1-8. |
 | `MLPP_CHAT_MAX_OUTPUT_TOKENS` | 1024; integer 128-4096, less than context size. |
-| `MLPP_CHAT_CONTEXT_TOKENS` | 8192; integer 1024-16384; adapter checks advertised model support and requires an artifact-specific token counter. Actual tokenization/overflow evidence is still outstanding. |
+| `MLPP_CHAT_CONTEXT_TOKENS` | 8192; integer 1024-16384; adapter checks advertised model support and requires an artifact-specific token counter. The explicit Qwen profile has retained tokenization/overflow evidence at 8192. |
 
 Call/token settings accept decimal integer strings from environment files and
 reject booleans or fractional values. These are approved limits, not measured
@@ -77,9 +77,10 @@ existing tool rules.
 The adapter uses the [official LangChain ChatOllama integration](https://docs.langchain.com/oss/python/integrations/chat/ollama)
 and native `bind_tools` protocol. Run the separately installed Ollama server with
 `OLLAMA_NO_CLOUD=1` in **its** environment, per [Ollama's local-only setup](https://docs.ollama.com/faq#how-do-i-disable-ollama-cloud-features).
-Artifact selection, retained digest/license/runtime evidence, tokenization checks,
-cold and warm inference, and the approved ten-scenario live evaluation remain
-outstanding. No model download or inference belongs in the ordinary test gate.
+The [local setup guide](local-model-setup.md) describes the installed profiles,
+pinned tokenizer, runtime/template checks and failed ten-scenario evaluations.
+Successful live acceptance, independent review and clean-checkout onboarding
+remain outstanding. No model download or inference belongs in the ordinary test gate.
 
 ## Adapter lifecycle and admission
 
@@ -98,10 +99,13 @@ The `counter` receives the exact SDK-normalized Ollama request at the HTTP reque
 hook, including messages and tools. It must use the selected artifact's tokenizer
 and runtime chat/tool template, including special tokens. Verify it against
 runtime prompt counts and overflow tests before integrating the adapter into a
-chat route. No counter is supplied in this slice: inspection still works, but
-generation fails with `model_unavailable`. Tests inject synthetic counts to prove
-admission boundaries; they do not establish tokenization accuracy. Admission
-reserves the entire output allowance before the HTTP inference request.
+chat route. The default adapter has no counter and fails with `model_unavailable`.
+The explicit [Qwen factory](../../examples/qwen_chat_app.py) lazily verifies the
+installed identity and loads the checksum-pinned local tokenizer within the first
+bounded generation call. Eight retained stock-profile probes and a real SDK
+overflow check establish the selected counter's boundary behavior. Synthetic
+adapter tests alone do not establish tokenization accuracy. Admission reserves
+the entire output allowance before the HTTP inference request.
 
 The adapter submits a single non-streaming call, sets `num_ctx` and `num_predict`,
 and checks reported token usage. Response hooks count decoded chunks up to the
@@ -127,8 +131,8 @@ stops the local request; it cannot undo runtime work already started.
 
 `ConversationStore(database, settings)` uses transaction-capable MongoDB. It
 adds three schema-version-1 collections without migrating existing domain
-records or adding TTL deletion. The application does not instantiate this store
-yet. Its host-private `TurnClaim` must never be returned as an API response;
+records or adding TTL deletion. The application instantiates it for the chat
+routes. Its host-private `TurnClaim` must never be returned as an API response;
 return its strict public `ConversationTurn` instead.
 
 | Collection | Stored contract and indexes |
@@ -258,9 +262,9 @@ and the separate serial recovery gate. Existing worker/tuning ownership behavior
 is unchanged. Store tests use real sessions and controlled interleavings;
 local pure-boundary tests alone do not establish snapshot-isolation correctness.
 
-Continue the approved plan in reviewable steps: select the artifact and verify
-its tokenizer/runtime behavior, complete the opt-in live-model gate and resource
-observations, and verify clean-checkout onboarding with Person B. The stash
+Continue the approved plan in reviewable steps: resolve the failed opt-in
+live-model gate, review the model and resource evidence, and verify clean-checkout
+onboarding with Person B. The stash
 named `Before requested origin reset 2026-10-08` is preserved as unfinished source,
 not acceptance evidence. Review every reused portion rather than applying it in
 bulk. Independent review of state/claim/retry/resource arithmetic remains pending.
@@ -273,8 +277,8 @@ generation is disabled. The app lifespan closes both the tool transport and
 model. Construction is offline and readiness still checks MongoDB/Redis only.
 An embedding host can pass `chat_model_factory` to `create_app` to supply the
 selected artifact's verified token counter to `OllamaConversationModel`.
-The default adapter fails closed without that counter; the installed artifact,
-counter and real-model gate remain unfinished acceptance work.
+The default adapter fails closed without that counter. The explicit Qwen setup
+supplies one; a passing real-model gate remains unfinished acceptance work.
 The native adapter is prepared lazily inside the first bounded generation call;
 artifact identity is captured after inspection, including failed generation.
 Startup, saved replays and decisions do not inspect or call inference.
@@ -342,9 +346,9 @@ counter. The factory receives the inspected public model provenance and returns
 a callable counter for the exact SDK request payload. Its `identity` dictionary
 must match `artifact_digest`, `runtime_version` and `template_hash`. The gate
 records the counter source hash and checks its counts against actual prompt usage.
-No generic token estimate or default counter is provided. Completing this module
-for a chosen tokenizer/runtime, overflow verification and real execution remain
-required A1 work.
+No generic token estimate or default counter is provided. The explicit
+`evaluations.qwen_counter:create_counter` supplies the verified selected-profile
+counter. Passing real-model execution remains required A1 work.
 
 The gate admits at most 50 generation calls, reserving the configured full context
 allowance before each (default 409,600 total reserved tokens), with 512 output
@@ -371,7 +375,10 @@ try {
 }
 ```
 
-Archive the successful JSON/JUnit/model/license/resource evidence with its source
-manifest; ignored local output alone does not establish shared acceptance.
-The default local Ollama probe timed out and no installed tag/verified counter
-was selected, so no live evaluation or course-row closure is claimed.
+Archive JSON/JUnit/model/license/resource evidence, including failures, with its
+source manifest; ignored local output alone does not establish shared acceptance.
+The [October 9 evidence](../evidence/2026-10-09-qwen-counter/results.json)
+retains all six attempts. The stock 7B profile reached five of ten passing
+scenarios after prompt revisions; its explicit JSON-tools profile reached six,
+and the 14B profile reached three. All acceptance runs failed. No course row is
+closed by token verification or partial scenario passes.

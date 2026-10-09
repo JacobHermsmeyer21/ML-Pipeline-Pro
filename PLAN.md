@@ -53,8 +53,9 @@ required before increasing training concurrency.
 **Status:** Partial: 13 typed tools, locked LangChain dependencies, a tested local
 adapter, durable storage, grounded reads, authenticated routes, and confirmed
 action dispatch/recovery exist.
-Installed-artifact token verification, live-model evaluation, independent review,
-and clean-checkout onboarding remain open. The
+An explicit installed Qwen profile has verified token admission; its live-model
+acceptance fails. Successful model evaluation, independent review, and
+clean-checkout onboarding remain open. The
 [conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) was approved
 October 7, 2026; its outcome and the
 [development guide](docs/guides/conversation-development.md) track each slice.

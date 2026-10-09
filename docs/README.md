@@ -8,6 +8,7 @@ Start with the [project README](../README.md) to run the backend, or the
 - [Setup](guides/setup.md): Docker, host development, configuration, data, and artifacts.
 - [Workflows](guides/workflows.md): classification, tuning, and typed conversation tools.
 - [Conversation development](guides/conversation-development.md): implemented slices, model boundaries, and open acceptance work.
+- [Local model setup](guides/local-model-setup.md): pinned Qwen profiles, exact token admission, and reproducing the failing live gate.
 - [Verification](guides/verification.md): fast checks, real-service integration, and isolated recovery.
 
 ## Reference: APIs and architecture

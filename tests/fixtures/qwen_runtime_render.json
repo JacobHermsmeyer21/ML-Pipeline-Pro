@@ -1,0 +1,187 @@
+{
+  "runtime_version": "0.40.2",
+  "provenance": "Observed through local /api/chat _debug_render_only; no generation, only synthetic data.",
+  "cases": [
+    {
+      "request": {
+        "model": "qwen2.5:7b-instruct-q4_K_M",
+        "think": false,
+        "stream": false,
+        "options": {
+          "num_ctx": 8192,
+          "num_predict": 1
+        },
+        "messages": [
+          {
+            "role": "system",
+            "content": "First."
+          },
+          {
+            "role": "system",
+            "content": "Second."
+          },
+          {
+            "role": "user",
+            "content": "你好 🧪 <tools>& "
+          }
+        ],
+        "tools": []
+      },
+      "runtime_rendered_prompt": "<|im_start|>system\nFirst.\n\nSecond.<|im_end|>\n<|im_start|>user\n你好 🧪 <tools>& <|im_end|>\n<|im_start|>assistant\n"
+    },
+    {
+      "request": {
+        "model": "qwen2.5:7b-instruct-q4_K_M",
+        "think": false,
+        "stream": false,
+        "options": {
+          "num_ctx": 8192,
+          "num_predict": 1
+        },
+        "messages": [
+          {
+            "role": "system",
+            "content": "Use tools."
+          },
+          {
+            "role": "user",
+            "content": "read"
+          }
+        ],
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "schema_probe",
+              "description": "Inspect <data> & metadata.",
+              "parameters": {
+                "type": "object",
+                "$defs": {
+                  "Config": {
+                    "type": "object",
+                    "properties": {
+                      "learning_rate": {
+                        "type": "number",
+                        "default": 1e-06
+                      },
+                      "maximum": {
+                        "default": 10000000
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "key"
+                ],
+                "properties": {
+                  "key": {
+                    "type": [
+                      "string"
+                    ],
+                    "title": "Dropped title",
+                    "description": "A <key>& ",
+                    "default": "ignored"
+                  },
+                  "choices": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "items": {},
+                    "enum": [
+                      1.0,
+                      1e-07,
+                      -0.0
+                    ]
+                  },
+                  "nested": {
+                    "type": "object",
+                    "properties": {
+                      "z": {
+                        "type": "integer"
+                      },
+                      "a": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "z"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "runtime_rendered_prompt": "<|im_start|>system\nUse tools.\n\n# Tools\n\nYou may call one or more functions to assist with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>\n{\"type\": \"function\", \"function\": {schema_probe Inspect <data> & metadata. {object map[Config:map[properties:map[learning_rate:map[default:1e-06 type:number] maximum:map[default:1e+07]] type:object]] <nil> [key] {\"choices\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"items\":{},\"enum\":[1,1e-7,-0]},\"key\":{\"type\":\"string\",\"description\":\"A \\u003ckey\\u003e\\u0026\\u2028\"},\"nested\":{\"type\":\"object\",\"properties\":{\"z\":{\"type\":\"integer\"},\"a\":{\"type\":\"boolean\"}},\"required\":[\"z\"]}}}}}\n</tools>\n\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call><|im_end|>\n<|im_start|>user\nread<|im_end|>\n<|im_start|>assistant\n"
+    },
+    {
+      "request": {
+        "model": "qwen2.5:7b-instruct-q4_K_M",
+        "think": false,
+        "stream": false,
+        "options": {
+          "num_ctx": 8192,
+          "num_predict": 1
+        },
+        "messages": [
+          {
+            "role": "system",
+            "content": "Use tools."
+          },
+          {
+            "role": "user",
+            "content": "read"
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "function": {
+                  "name": "get_model",
+                  "arguments": {
+                    "model_id": "a&<b>",
+                    "limits": [
+                      1.0,
+                      1e-06,
+                      1e-07,
+                      -0.0
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "content": "{\"id\":\"a&<b>\"}"
+          },
+          {
+            "role": "tool",
+            "content": "two"
+          },
+          {
+            "role": "assistant",
+            "content": "A"
+          },
+          {
+            "role": "assistant",
+            "content": "B"
+          },
+          {
+            "role": "user",
+            "content": "next"
+          }
+        ],
+        "tools": []
+      },
+      "runtime_rendered_prompt": "<|im_start|>system\nUse tools.<|im_end|>\n<|im_start|>user\nread<|im_end|>\n<|im_start|>assistant\n<tool_call>\n{\"name\": \"get_model\", \"arguments\": {\"limits\":[1,0.000001,1e-7,-0],\"model_id\":\"a\\u0026\\u003cb\\u003e\"}}\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\n{\"id\":\"a&<b>\"}\n</tool_response><|im_end|>\n<|im_start|>user\n<tool_response>\ntwo\n</tool_response><|im_end|>\n<|im_start|>assistant\nA\n\nB<|im_end|>\n<|im_start|>user\nnext<|im_end|>\n<|im_start|>assistant\n"
+    }
+  ]
+}

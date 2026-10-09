@@ -374,3 +374,28 @@ setup against Compose, settings, the package manifest, and CI. The checker,
 original snapshot, and raw results are retained locally in ignored
 `artifacts/docs-reorganization/`. No application, live-service, recovery, or model
 evaluation suite was run for this documentation-only change.
+
+## Person A local token admission: October 9, 2026
+
+Continued approved A1 work after the documentation reorganization on `a4bdbe4`.
+Installed explicit Ollama/Qwen profiles under ignored local storage and added a
+checksum-pinned, artifact/runtime/template-specific counter with lazy API setup.
+Retained runtime rendering/count and overflow observations verify selected token
+admission. The default adapter remains unavailable without an injected counter.
+
+All six live attempts failed acceptance. After prompt revisions, the stock 7B
+profile reached five passing scenarios, its explicit JSON-tools profile reached
+six, and the 14B profile reached three. The ten original scenarios and strict
+parser/assertions are unchanged. Template formatting was confirmed and corrected
+in explicit profiles, but structured reply and budget-understanding failures
+remain. C3/C5, independent review and complete conversation onboarding stay open.
+
+Final host checks passed: 420 fast cases (77% coverage), 56 ordinary integration
+cases with both flags, ten serial recovery cases, locked sync, Ruff lint/format,
+dependency compatibility and source/wheel builds. Selected gates had no skips or
+failures. The wheel includes 37 application modules and excludes model/cache data.
+[The A1 outcome](../plans/2026-10-06-conversation-workflows-plan.md#person-a-selected-tokenizer-and-failed-live-evaluation-october-9-2026)
+and [shared evidence manifest](../evidence/2026-10-09-qwen-counter/results.json)
+retain raw results, source/package/profile identity and provenance limitations.
+No remote CI or concurrent-capacity result is claimed. Review here is self-review;
+a typed completion tool is a pending design hypothesis, not an implemented fix.

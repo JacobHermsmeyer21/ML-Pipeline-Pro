@@ -831,3 +831,75 @@ Raw local check output/provenance is in ignored
 `artifacts/course-docs-alignment-validation/`; final staged whitespace checks and
 commit/push are reported with this documentation change. No application or local
 inference acceptance run is claimed.
+
+### Person A selected tokenizer and failed live evaluation, October 9, 2026
+
+The user's continuation request resumes the approved A1 artifact-selection and
+token-admission work on `a4bdbe4`, preserving the completed documentation
+reorganization. The standalone Ollama 0.40.2 runtime and explicit Qwen 2.5 7B/14B
+Q4_K_M artifacts were installed under ignored `.tools/local-model-setup/`.
+Installed metadata retains artifact/weight digests, Apache 2.0 licenses,
+runtime/template identity and observed Vulkan GPU allocation. No weights or
+tokenizer data enter Git, the wheel or the containers.
+
+The new explicit counter verifies the runtime/artifact/template identities and
+local tokenizer checksum, renders the exact Go chat/tool template and reserves
+the full output allowance before HTTP inference. All 151665 available tokenizer
+entries and 151387 merges match both installed GGUFs; 399 padded entries are
+unused. Eight stock-profile probes matched exact rendered prompts and runtime
+prompt counts. A real SDK request admitted 7680 input plus 512 reserved output
+at context 8192; 7681 input failed before any HTTP inference request.
+The explicit API factory inspects and loads the counter lazily within the first
+bounded generation call, preserving offline startup, direct API and audit reads.
+The application's default adapter still fails closed without a supplied counter.
+
+Source and runtime render inspection exposed a pinned-runtime defect: the stock
+template prints a Go function struct where it advertises JSON. Explicit local
+template profiles JSON-encode signatures and request one native call while
+retaining the pre-trained weights and native tool protocol. These profiles are
+reproducible from installed weights; the setup script rejects unexpected source
+or occupied target identities. Profile recreation produced the same 14B digest.
+
+All six live attempts are retained, including the initial pre-inference identity
+failure. Subsequent stock 7B prompt revisions passed 1, 2 and 5 of the ten
+scenarios. The explicit 7B template profile passed 6; the 14B profile with explicit
+per-trial/total-budget guidance passed 3. **Every acceptance attempt failed.**
+Observed failures include prose appended to JSON, invalid citation structures,
+missing proposals and incorrect runtime budgets. The original ten scenarios,
+strict parser and assertions remain unchanged; no repair/extraction/retry hides
+failures. The 14B cold setup observation was one output token under an explicit
+120-second setup deadline, not a quality result. Saved timing/GPU allocation
+values do not establish capacity or latency guarantees.
+
+Final host verification: 420 fast cases, 56 ordinary integration cases with both
+flags and ten serial isolated recovery cases passed with zero failures/skips.
+Locked sync, Ruff lint/format, dependency compatibility and package builds passed.
+The wheel contains 37 canonical application modules; source archives exclude
+private/cache/model paths. Eighteen new regressions cover actual retained stock
+rendering, wrong profile/tokenizer identities, bounded tokenizer reads,
+unsupported requests and lazy lifecycle failures. Their assertions implement
+admission/startup requirements; no existing test was weakened.
+
+[The shared manifest](../evidence/2026-10-09-qwen-counter/results.json) links a
+byte-preserving raw archive containing every live JSON/JUnit result, intermediate
+source hashes, runtime/license/profile observations, tokenizer/boundary probes,
+current source/package manifests and passing service/recovery evidence.
+Attempt 1's shell wrapper returned zero while pytest failed; its native exit was
+not captured. Later failures returned native exit 1. Attempt 6 retains instruction
+and factory hashes but lacks the full counter snapshot before the later lazy-API
+wrapper addition; the final snapshot applies to the passing host gates.
+These provenance limits are explicit in the manifest.
+
+Documentation verification passed for 32 Markdown documents, 318 local
+links/anchors, two Python examples, 29 PowerShell examples and the source-backed
+25-operation API inventory. Staged whitespace and archive/source hashes are
+checked before committing. Commit and push outcomes are recorded in Git and the
+completion handoff.
+
+**Outstanding:** A1/F6 real-model quality acceptance, independent review of
+rendering/resource arithmetic and existing state transitions, human model-quality
+review, and complete clean-checkout onboarding. C3/C5 stay open. Review performed
+here is implementing-assistant self-review; no independent reviewer is available.
+The [runtime memory](../memory/conversation-qwen-runtime.md) records the confirmed
+mechanism and rejected approaches. A typed completion tool remains an unimplemented
+design hypothesis requiring renewed review. A2-A4 remain pending approval.
