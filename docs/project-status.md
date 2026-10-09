@@ -43,7 +43,7 @@ completion. Feature implementation still requires explicit review of its plan.
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
 | 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Tools, schemas/settings, tested LangChain/Ollama adapter and durable turn/proposal claims/replay implemented | Installed-artifact token verification, host dialogue/history and grounding, tuning suggestions, action decisions/dispatch, chat routes, real-model evaluation |
+| 4. Conversational workflows | Tools, schemas/settings, tested local adapter, durable storage and bounded grounded host loop implemented | Installed-artifact token verification, real-model dialogue/suggestions, action decisions/dispatch, chat routes, live evaluation |
 | 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
 | 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
@@ -55,7 +55,8 @@ strict request/public-action/model-reply schemas, canonical finite-JSON
 fingerprints, the injected model interface/native tool descriptions, approved
 chat settings, and locked LangChain dependencies. The next A1 slice adds a local
 LangChain/Ollama adapter and SDK/HTTP boundary tests. The durable store now has
-real-MongoDB claim/replay/takeover coverage. Routes, the host loop and grounding,
+real-MongoDB claim/replay/takeover coverage. The bounded host loop grounds supplied
+API facts and preflights saved proposals. Routes,
 action decisions/dispatch, installed-artifact token verification, and live evaluation remain outstanding.
 The existing API and worker code are unchanged. Validation for these slices is recorded in the
 [approved plan's outcome](plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);

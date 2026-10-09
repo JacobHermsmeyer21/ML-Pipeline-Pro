@@ -21,8 +21,9 @@ for a service-free contract demo. Person A's initial conversation foundation add
 locked LangChain dependencies, strict conversation schemas, the model interface,
 and validated chat settings. The next A1 slice supplies a tested local inference
 adapter with native tool proposals and bounded requests. A durable turn/proposal
-store now supplies fenced reservation/completion and replay. Chat routes,
-host orchestration, action decisions/dispatch, installed-artifact token verification, and real-model
+store now supplies fenced reservation/completion and replay. The bounded host
+loop reads scoped evidence, renders verified facts and saves exact proposals.
+Chat routes, action decisions/dispatch, installed-artifact token verification, and real-model
 evaluation remain outstanding under
 the [approved design](docs/plans/2026-10-06-conversation-workflows-plan.md).
 See [conversation development](docs/conversation-development.md) for this slice's
@@ -128,6 +129,8 @@ src/ml_pipeline_pro/
   conversation_model.py # Injected model interface and native tool descriptions
   conversation_ollama.py # Local LangChain adapter; artifact-specific token counter required
   conversation_store.py # Transactional turn claims/replay and immutable saved proposals
+  conversation_service.py # Bounded read loop and proposal preflight; no mutation dispatch
+  conversation_grounding.py # Facts from supplied current-turn API fields
 tests/
   integration/      # Opt-in tests against real MongoDB and Redis
 compose.yaml        # API and local dependencies

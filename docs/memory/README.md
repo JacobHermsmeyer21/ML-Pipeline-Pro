@@ -12,6 +12,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | [API response defaults must not invent tool evidence](conversation-response-evidence.md) | Conversation tools and public record provenance |
 | [Ollama admission needs exact SDK requests and credential isolation](conversation-ollama-boundary.md) | Local conversation adapter, token admission, SDK lifecycle |
 | [Conversation completion needs a parent write and BSON-precision time](conversation-store-replay.md) | Durable turn/proposal claims, replay and transaction retries |
+| [Conversation facts must exclude default-only API fields](conversation-supplied-facts.md) | Host loop, response capture and grounded record facts |
 
 Keep one durable finding per file. Include date, evidence, limits, and when to
 revisit it. Index new findings here. Record rejected approaches only when source

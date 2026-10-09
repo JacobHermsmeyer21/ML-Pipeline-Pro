@@ -1,0 +1,18 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 432 items / 391 deselected / 41 selected
+
+tests\integration\test_conversation_service.py ....                      [  9%]
+tests\integration\test_conversation_store.py ................            [ 48%]
+tests\integration\test_experiments.py ..                                 [ 53%]
+tests\integration\test_infrastructure.py ...                             [ 60%]
+tests\integration\test_tools.py .                                        [ 63%]
+tests\integration\test_tuning.py .....                                   [ 75%]
+tests\integration\test_tuning_ownership.py ..........                    [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\conversation-loop-validation\integration.xml -
+===================== 41 passed, 391 deselected in 24.11s =====================

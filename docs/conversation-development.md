@@ -13,8 +13,11 @@ admission, fixed safe errors, redaction, and client cleanup. Deterministic tests
 exercise the real locked SDK against an in-memory HTTP transport.
 A third A1 slice adds [the durable store](../src/ml_pipeline_pro/conversation_store.py)
 for turn claims/replay, scoped history, and immutable pending proposals, with
-real-MongoDB transaction-race coverage. Chat routes, the host loop, and action
-decisions/dispatch remain pending. `MLPP_CHAT_ENABLED=true` does not enable chat yet.
+real-MongoDB transaction-race coverage. The next slice adds the bounded
+[host loop](../src/ml_pipeline_pro/conversation_service.py) and
+[fact renderer](../src/ml_pipeline_pro/conversation_grounding.py), with scripted
+model tests and real HTTP/MongoDB orchestration tests. Chat routes and action
+decisions/dispatch remain pending. `MLPP_CHAT_ENABLED=true` does not expose chat yet.
 Direct tracking/tuning routes continue to use their existing contracts. Course
 C3/C5 remain outstanding; installing dependencies and scripted tests do not
 establish a working pre-trained model.
@@ -56,8 +59,8 @@ correlation, submission key, and mutation permission. Chat request bodies cannot
 supply those fields. A decision accepts only `approve`/`reject` and the exact
 saved fingerprint; edited arguments need a new proposal. The schema cannot
 authorize an action or prove that a citation is supported. Turn claims/completion
-and pending proposals are persisted now. Grounded fact rendering, action
-decisions, and dispatch orchestration remain host implementation work.
+and pending proposals are persisted now; the host renders supplied facts and
+preflights mutation references. Action decisions and dispatch remain pending.
 
 Model replies request record IDs and field references, without supplying verified
 fact values. Actual values must come from successful public tool evidence. Action
@@ -159,6 +162,72 @@ until explicit operator deletion. This slice provides no action approval,
 execution claims, dispatch, unknown-outcome retry, or attempt reconciliation.
 Those state transitions and chat-process loss tests remain required A1 work.
 
+## Bounded host loop and supplied evidence
+
+`ConversationService(settings, store, model, transport).chat(context, request)`
+accepts trusted host context after authentication. It binds a read-only context
+with the saved execution correlation and no submission key, even if its caller
+supplied mutation permission. `MLPP_CHAT_ENABLED=false` rejects generation before
+model/store calls. Exact request replay returns the saved turn without inference,
+including when the injected model is unavailable. The caller's lifespan owns
+and closes the injected model and HTTP transport; no new routes or app factory
+changes are supplied in this slice.
+
+The service includes at most ten previous terminal user/assistant pairs, labelled
+historical, and discloses omitted history. It selects public tool snapshots,
+removes holdout metrics, artifact/dependency/URI contents, private tokens and
+correlation metadata from model context, and redacts known configured/context
+credentials. The current turn starts a new evidence ledger; previous citations
+and mutable statuses require fresh successful reads. Full safe tool snapshots
+remain inspectable in the saved turn. History/context limits fail explicitly;
+the service does not silently truncate successful evidence to fit the model.
+
+Model and tool requests run serially under the original absolute turn deadline,
+configured overall/per-model timeouts and call limits. A malformed or missing
+mutation input becomes `needs_input` with schema-derived field locations.
+Complete proposals preflight dataset/model or cancellation-target references
+through the existing scoped API, consuming the same read budget. Current fetched
+records can satisfy those checks. The loop then saves `awaiting_confirmation`
+and stops without a mutation HTTP call or another inference call. All expanded
+values remain labelled model-proposed. Natural-language intent and whether a
+model guessed an unprovided budget still need prompt evaluation and exact human
+review; schema completeness alone cannot establish those facts.
+
+For replies, citations must occur in successful current-turn public tool evidence.
+Scalar identity/configuration/status/validation-metric fields are resolved from
+actual supplied record fields. Supported examples include `name`, `status`,
+`metrics.validation_f1`, `config.learning_rate`, `objective_value`,
+`best_trial_id`, and `comparison.best_experiment_id`. Related parent/source IDs
+may be cited as relationships but their own fields require a fetched record.
+Unsupported, missing/private/holdout fields, fabricated IDs and ambiguous IDs
+shared by different record kinds fail. Later successful reads replace earlier
+record views within a turn. Generated prose is interpretation; structured
+`VerifiedFact.value` comes from a validated supplied API snapshot. This does not
+prove every factual statement a model might put in free prose.
+
+The existing dispatcher may expand response-schema defaults. A per-read response
+capture projects its validated data onto fields actually supplied by the API,
+so an omitted status cannot become a verified default `queued` value. This
+preserves the exported dispatcher behavior and input default expansion. The
+[missing-status regression](../tests/test_conversation_service.py) reproduces
+that mechanism and now rejects the unsupported fact.
+
+Chat requires `HttpToolTransport(..., max_response_bytes=128 * 1024)`. Its new
+optional cap defaults to `None` for existing callers. It streams/counts decoded
+bytes before JSON parsing and closes on oversize/timeout/cancellation, including
+chunked/gzip results. The service also checks normalized snapshots, 64 KiB model
+context including native schemas/instructions, and 256 KiB output records.
+An unpublishable record fails as a whole; a minimal failed turn explicitly marks
+`evidence_not_saved` instead of presenting truncated evidence as success.
+
+Per-model failures and invalid replies are saved as failed turns with safe
+error codes/statuses. Local storage failures raise `storage_unavailable` with
+known turn/conversation IDs, preserving uncertainty about a commit. Overall
+deadline expiry returns `chat_timeout` and reconciles the turn to `interrupted`;
+cancellation propagates and leaves expiry reconciliation to subsequent reads.
+Owner/revision conflicts are never overwritten with a late failure result.
+Direct tracking/tuning APIs remain available independently of inference.
+
 ## Verify this slice and continue A1
 
 From the repository root:
@@ -168,6 +237,7 @@ uv sync --locked --extra training
 uv run --locked --extra training pytest tests/test_conversation_schemas.py tests/test_conversation_model.py tests/test_conversation_config.py
 uv run --locked --extra training pytest tests/test_conversation_ollama.py tests/test_logging.py
 uv run --locked --extra training pytest tests/test_conversation_store.py
+uv run --locked --extra training pytest tests/test_conversation_service.py tests/test_conversation_grounding.py tests/test_tool_transport.py
 ```
 
 The tests cover UTF-8 boundaries, trusted-context exclusion, exact decision shape,
@@ -184,8 +254,8 @@ is unchanged. Store tests use real sessions and controlled interleavings;
 local pure-boundary tests alone do not establish snapshot-isolation correctness.
 
 Continue the approved plan in reviewable steps: select the artifact and verify
-its tokenizer/runtime behavior; implement the bounded host read loop and
-evidence grounding; exact action decisions/execution claims; API/lifespan/docs
+its tokenizer/runtime behavior; implement exact action decisions/execution
+claims; API/lifespan/docs
 integration with Person B; further action races and lost-response/chat-process
 recovery; and the opt-in live-model gate. The stash
 named `Before requested origin reset 2026-10-08` is preserved as unfinished source,

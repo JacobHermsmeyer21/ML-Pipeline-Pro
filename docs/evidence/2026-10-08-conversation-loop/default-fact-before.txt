@@ -1,0 +1,20 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___ test_missing_upstream_status_must_not_become_a_verified_schema_default ____
+
+    def test_missing_upstream_status_must_not_become_a_verified_schema_default():
+        record = experiment()
+        record.pop("status")
+        result, _, _ = run(ScriptedModel(call("get_experiment", experiment_id="experiment"),
+                                       reply(record_id="experiment", field="status")),
+                           RecordsTransport({"/api/v1/experiments/experiment": record}))
+>       assert result.status == "failed" and result.error["code"] == "model_invalid_response"
+E       AssertionError: assert ('completed' == 'failed'
+E
+E         - failed
+E         + completed)
+
+tests\test_conversation_service.py:506: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_conversation_service.py::test_missing_upstream_status_must_not_become_a_verified_schema_default
+1 failed, 31 deselected in 0.38s

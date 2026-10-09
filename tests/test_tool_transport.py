@@ -1,4 +1,5 @@
 import asyncio
+import gzip
 import json
 
 import httpx
@@ -9,6 +10,75 @@ from ml_pipeline_pro.schemas import ModelRecord
 from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext
 from ml_pipeline_pro.tool_transport import HttpToolTransport
 from ml_pipeline_pro.tools import ToolDispatcher
+
+
+class Chunks(httpx.AsyncByteStream):
+    def __init__(self, chunks):
+        self.chunks, self.yielded, self.closed = chunks, 0, False
+
+    async def __aiter__(self):
+        for chunk in self.chunks:
+            self.yielded += 1
+            yield chunk
+
+    async def aclose(self):
+        self.closed = True
+
+
+def test_response_cap_counts_decoded_utf8_at_boundary_and_closes_chunked_gzip_streams():
+    from ml_pipeline_pro.conversation_schemas import TOOL_BYTES
+    from ml_pipeline_pro.tool_transport import ToolTransportError
+
+    base = len(json.dumps({"message": ""}, separators=(",", ":")).encode())
+    remaining = TOOL_BYTES - base
+    body = json.dumps(
+        {"message": "é" * (remaining // 2) + "x" * (remaining % 2)},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode()
+    assert len(body) == TOOL_BYTES
+
+    async def run():
+        for chunks, headers, accepted in [
+            ([body], {}, True),
+            ([body, b" ", b"must not be consumed"], {}, False),
+            ([gzip.compress(body + b" ")], {"content-encoding": "gzip"}, False),
+        ]:
+            stream = Chunks(chunks)
+            probe = ProbeTransport(httpx.Response(200, headers=headers, stream=stream))
+            async with HttpToolTransport(
+                "http://api", max_response_bytes=TOOL_BYTES, transport=probe
+            ) as transport:
+                if accepted:
+                    result = await transport.request(
+                        "GET",
+                        "/api/v1/models",
+                        context=ToolContext(project_id="demo"),
+                        query=[],
+                        body=None,
+                    )
+                    assert result.payload["message"].startswith("é")
+                else:
+                    with pytest.raises(ToolTransportError) as caught:
+                        await transport.request(
+                            "GET",
+                            "/api/v1/models",
+                            context=ToolContext(project_id="demo"),
+                            query=[],
+                            body=None,
+                        )
+                    assert caught.value.code == "tool_response_too_large"
+            assert stream.closed and probe.closed
+            assert stream.yielded == min(2, len(chunks))
+
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize("limit", [0, -1, True, 1.5, "128"])
+def test_response_cap_rejects_invalid_configuration(limit):
+    with pytest.raises(ValueError):
+        HttpToolTransport("http://api", max_response_bytes=limit)
+
 
 KEY = "tool-transport-secret-key"
 

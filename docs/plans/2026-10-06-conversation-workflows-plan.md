@@ -568,6 +568,100 @@ failure rollback and is not independent review. Person B/human review remains
 required. The approved contracts and acceptance criteria remain unchanged;
 Git history and the task response record the final commit/push outcome.
 
+### Person A bounded host loop, October 8, 2026
+
+The user's "go next" request continues the approved A1 design on baseline
+`8b02465`, branch `person-a/conversation-foundation`. The service now connects
+injected model, scoped read transport and durable store: it replays without
+generation, bounds serial model/read calls and original deadlines, selects ten
+labelled historical pairs, renders supplied current-turn facts, and validates
+complete mutation proposals plus referenced records before saving them. A valid
+mutation stops at `awaiting_confirmation`; no mutation HTTP call or model-based
+approval occurs. No new route, main/lifespan wiring, worker behavior or default
+configuration is introduced. API/worker ownership remains with Person B; the
+caller owns injected-client cleanup. The stash was not restored.
+
+The loop forces read-only trusted context, strips submission/correlation/private
+metadata from model context, redacts known credentials, and omits holdout metrics
+and artifact/dependency/URI data from inference. Current-turn successful
+snapshots alone support citations/facts; historical status needs a fresh read.
+Field resolution supports scalar identity/config/status/validation/comparison
+references and rejects absent/private/holdout/ambiguous facts. Parent/source ID
+references do not fabricate unfetched parent fields. Interpretation stays
+separate from host-rendered values. Schema completeness cannot prove whether
+natural-language inputs supplied a budget, and arbitrary generated prose is not
+independently verified; prompt evaluation and exact human review remain required.
+
+`HttpToolTransport` adds the reviewed optional `max_response_bytes=None` cap,
+preserving existing callers. Chat requires a cap no greater than 128 KiB; decoded
+stream/gzip bytes are counted before JSON parsing. The host also enforces context,
+normalized snapshot and output-record caps. Oversized records fail as a whole;
+a minimal failure explicitly marks evidence not saved. Per-model failures are
+recorded safely, overall deadline expiry reconciles interruption, cancellation
+propagates, and storage failures expose known saved IDs without claiming failure
+of an uncertain commit. Existing shared reply instructions/model error type
+move to the protocol module; adapter imports remain compatible and their content
+is unchanged. Dependencies/lock versions and public tracking/tuning schemas are
+unchanged.
+
+A new regression removed only API status from an otherwise valid experiment
+response. Before the fix the host completed with a reconstructed default queued
+fact. Per-call response capture now projects validated values onto supplied
+fields before context/audit/grounding; the same assertion rejects the unsupported
+fact. Exported dispatcher behavior and configuration-default expansion remain
+unchanged. The [durable finding](../memory/conversation-supplied-facts.md) records
+this distinction. Another new oversized-output case exposed reliance on the
+store's cap in a memory substitute; a host publication guard now fails before
+storage and saves the explicit minimal failure. Test fixtures were corrected to
+the existing `DatasetRecord.num_classes` contract rather than changing schemas.
+Existing assertions and gates were preserved.
+
+Windows/PowerShell, Python 3.11.5, uv 0.12.23: locked training sync, Ruff lint,
+format (91 files), **381 fast tests**, **41 ordinary integration cases** with
+both flags, and **ten serial recovery cases** passed with zero selected skips.
+There are 42 new fast cases (32 service, four grounding, six transport) and four
+new real-service cases. Scripted cases cover queued versus completed facts,
+validation comparison, unsupported/absent/cross-turn facts, exact replay,
+missing budgets/objectives, proposal preflight/foreign references, call/context/
+record limits, malformed output/usage, timeouts/cancellation/storage failure,
+hostile data, secret/trace redaction and disabled generation. Stream cases check
+exact UTF-8 decoded boundaries and gzip/chunk cleanup. Real cases use scoped HTTP
+and real MongoDB for read/restart replay, a history-based saved proposal without
+a new job, actual deadline interruption, and direct API availability after model
+failure. Historical validation values in that scenario are labelled synthetic
+fixtures, not newly measured training quality or model reasoning.
+
+Installed compatibility covers 105 packages; both distributions build, and
+contents are inspected for the new modules/ignored-file exclusions. The uv
+workspace-cache warning remains; inspected archives exclude caches, local tools,
+virtual environments, `.env` and artifacts. Ordinary project `mlpp-conversation`
+uses ports 18000/37017/16379; recovery has its own generated stack/ports. Image
+identities and loop/grounding/transport/worker hashes match tested source.
+Fixtures remove generated metadata/recovery stacks; the ordinary test stack is
+stopped after collection with volumes preserved. No concurrent training, new
+paid model service, language-model download or external tracing was introduced.
+
+Tracked [execution/source/image/package provenance](../evidence/2026-10-08-conversation-loop/results.json),
+[fast output](../evidence/2026-10-08-conversation-loop/unit.txt),
+[ordinary output](../evidence/2026-10-08-conversation-loop/integration.txt),
+[recovery output](../evidence/2026-10-08-conversation-loop/recovery.txt),
+[before-fix fact failure](../evidence/2026-10-08-conversation-loop/default-fact-before.txt)
+and JUnit/recovery-state archive retain shared evidence. Additional local output
+remains in ignored `artifacts/conversation-loop-validation/` and recovery
+directories. Documentation links/examples, source claims and staged whitespace
+are checked before commit/push. Remote CI and clean-checkout onboarding are not
+claimed.
+
+**Outstanding:** exact action decisions/execution claims/dispatch and unknown
+outcome recovery; chat routes/lifespan/Compose integration; additional decision
+races and chat-process loss; installed-artifact tokenizer/overflow verification,
+resource observations and ten-scenario real-model evaluation. C3/C5 remain open.
+Independent review is unavailable in this session; implementing-assistant
+self-review covers resource arithmetic, source-field provenance, project/permission
+binding, state/failure paths and cleanup and is not independent review. Person B/
+human review remains required. Approved contracts/acceptance criteria are retained;
+Git history and the task response record the final commit/push outcome.
+
 Original draft preparation checks (October 6, 2026, original baseline `32df698`,
 Windows/PowerShell):
 local Markdown validation passed for 17 documents and 144 links/anchors; the two

@@ -1,0 +1,200 @@
+{
+  "recorded_at_utc": "2026-10-09T01:09:03.122435+00:00",
+  "client_date": "2026-10-08",
+  "scope": "Person A A1 bounded read loop, supplied fact rendering and pending proposal preflight; no routes or mutation execution",
+  "source_baseline": "8b02465af46ae9b304f3782d15d37a0eb4faf31c",
+  "branch": "person-a/conversation-foundation",
+  "tested_source_sha256": {
+    "src/ml_pipeline_pro/conversation_model.py": "64d23efbf6ae82fa4f1eb694c98fd9fcc9f795cd6a57da0f954dcdff8b5448eb",
+    "src/ml_pipeline_pro/conversation_ollama.py": "4fd733c38e1080223e3814ed43b77c9f74a1648a09a5da8dc9658456090d37fa",
+    "src/ml_pipeline_pro/conversation_service.py": "052408aed8e464bf579c8c12f26855f33558298e2efa907d29c356b273f98b4b",
+    "src/ml_pipeline_pro/conversation_grounding.py": "28da53af00020ee9e81fa017b460f62ee6d5bdcd94e6ef7b78cb5369600e6a04",
+    "src/ml_pipeline_pro/tool_transport.py": "7ca480399a52b351b3af7fe0485b8074b4b07a7383475cef0421488fa24ea6a7",
+    "src/ml_pipeline_pro/conversation_store.py": "0ddf65332aa2ed1e45797eb34c4294d26181f7abd90f0b7f733d49a5144eb14f",
+    "tests/conversation_memory.py": "ca8d2c53d06502d385f8f1d1ff1ae3e45d9f1e73e66e37c3f36a9d0d0aaa2cb6",
+    "tests/test_conversation_service.py": "0c0fd840a6fc2137852cc54268e88a8e70ee5fdad547233d3e54a154f46671b4",
+    "tests/test_conversation_grounding.py": "e1028c29026a1eac55d6ace93e34c88929fab459b88f4432fd364ecbcd17e818",
+    "tests/test_tool_transport.py": "174ba3eb03d084e4d13aa04c6d1c98d05ddeee2ff2c4e9b2b53d26d22a4352ec",
+    "tests/integration/test_conversation_service.py": "a30905c0d1e123f273b3abba8e7c6b5025a1fdcc151563d8d11a439d2075a0a1",
+    "pyproject.toml": "03ed9e72212fae12bf180aa01d6ae31e0b55077a6378f30c6a4547df41f022da",
+    "uv.lock": "4b9aebd7705ed49ce1be35eb7d788964d051743d5b534067c0e5c8c1abb7122f"
+  },
+  "environment": {
+    "host_os": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.5",
+    "uv": "0.12.23",
+    "shell": "PowerShell",
+    "uv_cache_dir": ".cache/uv"
+  },
+  "packages": {
+    "langchain-core": "1.6.9",
+    "langchain-ollama": "1.1.0",
+    "ollama": "0.6.3",
+    "pymongo": "4.18.2",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10"
+  },
+  "ordinary_runtime": {
+    "python": "3.11.17",
+    "source": {
+      "conversation_service.py": "052408aed8e464bf579c8c12f26855f33558298e2efa907d29c356b273f98b4b",
+      "conversation_grounding.py": "28da53af00020ee9e81fa017b460f62ee6d5bdcd94e6ef7b78cb5369600e6a04",
+      "tool_transport.py": "7ca480399a52b351b3af7fe0485b8074b4b07a7383475cef0421488fa24ea6a7",
+      "worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9",
+      "main.py": "6b316fcf6d969ccc28153bbbdfc2ecd7fc7f32fffca1f6bfecba278a560a13e2"
+    },
+    "container": "mlpp-conversation-api-1",
+    "image": "sha256:dc8bb80061fd4d974f9966409ae69503e28d4a9e888b836120efe862bfba9db7",
+    "matches_source": true
+  },
+  "recovery_runtime": {
+    "python": "3.11.17",
+    "source": {
+      "conversation_service.py": "052408aed8e464bf579c8c12f26855f33558298e2efa907d29c356b273f98b4b",
+      "conversation_grounding.py": "28da53af00020ee9e81fa017b460f62ee6d5bdcd94e6ef7b78cb5369600e6a04",
+      "tool_transport.py": "7ca480399a52b351b3af7fe0485b8074b4b07a7383475cef0421488fa24ea6a7",
+      "worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9",
+      "main.py": "6b316fcf6d969ccc28153bbbdfc2ecd7fc7f32fffca1f6bfecba278a560a13e2"
+    },
+    "image": "sha256:663cee9b797bb8ee06bceb63d2902daf631ac0d5e22de5dfcc5cf6f306cd6f20",
+    "project": "mlpp-recovery-4b9346f3e70e",
+    "matches_source": true
+  },
+  "reports": {
+    "unit": {
+      "tests": 381,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "integration": {
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "commands_observed": [
+    {
+      "command": "uv sync --locked --extra training",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv run --locked --extra training ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "uv run --locked --extra training ruff format --check .",
+      "exit_code": 0,
+      "files": 91
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"not integration\" --cov",
+      "exit_code": 0,
+      "tests": 381,
+      "integration_deselected": 51
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"integration and not recovery\"",
+      "exit_code": 0,
+      "tests": 41,
+      "flags": [
+        "MLPP_RUN_INTEGRATION=1",
+        "MLPP_RUN_WORKER_INTEGRATION=1"
+      ],
+      "test_endpoints": [
+        "http://127.0.0.1:18000/api/v1",
+        "mongodb://127.0.0.1:37017/?directConnection=true",
+        "redis://127.0.0.1:16379/0"
+      ]
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m recovery",
+      "exit_code": 0,
+      "tests": 10,
+      "flags": [
+        "MLPP_RUN_RECOVERY_INTEGRATION=1"
+      ],
+      "serial": true
+    },
+    {
+      "command": "uv pip check",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv build --offline",
+      "exit_code": 0,
+      "warning": "Workspace cache warning; distributions inspected and exclude ignored paths"
+    }
+  ],
+  "new_test_counts": {
+    "service_fast": 32,
+    "grounding_fast": 4,
+    "transport_fast": 6,
+    "integration": 4
+  },
+  "initial_findings": [
+    "Otherwise valid experiment response omitted status; default queued value was rendered as verified before supplied-field projection fixed the mechanism.",
+    "Oversized reply exposed reliance on the store cap in memory tests; a host publication guard now rejects the whole record and saves an explicit minimal failure.",
+    "New dataset fixture corrected to existing num_classes schema; persistence/API schemas unchanged."
+  ],
+  "provenance_limits": [
+    "History scenario validation scores are synthetic fixture values, not measured training results.",
+    "All model steps in host-loop tests are scripted; actual LangChain/Ollama inference and semantic quality are not established.",
+    "Structured facts establish consistency with validated supplied API fields; arbitrary generated prose is not independently verified."
+  ],
+  "evidence": {
+    "raw_logs": [
+      "unit.txt",
+      "integration.txt",
+      "recovery.txt",
+      "default-fact-before.txt"
+    ],
+    "junit": [
+      "unit.xml",
+      "integration.xml",
+      "recovery.xml"
+    ],
+    "recovery_snapshots_and_logs": "recovery-state.zip",
+    "text_normalization": "UTF-8/LF; formatting-only trailing whitespace removed."
+  },
+  "review": {
+    "reviewer": "Implementing assistant (self-review)",
+    "independent": false,
+    "scope": "Call/time/size arithmetic, source-field grounding, context/proposal authority, error/replay/storage paths and cleanup",
+    "resolutions": [
+      "Per-call raw response capture avoids shared last-response state.",
+      "Absent source fields cannot acquire schema-default facts.",
+      "Model-private provenance/holdout metrics are omitted from inference context.",
+      "Source matching verified for ordinary and completed recovery images."
+    ]
+  },
+  "remaining_gaps": [
+    "Independent Person B/human review unavailable in this session.",
+    "Exact action decisions/dispatch/unknown-outcome recovery and chat API/lifespan integration pending.",
+    "Installed artifact/tokenizer/overflow/resource observations and live-model gate pending; C3/C5 remain open.",
+    "No clean-checkout onboarding or remote CI result claimed."
+  ],
+  "documentation_checks": {
+    "markdown_documents": 21,
+    "local_links_and_anchors": 256,
+    "python_fences": 2,
+    "powershell_fences": 19,
+    "env_example_valid": true
+  },
+  "build_inspection": {
+    "wheel_members": 37,
+    "sdist_members": 128,
+    "new_modules_in_archives": true,
+    "ignored_paths_excluded": true
+  }
+}

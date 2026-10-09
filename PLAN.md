@@ -172,7 +172,8 @@ exposes 13 existing API operations with budgets, trusted context/retry keys, and
 record evidence. Locked LangChain dependencies, strict conversation schemas,
 the model interface, and chat settings now exist. The local inference adapter has
 deterministic SDK/HTTP tests; durable turn/proposal storage has real-MongoDB
-claim/replay/takeover coverage. `/chat`, the host loop, action decisions/dispatch,
+claim/replay/takeover coverage. The bounded host loop grounds supplied API facts
+and preflights saved proposals. `/chat`, action decisions/dispatch,
 artifact-specific token verification, and real-model evaluation remain outstanding. See the
 [development guide](docs/conversation-development.md).
 The [implemented tool design](docs/plans/2026-10-06-conversation-tools-plan.md) and

@@ -49,6 +49,7 @@ class HttpToolTransport:
         *,
         timeout_seconds: float = 10,
         transport: httpx.AsyncBaseTransport | None = None,
+        max_response_bytes: int | None = None,
     ):
         try:
             parsed = urlsplit(origin)
@@ -76,6 +77,11 @@ class HttpToolTransport:
             or timeout_seconds <= 0
         ):
             raise ValueError("HTTP timeout must be positive and finite")
+        if max_response_bytes is not None and (
+            type(max_response_bytes) is not int or max_response_bytes < 1
+        ):
+            raise ValueError("Response byte limit must be a positive integer or None")
+        self.max_response_bytes = max_response_bytes
         self._client = httpx.AsyncClient(
             base_url=base_url,
             timeout=httpx.Timeout(timeout_seconds),
@@ -111,9 +117,22 @@ class HttpToolTransport:
         if body is not None and context.submission_key is not None:
             headers["Idempotency-Key"] = context.submission_key
         try:
-            response = await self._client.request(
+            async with self._client.stream(
                 method, path, headers=headers, params=query, json=body
-            )
+            ) as response:
+                chunks = []
+                size = 0
+                async for chunk in response.aiter_bytes():
+                    size += len(chunk)
+                    if self.max_response_bytes is not None and size > self.max_response_bytes:
+                        raise ToolTransportError(
+                            "tool_response_too_large",
+                            "API response exceeds the byte limit",
+                            response.status_code,
+                        )
+                    chunks.append(chunk)
+                # Keep decoded bytes for the same JSON/error parsing path below.
+                response._content = b"".join(chunks)
         except httpx.TimeoutException:
             raise ToolTransportError(
                 "tool_timeout", "API request timed out; submission may have been accepted"
