@@ -145,6 +145,14 @@ schema/repository/fixture/integration updates in the same change.
 The critical dependencies are A1 -> A2; B2 + A1 -> A3; B1/B2 + A1-A3 -> final
 B3 evidence; all feature/evidence tasks -> B4. No task requires concurrent training.
 
+Person A's remaining design review packets are now available:
+[A2 snippet generation](2026-10-08-person-a-snippet-generation-plan.md),
+[A3 monitoring diagnosis](2026-10-08-person-a-monitoring-diagnosis-plan.md), and
+[A4 retrieval/onboarding evidence](2026-10-08-person-a-retrieval-evidence-plan.md).
+Their mechanisms, limits and acceptance scenarios await human approval;
+A3 additionally needs B2's joint evidence contract. The request to finish Person
+A's work does not establish a review of these newly written designs.
+
 ### Separately tracked follow-up
 
 These audit/roadmap gaps also have owners, but do not expand course acceptance.
