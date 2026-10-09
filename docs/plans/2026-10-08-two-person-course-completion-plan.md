@@ -13,7 +13,7 @@
 Person A owns AI workflows and their evidence. Person B owns domain services,
 monitoring observations, and deployment. Both deliver tests and documentation for
 their own features, and review the other's changes. Complete all nine
-[course requirements](../course-requirements.md#requirement-coverage-and-acceptance-evidence)
+[course requirements](../project/course-requirements.md#requirement-coverage-and-acceptance-evidence)
 without rewriting the working classification/training/tuning backend.
 
 Inspection confirms an existing FastAPI tracking/tuning API, MongoDB indexes,
@@ -25,7 +25,7 @@ scheduler, MongoDB, and Redis rather than independent domain APIs.
 There are no tracked local-model/dialogue, monitoring, snippet-generation, or
 Kubernetes implementations. [CI](../../.github/workflows/ci.yml) checks code/Compose/recovery
 but has no Kubernetes deployment path. These are source findings, not new test
-results. The [historical validation](../project-status.md#conversation-tool-validation)
+results. The [historical validation](../project/project-status.md#conversation-tool-validation)
 records 211 local, 21 ordinary integration, and ten recovery cases at its own
 revision; those suites were not rerun for this plan.
 
@@ -82,7 +82,7 @@ Deliver the local course/test-cluster workflow. Paid model APIs, language-model
 training, public hosting, person-level identity, immutable object storage,
 retention/restore, arbitrary partition/load research, parallel training, and
 quantitative resume claims remain separately tracked in the
-[audit](../project-status.md#deployment-and-operational-gaps) and
+[audit](../project/project-status.md#deployment-and-operational-gaps) and
 [measurement roadmap](../../PLAN.md#measurement-and-reporting).
 Local deployment still needs datasets/artifacts available to the correct pods
 and hash-verified downloads; deferring object storage does not waive that test.
@@ -180,14 +180,14 @@ Design/review them before implementation; shared-use controls precede shared use
 | C8 tests/deployment | B3/B4; A owns AI tests | Rebuilt images, fast/service/recovery checks, exercised CI/CD Kubernetes rollout/smoke and supported API scaling. |
 | C9 onboarding | Both; B4 assembles, A verifies | Clean-checkout end-to-end tutorial and advanced optimization examples. |
 
-Each application change runs the full [fast gate](../verification.md#fast-checks):
+Each application change runs the full [fast gate](../guides/verification.md#fast-checks):
 `uv sync --locked --extra training`, Ruff lint/format checks,
 `uv run --locked --extra training pytest -m "not integration" --cov`, and
 `uv pip check`. Packaging changes also run `uv build`.
 Affected MongoDB/queue/worker/ownership/recovery changes run
-[ordinary integration](../verification.md#ordinary-integration) with **both**
+[ordinary integration](../guides/verification.md#ordinary-integration) with **both**
 `MLPP_RUN_INTEGRATION=1` and `MLPP_RUN_WORKER_INTEGRATION=1`, and the
-[isolated recovery suite](../verification.md#run-the-suite) serially with the
+[isolated recovery suite](../guides/verification.md#run-the-suite) serially with the
 separate `MLPP_RUN_RECOVERY_INTEGRATION=1` gate. Preserve assertions and explain
 any changed test against its requirement.
 

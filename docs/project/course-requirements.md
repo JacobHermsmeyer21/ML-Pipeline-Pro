@@ -7,7 +7,7 @@ repository's interpretation, not an instructor's grading decision. No grading
 weights, deadline, or additional training requirement were supplied.
 
 Use this document as the acceptance checklist for the course deliverable. The
-[roadmap](../PLAN.md) orders work, the [status record](project-status.md) retains
+[roadmap](../../PLAN.md) orders work, the [status record](project-status.md) retains
 verification evidence, and feature designs still require human review under the
 [development method](development-methodology.md). Correcting documentation does
 not implement or verify any outstanding requirement.
@@ -39,7 +39,7 @@ not implement or verify any outstanding requirement.
   Flask, reinforcement learning, conda, and Jenkins are not additional obligations.
 - Use LangChain with a locally served pre-trained language model for dialogue,
   suggestions, monitoring explanations, and AI-generated Python snippets. The
-  local integration proposed in the [conversation plan](plans/2026-10-06-conversation-workflows-plan.md)
+  local integration proposed in the [conversation plan](../plans/2026-10-06-conversation-workflows-plan.md)
   uses `ChatOllama`; its model artifact and runtime must be selected and evaluated.
   No paid external model API, provider key, custom language-model training, or
   fine-tuning is required for this course scope. Local inference still uses
@@ -47,7 +47,7 @@ not implement or verify any outstanding requirement.
 - Model management, tuning, and monitoring must be separately deployable REST
   services. Sharing a repository, image, or MongoDB deployment is compatible with
   that target; modules in one API process do not satisfy the service separation.
-  Preserve [transactional tuning ownership](memory/tuning-parent-fence.md) and
+  Preserve [transactional tuning ownership](../memory/tuning-parent-fence.md) and
   current `/api/v1` contracts during a separately reviewed extraction.
 - Monitoring needs observations/metrics, a defined refresh interval, visualization,
   and LangChain summaries with evidence-linked proposed fixes. Logs and health
@@ -77,7 +77,7 @@ local-model integration and its acceptance evidence remain outstanding.
 
 Person A's October 8 foundation adds locked LangChain/Ollama dependencies,
 conversation schemas, the model interface, and chat settings. The
-[development guide](conversation-development.md) records the limited scope;
+[development guide](../guides/conversation-development.md) records the limited scope;
 the next A1 slices add a local LangChain adapter with deterministic SDK/HTTP
 tests, durable turn/proposal storage with real-MongoDB claims/replay evidence,
 and a bounded host loop that grounds supplied API facts and saves proposals.
@@ -88,15 +88,15 @@ onboarding remain outstanding. No course row is closed by this slice.
 
 | ID | Requirement | Current coverage | Evidence needed to close the requirement |
 | --- | --- | --- | --- |
-| C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, PyMongo, and locked LangChain/Ollama dependencies exist; local runtime setup and clean-checkout evidence remain outstanding. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../pyproject.toml) and [setup](../README.md#development-setup). |
-| C2 | Separate model-management, tuning, and monitoring services | Outstanding: one FastAPI application serves tracking/tuning; monitoring is absent. | Start each domain service independently; integration proves REST interactions and preserved transaction/project boundaries. See [current app](../src/ml_pipeline_pro/main.py) and [Compose](../compose.yaml). |
-| C3 | LangChain, pre-trained model, guided dialogue/history | Outstanding: tools, a tested local adapter, durable grounded conversations, routes and confirmed actions exist; installed-artifact token verification and real-model evidence are absent. | A real local pre-trained model guides pipeline steps, requests missing inputs, uses recorded history, and returns grounded commands/insights. Deterministic tests alone cannot establish model integration. See [tool guide](workflows.md#conversation-tool-layer). |
-| C4 | MongoDB parameters, versions, tuning results/metrics, indexes | Initial classification scope delivered; representative query performance remains unmeasured. | Retain schema/index/persistence regressions and demonstrate retrieval of saved configurations, versions, trials, and metrics. See [tracking](../src/ml_pipeline_pro/tracking.py), [tuning store](../src/ml_pipeline_pro/tuning_store.py), and [status](project-status.md#architecture-and-durable-records). |
-| C5 | Automated optimization with LangChain suggestions and saved history | Partial: serial Bayesian tuning and MongoDB history exist; LangChain suggestions are absent. | Demonstrate bounded, user-confirmed tuning suggestions grounded in previous trials; existing worker limits, validation selection, ownership, and recovery gates pass. See [tuning guide](workflows.md#bounded-classification-tuning) and [sampler](../src/ml_pipeline_pro/tuning_sampler.py). |
-| C6 | Real-time monitoring, visualization, LangChain summaries/fixes | Outstanding: logs/health and experiment metrics exist, but monitoring observations/dashboards do not. | A running sample workload updates metrics/dashboard within the reviewed interval; a seeded issue produces an evidence-linked summary and proposed checks/fixes. See [milestone 5](../PLAN.md#5-add-monitoring-and-diagnosis). |
-| C7 | AI-generated Python snippets from conversation via LangChain | Outstanding: Python demos are authored examples. | Natural-language requests produce model-generated integration snippets; syntax, supported API use, provenance, rejection, and review behavior pass. See [milestone 6](../PLAN.md#6-generate-reviewable-pipeline-code). |
-| C8 | Tests, Docker, Kubernetes, and CI/CD | Partial: tests, Docker/Compose, and GitHub Actions checks exist; Kubernetes and deployment CI/CD are absent. | Rebuilt domain-service containers, affected integration/recovery gates, CI/CD rollout/smoke tests, and supported stateless API replica scaling in a documented Kubernetes test cluster pass. See [CI](../.github/workflows/ci.yml), [recovery](verification.md#worker-and-dependency-recovery-validation), and [milestone 7](../PLAN.md#7-prepare-deployment-and-onboarding). |
-| C9 | Onboarding/tutorials, use cases, advanced optimization | Partial: classification, tuning, recovery, and tool guides exist. | A clean-checkout tutorial completes local-model dialogue, history-based optimization, monitoring, AI snippet generation, and the required service/Kubernetes workflow. See [documentation roadmap](../README.md#documentation-roadmap). |
+| C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, PyMongo, and locked LangChain/Ollama dependencies exist; local runtime setup and clean-checkout evidence remain outstanding. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../../pyproject.toml) and [setup](../guides/setup.md#develop-the-api-on-your-host). |
+| C2 | Separate model-management, tuning, and monitoring services | Outstanding: one FastAPI application serves tracking/tuning; monitoring is absent. | Start each domain service independently; integration proves REST interactions and preserved transaction/project boundaries. See [current app](../../src/ml_pipeline_pro/main.py) and [Compose](../../compose.yaml). |
+| C3 | LangChain, pre-trained model, guided dialogue/history | Outstanding: tools, a tested local adapter, durable grounded conversations, routes and confirmed actions exist; installed-artifact token verification and real-model evidence are absent. | A real local pre-trained model guides pipeline steps, requests missing inputs, uses recorded history, and returns grounded commands/insights. Deterministic tests alone cannot establish model integration. See [tool guide](../guides/workflows.md#conversation-tool-layer). |
+| C4 | MongoDB parameters, versions, tuning results/metrics, indexes | Initial classification scope delivered; representative query performance remains unmeasured. | Retain schema/index/persistence regressions and demonstrate retrieval of saved configurations, versions, trials, and metrics. See [tracking](../../src/ml_pipeline_pro/tracking.py), [tuning store](../../src/ml_pipeline_pro/tuning_store.py), and [status](project-status.md#architecture-and-durable-records). |
+| C5 | Automated optimization with LangChain suggestions and saved history | Partial: serial Bayesian tuning and MongoDB history exist; LangChain suggestions are absent. | Demonstrate bounded, user-confirmed tuning suggestions grounded in previous trials; existing worker limits, validation selection, ownership, and recovery gates pass. See [tuning guide](../guides/workflows.md#bounded-classification-tuning) and [sampler](../../src/ml_pipeline_pro/tuning_sampler.py). |
+| C6 | Real-time monitoring, visualization, LangChain summaries/fixes | Outstanding: logs/health and experiment metrics exist, but monitoring observations/dashboards do not. | A running sample workload updates metrics/dashboard within the reviewed interval; a seeded issue produces an evidence-linked summary and proposed checks/fixes. See [milestone 5](../../PLAN.md#5-add-monitoring-and-diagnosis). |
+| C7 | AI-generated Python snippets from conversation via LangChain | Outstanding: Python demos are authored examples. | Natural-language requests produce model-generated integration snippets; syntax, supported API use, provenance, rejection, and review behavior pass. See [milestone 6](../../PLAN.md#6-generate-reviewable-pipeline-code). |
+| C8 | Tests, Docker, Kubernetes, and CI/CD | Partial: tests, Docker/Compose, and GitHub Actions checks exist; Kubernetes and deployment CI/CD are absent. | Rebuilt domain-service containers, affected integration/recovery gates, CI/CD rollout/smoke tests, and supported stateless API replica scaling in a documented Kubernetes test cluster pass. See [CI](../../.github/workflows/ci.yml), [recovery](../guides/verification.md#worker-and-dependency-recovery-validation), and [milestone 7](../../PLAN.md#7-prepare-deployment-and-onboarding). |
+| C9 | Onboarding/tutorials, use cases, advanced optimization | Partial: classification, tuning, recovery, and tool guides exist. | A clean-checkout tutorial completes local-model dialogue, history-based optimization, monitoring, AI snippet generation, and the required service/Kubernetes workflow. See [documentation index](../README.md). |
 
 Close a row only with its specified evidence and reviewed scope. Keep failures,
 selected-case skips, unavailable models/services, and hardware limits visible.

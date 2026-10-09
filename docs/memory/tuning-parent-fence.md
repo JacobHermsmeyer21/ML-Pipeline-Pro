@@ -11,7 +11,7 @@ driver may retry them.
 
 Evidence: [ownership implementation](../../src/ml_pipeline_pro/ownership.py),
 [real-MongoDB takeover regressions](../../tests/integration/test_tuning_ownership.py),
-and [recorded validation](../project-status.md#ownership-fix-validation), introduced
+and [recorded validation](../project/project-status.md#ownership-fix-validation), introduced
 in commit `a2a089c`. The documented validation predates this memory entry.
 
 Do not replace this with a separate execution-layer check or a read-only transaction.

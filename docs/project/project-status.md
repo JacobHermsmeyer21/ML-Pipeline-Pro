@@ -6,8 +6,8 @@
 conversation workflow design was approved October 7, but that checkout still had
 no LangChain dependencies, model adapter, chat routes, or dialogue/action store.
 The dated validation below is historical; no application suite was rerun for this
-documentation consolidation. [Verification](verification.md) owns execution setup;
-[workflows](workflows.md) owns runnable tutorials.
+documentation consolidation. [Verification](../guides/verification.md) owns execution setup;
+[workflows](../guides/workflows.md) owns runnable tutorials.
 
 ML Pipeline Pro has a working local classification experiment and tuning backend. The initial feature scope of milestones 1-3 is implemented and its existing tests pass. The full MVP is still incomplete: conversational access, monitoring, generated code, and shared-deployment readiness remain. The baseline audit's recovery ownership bugs are fixed, and controlled process-loss/dependency-outage validation is delivered. Concurrent-load/partition validation and storage lifecycle work remain open.
 
@@ -20,7 +20,7 @@ On October 6, 2026 the user supplied the nine
 documentation correction against source baseline `ba6334f`. The course target
 uses LangChain with local pre-trained inference; a paid external model API or
 training a code language model is not required. The unapproved OpenAI draft was
-revised in the [conversation plan](plans/2026-10-06-conversation-workflows-plan.md);
+revised in the [conversation plan](../plans/2026-10-06-conversation-workflows-plan.md);
 per-action confirmation and retained dialogue/evidence were approved October 7.
 The implementation slices below retain their separate evidence and open gates.
 
@@ -49,9 +49,9 @@ completion. Feature implementation still requires explicit review of its plan.
 | 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
 
-These states describe delivered scope, not a percentage estimate or a production-readiness certification. Detailed acceptance criteria are in [PLAN.md](../PLAN.md#implementation-milestones).
+These states describe delivered scope, not a percentage estimate or a production-readiness certification. Detailed acceptance criteria are in [PLAN.md](../../PLAN.md#implementation-milestones).
 
-Person A's October 8 [conversation foundation](conversation-development.md) adds
+Person A's October 8 [conversation foundation](../guides/conversation-development.md) adds
 strict request/public-action/model-reply schemas, canonical finite-JSON
 fingerprints, the injected model interface/native tool descriptions, approved
 chat settings, and locked LangChain dependencies. The next A1 slice adds a local
@@ -62,7 +62,7 @@ dispatch now add parent-fenced decisions, bounded same-key retries and killed-ch
 process recovery. Installed-artifact token verification and live evaluation remain
 outstanding. Existing tracking/tuning contracts and worker behavior are preserved.
 Validation for these slices is recorded in the
-[approved plan's outcome](plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
+[approved plan's outcome](../plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
 the earlier counts below remain historical.
 
 ## Implemented behavior and limits
@@ -90,10 +90,10 @@ Training and tuning share the `training` queue. Beat schedules recovery every 15
 
 The current deployment is modular rather than separate domain services:
 
-- [Tracking API](../src/ml_pipeline_pro/api.py) and [tracking store](../src/ml_pipeline_pro/tracking.py) own datasets, models, experiments, and model versions.
-- [Tuning API](../src/ml_pipeline_pro/tuning_api.py), [store](../src/ml_pipeline_pro/tuning_store.py), and [execution](../src/ml_pipeline_pro/tuning_execution.py) own tuning jobs/trials and call tracking repositories for training results.
-- [Queue configuration](../src/ml_pipeline_pro/queue.py) and [worker tasks](../src/ml_pipeline_pro/worker.py) handle dispatch/execution/recovery. Redis has no Celery result backend; MongoDB supplies API-visible status.
-- [Training](../src/ml_pipeline_pro/training.py) reads a hash-checked CSV and writes artifacts through [artifacts.py](../src/ml_pipeline_pro/artifacts.py).
+- [Tracking API](../../src/ml_pipeline_pro/api.py) and [tracking store](../../src/ml_pipeline_pro/tracking.py) own datasets, models, experiments, and model versions.
+- [Tuning API](../../src/ml_pipeline_pro/tuning_api.py), [store](../../src/ml_pipeline_pro/tuning_store.py), and [execution](../../src/ml_pipeline_pro/tuning_execution.py) own tuning jobs/trials and call tracking repositories for training results.
+- [Queue configuration](../../src/ml_pipeline_pro/queue.py) and [worker tasks](../../src/ml_pipeline_pro/worker.py) handle dispatch/execution/recovery. Redis has no Celery result backend; MongoDB supplies API-visible status.
+- [Training](../../src/ml_pipeline_pro/training.py) reads a hash-checked CSV and writes artifacts through [artifacts.py](../../src/ml_pipeline_pro/artifacts.py).
 
 The six domain collections all include project IDs, UTC timestamps, and a schema version. MongoDB stores the record ID as `_id`; API schemas expose `id`.
 
@@ -123,8 +123,8 @@ documents the implementation and regression results.
 
 Existing experiment completion and tuning job updates check worker tokens, and the suites cover several stale-owner rejection cases. Two related boundaries still permit operations from a worker whose parent tuning lease has been replaced:
 
-1. [TrialRepository.claim](../src/ml_pipeline_pro/tuning_store.py) matches the child ID/project/status but does not validate the parent job's current token. [ExperimentRepository.claim](../src/ml_pipeline_pro/jobs.py), when passed a tuning job ID, also permits taking a running child without verifying the parent owner, even when the child's lease has not expired. After replacement, an old caller can reclaim these child records from the new worker.
-2. [ExperimentRepository.finish_tuning_test](../src/ml_pipeline_pro/jobs.py) has no worker-token argument or parent ownership predicate. The execution layer checks ownership before calling it, but replacement can occur between that check and the database write. A stale result can then set `test_evaluated` and replace the selected experiment's metrics/artifact references.
+1. [TrialRepository.claim](../../src/ml_pipeline_pro/tuning_store.py) matches the child ID/project/status but does not validate the parent job's current token. [ExperimentRepository.claim](../../src/ml_pipeline_pro/jobs.py), when passed a tuning job ID, also permits taking a running child without verifying the parent owner, even when the child's lease has not expired. After replacement, an old caller can reclaim these child records from the new worker.
+2. [ExperimentRepository.finish_tuning_test](../../src/ml_pipeline_pro/jobs.py) has no worker-token argument or parent ownership predicate. The execution layer checks ownership before calling it, but replacement can occur between that check and the database write. A stale result can then set `test_evaluated` and replace the selected experiment's metrics/artifact references.
 
 **Probe evidence:** In a dedicated random `mlpp_audit_*` database, claim a tuning job as `old`, expire its lease, and claim it as `replacement`. Insert a running trial/experiment owned by `replacement`; child claim calls with `old` still return records owned by `old`. Insert a succeeded, unevaluated child; `finish_tuning_test` accepts the write while the parent is owned by `replacement`. All three repository operations were confirmed, and the disposable database was removed. Local results are retained in ignored `artifacts/project-audit/2026-10-06/repository-probes.json`.
 
@@ -179,16 +179,16 @@ The audit ran against the source baseline above and the existing local Compose s
 | Repository ownership probes | Confirmed the open findings above; dedicated database cleaned up |
 | Documentation checks | 52 local links/anchors valid, README covers all 21 API operations, and 17 PowerShell examples parse successfully |
 
-The baseline audit's unit-only coverage output rounds combined statement/branch coverage to 77%. The earlier full-suite report measured 84.93% in the host process; it does not include worker/scheduler execution inside containers. These are different measurements and should not be treated as a coverage regression. See the [historical ten-iteration report](verification.md#ten-iteration-validation-october-6-2026) for the original environment, counts, and repeat commands.
+The baseline audit's unit-only coverage output rounds combined statement/branch coverage to 77%. The earlier full-suite report measured 84.93% in the host process; it does not include worker/scheduler execution inside containers. These are different measurements and should not be treated as a coverage regression. See the [historical ten-iteration report](../guides/verification.md#ten-iteration-validation-october-6-2026) for the original environment, counts, and repeat commands.
 
 Both current suites emit the existing TestClient deprecation warning. No live model-provider evaluations, production workload benchmarks, physical worker-loss recovery tests, or restore exercises were run. Dependency advisory results are scoped to the audited releases and date, not a guarantee about application security.
 
 ## Next work, in order
 
-The [approved conversation tool slice](plans/2026-10-06-conversation-tools-plan.md)
+The [approved conversation tool slice](../plans/2026-10-06-conversation-tools-plan.md)
 is delivered. Retain its schema, access, budget, retry, and evidence checks.
 
-1. **Implement the [approved local conversation plan](plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. The deterministically tested adapter is implemented; select the local artifact, verify its tokenizer/template counter, and complete dialogue/actions/routes and acceptance runs. Implementation was approved October 7, 2026.
+1. **Implement the [approved local conversation plan](../plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. The deterministically tested adapter is implemented; select the local artifact, verify its tokenizer/template counter, and complete dialogue/actions/routes and acceptance runs. Implementation was approved October 7, 2026.
 2. **Review required domain-service extraction.** Deliver independently deployable model-management, tuning, and monitoring REST APIs; preserve `/api/v1`, project access, and the shared MongoDB ownership fence. Separate services are a course requirement, independent of training concurrency or commercial scale.
 3. **Implement milestone 5 monitoring.** Demonstrate running observations and dashboard/alert updates within a reviewed interval, then LangChain summaries and proposed fixes grounded in metric/log evidence.
 4. **Implement milestone 6 AI code generation.** Generate Python integration snippets from conversation using LangChain/local inference, validate/provide provenance, and retain review boundaries. Templates alone are insufficient; execution remains optional.
@@ -200,7 +200,7 @@ Keep transaction ownership and controlled recovery gates passing in CI. The next
 feature is the reviewed local conversation slice. Preserve serial CPU training
 until concurrent-load and partition behavior are measured, including during
 service extraction. Course completion and additional production scope remain
-distinct in [PLAN.md](../PLAN.md#completion-criteria).
+distinct in [PLAN.md](../../PLAN.md#completion-criteria).
 
 ## Ownership fix validation
 
@@ -248,7 +248,7 @@ also passed. JUnit reports are retained in ignored
 
 ## Process-loss and dependency-outage validation
 
-The [recovery suite](verification.md#worker-and-dependency-recovery-validation) adds ten isolated Compose cases with a dedicated
+The [recovery suite](../guides/verification.md#worker-and-dependency-recovery-validation) adds ten isolated Compose cases with a dedicated
 image built from the current checkout. It kills the whole worker container with
 `SIGKILL` during a real optimizer step, selected-checkpoint evaluation, or final
 manifest persistence. Beat redispatches work after natural lease expiry. The tests
@@ -283,7 +283,7 @@ Concurrent load, arbitrary partitions, and restore exercises remain open.
 
 ## Conversation tool validation
 
-The [provider-independent library](workflows.md#conversation-tool-layer) implements 13 existing
+The [provider-independent library](../guides/workflows.md#conversation-tool-layer) implements 13 existing
 API operations for reads, comparison, bounded submission, and tuning cancellation.
 The host binds project credentials, mutation permission, correlation, and retry
 keys separately from tool arguments. Missing submission budgets/objectives are
@@ -308,7 +308,7 @@ included. Host coverage rounds to 78% and excludes container worker execution.
 
 Local evidence is retained in ignored `artifacts/conversation-tools-validation/`
 and `artifacts/recovery-validation/mlpp-recovery-36e59baff6e4/`. The
-[approved plan outcome](plans/2026-10-06-conversation-tools-plan.md#implementation-outcome)
+[approved plan outcome](../plans/2026-10-06-conversation-tools-plan.md#implementation-outcome)
 records commands, versions, source/image provenance, review scope, and limitations.
 CI now uploads unit and ordinary JUnit reports alongside its recovery evidence;
 its post-push outcome is separate from local validation. No independent
@@ -323,10 +323,11 @@ The service-free tuning demo writes trial artifacts under `artifacts/demo/EXPERI
 ## Documentation consolidation: October 8, 2026
 
 Audited all 19 Markdown files at `c28ae06`; consolidated them into 16.
-Classification, tuning, and tool tutorials now share `docs/workflows.md`.
-Recovery instructions and the original ten-iteration report now share
-`docs/verification.md`. Removed the five replaced files and updated incoming
-links. README owns setup, endpoint discovery, and the document map; this status
+Classification, tuning, and tool tutorials shared `docs/workflows.md` at that
+revision (now the [workflow guide](../guides/workflows.md)). Recovery instructions
+and the original ten-iteration report shared `docs/verification.md` (now the
+[verification guide](../guides/verification.md)). Removed the five replaced files
+and updated incoming links. README owns setup, endpoint discovery, and the document map; this status
 record owns capability/evidence inventories; the course checklist owns acceptance;
 PLAN.md owns milestones and measurement criteria. Removed repeated README
 summaries and roadmap inventories. Retained separate design approval/outcome
@@ -349,3 +350,27 @@ this checkout has no usable Python environment; the example code is unchanged.
 No application, real-service, recovery, or model evaluation suite was run for
 this documentation-only change. Whitespace and commit/push results are reported
 in the completion handoff.
+
+## Documentation organization: October 9, 2026
+
+Reorganized documentation against source baseline `ef9d6bd`. Setup, workflow,
+conversation development, and verification guides live in `docs/guides/`;
+API/architecture details live in `docs/reference/`; requirements, methodology,
+status, and measurement criteria live in `docs/project/`. The
+[documentation index](../README.md) describes each folder. Dated plans, memory,
+and raw evidence retain their existing folders.
+
+Rewrote the root README as a short introduction and quick start, and PLAN as a
+milestone roadmap. Moved detailed setup, the complete endpoint inventory,
+architecture/ownership notes, and research measurement criteria into dedicated
+documents. Preserved course obligations, outstanding acceptance work, approval
+records, historical results, and repository contracts; updated local references,
+including AGENTS.md, to the new paths.
+
+Documentation verification covers all 30 Markdown files' local links/anchors,
+both Python examples, all 23 PowerShell examples, Compose configuration syntax,
+and the API reference's 25 operations against source. Source inspection checked
+setup against Compose, settings, the package manifest, and CI. The checker,
+original snapshot, and raw results are retained locally in ignored
+`artifacts/docs-reorganization/`. No application, live-service, recovery, or model
+evaluation suite was run for this documentation-only change.

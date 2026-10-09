@@ -1,21 +1,21 @@
 # Conversation development
 
-Person A starts with A1 in the [two-person allocation](plans/2026-10-08-two-person-course-completion-plan.md).
-Its [conversation design](plans/2026-10-06-conversation-workflows-plan.md)
+Person A starts with A1 in the [two-person allocation](../plans/2026-10-08-two-person-course-completion-plan.md).
+Its [conversation design](../plans/2026-10-06-conversation-workflows-plan.md)
 already has October 7 implementation approval. The foundation supplies the
 strict request/public-action/model-reply schemas, canonical fingerprints,
 injected model interface, native descriptions of the existing 13 tools,
 validated configuration, and locked `langchain-core` / `langchain-ollama` dependencies.
 
-The implemented A1 slices include [the local adapter](../src/ml_pipeline_pro/conversation_ollama.py)
+The implemented A1 slices include [the local adapter](../../src/ml_pipeline_pro/conversation_ollama.py)
 with native tool proposals, installed-artifact inspection, deadline/byte/token
 admission, fixed safe errors, redaction, and client cleanup. Deterministic tests
 exercise the real locked SDK against an in-memory HTTP transport.
-[The durable store](../src/ml_pipeline_pro/conversation_store.py) provides support
+[The durable store](../../src/ml_pipeline_pro/conversation_store.py) provides support
 for turn claims/replay, scoped history, and immutable pending proposals, with
 real-MongoDB transaction-race coverage. The bounded
-[host loop](../src/ml_pipeline_pro/conversation_service.py) and
-[fact renderer](../src/ml_pipeline_pro/conversation_grounding.py) have scripted
+[host loop](../../src/ml_pipeline_pro/conversation_service.py) and
+[fact renderer](../../src/ml_pipeline_pro/conversation_grounding.py) have scripted
 model tests and real HTTP/MongoDB orchestration tests. Authenticated chat/history/
 action routes and exact confirmed dispatch now exist, with transaction-race and
 killed-chat-process recovery coverage. Live inference still needs an installed
@@ -26,7 +26,7 @@ establish a working pre-trained model.
 
 ## Configuration
 
-Settings follow the approved design and are listed in [.env.example](../.env.example).
+Settings follow the approved design and are listed in [.env.example](../../.env.example).
 Environment variables override `.env`. When chat is enabled and a model tag is
 configured, the API constructs the adapter offline and prepares it lazily during
 generation. Its default counter remains unset, so inference fails closed until
@@ -214,7 +214,7 @@ The existing dispatcher may expand response-schema defaults. A per-read response
 capture projects its validated data onto fields actually supplied by the API,
 so an omitted status cannot become a verified default `queued` value. This
 preserves the exported dispatcher behavior and input default expansion. The
-[missing-status regression](../tests/test_conversation_service.py) reproduces
+[missing-status regression](../../tests/test_conversation_service.py) reproduces
 that mechanism and now rejects the unsupported fact.
 
 Chat requires `HttpToolTransport(..., max_response_bytes=128 * 1024)`. Its new
@@ -253,7 +253,7 @@ They supplement the [full fast gate](verification.md#fast-checks), dependency
 compatibility, and package build. No existing assertion or live-service gate is
 relaxed. The store adds MongoDB collections/transactions; run the full
 [ordinary integration gate](verification.md#ordinary-integration) with both
-flags, including [its real transaction cases](../tests/integration/test_conversation_store.py),
+flags, including [its real transaction cases](../../tests/integration/test_conversation_store.py),
 and the separate serial recovery gate. Existing worker/tuning ownership behavior
 is unchanged. Store tests use real sessions and controlled interleavings;
 local pure-boundary tests alone do not establish snapshot-isolation correctness.
@@ -316,19 +316,19 @@ Invoke-RestMethod "http://127.0.0.1:8000/api/v1/conversations/$conversationId/ac
     -Method Post -Headers $headers -ContentType 'application/json' -Body $decision
 ```
 
-The [real dispatch tests](../tests/integration/test_conversation_dispatch.py)
+The [real dispatch tests](../../tests/integration/test_conversation_dispatch.py)
 confirm training, tuning and cancellation through the scoped API. The process
 test pauses a disposable chat API after a real accepted response, kills it,
 waits for natural attempt expiry, and restarts it: explicit same-action replay
 retains one job and the original key. Controlled
-[transaction cases](../tests/integration/test_conversation_actions.py) cover
+[transaction cases](../../tests/integration/test_conversation_actions.py) cover
 competing snapshots, stale proposals and expired attempt owners. These are
 host/state evidence; they do not establish real model understanding or an
 independent review.
 
 ## Opt-in installed-model evaluation
 
-The [evaluation gate](../evaluations/test_conversation_model.py) runs ten synthetic
+The [evaluation gate](../../evaluations/test_conversation_model.py) runs ten synthetic
 scenarios in one bounded session: guided read, validation comparison/history-based
 tuning proposal, missing dataset/model, missing runtime, missing objective,
 missing tuning limits, unsupported action, foreign project, hostile record and

@@ -8,13 +8,13 @@
   with "i approve the plan start working" in the review handoff.
 - Independent review: not performed. This slice introduces no worker concurrency,
   ownership mechanism, state machine, or rate/size arithmetic. Human design and
-  implementation review remain required under the [development method](../development-methodology.md).
+  implementation review remain required under the [development method](../project/development-methodology.md).
 
 ## Proposed behavior and purpose
 
 Course alignment note, October 6, 2026: this implemented plan's approval covers
 the provider-independent tool library only. The supplied
-[course instructions](../course-requirements.md) and separate
+[course instructions](../project/course-requirements.md) and separate
 [local conversation plan](2026-10-06-conversation-workflows-plan.md) now target
 LangChain with local pre-trained inference. At the time of this October 6 note,
 that follow-up was awaiting review. It received separate approval October 7,
@@ -174,7 +174,7 @@ where needed; do not weaken assertions or service gates.
    and MongoDB-backed mutations, run ordinary integration with both
    `MLPP_RUN_INTEGRATION=1` and `MLPP_RUN_WORKER_INTEGRATION=1`, then the isolated
    serial recovery suite with `MLPP_RUN_RECOVERY_INTEGRATION=1`. Follow the
-   [README](../../README.md#run-checks) and [recovery setup](../verification.md#run-the-suite).
+   [README](../../README.md#run-checks) and [recovery setup](../guides/verification.md#run-the-suite).
 5. Inspect the final diff, validate local documentation links/anchors and example
    syntax, and run `git diff --check`. Save commands, source revision, environment,
    JUnit/raw evidence, warning/skip counts, and requirement mappings. Missing

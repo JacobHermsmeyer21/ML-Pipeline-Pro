@@ -1,6 +1,6 @@
 # Workflow guide
 
-Use these workflows after the [README setup](../README.md#development-setup).
+Use these workflows after the [README setup](../../README.md#development-setup).
 The examples cover the implemented backend. Conversation routes, durable history,
 grounded reads and confirmed actions now exist; real local-model/tokenizer
 acceptance remains open. See [conversation development](conversation-development.md).
@@ -10,8 +10,8 @@ acceptance remains open. See [conversation development](conversation-development
 - [Conversation tools](#conversation-tool-layer): call the typed Python tools over the existing API.
 
 Run checks using [verification](verification.md). Recorded results and remaining
-limitations belong in [project status](project-status.md), and course acceptance
-belongs in the [course checklist](course-requirements.md).
+limitations belong in [project status](../project/project-status.md), and course acceptance
+belongs in the [course checklist](../project/course-requirements.md).
 
 ## Classification experiment walkthrough
 
@@ -21,7 +21,7 @@ inspect the API. All metadata, experiment, and tuning endpoints require an
 `X-Project-ID` header and an `X-API-Key` when project keys are configured.
 
 This walkthrough covers the implemented CPU classification workflow. The
-[project audit](project-status.md) describes current limits, development status,
+[project audit](../project/project-status.md) describes current limits, development status,
 and remaining recovery/deployment work.
 
 The checked-in `examples/data/classification.csv` is synthetic. Its 120 rows are
@@ -128,7 +128,7 @@ atomically claim a job and renew a 30-second ownership lease. Expired leases are
 recovered; repeated worker losses stop after three attempts by default. A stale
 worker token is rejected by normal experiment completion writes. Tuning child
 writes also check parent ownership in a MongoDB transaction; Compose initializes
-the required replica set. See the [ownership fix](project-status.md#ownership-fix-validation).
+the required replica set. See the [ownership fix](../project/project-status.md#ownership-fix-validation).
 
 The worker rechecks the dataset hash before training. Preprocessing statistics
 come only from training rows. It trains a small CPU PyTorch MLP and selects the
@@ -207,7 +207,7 @@ receives final test evaluation. Job and trial state are stored in MongoDB.
 
 The initial serial workflow and transactional parent/child ownership fixes are
 implemented. Tuning requires MongoDB transactions; Compose initializes a single-node
-replica set. See the [project audit](project-status.md) for remaining recovery work
+replica set. See the [project audit](../project/project-status.md) for remaining recovery work
 before scaling it.
 
 Tuning uses a registered dataset/model from the [experiment walkthrough](workflows.md#classification-experiment-walkthrough).
@@ -253,7 +253,7 @@ The selected checkpoint keeps its original path; its evaluated manifest is
 written under `artifacts/demo/EXPERIMENT_ID/final/`. An original
 `local/manifest.json` with `test_evaluated: false` remains valid trial evidence,
 even if its experiment wins. Follow `summary.json` artifact references to the
-updated winner manifest; see [reading a local manifest](project-status.md#reading-a-local-tuning-manifest).
+updated winner manifest; see [reading a local manifest](../project/project-status.md#reading-a-local-tuning-manifest).
 
 ### Run tuning through the API
 
@@ -373,15 +373,15 @@ existing REST API. It validates tool arguments and trusted execution context,
 returns public records with evidence references, and preserves API project
 access, correlation IDs, job budgets, and submission idempotency.
 
-This is the first slice of [milestone 4](../PLAN.md#implementation-milestones).
+This is the first slice of [milestone 4](../../PLAN.md#implementation-milestones).
 There is no language-model adapter, natural-language conversation endpoint, dialogue
-store, or durable action audit yet. See the [approved design](plans/2026-10-06-conversation-tools-plan.md)
+store, or durable action audit yet. See the [approved design](../plans/2026-10-06-conversation-tools-plan.md)
 for scope and verification.
 
-The next [conversation workflow plan](plans/2026-10-06-conversation-workflows-plan.md)
+The next [conversation workflow plan](../plans/2026-10-06-conversation-workflows-plan.md)
 was approved October 7, 2026; implementation remains outstanding. It specifies LangChain with a locally served pre-trained model,
 project-scoped guided dialogue/history, tuning suggestions, and separately
-confirmed actions. The [course instructions](course-requirements.md) require
+confirmed actions. The [course instructions](../project/course-requirements.md) require
 pre-trained-model integration, not paid external inference or training a code
 language model. This library can support the local adapter, but neither the
 adapter nor real conversational inference is implemented by this tool slice.
@@ -393,7 +393,7 @@ uv sync --locked --extra training
 uv run --locked --extra training python examples/tools_local.py
 ```
 
-The [example](../examples/tools_local.py) uses scripted provider calls and a
+The [example](../../examples/tools_local.py) uses scripted provider calls and a
 synthetic queued experiment. It prints a successful read with experiment
 evidence, followed by a validation error identifying the missing submission
 configuration. It trains no model and contacts no API or provider. Its data is
@@ -401,7 +401,7 @@ an example, not an experiment result.
 
 ### Call an existing API
 
-Run the [local stack](../README.md#run-the-whole-local-stack) and register inputs
+Run the [local stack](setup.md#run-the-whole-local-stack) and register inputs
 using the [experiment guide](workflows.md#register-the-inputs). An application
 can then use:
 

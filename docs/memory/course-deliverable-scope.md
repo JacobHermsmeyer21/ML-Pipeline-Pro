@@ -3,7 +3,7 @@
 Recorded October 6, 2026 after the user supplied the course implementation
 instructions and requested documentation alignment.
 
-The supplied [instructions and coverage checklist](../course-requirements.md)
+The supplied [instructions and coverage checklist](../project/course-requirements.md)
 require LangChain with pre-trained language models, separate model-management,
 tuning, and monitoring services, AI-generated Python snippets, Docker, Kubernetes,
 and CI/CD. They do not require training a code language model or using a paid
@@ -20,7 +20,7 @@ source check at `c28ae06` confirms implementation remains outstanding. These are
 documented requirements and source findings, not evidence that
 the outstanding features or local model have been implemented or evaluated.
 
-Person A's October 8 [foundation](../conversation-development.md) introduces
+Person A's October 8 [foundation](../guides/conversation-development.md) introduces
 locked LangChain dependencies, schemas, a model interface, and settings. Its
 next A1 slices add a deterministically tested LangChain/Ollama adapter and durable
 turn/proposal storage with real-MongoDB claims/replay/takeover coverage. The

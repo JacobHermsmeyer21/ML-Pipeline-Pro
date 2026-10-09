@@ -12,7 +12,7 @@ checks. Never force-push to bypass incoming changes.
 
 ## Course scope
 
-Read [the supplied course requirements](docs/course-requirements.md) before
+Read [the supplied course requirements](docs/project/course-requirements.md) before
 planning feature work. They are the acceptance checklist for this class project.
 The target uses LangChain with locally served pre-trained language models;
 paid external model APIs and training a code language model are not required.
@@ -24,7 +24,7 @@ still follows reviewed plans and the contracts below.
 
 ## Development method
 
-Follow [the development method](docs/development-methodology.md), adapted from
+Follow [the development method](docs/project/development-methodology.md), adapted from
 the user-supplied *AI-Assisted Software Engineering in a Research Project:
 A Working Method*. Read [the project memory index](docs/memory/README.md) at
 session start and the relevant linked findings before changing a subsystem.
@@ -58,7 +58,7 @@ session start and the relevant linked findings before changing a subsystem.
 
 `src/ml_pipeline_pro/` is the canonical application. `tests/` holds unit/API
 checks and `tests/integration/` holds real-service and isolated recovery checks.
-`PLAN.md` is the milestone roadmap; `docs/project-status.md` records historical
+`PLAN.md` is the milestone roadmap; `docs/project/project-status.md` records historical
 audits and validation. Preserve the distinction between planned and verified work.
 
 - Preserve `/api/v1` schemas, project scoping of referenced records, consistent
@@ -92,8 +92,8 @@ changes, validate local links/anchors, example syntax, factual sources, and
 `git diff --check`. Build package changes with `uv build`.
 
 Changes involving MongoDB, queues, workers, tuning ownership, or recovery also
-require the affected real-service gates: follow [ordinary integration setup](docs/verification.md#ordinary-integration)
-and [isolated recovery setup](docs/verification.md#run-the-suite). Ordinary integration
+require the affected real-service gates: follow [ordinary integration setup](docs/guides/verification.md#ordinary-integration)
+and [isolated recovery setup](docs/guides/verification.md#run-the-suite). Ordinary integration
 requires both `MLPP_RUN_INTEGRATION=1` and `MLPP_RUN_WORKER_INTEGRATION=1`;
 recovery uses `MLPP_RUN_RECOVERY_INTEGRATION=1` separately and runs serially.
 Record missing services or selected-case skips as verification gaps, not passes.

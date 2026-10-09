@@ -14,8 +14,8 @@ its original project; use this repository's contracts and commands here.
 ## The five-stage loop
 
 1. **State the idea.** Identify the user problem and the smallest checkable change.
-   Read the relevant source, [status](project-status.md), [roadmap](../PLAN.md),
-   [course requirements](course-requirements.md), and [memory](memory/README.md)
+   Read the relevant source, [status](project-status.md), [roadmap](../../PLAN.md),
+   [course requirements](course-requirements.md), and [memory](../memory/README.md)
    before proposing mechanisms. Map the idea and acceptance evidence to the
    supplied requirements; keep the course deliverable separate from later
    shared-production hardening.
@@ -27,7 +27,7 @@ its original project; use this repository's contracts and commands here.
    rejected alternatives, and remaining questions. Narrow or abandon the idea when
    evidence warrants it.
 3. **Write and commit a plan.** Use
-   `docs/plans/YYYY-MM-DD-short-name-plan.md` and [the template](plans/template.md).
+   `docs/plans/YYYY-MM-DD-short-name-plan.md` and [the template](../plans/template.md).
    State the proposed behavior in prose before its mechanism. Separate functional
    requirements from performance, reliability, and resource requirements. Specify
    interfaces, states, defaults, failure paths, constraints, acceptance evidence,
@@ -65,16 +65,16 @@ feature work uses the full loop according to its scope.
 
 ## Verification and review
 
-[AGENTS.md](../AGENTS.md#verification-commands) contains the shared commands and
+[AGENTS.md](../../AGENTS.md#verification-commands) contains the shared commands and
 pre-commit rules. The fast application gate covers Ruff lint/format, the local
 unit/API/training/tuning suite, and installed dependency compatibility. Packaging
 changes additionally require a successful build. Warnings require inspection;
 record pre-existing warnings and distinguish them from newly introduced ones.
 
-Use [ordinary integration checks](verification.md#ordinary-integration) for real MongoDB/Redis,
+Use [ordinary integration checks](../guides/verification.md#ordinary-integration) for real MongoDB/Redis,
 API, and queued-worker behavior. Ownership changes need the transaction-boundary
-regressions in [test_tuning_ownership.py](../tests/integration/test_tuning_ownership.py).
-Worker/recovery changes need the [isolated recovery gate](verification.md#worker-and-dependency-recovery-validation).
+regressions in [test_tuning_ownership.py](../../tests/integration/test_tuning_ownership.py).
+Worker/recovery changes need the [isolated recovery gate](../guides/verification.md#worker-and-dependency-recovery-validation).
 Unit fakes alone cannot establish transaction or process-loss correctness.
 
 Select checks from the requirements before implementing. A skipped selected case,
@@ -98,7 +98,7 @@ Both belong in the record.
 ## Evidence and durable memory
 
 Keep one evidence-linked finding per file under `docs/memory/`, with a short
-[index](memory/README.md). Useful entries include confirmed failure mechanisms,
+[index](../memory/README.md). Useful entries include confirmed failure mechanisms,
 fixed environmental constraints, and measured approaches that did not help.
 Distinguish an untested hypothesis from a verified finding. Include the date,
 source or run reference, limits, and conditions that would justify revisiting it.
@@ -117,7 +117,7 @@ results in CI or another retained location and reference them from the tracked
 record. Generated prose is a description to check against that evidence.
 
 Use repeated comparable runs for performance claims and retain failures, spread,
-and costs. Follow [the measurement plan](../PLAN.md#measurement-and-reporting).
+and costs. Follow [the measurement plan](../../PLAN.md#measurement-and-reporting).
 The paper reports no measured productivity multiplier, and adopting its method
 does not establish a performance or productivity improvement in this repository.
 

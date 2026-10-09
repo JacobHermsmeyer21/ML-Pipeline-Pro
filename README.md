@@ -1,174 +1,74 @@
 # ML Pipeline Pro
 
-ML Pipeline Pro is a machine learning class project for model management,
-automated tuning, monitoring, conversational pipeline guidance, and AI-generated
-Python integration snippets. It currently provides a local REST API and CPU
-workers for reproducible classification experiments and bounded tuning. The
-[course requirements](docs/course-requirements.md) define the remaining deliverable.
+A machine learning class project for reproducible classification experiments,
+bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
+MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses
+LangChain with a locally served pre-trained model.
 
-**Source audit, October 8, 2026:** Version `0.1.0` has completed the initial scope of milestones 1-3: the foundation, experiment tracking, and serial Optuna tuning. Register datasets/models, train or tune through Celery, inspect results, cancel searches, download verified artifacts, and explicitly register model versions. The broader MVP remains in development. The audit's tuning recovery ownership bugs and controlled process-loss/outage validation are addressed; concurrent-load and network-partition evidence remain before expanding worker concurrency.
+You can register datasets and models, queue training or tuning, compare validation
+results, download verified artifacts, and register model versions. Training runs
+serially on CPU. Conversation tools, a local model adapter, durable history,
+grounded reads, authenticated routes, and confirmed actions are implemented;
+validation with an installed model remains open.
 
-Read the [project audit and development status](docs/project-status.md) for verified capabilities, open findings, and immediate priorities. [PLAN.md](PLAN.md) defines the remaining milestones and acceptance criteria.
-
-Development follows the [AI-assisted engineering method](docs/development-methodology.md): clarify and challenge ideas, commit design plans for human review, then implement with continuous verification. [AGENTS.md](AGENTS.md) carries the shared rules and checks; [project memory](docs/memory/README.md) preserves evidence-linked findings.
-
-Follow the [classification walkthrough](docs/workflows.md#classification-experiment-walkthrough) for experiment requests, or the [tuning walkthrough](docs/workflows.md#bounded-classification-tuning) for a five-trial search within a five-minute budget. Both include demos that run without services. The next feature milestone is conversational access to these verified APIs.
-
-The [conversation tool guide](docs/workflows.md#conversation-tool-layer) covers the first milestone
-4 slice: 13 provider-independent tools for reads, comparison, bounded submission,
-and tuning cancellation. Run `uv run --locked --extra training python examples/tools_local.py`
-for a service-free contract demo. Person A's initial conversation foundation adds
-locked LangChain dependencies, strict conversation schemas, the model interface,
-and validated chat settings. The next A1 slice supplies a tested local inference
-adapter with native tool proposals and bounded requests. A durable turn/proposal
-store now supplies fenced reservation/completion and replay. The bounded host
-loop reads scoped evidence, renders verified facts and saves exact proposals.
-Authenticated chat/history/action routes, exact-action decisions and bounded
-dispatch/recovery now exist. Installed-artifact token verification and real-model
-evaluation remain outstanding under
-the [approved design](docs/plans/2026-10-06-conversation-workflows-plan.md).
-See [conversation development](docs/conversation-development.md) for this slice's
-boundaries, configuration, and next steps.
+The full course project is **in development**. Separate model-management, tuning,
+and monitoring services, live monitoring, AI-generated Python snippets, and
+Kubernetes/deployment CI/CD remain outstanding. See the
+[roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 
 ## Development setup
 
-### Run the whole local stack
-
-Install Docker with Compose 2.24 or later, then run from the repository root:
+Install Docker with Compose 2.24 or later. From the repository root:
 
 ```powershell
 docker compose up --build --wait --wait-timeout 300
 Invoke-RestMethod http://127.0.0.1:8000/api/v1/health/ready
 ```
 
-Open [the API documentation](http://127.0.0.1:8000/docs). The current endpoints are:
+Open [interactive API docs](http://127.0.0.1:8000/docs). The stack starts the API,
+worker, recovery scheduler, MongoDB replica set, and Redis. Metadata requests
+require `X-Project-ID` and, when configured, `X-API-Key`. Stop with
+`docker compose down`; named volumes retain data and artifacts.
 
-| Endpoint | Meaning |
-| --- | --- |
-| `GET /api/v1/health/live` | Process is running; does not contact dependencies |
-| `GET /api/v1/health/ready` | MongoDB and Redis both respond within the configured timeout |
-| `POST /api/v1/datasets` | Validate a local CSV and register its content hash and split metadata |
-| `GET /api/v1/datasets` and `GET /api/v1/datasets/{id}` | List or retrieve datasets within a project |
-| `POST /api/v1/models` | Register a PyTorch classification model |
-| `GET /api/v1/models` and `GET /api/v1/models/{id}` | List or retrieve models within a project |
-| `POST /api/v1/experiments` | Queue a bounded training job; requires `Idempotency-Key` |
-| `GET /api/v1/experiments` and `GET /api/v1/experiments/{id}` | Filter experiments or retrieve status, metrics, and artifacts |
-| `GET /api/v1/experiments/compare` | Compare completed experiments using validation metrics |
-| `GET /api/v1/experiments/{id}/artifacts/{name}` | Download a hash-verified checkpoint or manifest |
-| `POST /api/v1/models/{id}/versions` | Register a model version from a completed experiment |
-| `GET /api/v1/models/{id}/versions` and `GET /api/v1/models/{id}/versions/{version_id}` | Retrieve registered model versions |
-| `POST /api/v1/tuning-jobs` | Queue a bounded TPE search; requires `Idempotency-Key` |
-| `GET /api/v1/tuning-jobs` and `GET /api/v1/tuning-jobs/{id}` | Retrieve tuning status, budgets, and the selected configuration |
-| `GET /api/v1/tuning-jobs/{id}/trials` | Inspect trial parameters, metrics, durations, and failures |
-| `POST /api/v1/tuning-jobs/{id}/cancel` | Cancel queued tuning or cooperatively stop an active trial |
-| `POST /api/v1/chat` | Generate or replay a bounded project conversation; enabled chat required |
-| `GET /api/v1/conversations/{id}` | Read ascending saved turns (`limit=50`, maximum 100; `offset=0`) |
-| `GET /api/v1/conversations/{id}/actions/{action_id}` | Inspect the saved proposal, decision, attempts and outcome |
-| `POST /api/v1/conversations/{id}/actions/{action_id}/decision` | Approve/reject the exact saved fingerprint without inference |
+Follow the [setup guide](docs/guides/setup.md) for host development, configuration,
+custom data, and shared artifact storage. Chat defaults to disabled; enabling it
+still requires an installed model and verified artifact-specific token counter.
+See [conversation development](docs/guides/conversation-development.md).
 
-Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
+## Try a workflow
 
-Readiness checks MongoDB/Redis connectivity. Experiment status and heartbeat timestamps show worker progress separately.
+- [Classification](docs/guides/workflows.md#classification-experiment-walkthrough): register inputs, train, compare, and register a version.
+- [Bounded tuning](docs/guides/workflows.md#bounded-classification-tuning): search within trial/runtime limits, inspect results, and cancel.
+- [Conversation tools](docs/guides/workflows.md#conversation-tool-layer): use typed tools over the existing API.
+- [API reference](docs/reference/api.md): endpoints, access headers, errors, and idempotency.
 
-Conversation generation and decisions default to disabled (`MLPP_CHAT_ENABLED=false`);
-authenticated history/action reads remain available. All four routes use the existing
-project headers. A repeated request ID must retain its original body; an action
-decision sends only `decision` and the displayed `arguments_hash`. Running replays
-return 202; saved outcomes retain their original execution correlation while the
-HTTP header carries the current request correlation. Explicit retries of uncertain
-actions reuse the original submission key and stop after three dispatch attempts.
-See the [conversation guide](docs/conversation-development.md#confirmed-actions-and-http-routes).
-The default adapter still requires an artifact-specific verified token counter;
-enabling chat alone does not establish working local inference.
+The walkthroughs include demos that run without services.
 
-Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. Compose explicitly sets `MLPP_ENVIRONMENT=development` and container connection/storage paths; an `.env` environment value does not override these settings. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. Shared deployment still needs the controls listed in the [audit](docs/project-status.md#deployment-and-operational-gaps). Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
+## Run checks
 
-Tuning requires MongoDB transactions. Compose initializes a single-node `mlpp` replica set and waits for a writable primary. When upgrading an existing local stack, run `docker compose up --build --wait --wait-timeout 300`; the existing MongoDB volume is retained. Host connections to this container must use `mongodb://127.0.0.1:27017/?directConnection=true`, including an existing `.env`, because the replica set advertises its container hostname. External MongoDB deployments must support transactions through a replica set or sharded cluster; standalone MongoDB can still serve ordinary experiments but cannot execute tuning.
-
-The checked-in CSV is included in the image. Custom data must be mounted at the same relative path under the dataset root for the API and worker. Registration records a hash and reference; it does not upload or copy the source file.
-
-### Develop the API on your host
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/). The project defaults to Python 3.11; uv can provision it if needed. Versions 3.11 through 3.14 are allowed by the manifest, while CI tests 3.11/3.13 on Linux and local validation uses Windows/Python 3.11. From the repository root:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run:
 
 ```powershell
-uv sync --locked
-Copy-Item .env.example .env
-docker compose up --wait mongo redis
-uv run --locked uvicorn ml_pipeline_pro.main:create_app --factory --reload --no-access-log
+uv sync --locked --extra training
+uv run --locked --extra training ruff check .
+uv run --locked --extra training ruff format --check .
+uv run --locked --extra training pytest -m "not integration" --cov
+uv pip check
 ```
 
-For queued experiments with the host API, also start the container worker and scheduler with `docker compose up --build --wait mongo redis worker scheduler`. Both use the same MongoDB/Redis and checked-in dataset. To download artifacts through the host API, replace the named artifact volume with a shared host directory mounted at `/app/artifacts` in the containers and set the host's `MLPP_ARTIFACT_ROOT` to that directory. Running the whole stack in Compose already shares artifact storage correctly.
-
-The API runs at `http://127.0.0.1:8000`. Select `.venv/Scripts/python.exe` as the Python interpreter in your Windows editor. On macOS or Linux, use `cp .env.example .env` and `.venv/bin/python`.
-
-If Docker or the dependency services are not installed yet, the API still starts: liveness and `/docs` work, and readiness returns `503`. The foundation's unit tests also run without MongoDB, Redis, or language model credentials.
-
-Configuration uses the `MLPP_` prefix. `.env.example` lists connection URLs, dataset/artifact directories, data limits, project keys, worker recovery limits, and the [conversation settings](docs/conversation-development.md#configuration). Environment variables override `.env`. Credentials belong in `.env` or the environment, outside source control. Connection URLs are treated as secrets; configured passwords and project keys are redacted from application and client logs.
-
-### Run checks
-
-Follow [verification](docs/verification.md) for the fast gate, ordinary integration
-with both opt-in flags, isolated recovery, and historical repeat commands.
-Keep `--extra training` on commands that need PyTorch/Optuna. Test counts and
-coverage are recorded by revision in [project status](docs/project-status.md).
-
-### Source layout
-
-```text
-src/ml_pipeline_pro/
-  main.py           # Application factory and versioned health endpoints
-  config.py         # Validated environment configuration
-  connections.py    # Async client lifecycle and dependency checks
-  errors.py         # Consistent API errors
-  logging.py        # JSON request logs and credential redaction
-  repositories.py   # Record schema and project-scoped repository contract
-  ownership.py      # Transactional parent fences for tuning child writes
-  schemas.py        # Dataset, model, experiment, and model version schemas
-  api.py            # Metadata, experiment, comparison, and artifact endpoints
-  access.py         # Project selection and optional API key enforcement
-  datasets.py       # Bounded CSV validation and explicit splits
-  tracking.py       # Owned repositories and MongoDB indexes
-  jobs.py           # Atomic worker claims, heartbeats, and completion
-  queue.py          # Celery configuration and Redis dispatch
-  worker.py         # Training and recovery tasks
-  execution.py      # Job execution and terminal status reporting
-  training.py       # Deterministic CPU PyTorch adapter
-  artifacts.py      # Artifact writes, hashing, and download verification
-  tuning_schemas.py # Search spaces, budgets, and job/trial contracts
-  tuning_store.py   # Tuning-owned collections, leases, and reservations
-  tuning_api.py     # Tuning submission, progress, and cancellation
-  tuning_sampler.py # Seeded TPE suggestions from durable history
-  tuning_execution.py # Serial search and final holdout evaluation
-  training_control.py # Deadlines, cancellation, and ownership checks
-  conversation_schemas.py # Strict chat/action/fact contracts
-  conversation_model.py # Injected model interface and native tool descriptions
-  conversation_ollama.py # Local LangChain adapter; artifact-specific token counter required
-  conversation_store.py # Transactional turn claims/replay and immutable saved proposals
-  conversation_service.py # Bounded read loop and proposal preflight; no mutation dispatch
-  conversation_grounding.py # Facts from supplied current-turn API fields
-  conversation_actions.py # Confirmed dispatch and bounded uncertain-outcome retry
-  conversation_api.py # Authenticated chat/history/actions and client lifecycle
-tests/
-  integration/      # Opt-in tests against real MongoDB and Redis
-compose.yaml        # API and local dependencies
-.github/workflows/  # CI checks, ordinary integration, and isolated recovery
-```
+The [verification guide](docs/guides/verification.md) covers ordinary integration
+and isolated recovery. Both use explicit opt-in flags; missing services or skipped
+selected cases are verification gaps. Historical results live in
+[project status](docs/project/project-status.md).
 
 ## Documentation roadmap
 
-| Document | Owns |
-| --- | --- |
-| [Workflow guide](docs/workflows.md) | Classification, bounded tuning, and typed tool tutorials |
-| [Conversation development](docs/conversation-development.md) | Person A's foundation, configuration, and outstanding A1 implementation |
-| [Verification](docs/verification.md) | Test setup, recovery boundaries, historical ten-iteration report |
-| [Project status](docs/project-status.md) | Implemented capabilities, limitations, audit findings, dated execution evidence |
-| [Course requirements](docs/course-requirements.md) | Supplied acceptance checklist and evidence needed to close each requirement |
-| [PLAN.md](PLAN.md) | Remaining milestones and measurement criteria |
-| [Development method](docs/development-methodology.md) | Design/review process; AGENTS.md owns standing repository contracts |
-| [Project memory](docs/memory/README.md) | Short technical findings with evidence |
-| [Design plans](docs/plans/template.md) | Change-specific contracts, human approval, and implementation outcomes |
+Use the [documentation index](docs/README.md) to find guides, references, project
+records, reviewed plans, technical memory, and saved evidence.
+[PLAN.md](PLAN.md) tracks milestones; [AGENTS.md](AGENTS.md) defines repository
+rules. Substantive designs follow the
+[development method](docs/project/development-methodology.md) and require human
+review before implementation.
 
-Required local-model, monitoring, AI snippet, separate-service, and Kubernetes/CI/CD
-tutorials remain outstanding with those features. Historical test counts and
-unverified improvement targets are not current completion claims.
+Application code is in [`src/ml_pipeline_pro`](src/ml_pipeline_pro/), tests in
+[`tests`](tests/), and runnable examples in [`examples`](examples/).

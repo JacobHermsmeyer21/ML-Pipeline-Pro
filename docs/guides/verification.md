@@ -17,7 +17,7 @@ uv pip check
 
 Package changes also require `uv build`. Documentation-only changes require local
 link/anchor checks, example syntax and factual source checks, and `git diff --check`.
-See [AGENTS.md](../AGENTS.md#verification-commands) for the standing gate policy.
+See [AGENTS.md](../../AGENTS.md#verification-commands) for the standing gate policy.
 
 ## Ordinary integration
 
@@ -44,8 +44,8 @@ cases. The training extra is required for real training and direct tuning recove
 Tests delete their generated metadata; queued artifacts remain in the shared volume.
 For independent services/ports, use the [isolated repeat setup](#repeat-the-full-suite)
 and its `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
-`MLPP_TEST_REDIS_URL` overrides. The [CI workflow](../.github/workflows/ci.yml)
-defines the automated checks; [project status](project-status.md#validation-evidence)
+`MLPP_TEST_REDIS_URL` overrides. The [CI workflow](../../.github/workflows/ci.yml)
+defines the automated checks; [project status](../project/project-status.md#validation-evidence)
 retains results by source revision.
 
 ## Worker and dependency recovery validation
@@ -92,7 +92,7 @@ project and removes its containers and volumes on completion, including assertio
 failures. An interrupted test process may require manual cleanup of its named
 project using the same Compose files.
 
-The [recovery Compose override](../tests/integration/compose.recovery.yaml) uses the
+The [recovery Compose override](../../tests/integration/compose.recovery.yaml) uses the
 separate `ml-pipeline-pro:recovery` image, discards
 the local `.env`, uses a dedicated database and volumes, and sets a ten-second
 lease with a two-attempt limit. Production defaults remain a thirty-second lease
@@ -102,7 +102,7 @@ schedule, so these tests take several minutes.
 
 ### Controlled boundaries and evidence
 
-Only this stack mounts the [test worker entrypoint](../tests/integration/recovery_worker.py).
+Only this stack mounts the [test worker entrypoint](../../tests/integration/recovery_worker.py).
 It pauses after an optimizer step, after loading the selected checkpoint for
 evaluation, or after writing the evaluated manifest but before committing its
 references. Real execution, heartbeat tasks, repository writes, and transport
@@ -117,7 +117,7 @@ given on the command line. CI runs the ordinary integration suite and this
 separate recovery gate, then uploads the recovery evidence even on failure.
 
 This suite complements the real-MongoDB transaction takeover regressions in
-[the project audit](project-status.md#ownership-fix-validation). It does not
+[the project audit](../project/project-status.md#ownership-fix-validation). It does not
 increase worker/trial concurrency. Concurrent load, arbitrary network partitions,
 shared deployment, and backup/restore exercises remain further work. Container
 worker/scheduler execution is evidenced by logs and state assertions; it is not
@@ -126,7 +126,7 @@ included in host-process coverage percentages.
 ## Ten-iteration validation: October 6, 2026
 
 This is a historical validation report for `3bf71af`; its counts and environment
-are preserved below. The later [project audit](project-status.md) against
+are preserved below. The later [project audit](../project/project-status.md) against
 `0e37e6e` reran the then-existing suites and identified tuning ownership gaps outside
 these cases. Repeated passing runs demonstrate the tested behavior, not complete
 process-loss recovery, concurrency safety, or production readiness.
@@ -169,7 +169,7 @@ Each round launched a fresh pytest process against one dedicated Compose project
 volumes and ports (API 18000, MongoDB 37017, Redis 16379) isolated its records from
 the normal development stack. Tests generated new project IDs and recovery
 databases for each case. The checked-in
-[Compose override](../tests/integration/compose.validation.yaml) matches the one used.
+[Compose override](../../tests/integration/compose.validation.yaml) matches the one used.
 
 The suite exercised:
 
