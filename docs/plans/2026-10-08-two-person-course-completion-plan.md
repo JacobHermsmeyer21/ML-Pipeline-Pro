@@ -221,7 +221,7 @@ date, scope and requested changes here or in the relevant feature plan.
 ## Implementation outcome
 
 The allocation was a planning artifact; Person A has since started the approved
-A1 foundation and the next local-adapter slice, recorded in the
+A1 foundation, local adapter and durable turn/proposal store, recorded in the
 [conversation outcome](2026-10-06-conversation-workflows-plan.md#implementation-outcome).
 Course features remain outstanding. Original source inspection
 used Windows/PowerShell at the baseline above. Reset/pull reached `origin/main`;

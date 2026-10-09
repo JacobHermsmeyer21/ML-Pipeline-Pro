@@ -149,6 +149,19 @@ _SPECS = (
 _BY_NAME = {spec.name: spec for spec in _SPECS}
 
 
+def validated_proposal(call: ToolCall) -> ToolCall:
+    """Expand a supported mutation through the existing authoritative schemas.
+
+    Validation never dispatches or grants authorization. Missing inputs remain
+    validation errors for the conversation host to explain.
+    """
+    spec = _BY_NAME.get(call.name)
+    if spec is None or not spec.mutating:
+        raise ValueError("A proposal must be a supported mutating tool")
+    arguments = spec.arguments.model_validate(call.arguments)
+    return ToolCall(name=spec.name, arguments=arguments.model_dump(mode="json"))
+
+
 def tool_catalog() -> list[ToolDefinition]:
     """Return fresh schema/default descriptions, without credentials or context."""
     definitions = []

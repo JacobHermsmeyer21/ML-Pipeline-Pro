@@ -489,6 +489,85 @@ claimed. Independent review is unavailable in this session; self-review covered
 payload/token arithmetic, raw SDK normalization, failure paths and cleanup and
 is not independent review. Person B/human review remains required for A1.
 
+### Person A durable turn store, October 8, 2026
+
+The user's "go ahead and start next" request continues the October 7 A1 approval
+on baseline `813a01d`, branch `person-a/conversation-foundation`. The next slice
+implements schema-v1 additive conversation/turn/action collections, unique
+request/sequence/action indexes, host-private turn claims, scoped exact-request
+replay, optimistic revisions, fenced completion, immutable validated pending
+proposals and ascending public history. Expired turns interrupt without automatic
+generation replay. Pending proposals expire or are superseded; all child-state
+transitions write the parent in the same transaction. Decisions, execution
+claims/dispatch and uncertain-outcome recovery are deliberately still pending.
+No new public route/configuration default, worker ownership or concurrency change
+is introduced. The store is not instantiated by the current API.
+
+Proposals reuse the existing mutating-tool schemas through `validated_proposal`;
+missing budgets/objectives remain errors and defaults expand before hashing.
+Turn/action IDs and the submission key are allocated outside retryable database
+callbacks. Public output omits owner/submission tokens and preserves the original
+execution correlation. Redaction and the 256 KiB whole-record cap apply before
+storage. The [development guide](../conversation-development.md#durable-turn-and-proposal-storage)
+records the private persistence/repository contracts and integration boundaries.
+
+Three new local cases check schema/default authority, trusted-field exclusion,
+exact UTF-8 record limits, and invalid deadlines/pagination before database work.
+Sixteen new real-MongoDB cases cover scoped replay/restart, keys/redaction,
+revision/active-turn conflicts, history, expiry/reconciliation, immutable saved
+proposal/key, supersession, rejected stale/forged completions and oversize writes,
+two concurrent first-request snapshots, two competing revision snapshots,
+old-owner snapshot takeovers for answers/proposals, and a fault-injected
+transaction retry retaining identical action IDs/keys. They use actual sessions;
+controlled barriers force the claimed interleavings. These are store tests,
+not HTTP authentication or chat process-loss evidence. No existing assertion,
+skip, opt-in gate or worker limit was weakened. Newly authored epoch assertions
+were corrected from an assumed 20 to the actual existing default 30 in source.
+
+A precision regression failed with first/replayed deadlines at `123456` versus
+`123000` microseconds. The store now constructs clock/deadline/expiry values at
+UTC BSON millisecond precision. The same regression asserts exact deadline and
+full pending-proposal replay equality; it passed at the real persistence
+boundary. The original effective stored deadline is retained without extension.
+The [durable finding](../memory/conversation-store-replay.md) links the mechanism.
+
+Final Windows/PowerShell checks use Python 3.11.5, uv 0.12.23 and the locked
+dependencies: training sync, Ruff lint/format (84 files), **339 fast cases**
+(47 integration cases deselected), **37 ordinary integration cases** with both
+flags, and **ten serial isolated recovery cases**, with zero selected-case skips.
+Installed compatibility covers 105 packages; both distributions build and their
+contents are inspected. The workspace-cache build warning persists; inspected
+archives exclude caches, virtual environments, local tools, `.env` and artifacts.
+Docker Desktop was started in the background; isolated ordinary project
+`mlpp-conversation` uses ports 18000/37017/16379. Recovery uses its own generated
+project and prescribed ports. It was rerun after the precision fix because the
+first passing recovery image contained the earlier store source. Retain the
+final image/source identity with the raw results, rather than treating that
+earlier run as final-source evidence. Existing domain API/worker source is
+unchanged. Temporary test databases and recovery stacks are removed by fixtures;
+the ordinary test stack is stopped after evidence collection, preserving volumes.
+
+Tracked [execution/source/image/package provenance](../evidence/2026-10-08-conversation-store/results.json)
+and raw [fast output](../evidence/2026-10-08-conversation-store/unit.txt),
+[ordinary output](../evidence/2026-10-08-conversation-store/integration.txt),
+[recovery output](../evidence/2026-10-08-conversation-store/recovery.txt) and
+[before-fix precision failure](../evidence/2026-10-08-conversation-store/precision-before.txt)
+retain shared evidence. JUnit and additional logs/state snapshots remain under
+ignored `artifacts/conversation-store-validation/` and `artifacts/recovery-validation/`;
+the tracked reports retain their counts and source hashes. Existing CI retains
+its own reports when run; no remote CI result is claimed. Documentation
+links/examples, source claims and staged whitespace are checked before commit.
+
+**Outstanding:** the bounded host loop and evidence grounding, exact action
+decisions/attempt claims/dispatch, unknown-outcome retries and chat-process-loss
+tests, API/lifespan/Compose integration, installed-artifact tokenizer verification
+and the live-model evaluation. C3/C5 remain open. Independent review is
+unavailable in this session; implementing-assistant self-review covered parent
+write predicates, state transitions, retry identity, time/byte bounds and
+failure rollback and is not independent review. Person B/human review remains
+required. The approved contracts and acceptance criteria remain unchanged;
+Git history and the task response record the final commit/push outcome.
+
 Original draft preparation checks (October 6, 2026, original baseline `32df698`,
 Windows/PowerShell):
 local Markdown validation passed for 17 documents and 144 links/anchors; the two

@@ -1,0 +1,178 @@
+{
+  "recorded_at_utc": "2026-10-09T00:27:47.206039+00:00",
+  "client_date": "2026-10-08",
+  "scope": "Person A A1 durable turn/proposal store; host loop, decisions/dispatch, chat routes and model evaluation remain pending",
+  "source_baseline": "813a01d5ad114fae7f9a1d8b30995ee52473e549",
+  "branch": "person-a/conversation-foundation",
+  "tested_source_sha256": {
+    "src/ml_pipeline_pro/conversation_store.py": "0ddf65332aa2ed1e45797eb34c4294d26181f7abd90f0b7f733d49a5144eb14f",
+    "src/ml_pipeline_pro/tools.py": "04ae52c8db16a899ad91533a33ec7cad52b6b0eff0db9b3ab933b9b99cecd88c",
+    "tests/test_conversation_store.py": "bcd41e96bfda5a594f1bb2d03e0d2e6c30eacecb5b6b9986d1b124c5b284ad7f",
+    "tests/integration/test_conversation_store.py": "e99c0ec0017caa9682370a577ca5668db916c149cd30b71f2c4ed3ab88ec8447",
+    "src/ml_pipeline_pro/worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9",
+    "src/ml_pipeline_pro/main.py": "6b316fcf6d969ccc28153bbbdfc2ecd7fc7f32fffca1f6bfecba278a560a13e2",
+    "src/ml_pipeline_pro/ownership.py": "a484815ffff0325a52b903495a3c18fab4e997135f5d817d822badf4434b367f",
+    "pyproject.toml": "03ed9e72212fae12bf180aa01d6ae31e0b55077a6378f30c6a4547df41f022da",
+    "uv.lock": "4b9aebd7705ed49ce1be35eb7d788964d051743d5b534067c0e5c8c1abb7122f"
+  },
+  "environment": {
+    "host_os": "Windows-10-10.0.19045-SP0",
+    "python": "3.11.5",
+    "uv": "0.12.23",
+    "shell": "PowerShell",
+    "uv_cache_dir": ".cache/uv"
+  },
+  "packages": {
+    "pymongo": "4.18.2",
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10",
+    "torch": "2.14.1+cpu"
+  },
+  "ordinary_runtime": {
+    "python": "3.11.17",
+    "source": {
+      "conversation_store.py": "0ddf65332aa2ed1e45797eb34c4294d26181f7abd90f0b7f733d49a5144eb14f",
+      "tools.py": "04ae52c8db16a899ad91533a33ec7cad52b6b0eff0db9b3ab933b9b99cecd88c",
+      "worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9",
+      "main.py": "6b316fcf6d969ccc28153bbbdfc2ecd7fc7f32fffca1f6bfecba278a560a13e2"
+    },
+    "image": "sha256:a0d938d306deab3959c2e7ac504339cb3f84e288c8e7b4b01af6776f30df6e9c",
+    "docker_version": "29.8.2",
+    "mongodb_version": "8.0.32",
+    "mongo_topology": "mlpp",
+    "redis_version": "7.4.11"
+  },
+  "final_recovery_runtime": {
+    "container": "mlpp-recovery-b52c16fdbc3d-api-1",
+    "image": "sha256:5e987f554c7d4a72259c84d4fd351e3eb42c20826aa5bc0d70f2ea032eaeddd8",
+    "store_sha256": "0ddf65332aa2ed1e45797eb34c4294d26181f7abd90f0b7f733d49a5144eb14f",
+    "matches_final_store": true
+  },
+  "reports": {
+    "unit": {
+      "tests": 339,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "integration": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "commands_observed": [
+    {
+      "command": "uv sync --locked --extra training",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv run --locked --extra training ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "uv run --locked --extra training ruff format --check .",
+      "exit_code": 0,
+      "files": 84
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"not integration\" --cov",
+      "exit_code": 0,
+      "tests": 339,
+      "integration_deselected": 47
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m \"integration and not recovery\"",
+      "exit_code": 0,
+      "tests": 37,
+      "flags": [
+        "MLPP_RUN_INTEGRATION=1",
+        "MLPP_RUN_WORKER_INTEGRATION=1"
+      ],
+      "test_endpoints": [
+        "http://127.0.0.1:18000/api/v1",
+        "mongodb://127.0.0.1:37017/?directConnection=true",
+        "redis://127.0.0.1:16379/0"
+      ]
+    },
+    {
+      "command": "uv run --locked --extra training pytest -m recovery",
+      "exit_code": 0,
+      "tests": 10,
+      "flags": [
+        "MLPP_RUN_RECOVERY_INTEGRATION=1"
+      ],
+      "serial": true
+    },
+    {
+      "command": "uv pip check",
+      "exit_code": 0,
+      "packages_checked": 105
+    },
+    {
+      "command": "uv build --offline",
+      "exit_code": 0,
+      "warning": "Workspace cache warning; final distributions inspected separately"
+    }
+  ],
+  "initial_findings": [
+    "New test expectation of 20 epochs corrected to the source default 30; application defaults unchanged.",
+    "Real MongoDB precision regression failed: deadline 123456 microseconds replayed as 123000; UTC-millisecond construction fixed exact replay.",
+    "First recovery run passed before the precision fix; final recovery rerun has matching final store source hash."
+  ],
+  "evidence": {
+    "raw_logs": [
+      "unit.txt",
+      "integration.txt",
+      "recovery.txt",
+      "precision-before.txt"
+    ],
+    "junit": [
+      "unit.xml",
+      "integration.xml",
+      "recovery.xml"
+    ],
+    "recovery_snapshots_and_logs": "recovery-state.zip",
+    "recovery_archive_scope": "Synthetic isolated test database snapshots/logs; test stack removed by fixture.",
+    "text_normalization": "UTF-8/LF logs; formatting-only trailing whitespace trimmed and ephemeral owner token redacted in the before-fix failure trace."
+  },
+  "review": {
+    "reviewer": "Implementing assistant (self-review)",
+    "independent": false,
+    "scope": "Parent writes, revision/ownership fencing, replay identity, transaction retries, record bounds, UTC/BSON precision and failure rollback",
+    "findings_resolved": [
+      "Unique indexes initialized before reservation.",
+      "Forced dual absent/revision snapshots in race tests.",
+      "Original/replayed deadlines and proposal responses agree at BSON precision.",
+      "Final container store hashes match tested host source."
+    ]
+  },
+  "remaining_gaps": [
+    "Independent Person B/human review unavailable in this session.",
+    "Host grounding/read loop, action decisions/dispatch, unknown-outcome and chat-process recovery, API/lifespan integration pending.",
+    "No installed-artifact tokenizer or live-model acceptance evidence; C3/C5 remain open.",
+    "No clean-checkout onboarding or remote CI result claimed."
+  ],
+  "documentation_checks": {
+    "markdown_documents": 20,
+    "local_links_and_anchors": 242,
+    "python_fences": 2,
+    "powershell_fences": 19,
+    "env_example_valid": true
+  },
+  "build_inspection": {
+    "wheel_members": 35,
+    "sdist_members": 112,
+    "store_in_both_archives": true,
+    "ignored_paths_excluded": true
+  }
+}

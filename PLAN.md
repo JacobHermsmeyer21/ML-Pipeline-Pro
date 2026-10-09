@@ -171,8 +171,9 @@ conversational interface remains in development. The provider-independent layer
 exposes 13 existing API operations with budgets, trusted context/retry keys, and
 record evidence. Locked LangChain dependencies, strict conversation schemas,
 the model interface, and chat settings now exist. The local inference adapter has
-deterministic SDK/HTTP tests; `/chat`, dialogue storage, artifact-specific token
-verification, and real-model evaluation remain outstanding. See the
+deterministic SDK/HTTP tests; durable turn/proposal storage has real-MongoDB
+claim/replay/takeover coverage. `/chat`, the host loop, action decisions/dispatch,
+artifact-specific token verification, and real-model evaluation remain outstanding. See the
 [development guide](docs/conversation-development.md).
 The [implemented tool design](docs/plans/2026-10-06-conversation-tools-plan.md) and
 [revised local conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md)

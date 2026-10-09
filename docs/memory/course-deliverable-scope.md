@@ -22,8 +22,10 @@ the outstanding features or local model have been implemented or evaluated.
 
 Person A's October 8 [foundation](../conversation-development.md) introduces
 locked LangChain dependencies, schemas, a model interface, and settings. Its
-next A1 slice adds a deterministically tested LangChain/Ollama adapter.
-Installed-artifact token verification, routes, persistence, and live-model evidence
+next A1 slices add a deterministically tested LangChain/Ollama adapter and durable
+turn/proposal storage with real-MongoDB claims/replay/takeover coverage.
+Installed-artifact token verification, host orchestration, action decisions/dispatch,
+routes, and live-model evidence
 remain outstanding; C3/C5 are still open. The preceding absent-dependency finding
 remains historical to its
 stated baseline.

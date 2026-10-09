@@ -1,0 +1,51 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_ test_proposal_timestamp_and_claim_deadline_replay_exactly_at_millisecond_precision _
+
+    def test_proposal_timestamp_and_claim_deadline_replay_exactly_at_millisecond_precision():
+        async def run(store, database, settings, clock):
+            clock.now = clock.now.replace(microsecond=123456)
+            claim = await reserve(store)
+            replay = await reserve(store)
+            assert claim.deadline == replay.deadline
+            first = await store.finish(CONTEXT, claim, completed(claim, status="awaiting_confirmation"),
+                                       proposal=proposal())
+            replay = await reserve(store)
+            assert first == replay.turn
+>       exercise(run)
+
+tests\integration\test_conversation_store.py:217:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\integration\test_conversation_store.py:84: in exercise
+    asyncio.run(run())
+..\..\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py:190: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py:653: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests\integration\test_conversation_store.py:80: in run
+    await callback(store, database, settings, clock)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+store = <ml_pipeline_pro.conversation_store.ConversationStore object at 0x000001F47E7F1B50>
+database = AsyncDatabase(AsyncMongoClient(host=['127.0.0.1:37017'], document_class=dict, tz_aware=True, connect=True, directconne...000, connecttimeoutms=2000, sockettimeoutms=2000, timeoutms=2.0), 'mlpp_conversation_66c33c60297f497eb7ad566c4a020258')
+settings = Settings(environment='development', log_level='INFO', mongodb_uri=SecretStr('**********'), mongodb_database='mlpp_conv...out_seconds=30.0, chat_max_model_calls=5, chat_max_tool_calls=4, chat_max_output_tokens=1024, chat_context_tokens=8192)
+clock = <test_conversation_store.Clock object at 0x000001F47E80A650>
+
+    async def run(store, database, settings, clock):
+        clock.now = clock.now.replace(microsecond=123456)
+        claim = await reserve(store)
+        replay = await reserve(store)
+>       assert claim.deadline == replay.deadline
+E       AssertionError: assert datetime.datetime(2026, 10, 8, 20, 1, 0, 123456, tzinfo=datetime.timezone.utc) == datetime.datetime(2026, 10, 8, 20, 1, 0, 123000, tzinfo=FixedOffset(datetime.timedelta(0), 'UTC'))
+E        +  where datetime.datetime(2026, 10, 8, 20, 1, 0, 123456, tzinfo=datetime.timezone.utc) = TurnClaim(turn=ConversationTurn(conversation_id='4f927d1b-6151-4314-bfd6-13001dccb675', turn_id='3b12ef7f-f36e-4eab-83...4231c0ea1f1f', deadline=datetime.datetime(2026, 10, 8, 20, 1, 0, 123456, tzinfo=datetime.timezone.utc), replayed=False).deadline
+E        +  and   datetime.datetime(2026, 10, 8, 20, 1, 0, 123000, tzinfo=FixedOffset(datetime.timedelta(0), 'UTC')) = TurnClaim(turn=ConversationTurn(conversation_id='4f927d1b-6151-4314-bfd6-13001dccb675', turn_id='3b12ef7f-f36e-4eab-83...line=datetime.datetime(2026, 10, 8, 20, 1, 0, 123000, tzinfo=FixedOffset(datetime.timedelta(0), 'UTC')), replayed=True).deadline
+
+tests\integration\test_conversation_store.py:212: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/integration/test_conversation_store.py::test_proposal_timestamp_and_claim_deadline_replay_exactly_at_millisecond_precision
+1 failed, 15 deselected in 0.66s

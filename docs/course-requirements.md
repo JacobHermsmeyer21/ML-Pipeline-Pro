@@ -78,8 +78,10 @@ local-model integration and its acceptance evidence remain outstanding.
 Person A's October 8 foundation adds locked LangChain/Ollama dependencies,
 conversation schemas, the model interface, and chat settings. The
 [development guide](conversation-development.md) records the limited scope;
-the next A1 slice adds a local LangChain adapter with deterministic SDK/HTTP tests.
-Installed-artifact tokenization, live inference, dialogue/actions, real-model
+the next A1 slices add a local LangChain adapter with deterministic SDK/HTTP
+tests and durable turn/proposal storage with real-MongoDB claims/replay evidence.
+Installed-artifact tokenization, live inference, the host dialogue loop and
+action decisions/dispatch, real-model
 evidence, and clean-checkout
 onboarding remain outstanding. No course row is closed by this slice.
 
@@ -87,7 +89,7 @@ onboarding remain outstanding. No course row is closed by this slice.
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, PyMongo, and locked LangChain/Ollama dependencies exist; local runtime setup and clean-checkout evidence remain outstanding. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../pyproject.toml) and [setup](../README.md#development-setup). |
 | C2 | Separate model-management, tuning, and monitoring services | Outstanding: one FastAPI application serves tracking/tuning; monitoring is absent. | Start each domain service independently; integration proves REST interactions and preserved transaction/project boundaries. See [current app](../src/ml_pipeline_pro/main.py) and [Compose](../compose.yaml). |
-| C3 | LangChain, pre-trained model, guided dialogue/history | Outstanding: 13 typed tools and a deterministically tested local adapter exist; no dialogue store or real-model evidence. | A real local pre-trained model guides pipeline steps, requests missing inputs, uses recorded history, and returns grounded commands/insights. Deterministic tests alone cannot establish model integration. See [tool guide](workflows.md#conversation-tool-layer). |
+| C3 | LangChain, pre-trained model, guided dialogue/history | Outstanding: 13 tools, a tested local adapter, and durable turn/proposal storage exist; host dialogue/routes and real-model evidence are absent. | A real local pre-trained model guides pipeline steps, requests missing inputs, uses recorded history, and returns grounded commands/insights. Deterministic tests alone cannot establish model integration. See [tool guide](workflows.md#conversation-tool-layer). |
 | C4 | MongoDB parameters, versions, tuning results/metrics, indexes | Initial classification scope delivered; representative query performance remains unmeasured. | Retain schema/index/persistence regressions and demonstrate retrieval of saved configurations, versions, trials, and metrics. See [tracking](../src/ml_pipeline_pro/tracking.py), [tuning store](../src/ml_pipeline_pro/tuning_store.py), and [status](project-status.md#architecture-and-durable-records). |
 | C5 | Automated optimization with LangChain suggestions and saved history | Partial: serial Bayesian tuning and MongoDB history exist; LangChain suggestions are absent. | Demonstrate bounded, user-confirmed tuning suggestions grounded in previous trials; existing worker limits, validation selection, ownership, and recovery gates pass. See [tuning guide](workflows.md#bounded-classification-tuning) and [sampler](../src/ml_pipeline_pro/tuning_sampler.py). |
 | C6 | Real-time monitoring, visualization, LangChain summaries/fixes | Outstanding: logs/health and experiment metrics exist, but monitoring observations/dashboards do not. | A running sample workload updates metrics/dashboard within the reviewed interval; a seeded issue produces an evidence-linked summary and proposed checks/fixes. See [milestone 5](../PLAN.md#5-add-monitoring-and-diagnosis). |

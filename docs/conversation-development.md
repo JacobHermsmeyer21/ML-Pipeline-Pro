@@ -11,8 +11,10 @@ The next A1 slice adds [the local adapter](../src/ml_pipeline_pro/conversation_o
 with native tool proposals, installed-artifact inspection, deadline/byte/token
 admission, fixed safe errors, redaction, and client cleanup. Deterministic tests
 exercise the real locked SDK against an in-memory HTTP transport.
-There is no chat route, conversation persistence, or automatic
-tool execution in these slices. `MLPP_CHAT_ENABLED=true` does not enable chat yet.
+A third A1 slice adds [the durable store](../src/ml_pipeline_pro/conversation_store.py)
+for turn claims/replay, scoped history, and immutable pending proposals, with
+real-MongoDB transaction-race coverage. Chat routes, the host loop, and action
+decisions/dispatch remain pending. `MLPP_CHAT_ENABLED=true` does not enable chat yet.
 Direct tracking/tuning routes continue to use their existing contracts. Course
 C3/C5 remain outstanding; installing dependencies and scripted tests do not
 establish a working pre-trained model.
@@ -44,8 +46,8 @@ capacity. Schema validation enforces the 8 KiB UTF-8 user-message limit and
 requires exactly one tool call or final reply per model step. The 64 KiB request
 and context, 128 KiB tool response, 256 KiB saved-record, and ten-turn history
 caps belong to the approved service design. The adapter enforces 64 KiB serialized
-context including instructions/tools; the upcoming service must enforce the
-request, tool, saved-record, and history boundaries.
+context including instructions/tools; the store enforces saved-record limits.
+The upcoming service must enforce request, tool-response, and model-history boundaries.
 
 ## Model and action boundaries
 
@@ -53,9 +55,9 @@ The model interface describes calls; the host will bind trusted project/key,
 correlation, submission key, and mutation permission. Chat request bodies cannot
 supply those fields. A decision accepts only `approve`/`reject` and the exact
 saved fingerprint; edited arguments need a new proposal. The schema cannot
-authorize an action or prove that a citation is supported. Persistence,
-revision/ownership checks, grounded fact rendering, redaction, and dispatch remain
-the next implementation steps.
+authorize an action or prove that a citation is supported. Turn claims/completion
+and pending proposals are persisted now. Grounded fact rendering, action
+decisions, and dispatch orchestration remain host implementation work.
 
 Model replies request record IDs and field references, without supplying verified
 fact values. Actual values must come from successful public tool evidence. Action
@@ -112,6 +114,51 @@ LangChain debug printing fails closed before inference. Application logging adds
 model/HTTP logger namespaces to its configured redaction. Timeout/cancellation
 stops the local request; it cannot undo runtime work already started.
 
+## Durable turn and proposal storage
+
+`ConversationStore(database, settings)` uses transaction-capable MongoDB. It
+adds three schema-version-1 collections without migrating existing domain
+records or adding TTL deletion. The application does not instantiate this store
+yet. Its host-private `TurnClaim` must never be returned as an API response;
+return its strict public `ConversationTurn` instead.
+
+| Collection | Stored contract and indexes |
+| --- | --- |
+| `conversations` | Project/identity/schema/timestamps; conversation `revision`, `fence_revision`, active turn ID, owner token and original absolute deadline. Project/update lookup index. |
+| `conversation_turns` | Project/conversation/identity/schema/timestamps; unique `(project_id, request_id)` and `(project_id, conversation_id, sequence)`; original request fingerprint, private owner/deadline and typed public turn snapshot. |
+| `conversation_actions` | Project/conversation/turn/identity/schema/timestamps; unique action per originating turn; private submission key and typed public immutable proposal/fingerprint. Public reads omit the key. |
+
+`reserve(context, request, deadline=...)` initializes indexes before reserving.
+It uses a transaction to advance the expected revision and reserve one active
+turn. Exact project/request/body replay returns the saved turn with no owner
+token and no permission to generate; another body returns
+`chat_idempotency_conflict`. Competing turns or a wrong revision return
+`conversation_conflict`. The saved execution correlation remains the original
+one. Clock/deadline/expiry values use UTC milliseconds, matching BSON, so first
+responses and saved replays agree without extending the persisted deadline.
+
+`finish(context, claim, public_turn, proposal=...)` writes the matching,
+unexpired conversation owner in the same transaction as completion/proposal
+persistence. Result identities, original user message and correlation cannot
+change. The optional proposal must accompany `awaiting_confirmation`; the
+store expands existing mutating-tool schemas, generates its ID/submission key
+once outside retryable callbacks, hashes canonical finite arguments, and saves
+it before returning. Missing budgets/objectives remain validation errors. No
+model/HTTP calls or decisions run in these callbacks. The store enforces the
+256 KiB serialized record cap including private bookkeeping and redacts known
+configured and trusted-context credentials before saving public content.
+
+`history(project_id, conversation_id, limit=50, offset=0)` returns ascending
+turns; `action(project_id, conversation_id, action_id)` returns a scoped public
+proposal. Reads/replays/new reservations reconcile expired running turns to
+`interrupted`; generation never resumes automatically. Pending proposals expire
+after 15 minutes or are superseded by a newer turn. These transitions also
+write the parent in the same transaction. History/replay hydrate the current
+action state while retaining the originating turn outcome. Audit records remain
+until explicit operator deletion. This slice provides no action approval,
+execution claims, dispatch, unknown-outcome retry, or attempt reconciliation.
+Those state transitions and chat-process loss tests remain required A1 work.
+
 ## Verify this slice and continue A1
 
 From the repository root:
@@ -120,6 +167,7 @@ From the repository root:
 uv sync --locked --extra training
 uv run --locked --extra training pytest tests/test_conversation_schemas.py tests/test_conversation_model.py tests/test_conversation_config.py
 uv run --locked --extra training pytest tests/test_conversation_ollama.py tests/test_logging.py
+uv run --locked --extra training pytest tests/test_conversation_store.py
 ```
 
 The tests cover UTF-8 boundaries, trusted-context exclusion, exact decision shape,
@@ -128,13 +176,18 @@ SDK-normalized token admission, response limits, error/retry behavior,
 credential/tracing isolation, and cleanup.
 They supplement the [full fast gate](verification.md#fast-checks), dependency
 compatibility, and package build. No existing assertion or live-service gate is
-relaxed. This slice makes no MongoDB, queue, worker, or recovery changes.
+relaxed. The store adds MongoDB collections/transactions; run the full
+[ordinary integration gate](verification.md#ordinary-integration) with both
+flags, including [its real transaction cases](../tests/integration/test_conversation_store.py),
+and the separate serial recovery gate. Existing worker/tuning ownership behavior
+is unchanged. Store tests use real sessions and controlled interleavings;
+local pure-boundary tests alone do not establish snapshot-isolation correctness.
 
 Continue the approved plan in reviewable steps: select the artifact and verify
-its tokenizer/runtime behavior; durable turn claims/replay; the bounded read
-loop; saved proposals and
-exact decisions; API/lifespan/docs integration with Person B; real-MongoDB races
-and lost-response/process recovery; and the opt-in live-model gate. The stash
+its tokenizer/runtime behavior; implement the bounded host read loop and
+evidence grounding; exact action decisions/execution claims; API/lifespan/docs
+integration with Person B; further action races and lost-response/chat-process
+recovery; and the opt-in live-model gate. The stash
 named `Before requested origin reset 2026-10-08` is preserved as unfinished source,
 not acceptance evidence. Review every reused portion rather than applying it in
 bulk. Independent review of state/claim/retry/resource arithmetic remains pending.
