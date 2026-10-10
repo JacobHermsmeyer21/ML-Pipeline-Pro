@@ -30,6 +30,13 @@ extract a convenient JSON substring, relax assertions or equate a larger model
 with a fix. A typed completion tool is an unimplemented design hypothesis that
 requires review, and would still need semantic budget/evidence acceptance.
 
+October 10 update: the user approved that experiment and the
+[typed-completion outcome](../plans/2026-10-09-conversation-typed-completion-plan.md#implementation-outcome)
+records its implementation. The selected 7B profile passed only three of ten
+unchanged scenarios; adding a completion function does not establish quality.
+See [the new finding](conversation-typed-completion.md) for observed repeated
+calls, budget/history errors and the new 14-function admission evidence.
+
 Limits: these observations apply to the exact pinned text/Go-template profiles.
 They establish neither conversation delivery nor concurrent capacity. Independent
 review and complete clean-checkout onboarding remain unavailable. Revisit after

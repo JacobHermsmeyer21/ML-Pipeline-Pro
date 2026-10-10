@@ -1,19 +1,34 @@
 import asyncio
 import json
 from copy import deepcopy
+from unittest.mock import AsyncMock
 
+import httpx
 import pytest
 from pymongo.errors import ConnectionFailure
 
 from ml_pipeline_pro.config import Settings
-from ml_pipeline_pro.conversation_model import ConversationModelError
-from ml_pipeline_pro.conversation_schemas import ChatRequest, FactRequest, ModelReply, ModelStep
+from ml_pipeline_pro.conversation_model import (
+    REPLY_INSTRUCTIONS,
+    ConversationModelError,
+    model_tools,
+    native_conversation_tools,
+)
+from ml_pipeline_pro.conversation_schemas import (
+    CONTEXT_BYTES,
+    ChatRequest,
+    FactRequest,
+    ModelReply,
+    ModelStep,
+    serialized,
+)
 from ml_pipeline_pro.conversation_service import ConversationService
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.schemas import ExperimentResult, ModelRecord
 from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext
 from ml_pipeline_pro.tool_transport import HttpToolTransport, ToolResponse
 from tests.conversation_memory import MemoryConversations
+from tests.test_conversation_ollama import Runtime, chat_response, completion_response
 
 KEY = "fixture-conversation-secret"
 CONTEXT = ToolContext(
@@ -120,6 +135,100 @@ def test_read_loop_renders_actual_status_and_keeps_generated_interpretation_sepa
     assert len(model.messages) == 2 and len(transport.calls) == 1
     assert result.model_provenance == {"backend": "scripted"}
     assert all("host-correlation" not in json.dumps(messages) for messages in model.messages)
+
+
+@pytest.mark.parametrize("read_first", [False, True])
+def test_sdk_completion_bypasses_dispatch_and_does_not_spend_an_http_tool_call(
+    monkeypatch,
+    read_first,
+):
+    import ml_pipeline_pro.conversation_service as host
+
+    dispatched = []
+    execute = host.ToolDispatcher.execute
+
+    async def spy(self, call, context):
+        dispatched.append(call.name)
+        return await execute(self, call, context)
+
+    monkeypatch.setattr(host.ToolDispatcher, "execute", spy)
+    arguments = {"message": "Inspect the queued experiment."}
+    if read_first:
+        arguments.update(
+            citations=["experiment"], facts=[{"record_id": "experiment", "field": "status"}]
+        )
+    responses = [completion_response(arguments)]
+    if read_first:
+        responses.insert(
+            0,
+            chat_response(
+                message={
+                    "role": "assistant",
+                    "content": "",
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_experiment",
+                                "arguments": {"experiment_id": "experiment"},
+                            }
+                        }
+                    ],
+                }
+            ),
+        )
+
+    async def respond(_):
+        return httpx.Response(200, json=responses.pop(0))
+
+    runtime = Runtime(overrides={"/api/chat": respond})
+    store = MemoryConversations()
+    store.finish = AsyncMock(wraps=store.finish)
+    transport = RecordsTransport({"/api/v1/experiments/experiment": experiment()})
+
+    async def scenario():
+        async with runtime.model() as model:
+            service = ConversationService(config(chat_max_tool_calls=1), store, model, transport)
+            result = await service.chat(
+                CONTEXT, ChatRequest(request_id="native", message="Inspect", expected_revision=0)
+            )
+        assert result.status == "completed" and result.pending_action is None
+        assert result.message == arguments["message"]
+        assert len(result.tool_results) == int(read_first)
+        if read_first:
+            assert result.facts[0].value == "queued"
+        assert next(iter(store.turns.values())) == result
+        store.finish.assert_awaited_once()
+        assert store.finish.await_args.kwargs["proposal"] is None
+
+    asyncio.run(scenario())
+    assert dispatched == (["get_experiment"] if read_first else [])
+    assert len(transport.calls) == int(read_first)
+    assert len(runtime.token_requests) == 1 + int(read_first)
+
+
+def test_host_byte_admission_includes_completion_schema_before_second_generation():
+    baseline = ScriptedModel(call("get_experiment", experiment_id="experiment"), reply())
+    run(
+        baseline, RecordsTransport({"/api/v1/experiments/experiment": experiment(error_summary="")})
+    )
+    messages = [{"role": "system", "content": REPLY_INSTRUCTIONS}, *baseline.messages[1]]
+    native_size = len(serialized({"messages": messages, "tools": native_conversation_tools()}))
+    old_size = len(serialized({"messages": messages, "tools": model_tools()}))
+    assert old_size < native_size < CONTEXT_BYTES
+    padding = CONTEXT_BYTES - native_size + 1
+    model = ScriptedModel(call("get_experiment", experiment_id="experiment"), reply())
+    result, _, _ = run(
+        model,
+        RecordsTransport(
+            {
+                "/api/v1/experiments/experiment": experiment(error_summary="x" * padding),
+            }
+        ),
+    )
+    assert old_size + padding <= CONTEXT_BYTES
+    assert result.status == "failed" and result.error["code"] == "chat_limit_exceeded"
+    assert len(model.messages) == 1
+    assert result.tool_results[0].data["error_summary"] == "x" * padding
 
 
 @pytest.mark.parametrize("field", ["metrics.validation_f1", "comparison.best_experiment_id"])

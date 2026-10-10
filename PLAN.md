@@ -53,8 +53,10 @@ required before increasing training concurrency.
 **Status:** Partial: 13 typed tools, locked LangChain dependencies, a tested local
 adapter, durable storage, grounded reads, authenticated routes, and confirmed
 action dispatch/recovery exist.
-An explicit installed Qwen profile has verified token admission; its live-model
-acceptance fails. Successful model evaluation, independent review, and
+An explicit installed Qwen profile has verified token admission. The approved
+[typed-completion protocol](docs/plans/2026-10-09-conversation-typed-completion-plan.md)
+is implemented, but its selected 7B run passes only three of ten scenarios.
+Successful model evaluation, independent review, and
 clean-checkout onboarding remain open. The
 [conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) was approved
 October 7, 2026; its outcome and the

@@ -1,10 +1,10 @@
 # Native typed completion for conversation replies
 
-- Status: awaiting human review; implementation not authorized
+- Status: implemented; real-model acceptance failed (3/10); A1 remains open
 - Date: 2026-10-09
 - Source baseline: `33ba46c`, `person-a/conversation-foundation`
 - Request: continue Person A's approved A1 conversation work
-- Human reviewer/approval: repository user; pending for this protocol change
+- Human reviewer/approval: repository user; approved October 10, 2026
 - Independent review: unavailable in this session; request review of protocol and admission arithmetic before closing A1
 
 ## Proposed behavior and purpose
@@ -44,7 +44,7 @@ families would require a separately verified tokenizer/template profile. This
 small protocol experiment reuses the installed artifacts and existing reply
 contract; it remains a hypothesis until measured.
 
-Human decision requested: approve this additional native completion channel and
+Human decision approved October 10: add this native completion channel and
 proposal-specific descriptions under the constraints below. No other unresolved
 intent choice is needed to implement this bounded experiment. If it still fails,
 retain the result and plan another reviewed approach; do not expand scope or
@@ -158,18 +158,16 @@ native lists during generation; recorded instruction/tool hashes identify them.
 ## Human review and approval
 
 - Reviewer: repository user
-- Decision/date/reference: pending
-- Scope requested: the native completion translation, proposal-only native
-  descriptions, complete 14-schema admission/provenance and tests/evidence above
-- Implementation may begin only after explicit approval is recorded here.
+- Decision/date/reference: approved October 10, 2026 in the conversation:
+  "I approve the typed plan, start implementing"
+- Approved scope: the native completion translation, proposal-only native
+  descriptions, complete 14-schema admission/provenance and tests/evidence above.
+  This approval does not extend to the excluded A2-A4 or Person B work.
 - Independent reviewer/findings/resolutions: unavailable; pending before A1 closure
 
 ## Implementation outcome
 
-Not implemented. `33ba46c` provides the verified token counter and retained
-failed-model baseline. This document changes no application behavior or test gate.
-The plan will be committed and pushed for review; record approval and actual
-results here when available. No completion-tool or course acceptance is claimed.
+### Original plan verification, October 9
 
 Documentation verification passed for 33 Markdown documents and 326 local
 links/anchors, two Python examples, 29 PowerShell examples and the 25-operation
@@ -178,3 +176,67 @@ current native binding/parser, host admission and evaluation reservation paths;
 application and live-model gates were not rerun for this documentation-only
 change. Staged whitespace is checked before commit. Git and the completion
 handoff record commit/push outcomes. Implementing-assistant review is self-review.
+
+### Approved implementation, October 10
+
+The user approved this protocol experiment on October 10 before application
+edits. `native_conversation_tools()` now supplies the 13 existing domain schemas
+with proposal-only mutation descriptions plus `finish_conversation`, using the
+unchanged `ModelReply` schema. The adapter intercepts one completion with empty
+free-text content and returns a typed reply. Strict legacy replies and raw
+duplicate-key/native argument checks remain active. Host byte admission and the
+live counter inventory include all 14 bindings; the public catalog, routes,
+stored schemas, confirmation and recovery behavior are unchanged.
+
+Twenty-six added fast cases and two added real-service cases check the new
+requirements: strict completion translation and rejection at the locked SDK,
+redaction, exact 512-output token reservation, host context overflow with the
+added schema, dispatcher isolation, one-read tool allowance followed by
+completion, evidence grounding, MongoDB persistence/replay and absence of saved
+actions. The request inventory assertion changes from 13 to 14 for N1; the
+public 13-tool assertion is unchanged. The added SDK metadata assertions check
+its actual parameter projection, not equality with the fuller host schema.
+No existing acceptance assertion, skip, scenario or budget was weakened.
+
+The new real-runtime 14-function request admitted exactly 7,680 input tokens
+plus 512 reserved output tokens at context 8,192. Input 7,681 was rejected before
+HTTP inference; the admitted request reported exactly 7,680 runtime input tokens.
+These are new-protocol admission observations, not reused 13-function counts.
+
+The one original ten-scenario acceptance run used
+`mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1`, unchanged 50-call/409600-token/
+512-output/600-second limits and no retries or repairs. **Acceptance failed:
+three scenarios passed and seven failed**, with native pytest exit 1. Five turns
+failed with `model_invalid_response`; the comparison/history proposal substituted
+the 40-second total budget for the requested 10-second per-trial runtime, and
+the missing-limits turn borrowed prior values and proposed tuning instead of
+asking for inputs. No mutation was dispatched. A separate read-only diagnostic
+observed one read followed by 23 repeated native reads in one response, ending
+with `done_reason=length`; it is diagnosis evidence, not an acceptance rerun.
+
+All 446 fast cases, 58 ordinary integration cases and ten serial isolated recovery
+cases passed with zero failures or selected skips. Host coverage is 77.29%; it
+excludes container execution. Locked sync, Ruff lint/format, dependency compatibility and
+offline source/wheel builds passed. Real-service checks use an isolated rebuilt
+Compose stack and both required flags; recovery uses its separate opt-in flag.
+Package inspection verifies all 37 canonical modules and excludes private,
+cache and model paths. Documentation checks validate local links/anchors, two
+Python examples, 29 PowerShell examples and all 25 documented API operations.
+
+[The evidence manifest](../evidence/2026-10-10-typed-completion/results.json)
+links a byte-preserving raw archive containing native exits, JSON/JUnit outputs,
+the separate diagnostic, new runtime token observations, source/support/package
+hashes, container identities and recovery snapshots/logs. Fast, ordinary, recovery
+and live runs share the same retained application/test source hashes. Earlier
+focused development failures are also retained. No weights, tokenizer data or
+private environment files are archived; no remote CI or performance result is
+claimed. Commit/push outcomes are recorded in Git and the completion handoff.
+
+Review performed here is implementing-assistant self-review of completion
+isolation, strict parsing, full-schema byte admission, exact SDK token admission
+and unchanged permission/persistence paths. An independent reviewer was
+unavailable; independent review, human model-quality review and complete
+clean-checkout onboarding remain outstanding. F5 and semantic F4 acceptance,
+A1 and course C3/C5 remain open. The approved experiment is implemented, but
+it does not fix real-model reliability. Any next approach requires another
+reviewed plan rather than accepting partial scenario passes.

@@ -87,6 +87,12 @@ retained real-runtime evidence. Every ten-scenario model evaluation failed;
 reliable guided dialogue/history, independent review and clean-checkout
 onboarding remain outstanding. No course row is closed by this slice.
 
+October 10's approved native completion protocol now translates a strict
+model-facing reply function without changing public tools or action permissions.
+The selected 7B profile still fails the original gate (three of ten scenarios
+passed); C3/C5 remain outstanding. See the
+[typed-completion outcome](../plans/2026-10-09-conversation-typed-completion-plan.md#implementation-outcome).
+
 | ID | Requirement | Current coverage | Evidence needed to close the requirement |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Partial: uv/venv, PyTorch, PyMongo, locked LangChain/Ollama dependencies and an explicit local runtime setup exist; complete clean-checkout evidence remains outstanding. | Locked LangChain/local-model dependencies installed on a clean checkout; documented setup succeeds. See [manifest](../../pyproject.toml) and [local model setup](../guides/local-model-setup.md). |

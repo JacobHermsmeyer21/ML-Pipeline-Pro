@@ -5,8 +5,14 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from evaluations.test_conversation_model import BudgetedModel, FixtureTransport, check_case
+from evaluations.test_conversation_model import (
+    BudgetedModel,
+    FixtureTransport,
+    ObservedCounter,
+    check_case,
+)
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_schemas import ConversationTurn, ModelReply, ModelStep
 
 
@@ -88,3 +94,14 @@ def test_missing_total_tuning_budget_cannot_be_satisfied_by_per_trial_runtime_lo
         check_case("missing_tuning_limits", turn, FixtureTransport())
     turn.required_inputs = ["arguments.limits.max_trials", "arguments.limits.max_runtime_seconds"]
     check_case("missing_tuning_limits", turn, FixtureTransport())
+
+
+def test_evaluation_rejects_missing_completion_schema_before_counting():
+    calls = []
+    counter = ObservedCounter(lambda payload: calls.append(payload) or 100)
+    payload = {"tools": native_conversation_tools()}
+    assert counter(payload) == 100
+    assert calls == [payload]
+    with pytest.raises(AssertionError):
+        counter({"tools": payload["tools"][:-1]})
+    assert calls == [payload]

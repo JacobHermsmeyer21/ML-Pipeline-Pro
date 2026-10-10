@@ -95,6 +95,19 @@ hashes. A missing license remains `null`; the evaluation must retain and inspect
 the actual artifact license. Inspection does not establish model quality or
 immutability of an operator-retagged artifact.
 
+The October 10 approved [typed-completion change](../plans/2026-10-09-conversation-typed-completion-plan.md)
+binds 14 native functions: the existing 13 domain tools, with proposal-specific
+mutation descriptions, and adapter-only `finish_conversation`. Its arguments
+use the existing `ModelReply` schema. Exactly one completion with empty free-text
+content becomes a reply; malformed arguments, extra fields, supplied fact values,
+mixed prose, duplicate keys and multiple calls fail with `model_invalid_response`.
+Strict legacy JSON replies remain supported. Completion spends one model call
+and no HTTP tool call; it cannot create or confirm a proposal. The public domain
+catalog, routes and persisted schemas remain unchanged. Host byte admission
+includes all 14 full schemas; token admission counts their exact SDK projection.
+The selected 7B profile passed only three of ten original scenarios in the new
+run, so successful model acceptance remains outstanding.
+
 The `counter` receives the exact SDK-normalized Ollama request at the HTTP request
 hook, including messages and tools. It must use the selected artifact's tokenizer
 and runtime chat/tool template, including special tokens. Verify it against

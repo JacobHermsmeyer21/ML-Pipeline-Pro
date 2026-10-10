@@ -16,6 +16,7 @@ import httpx
 import pytest
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_schemas import ChatRequest, fingerprint
 from ml_pipeline_pro.conversation_service import ConversationService
@@ -229,6 +230,9 @@ class ObservedCounter:
         self.payload_hashes = []
 
     def __call__(self, payload):
+        expected = {tool["function"]["name"] for tool in native_conversation_tools()}
+        assert len(payload["tools"]) == len(expected) == 14
+        assert {tool["function"]["name"] for tool in payload["tools"]} == expected
         self.last_count = self.counter(payload)
         self.payload_hashes.append(fingerprint(payload))
         return self.last_count

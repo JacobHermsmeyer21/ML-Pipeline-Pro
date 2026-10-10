@@ -23,6 +23,14 @@ Retain and inspect the license when setting up another machine. See the official
 [14B artifact](https://ollama.com/library/qwen2.5:14b-instruct-q4_K_M), and
 [Windows runtime/GPU setup](https://docs.ollama.com/windows).
 
+The table's quality results are the historical October 9 runs. After the approved
+[typed-completion change](../plans/2026-10-09-conversation-typed-completion-plan.md),
+the 7B JSON-tools profile passed three of ten unchanged scenarios on October 10.
+The new 14-function SDK payload admitted 7,680 input tokens plus 512 reserved
+output tokens at context 8,192; input 7,681 was rejected before HTTP inference.
+These observations verify admission, not conversation quality. No new 14B
+quality run or model-weight change is claimed.
+
 The [counter](../../src/ml_pipeline_pro/conversation_qwen_counter.py) accepts only
 the pinned artifact/runtime/template identities and tokenizer checksum. The
 template fingerprint in public adapter provenance hashes its canonical JSON

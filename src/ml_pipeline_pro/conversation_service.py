@@ -14,7 +14,7 @@ from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModel,
     ConversationModelError,
-    model_tools,
+    native_conversation_tools,
 )
 from ml_pipeline_pro.conversation_schemas import (
     CONTEXT_BYTES,
@@ -348,7 +348,7 @@ class ConversationService:
             admission()
             context_payload = {
                 "messages": [{"role": "system", "content": REPLY_INSTRUCTIONS}, *messages],
-                "tools": model_tools(),
+                "tools": native_conversation_tools(),
             }
             if len(serialized(context_payload)) > CONTEXT_BYTES:
                 raise self._limit("Conversation model context exceeds byte limit")

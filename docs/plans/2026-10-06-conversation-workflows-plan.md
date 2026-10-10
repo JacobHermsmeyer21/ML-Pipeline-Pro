@@ -907,3 +907,21 @@ design hypothesis requiring renewed review. A2-A4 remain pending approval.
 The [typed completion follow-up](2026-10-09-conversation-typed-completion-plan.md)
 defines that bounded protocol experiment and preserves the original semantic
 acceptance gates. Its approval remains pending; it has not been implemented.
+
+### Person A approved typed completion, October 10, 2026
+
+The user approved the [typed-completion follow-up](2026-10-09-conversation-typed-completion-plan.md)
+on October 10. Its implementation uses one adapter-only completion function and
+the unchanged public reply contract, includes all 14 native schemas in admission
+and provenance, and preserves the public 13-domain-tool catalog and confirmation
+boundaries. Its outcome records the new SDK/host/real-store checks, exact runtime
+token boundary and original ten-scenario live evaluation.
+
+The selected 7B profile passed only three scenarios; acceptance failed. Saved
+turns show wrong per-trial budgets and inappropriate reuse of missing limits.
+A separate diagnostic observed repeated native calls ending at the output limit.
+No action was dispatched and no acceptance assertion or budget changed. The
+October 9 approval-pending statement above remains historical; the new protocol
+is approved and implemented. A1/C3/C5, independent review, human model-quality
+review and complete clean-checkout onboarding remain outstanding. A2-A4 are not
+approved by this protocol decision.

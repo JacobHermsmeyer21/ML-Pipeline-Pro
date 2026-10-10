@@ -15,6 +15,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | [Conversation facts must exclude default-only API fields](conversation-supplied-facts.md) | Host loop, response capture and grounded record facts |
 | [Later errors cannot erase an uncertain submission](conversation-action-uncertainty.md) | Exact decisions, attempt ownership, same-key retries and killed-chat recovery |
 | [Qwen token counts depend on the pinned runtime template](conversation-qwen-runtime.md) | Explicit artifact identity, Go rendering, token admission and failed live evaluation |
+| [A native completion function does not establish model reliability](conversation-typed-completion.md) | Completion isolation, 14-schema admission, repeated native calls and semantic failures |
 
 Keep one durable finding per file. Include date, evidence, limits, and when to
 revisit it. Index new findings here. Record rejected approaches only when source

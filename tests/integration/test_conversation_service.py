@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import httpx
@@ -19,6 +20,7 @@ from ml_pipeline_pro.tool_transport import HttpToolTransport
 from ml_pipeline_pro.tuning_schemas import TrialRecord, TuningRecord
 from ml_pipeline_pro.tuning_store import TuningStore
 from tests.integration.helpers import api_base_url, integration_settings
+from tests.test_conversation_ollama import Runtime, chat_response, completion_response
 from tests.test_conversation_service import ScriptedModel, call, reply
 
 pytestmark = [
@@ -91,6 +93,65 @@ def test_real_scoped_read_grounding_persistence_and_replay_need_no_second_model_
         with pytest.raises(ApiError) as caught:
             await store.history("foreign", first.conversation_id)
         assert caught.value.code == "conversation_not_found"
+
+    exercise(run)
+
+
+@pytest.mark.parametrize("invalid_fact", [False, True])
+def test_native_completion_uses_real_evidence_and_persists_without_creating_actions(invalid_fact):
+    async def run(settings, connections, database, store, context, client, transport):
+        created = await client.post("/models", json={"name": "native_model"})
+        assert created.status_code == 201, created.text
+        model_id = created.json()["id"]
+        arguments = {
+            "message": "Inspect this registered model.",
+            "citations": [model_id],
+            "facts": [{"record_id": model_id, "field": "name"}],
+        }
+        if invalid_fact:
+            arguments["facts"][0]["value"] = "forged"
+        responses = [
+            chat_response(
+                message={
+                    "role": "assistant",
+                    "content": "",
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "get_model",
+                                "arguments": {"model_id": model_id},
+                            }
+                        }
+                    ],
+                }
+            ),
+            completion_response(arguments),
+        ]
+
+        async def respond(_):
+            return httpx.Response(200, json=responses.pop(0))
+
+        runtime = Runtime(overrides={"/api/chat": respond})
+        transport.request = AsyncMock(wraps=transport.request)
+        async with runtime.model() as model:
+            service = ConversationService(
+                settings.model_copy(update={"chat_max_tool_calls": 1}), store, model, transport
+            )
+            body = ChatRequest(request_id="native", message="Inspect model", expected_revision=0)
+            first = await service.chat(context, body)
+        assert first.pending_action is None
+        if invalid_fact:
+            assert first.status == "failed" and first.error["code"] == "model_invalid_response"
+            assert first.facts == []
+        else:
+            assert first.status == "completed" and first.facts[0].value == "native_model"
+        assert await store.actions.count_documents({}) == 0
+        assert await store.turns.count_documents({}) == 1
+        transport.request.assert_awaited_once()
+        assert transport.request.await_args.args == ("GET", f"/api/v1/models/{model_id}")
+        replay = await ConversationService(settings, store, None, transport).chat(context, body)
+        assert replay == first
+        assert len(runtime.token_requests) == 2
 
     exercise(run)
 

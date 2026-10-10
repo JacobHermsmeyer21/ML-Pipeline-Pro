@@ -44,7 +44,7 @@ completion. Feature implementation still requires explicit review of its plan.
 | 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
 | 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
 | 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Tools, tested local adapter, durable grounded conversations, authenticated routes and confirmed action dispatch/recovery implemented | Installed-artifact token verification, real-model dialogue/suggestions, live evaluation, independent review and clean-checkout onboarding |
+| 4. Conversational workflows | Tools, local adapter, durable grounded conversations, authenticated routes, confirmed actions and typed completion implemented; installed-profile token admission verified | Successful real-model dialogue/suggestions (latest selected 7B run passes three of ten), independent review, human quality review and clean-checkout onboarding |
 | 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
 | 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
 | 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
@@ -59,8 +59,9 @@ LangChain/Ollama adapter and SDK/HTTP boundary tests. The durable store now has
 real-MongoDB claim/replay/takeover coverage. The bounded host loop grounds supplied
 API facts and preflights saved proposals. Authenticated routes and exact-action
 dispatch now add parent-fenced decisions, bounded same-key retries and killed-chat-
-process recovery. Installed-artifact token verification and live evaluation remain
-outstanding. Existing tracking/tuning contracts and worker behavior are preserved.
+process recovery. October 9-10 installed-artifact token verification is retained;
+all live acceptance attempts failed. Existing tracking/tuning contracts and worker
+behavior are preserved.
 Validation for these slices is recorded in the
 [approved plan's outcome](../plans/2026-10-06-conversation-workflows-plan.md#implementation-outcome);
 the earlier counts below remain historical.
@@ -399,3 +400,38 @@ and [shared evidence manifest](../evidence/2026-10-09-qwen-counter/results.json)
 retain raw results, source/package/profile identity and provenance limitations.
 No remote CI or concurrent-capacity result is claimed. Review here is self-review;
 a typed completion tool is a pending design hypothesis, not an implemented fix.
+
+## Person A typed completion experiment: October 10, 2026
+
+The user approved the [typed-completion plan](../plans/2026-10-09-conversation-typed-completion-plan.md)
+before implementation on `74a9158`. The adapter now binds `finish_conversation`
+alongside the 13 domain tools and translates one strictly validated completion
+to the existing reply schema. Full-schema byte admission and exact SDK token
+admission include all 14 functions. The public catalog, routes, persisted schemas,
+confirmed action dispatch and worker limits remain unchanged.
+
+All 446 fast cases (77.29% host coverage), 58 ordinary integration cases with both
+flags and ten serial isolated recovery cases passed without failures or selected
+skips. Locked sync, Ruff lint/format, dependency checks and package builds passed;
+the wheel contains all 37 application modules and archives exclude model/private
+paths. Twenty-six added fast cases and two real-store cases cover strict parsing,
+completion isolation, context/token limits, redaction, grounding, persistence and
+replay. The new 14-function runtime probe admitted 7,680 input tokens plus 512
+reserved output at context 8,192; 7,681 was blocked before inference.
+
+**The unchanged ten-scenario local-model gate failed: three passed, seven failed.**
+It used the existing explicit 7B JSON-tools profile and unchanged budgets, without
+retries or repairs. Saved proposals show a wrong per-trial budget and reuse of
+missing limits. Five turns reported `model_invalid_response`; a separate read-only
+diagnostic observed 23 repeated native reads ending at the output limit. No
+mutation was dispatched. These observations do not establish successful guided
+dialogue, history-based suggestions, latency or capacity.
+
+[The retained evidence](../evidence/2026-10-10-typed-completion/results.json)
+includes raw JSON/JUnit/native exits, runtime and source/package provenance,
+diagnostic responses and recovery snapshots/logs. All final application/test
+source hashes match across the fast, ordinary, recovery and live runs. Independent
+review remains unavailable; review here is implementing-assistant self-review.
+A1/C3/C5, human model-quality review and complete clean-checkout onboarding remain
+open. The protocol experiment is implemented; another reliability approach needs
+a reviewed plan. No new 14B acceptance run or model training is claimed.

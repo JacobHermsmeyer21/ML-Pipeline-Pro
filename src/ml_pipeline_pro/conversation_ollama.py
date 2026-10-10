@@ -19,7 +19,7 @@ from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModelError,
-    model_tools,
+    native_conversation_tools,
 )
 from ml_pipeline_pro.conversation_schemas import (
     CONTEXT_BYTES,
@@ -80,7 +80,7 @@ class OllamaConversationModel:
         self._count_input_tokens = count_input_tokens
         self._closed = False
         self._prepared = False
-        self._tools = model_tools()
+        self._tools = native_conversation_tools()
         self._model = ChatOllama(
             model=settings.chat_model,
             base_url=settings.chat_model_origin,
@@ -306,6 +306,13 @@ class OllamaConversationModel:
                 if len(result.tool_calls) != 1:
                     raise ValueError
                 call = result.tool_calls[0]
+                if call["name"] == "finish_conversation":
+                    if result.content != "":
+                        raise ValueError
+                    return ModelStep(
+                        reply=ModelReply.model_validate(self._redact(call["args"])),
+                        usage=usage,
+                    )
                 # Argument validation and missing-input guidance belong to the host.
                 return ModelStep(
                     call=ToolCall(name=call["name"], arguments=self._redact(call["args"])),

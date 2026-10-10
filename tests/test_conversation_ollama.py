@@ -9,12 +9,19 @@ from langchain_core.globals import set_debug
 from langsmith.run_helpers import get_tracing_context
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import (
     REPLY_INSTRUCTIONS,
     ConversationModelError,
     OllamaConversationModel,
 )
-from ml_pipeline_pro.conversation_schemas import CONTEXT_BYTES, RECORD_BYTES, serialized
+from ml_pipeline_pro.conversation_schemas import (
+    CONTEXT_BYTES,
+    RECORD_BYTES,
+    ModelReply,
+    fingerprint,
+    serialized,
+)
 
 TAG = "fixture:1b"
 REPLY = {"message": "Inspect recorded validation results.", "citations": [], "facts": []}
@@ -38,6 +45,16 @@ def chat_response(**changes):
     }
     result.update(changes)
     return result
+
+
+def completion_response(arguments, *, content=""):
+    return chat_response(
+        message={
+            "role": "assistant",
+            "content": content,
+            "tool_calls": [{"function": {"name": "finish_conversation", "arguments": arguments}}],
+        }
+    )
 
 
 def settings(**changes):
@@ -137,10 +154,95 @@ def test_native_langchain_request_identity_usage_and_cleanup(monkeypatch):
     assert payload["think"] is False
     assert payload["options"]["num_ctx"] == 8192
     assert payload["options"]["num_predict"] == 1024
-    assert len(payload["tools"]) == 13
+    assert len(payload["tools"]) == 14
+    functions = {tool["function"]["name"]: tool["function"] for tool in payload["tools"]}
+    assert set(functions) == {tool["function"]["name"] for tool in native_conversation_tools()}
+    completion = functions["finish_conversation"]["parameters"]
+    # Ollama's SDK projects parameter metadata; admission counts this exact payload.
+    assert completion["required"] == ["message"]
+    assert set(completion["properties"]) == set(ModelReply.model_fields)
+    assert completion["$defs"] == ModelReply.model_json_schema()["$defs"]
     assert payload == runtime.token_requests[0]
     assert payload["messages"][0] == {"role": "system", "content": REPLY_INSTRUCTIONS}
     assert runtime.tracing_enabled is False
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        REPLY,
+        {"message": "Unsupported operation."},
+        {"message": "Provide a runtime.", "required_inputs": ["config.max_runtime_seconds"]},
+    ],
+)
+def test_native_completion_returns_only_a_typed_reply(arguments):
+    runtime = Runtime(completion_response(arguments))
+
+    async def scenario():
+        async with runtime.model() as model:
+            result = await model.generate([])
+            assert result.call is None
+            assert result.reply == ModelReply.model_validate(arguments)
+            assert result.usage == {"input_tokens": 42, "output_tokens": 18}
+            assert model.provenance["tools_hash"] == fingerprint(native_conversation_tools())
+
+    asyncio.run(scenario())
+    assert len(runtime.requests) == 4
+
+
+@pytest.mark.parametrize(
+    "arguments,content",
+    [
+        ({}, ""),
+        ({"message": 1}, ""),
+        ({"message": "x", "extra": True}, ""),
+        ({"message": "x", "allow_mutations": True}, ""),
+        ({"message": "x", "citations": [{"record_id": "x"}]}, ""),
+        ({"message": "x", "facts": [{"record_id": "x", "field": "score", "value": 1}]}, ""),
+        ({"message": "x", "facts": [{"record_id": "x", "field": "bad path"}]}, ""),
+        ({"message": "x", "required_inputs": "runtime"}, ""),
+        ([], ""),
+        ("{}", ""),
+        (None, ""),
+        (REPLY, "Extra prose"),
+        (REPLY, " "),
+        (REPLY, json.dumps(REPLY)),
+    ],
+)
+def test_invalid_completion_arguments_or_mixed_prose_fail_at_sdk_boundary(arguments, content):
+    runtime = Runtime(completion_response(arguments, content=content))
+
+    async def scenario():
+        async with runtime.model() as model:
+            with pytest.raises(ConversationModelError) as caught:
+                await model.generate([])
+            assert caught.value.code == "model_invalid_response"
+
+    asyncio.run(scenario())
+    assert len(runtime.requests) == 4
+
+
+def test_duplicate_native_completion_keys_and_multiple_calls_are_rejected_before_normalization():
+    async def scenario():
+        duplicate = json.dumps(completion_response({"message": "x"})).replace(
+            '"message": "x"', '"message": "x", "message": "y"'
+        )
+
+        async def response(_):
+            return httpx.Response(200, content=duplicate.encode())
+
+        multiple = completion_response(REPLY)
+        multiple["message"]["tool_calls"].append(
+            {"function": {"name": "create_experiment", "arguments": {}}}
+        )
+        for runtime in (Runtime(overrides={"/api/chat": response}), Runtime(multiple)):
+            async with runtime.model() as model:
+                with pytest.raises(ConversationModelError) as caught:
+                    await model.generate([])
+                assert caught.value.code == "model_invalid_response"
+            assert len(runtime.requests) == 4
+
+    asyncio.run(scenario())
 
 
 def test_native_mutation_is_only_returned_as_a_proposal_and_incomplete_args_are_preserved():
@@ -303,6 +405,27 @@ def test_input_token_counter_required_and_output_allowance_reserved_before_infer
     asyncio.run(scenario())
 
 
+@pytest.mark.parametrize("input_tokens,accepted", [(7680, True), (7681, False)])
+def test_completion_schema_counts_toward_8192_tokens_with_512_reserved(input_tokens, accepted):
+    runtime = Runtime(completion_response(REPLY))
+    runtime.tokens = input_tokens
+
+    async def scenario():
+        async with runtime.model(settings(chat_max_output_tokens=512)) as model:
+            if accepted:
+                assert (await model.generate([])).reply.message == REPLY["message"]
+            else:
+                with pytest.raises(ConversationModelError) as caught:
+                    await model.generate([])
+                assert caught.value.code == "chat_limit_exceeded"
+
+    asyncio.run(scenario())
+    assert len(runtime.requests) == (4 if accepted else 3)
+    assert len(runtime.token_requests) == 1
+    assert len(runtime.token_requests[0]["tools"]) == 14
+    assert runtime.token_requests[0]["tools"][-1]["function"]["name"] == "finish_conversation"
+
+
 def test_utf8_context_includes_instructions_and_tools_at_exact_byte_boundary():
     async def scenario():
         runtime = Runtime()
@@ -419,7 +542,10 @@ def test_debug_logging_is_rejected_before_prompt_can_be_printed():
     asyncio.run(scenario())
 
 
-def test_known_keys_and_connection_passwords_are_redacted_before_inference_and_return():
+@pytest.mark.parametrize("native_completion", [False, True])
+def test_known_keys_and_connection_passwords_are_redacted_before_inference_and_return(
+    native_completion,
+):
     secret = "fixture-configured-key"
     reply = chat_response(
         message={
@@ -433,6 +559,8 @@ def test_known_keys_and_connection_passwords_are_redacted_before_inference_and_r
             ),
         }
     )
+    if native_completion:
+        reply = completion_response(json.loads(reply["message"]["content"]))
     runtime = Runtime(reply)
 
     async def scenario():
