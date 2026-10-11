@@ -435,3 +435,38 @@ review remains unavailable; review here is implementing-assistant self-review.
 A1/C3/C5, human model-quality review and complete clean-checkout onboarding remain
 open. The protocol experiment is implemented; another reliability approach needs
 a reviewed plan. No new 14B acceptance run or model training is claimed.
+
+## Person A snippet generation: October 10, 2026
+
+The repository user approved the [A2 plan](../plans/2026-10-08-person-a-snippet-generation-plan.md)
+and requested implementation; its approval was committed/pushed as `74b47f8`.
+The implementation generates four supported Python integration profiles through
+the existing LangChain/local-model stack, checks a closed AST/API grammar, and
+saves accepted drafts or fixed rejection results with model/input/usage/time
+provenance. All drafts require human review. Generation spends one additional
+call inside the original turn deadline/limit and never executes code or submits
+a domain action. Native bindings include 15 functions; public domain tools stay 13.
+Old schema-v1 turns without snippet output remain readable.
+
+All 506 fast cases, 61 ordinary integration cases with both required flags, and
+ten serial isolated recovery cases pass without failures or selected skips.
+Locked installation, lint/format, dependency checks, package build and
+documentation/example/API checks pass. The wheel contains 40 canonical modules
+and source packaging excludes private/model/cache paths. Three new real-store
+cases verify accepted/rejected draft replay, foreign-project rejection, no
+action/domain dispatch and absence of invented evidence in old records.
+
+**A2 real-model acceptance remains incomplete: six of seven scenarios pass.**
+The final training draft omitted `Idempotency-Key` and was rejected. The previous
+run passed training but failed comparison and missing-input specificity.
+Earlier runs and a separate diagnostic are retained; validation assertions,
+scenarios and budgets were not relaxed, and no Python was repaired or executed.
+The A2 evaluation does not replace A1's original ten-scenario quality gate.
+
+[The retained evidence](../evidence/2026-10-10-a2-snippets/results.json) records
+source hashes, actual SDK/runtime token observations, safe generated outputs,
+native exits, JUnit/text logs, package/container identities and recovery evidence.
+The first live run lacks rejected raw code; later runs and the diagnostic retain
+redacted model steps. Independent review and human usefulness review remain
+outstanding, along with full A2/C7 acceptance and clean-checkout onboarding.
+A3/A4 remain awaiting approval. Self-review is not independent review.

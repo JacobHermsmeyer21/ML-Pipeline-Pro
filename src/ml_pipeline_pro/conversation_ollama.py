@@ -30,6 +30,8 @@ from ml_pipeline_pro.conversation_schemas import (
     serialized,
 )
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+from ml_pipeline_pro.snippet_generation import SNIPPET_INSTRUCTIONS
+from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolCall
 
 
@@ -221,7 +223,7 @@ class OllamaConversationModel:
             return
         # HTTP hooks see the SDK-normalized payload that actually reaches Ollama.
         payload = _json_object(request.content.decode("utf-8"))
-        context = {"messages": payload["messages"], "tools": payload["tools"]}
+        context = {"messages": payload["messages"], "tools": payload.get("tools", [])}
         if len(serialized(context)) > CONTEXT_BYTES:
             raise ConversationModelError("chat_limit_exceeded", "Model context exceeds byte limit")
         input_tokens = self._count_input_tokens(payload)
@@ -276,6 +278,12 @@ class OllamaConversationModel:
             raise _invalid() from None
 
     async def generate(self, messages: list[dict[str, Any]]) -> ModelStep:
+        return await self._generate(messages, snippet=False)
+
+    async def generate_snippet(self, messages: list[dict[str, Any]]) -> ModelStep:
+        return await self._generate(messages, snippet=True)
+
+    async def _generate(self, messages: list[dict[str, Any]], *, snippet: bool) -> ModelStep:
         if self._closed or not self._prepared:
             raise ConversationModelError("model_unavailable", "Local model is not prepared")
         if self._count_input_tokens is None:
@@ -286,22 +294,34 @@ class OllamaConversationModel:
             raise ConversationModelError(
                 "model_unavailable", "LangChain debug output must be disabled"
             )
-        context = [{"role": "system", "content": REPLY_INSTRUCTIONS}, *self._redact(messages)]
+        instructions = SNIPPET_INSTRUCTIONS if snippet else REPLY_INSTRUCTIONS
+        tools = [] if snippet else self._tools
+        context = [{"role": "system", "content": instructions}, *self._redact(messages)]
         try:
-            payload = {"messages": context, "tools": self._tools}
+            payload = {"messages": context, "tools": tools}
             if len(serialized(payload)) > CONTEXT_BYTES:
                 raise ConversationModelError(
                     "chat_limit_exceeded", "Model context exceeds byte limit"
                 )
             async with asyncio.timeout(self._settings.chat_model_timeout_seconds):
                 with tracing_context(enabled=False):
-                    result = await self._bound.ainvoke(context, config={"callbacks": []})
+                    bound = self._model.bind_tools([], stream=False) if snippet else self._bound
+                    result = await bound.ainvoke(context, config={"callbacks": []})
             if not isinstance(result, AIMessage) or result.invalid_tool_calls:
                 raise ValueError
             usage = {
                 "input_tokens": result.usage_metadata["input_tokens"],
                 "output_tokens": result.usage_metadata["output_tokens"],
             }
+            if snippet:
+                if result.tool_calls or not isinstance(result.content, str):
+                    raise ValueError
+                # Preserve raw code until host validation; known secrets cause rejection,
+                # rather than silently rewriting code into an accepted draft.
+                return ModelStep(
+                    snippet=SnippetCandidate.model_validate(_json_object(result.content)),
+                    usage=usage,
+                )
             if result.tool_calls:
                 if len(result.tool_calls) != 1:
                     raise ValueError

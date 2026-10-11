@@ -50,4 +50,9 @@ See the [conversation guide](../guides/conversation-development.md#confirmed-act
 The default adapter still requires an artifact-specific verified token counter;
 enabling chat alone does not establish working local inference.
 
+Chat turns can also include an optional `snippet` containing a generated Python
+draft or a rejected generation result. It always requires human review and
+creates no action or domain submission. Conversation history and same-request
+replay retain the original draft/provenance. See [snippet generation](../guides/snippet-generation.md).
+
 For request examples, see [workflows](../guides/workflows.md).

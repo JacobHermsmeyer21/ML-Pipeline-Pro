@@ -4,6 +4,7 @@ import json
 from typing import Any, Protocol
 
 from ml_pipeline_pro.conversation_schemas import ModelReply, ModelStep
+from ml_pipeline_pro.snippet_schemas import snippet_tool_schema
 from ml_pipeline_pro.tools import tool_catalog
 
 REPLY_INSTRUCTIONS = (
@@ -46,6 +47,9 @@ REPLY_INSTRUCTIONS = (
     "limits.max_runtime_seconds is the total tuning budget. Copy each explicit "
     "number to its own path. Never substitute the total budget for the per-trial "
     "budget or derive a new per-trial budget by dividing the total."
+    " For a Python integration snippet, call generate_pipeline_snippet with one supported "
+    "profile and explicit inputs. That host function only generates a reviewable draft; "
+    "never call create_experiment/create_tuning_job to answer a code-example request."
 )
 
 
@@ -97,6 +101,21 @@ def native_conversation_tools() -> list[dict[str, Any]]:
                 " Propose this action for later exact-action human confirmation; "
                 "this call does not execute or authorize it."
             )
+    tools.append(
+        {
+            "type": "function",
+            "function": {
+                "name": "generate_pipeline_snippet",
+                "description": (
+                    "Request a human-reviewed Python draft for listing/comparing experiments or "
+                    "bounded training/tuning submission. This never executes Python or calls the "
+                    "domain API. Supply explicit required identifiers/budgets in inputs; missing "
+                    "inputs produce clarification. Use validation objectives only."
+                ),
+                "parameters": snippet_tool_schema(),
+            },
+        }
+    )
     tools.append(
         {
             "type": "function",

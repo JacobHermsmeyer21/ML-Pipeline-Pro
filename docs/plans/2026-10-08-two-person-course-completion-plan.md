@@ -149,9 +149,11 @@ Person A's remaining design review packets are now available:
 [A2 snippet generation](2026-10-08-person-a-snippet-generation-plan.md),
 [A3 monitoring diagnosis](2026-10-08-person-a-monitoring-diagnosis-plan.md), and
 [A4 retrieval/onboarding evidence](2026-10-08-person-a-retrieval-evidence-plan.md).
-Their mechanisms, limits and acceptance scenarios await human approval;
-A3 additionally needs B2's joint evidence contract. The request to finish Person
-A's work does not establish a review of these newly written designs.
+A2 received explicit human approval October 10 and its
+[implementation outcome](2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome)
+records delivered code and incomplete real-model acceptance. A3/A4 mechanisms,
+limits and acceptance scenarios still await human approval; A3 additionally
+needs B2's joint evidence contract. A2 approval does not approve those designs.
 
 ### Separately tracked follow-up
 

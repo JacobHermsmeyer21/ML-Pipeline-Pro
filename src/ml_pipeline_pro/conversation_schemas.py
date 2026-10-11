@@ -8,6 +8,7 @@ from typing import Any, Literal
 from pydantic import AwareDatetime, Field, field_validator, model_validator
 
 from ml_pipeline_pro.schemas import RequestModel, Sha256
+from ml_pipeline_pro.snippet_schemas import SnippetCandidate, SnippetDraft
 from ml_pipeline_pro.tool_schemas import (
     CorrelationId,
     EvidenceReference,
@@ -100,12 +101,13 @@ class ModelReply(RequestModel):
 class ModelStep(RequestModel):
     call: ToolCall | None = None
     reply: ModelReply | None = None
+    snippet: SnippetCandidate | None = None
     usage: dict[str, Any] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def exactly_one_result(self):
-        if (self.call is None) == (self.reply is None):
-            raise ValueError("A model step must contain exactly one tool call or reply")
+        if sum(item is not None for item in (self.call, self.reply, self.snippet)) != 1:
+            raise ValueError("A model step must contain exactly one tool call, reply or snippet")
         return self
 
 
@@ -146,6 +148,7 @@ class ConversationTurn(RequestModel):
     evidence: list[EvidenceReference] = Field(default_factory=list)
     tool_results: list[ToolResult] = Field(default_factory=list)
     pending_action: ConversationAction | None = None
+    snippet: SnippetDraft | None = None
     history_omitted: bool = False
     error: dict[str, Any] | None = None
     model_provenance: dict[str, Any] = Field(default_factory=dict)

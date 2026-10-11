@@ -10,9 +10,11 @@ results, download verified artifacts, and register model versions. Training runs
 serially on CPU. Conversation tools, a local model adapter, durable history,
 grounded reads, authenticated routes, and confirmed actions are implemented;
 validation with an installed model remains open.
+Supported Python snippet generation now saves restricted, validated drafts for
+human review. See the [snippet guide](docs/guides/snippet-generation.md).
 
 The full course project is **in development**. Separate model-management, tuning,
-and monitoring services, live monitoring, AI-generated Python snippets, and
+and monitoring services, live monitoring, full AI-generated snippet acceptance, and
 Kubernetes/deployment CI/CD remain outstanding. See the
 [roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 
@@ -40,6 +42,7 @@ See [conversation development](docs/guides/conversation-development.md).
 - [Classification](docs/guides/workflows.md#classification-experiment-walkthrough): register inputs, train, compare, and register a version.
 - [Bounded tuning](docs/guides/workflows.md#bounded-classification-tuning): search within trial/runtime limits, inspect results, and cancel.
 - [Conversation tools](docs/guides/workflows.md#conversation-tool-layer): use typed tools over the existing API.
+- [Generated Python drafts](docs/guides/snippet-generation.md): request, inspect, and review integration snippets through chat.
 - [API reference](docs/reference/api.md): endpoints, access headers, errors, and idempotency.
 
 The walkthroughs include demos that run without services.

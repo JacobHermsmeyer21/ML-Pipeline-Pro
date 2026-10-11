@@ -231,7 +231,7 @@ class ObservedCounter:
 
     def __call__(self, payload):
         expected = {tool["function"]["name"] for tool in native_conversation_tools()}
-        assert len(payload["tools"]) == len(expected) == 14
+        assert len(payload["tools"]) == len(expected) == 15
         assert {tool["function"]["name"] for tool in payload["tools"]} == expected
         self.last_count = self.counter(payload)
         self.payload_hashes.append(fingerprint(payload))

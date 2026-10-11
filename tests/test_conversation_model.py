@@ -41,8 +41,11 @@ def test_mutating_tool_metadata_is_fresh_and_cannot_modify_the_catalog():
 def test_native_completion_is_reply_schema_and_never_a_public_domain_tool():
     native = native_conversation_tools()
     functions = {tool["function"]["name"]: tool["function"] for tool in native}
-    assert len(native) == len(functions) == 14
-    assert set(functions) == {item.name for item in tool_catalog()} | {"finish_conversation"}
+    assert len(native) == len(functions) == 15
+    assert set(functions) == {item.name for item in tool_catalog()} | {
+        "finish_conversation",
+        "generate_pipeline_snippet",
+    }
     assert functions["finish_conversation"]["parameters"] == ModelReply.model_json_schema()
     for tool in native:
         assert convert_to_openai_tool(tool) == tool

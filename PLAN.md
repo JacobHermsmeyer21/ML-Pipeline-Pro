@@ -82,7 +82,10 @@ checks or fixes; inferred causes remain labelled as hypotheses.
 
 ### 6. Generate reviewable pipeline code
 
-**Status:** Not started. Checked-in demos are authored examples.
+**Status:** A2's approved generation/validation and saved-draft implementation
+exists. Real-model acceptance and review evidence are recorded in the
+[A2 outcome](docs/plans/2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome);
+course closure still requires its full evidence and human review.
 
 **Acceptance:** Conversational requests generate Python snippets through
 LangChain/local inference. Record assumptions and model/prompt provenance; check
@@ -110,7 +113,8 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 
 1. Preserve passing ownership, artifact, idempotency, and serial recovery gates.
 2. Finish the approved conversation scope and retain real local-model evidence.
-3. Review service extraction and the pending monitoring, snippet, and deployment designs.
+3. Review service extraction and the pending monitoring/deployment designs;
+   finish the approved snippet evidence and review work.
 4. Complete all nine course checklist rows with retained evidence and onboarding.
 
 The [two-person completion plan](docs/plans/2026-10-08-two-person-course-completion-plan.md)

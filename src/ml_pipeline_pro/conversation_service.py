@@ -1,6 +1,7 @@
 """Bounded host read loop; mutations become saved proposals, never executions."""
 
 import asyncio
+import time
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from typing import Any, Protocol
@@ -26,11 +27,19 @@ from ml_pipeline_pro.conversation_schemas import (
     ConversationHistory,
     ConversationTurn,
     ModelStep,
+    fingerprint,
     serialized,
 )
 from ml_pipeline_pro.conversation_store import TurnClaim
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+from ml_pipeline_pro.snippet_generation import (
+    SNIPPET_INSTRUCTIONS,
+    SnippetGenerator,
+    snippet_messages,
+)
+from ml_pipeline_pro.snippet_schemas import SnippetDraft, SnippetRequest
+from ml_pipeline_pro.snippet_validation import validate_snippet
 from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext, ToolSuccess
 from ml_pipeline_pro.tool_transport import HttpToolTransport, ToolTransport
 from ml_pipeline_pro.tools import ToolDispatcher, tool_catalog, validated_proposal
@@ -109,6 +118,7 @@ class ConversationService:
         transport: ToolTransport,
         *,
         clock: Callable[[], datetime] | None = None,
+        snippet_generator: SnippetGenerator | None = None,
     ):
         if isinstance(transport, HttpToolTransport) and (
             transport.max_response_bytes is None or transport.max_response_bytes > TOOL_BYTES
@@ -118,6 +128,9 @@ class ConversationService:
         self.store, self.model = store, model
         self.transport = transport
         self.clock = clock or (lambda: datetime.now(UTC))
+        self.snippet_generator = snippet_generator or (
+            model if callable(getattr(model, "generate_snippet", None)) else None
+        )
         self.catalog = {item.name: item for item in tool_catalog()}
 
     def _safe(self, value: Any, context: ToolContext) -> Any:
@@ -388,6 +401,8 @@ class ConversationService:
                     type(step.usage[key]) is not int or not 0 <= step.usage[key] <= maximum
                 ):
                     raise ValueError("Invalid reported model token usage")
+            if step.snippet is not None:
+                raise ValueError("Snippet output requires a host generation request")
             if step.reply is not None:
                 turn.facts = ledger.resolve(step.reply)
                 turn.message = step.reply.message
@@ -395,6 +410,8 @@ class ConversationService:
                 turn.status = "needs_input" if turn.required_inputs else "completed"
                 return await self._publish(context, claim, turn)
             call = step.call
+            if call.name == "generate_pipeline_snippet":
+                return await self._snippet(context, claim, turn, call, model_calls=number + 1)
             definition = self.catalog.get(call.name)
             if definition is not None and definition.mutating:
                 try:
@@ -456,3 +473,105 @@ class ConversationService:
                 ]
             )
         raise self._limit("Conversation model-call budget exhausted")
+
+    async def _snippet(
+        self,
+        context: ToolContext,
+        claim: TurnClaim,
+        turn: ConversationTurn,
+        call: ToolCall,
+        *,
+        model_calls: int,
+    ) -> ConversationTurn:
+        request = SnippetRequest.model_validate(call.arguments)
+        try:
+            request = request.normalized()
+        except ValidationError as exc:
+            turn.status = "needs_input"
+            locations = []
+            for error in exc.errors():
+                path = ".".join(map(str, error["loc"]))
+                if error["type"] == "missing" and path == "config":
+                    locations.append("config.max_runtime_seconds")
+                elif error["type"] == "missing" and path == "limits":
+                    locations.extend(["limits.max_trials", "limits.max_runtime_seconds"])
+                else:
+                    locations.append(path)
+            turn.required_inputs = ["inputs." + path for path in locations]
+            turn.message = "Provide or correct the listed inputs before generating this snippet."
+            return await self._publish(context, claim, turn)
+        turn.snippet = SnippetDraft(
+            profile=request.profile,
+            status="rejected",
+            validation_issues=["snippet_generation_incomplete"],
+            provenance={
+                "instructions_hash": fingerprint(SNIPPET_INSTRUCTIONS),
+                "safe_input_hash": fingerprint(request.model_dump()),
+            },
+        )
+        if model_calls >= self.settings.chat_max_model_calls:
+            raise self._limit("Conversation model-call budget exhausted before snippet generation")
+        if self.clock() >= claim.deadline:
+            raise TimeoutError
+        if self.snippet_generator is None:
+            raise ConversationModelError("model_unavailable", "Snippet generator is unavailable")
+        messages = self._safe(snippet_messages(request, turn.user_message), context)
+        payload = {
+            "messages": [{"role": "system", "content": SNIPPET_INSTRUCTIONS}, *messages],
+            "tools": [],
+        }
+        if len(serialized(payload)) > CONTEXT_BYTES:
+            raise self._limit("Snippet model context exceeds byte limit")
+        started = time.monotonic()
+        try:
+            async with asyncio.timeout(self.settings.chat_model_timeout_seconds):
+                step = await self.snippet_generator.generate_snippet(messages)
+        except TimeoutError:
+            raise ConversationModelError("chat_timeout", "Snippet generation timed out") from None
+        except ConversationModelError:
+            raise
+        except Exception:
+            raise ConversationModelError("model_unavailable", "Snippet generation failed") from None
+        finally:
+            turn.snippet.provenance.update(
+                self._safe(
+                    {
+                        key: value
+                        for key, value in self.snippet_generator.provenance.items()
+                        if key in PUBLIC_MODEL_PROVENANCE and key != "instructions_hash"
+                    },
+                    context,
+                )
+            )
+            turn.snippet.provenance["duration_seconds"] = time.monotonic() - started
+        step = ModelStep.model_validate(step.model_dump() if isinstance(step, ModelStep) else step)
+        if step.snippet is None:
+            raise ValueError("Expected generated snippet output")
+        for key, maximum in (
+            (
+                "input_tokens",
+                self.settings.chat_context_tokens - self.settings.chat_max_output_tokens,
+            ),
+            ("output_tokens", self.settings.chat_max_output_tokens),
+        ):
+            if key in step.usage:
+                if type(step.usage[key]) is not int or not 0 <= step.usage[key] <= maximum:
+                    raise ValueError("Invalid reported snippet token usage")
+                turn.snippet.provenance[key] = step.usage[key]
+        code = step.snippet.code
+        safe_code = self._safe(code, context)
+        issues = (
+            ["snippet_secret_rejected"] if safe_code != code else validate_snippet(code, request)
+        )
+        turn.snippet.validation_issues = issues
+        if not issues:
+            turn.snippet.status = "validated"
+            turn.snippet.code = code
+        turn.status = "completed"
+        turn.message = (
+            "Review this generated Python draft before use. "
+            "It has passed restricted syntax/API checks."
+            if not issues
+            else "Generated Python was rejected. Inspect the saved validation issues."
+        )
+        return await self._publish(context, claim, turn)

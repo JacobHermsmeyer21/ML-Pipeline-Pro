@@ -26,6 +26,13 @@ establish a working pre-trained model.
 
 ## Configuration
 
+The approved A2 implementation adds host-only `generate_pipeline_snippet`,
+bringing native conversation bindings to 15 while preserving the public 13
+domain tools. It generates and validates one Python draft under the original
+turn budget and saves its outcome/provenance. The code-generation invocation has
+no native tools; its exact SDK payload still passes token admission. See
+[the snippet guide](snippet-generation.md) for profiles, boundaries and evaluation.
+
 Settings follow the approved design and are listed in [.env.example](../../.env.example).
 Environment variables override `.env`. When chat is enabled and a model tag is
 configured, the API constructs the adapter offline and prepares it lazily during

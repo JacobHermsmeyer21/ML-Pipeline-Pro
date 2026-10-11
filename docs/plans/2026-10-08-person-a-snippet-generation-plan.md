@@ -1,6 +1,6 @@
 # Person A: reviewed Python snippet generation (A2)
 
-- Status: approved October 10, 2026; implementation in progress
+- Status: approved implementation delivered; real-model acceptance incomplete (6/7)
 - Date: 2026-10-08
 - Source baseline: `2b9dfaf` / `person-a/conversation-foundation`, plus the A1 action/routes slice
 - Request: complete the remaining Person A work
@@ -101,7 +101,9 @@ speed threshold and no automatic code execution. Human validates usefulness.
 The restricted grammar may reject useful code. Expand it only with reviewed
 examples and rejection tests; do not loosen it to satisfy one model output.
 Disable generation through the existing chat setting or revert new catalog
-support. Retain saved drafts/provenance; old binaries ignore additive fields.
+support in a version that retains the new optional field. Retain saved
+drafts/provenance. Earlier binaries use strict schemas and can reject new saved
+fields; disabling the binding in a compatible version preserves readable history.
 This feature does not establish arbitrary Python safety or isolation.
 
 ## Human review and approval
@@ -114,8 +116,64 @@ changes to A1's original model-quality gate. Independent review remains pending.
 
 ## Implementation outcome
 
-Implementation started on source baseline `9ed94f0`, following the recorded
-approval. A1 now has an installed artifact and verified counter, while its
-conversation-quality acceptance remains failed. A2 retains its own real-model
-snippet acceptance; no C7 closure, execution result or independent review is
-claimed by starting implementation.
+The approval record was committed and pushed as `74b47f8` before implementation
+on baseline `9ed94f0`. The final implementation adds the three planned snippet
+modules, four profiles, a host-only generation request, and optional saved draft
+output. Native conversation binding now has 15 functions; the public domain
+catalog remains 13. Generation itself binds no functions and passes exact SDK
+byte/token admission with the original output reservation, credential isolation,
+client lifecycle and turn deadline. One additional model call is charged to the
+existing turn limit. There is no Python executor or domain request in generation.
+
+The AST validator admits one scoped environment-configured client and one exact
+profile request, verifies canonical inputs/budgets, requires status inspection,
+and rejects other imports, dynamic targets, rebinding, extra calls, secrets and
+oversized code. Fixed rejection issues are saved without raw rejected code.
+Accepted drafts contain observed model/runtime, instruction/input hashes, usage
+and generation duration, and always require human review. Existing store
+transactions save/replay the optional output; schema-v1 turns without it remain
+readable. No store ownership, action permission or worker semantics changed.
+
+New fast cases exercise all four positive API shapes, forbidden AST constructs,
+wrong budgets/headers/identifiers, UTF-8 boundaries, missing inputs, credential
+rejection, original call/deadline limits, usage validation, storage failure,
+restart replay, exact SDK admission/cleanup, and direct-output/unsupported-profile
+rejection. Three real-MongoDB cases cover accepted/rejected draft replay,
+project isolation, no action/domain call, and old records without snippet evidence.
+The existing native inventory assertions change from 14 to 15 for the approved
+new host function; the public 13-tool assertion and all semantic/budget gates
+remain unchanged. The missing-object test now demands specific required leaf
+paths rather than broad config/limits objects, satisfying F2.
+
+The first seven-scenario live run failed all cases. A separate one-call diagnostic
+captured invalid one-line Python (`with` after a semicolon) and an unwanted GET
+submission header. Initial instructions and untyped input metadata were
+insufficient. Adding compliant multiline format examples and SDK-retained typed
+`$defs`/nested-input descriptions yielded five of seven passes. A later retained
+comparison used POST/JSON instead of GET/query; missing config/limits reported
+parent objects. Explicit comparison guidance and actionable required-leaf
+locations yielded **six of seven passes**, with native pytest exit 1. The last
+training draft omitted `Idempotency-Key` and was rejected; training passed in the
+preceding run. These are separate executions of changed source, with unchanged
+scenarios, assertions, seven-generation/1,024-output/120-second limits and no
+automatic retries, repairs or code execution. Partial passes across runs do not
+close A2/C7. A final harness check includes setup within the total suite deadline
+and again records six of seven passes with the same missing training submission
+key. Unit boundary cases prove the seventh generation is admitted, the eighth
+is blocked, and the full per-call time allowance is reserved before dispatch.
+The original ten-scenario A1 failure remains open and was not rerun as snippet
+acceptance.
+
+[The retained manifest](../evidence/2026-10-10-a2-snippets/results.json) links raw
+JSON/JUnit/text outputs, the separate diagnostic and source/package/container
+provenance. The initial evaluation retained usage and turns but omitted rejected
+raw code; the diagnostic and subsequent evaluations retain redacted model steps.
+This evidence limitation is explicit. Final deterministic/regression results are
+recorded there and in the [status record](../project/project-status.md#person-a-snippet-generation-october-10-2026).
+
+Implementing-assistant review covered AST name/data flow, exact HTTP shape,
+admission arithmetic, secret rejection and unchanged persistence/dispatch paths;
+it is self-review. Person B/human independent review was requested in this plan
+and remains unavailable in this session. A2/C7 completion, human usefulness
+review and clean-checkout onboarding remain outstanding. Commit/push outcomes
+are recorded in Git and the completion handoff.

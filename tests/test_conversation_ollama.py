@@ -154,7 +154,7 @@ def test_native_langchain_request_identity_usage_and_cleanup(monkeypatch):
     assert payload["think"] is False
     assert payload["options"]["num_ctx"] == 8192
     assert payload["options"]["num_predict"] == 1024
-    assert len(payload["tools"]) == 14
+    assert len(payload["tools"]) == 15
     functions = {tool["function"]["name"]: tool["function"] for tool in payload["tools"]}
     assert set(functions) == {tool["function"]["name"] for tool in native_conversation_tools()}
     completion = functions["finish_conversation"]["parameters"]
@@ -422,7 +422,7 @@ def test_completion_schema_counts_toward_8192_tokens_with_512_reserved(input_tok
     asyncio.run(scenario())
     assert len(runtime.requests) == (4 if accepted else 3)
     assert len(runtime.token_requests) == 1
-    assert len(runtime.token_requests[0]["tools"]) == 14
+    assert len(runtime.token_requests[0]["tools"]) == 15
     assert runtime.token_requests[0]["tools"][-1]["function"]["name"] == "finish_conversation"
 
 

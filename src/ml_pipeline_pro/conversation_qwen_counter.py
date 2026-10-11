@@ -334,6 +334,12 @@ class QwenConversationModel:
         return self._counter(payload)
 
     async def generate(self, messages: list[dict[str, Any]]):
+        return await self._generate(messages, snippet=False)
+
+    async def generate_snippet(self, messages: list[dict[str, Any]]):
+        return await self._generate(messages, snippet=True)
+
+    async def _generate(self, messages: list[dict[str, Any]], *, snippet: bool):
         if self._closed or self.settings.chat_model is None:
             raise _unsupported()
         if self._native is None:
@@ -342,6 +348,8 @@ class QwenConversationModel:
             await self._native.prepare()
             if self._counter is None:
                 self._counter = QwenInputCounter(self._native.provenance, self.tokenizer_path)
+            if snippet:
+                return await self._native.generate_snippet(messages)
             return await self._native.generate(messages)
         finally:
             self.provenance.update(self._native.provenance)
