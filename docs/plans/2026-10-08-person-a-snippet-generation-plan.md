@@ -1,10 +1,10 @@
 # Person A: reviewed Python snippet generation (A2)
 
-- Status: awaiting review; implementation pending
+- Status: approved October 10, 2026; implementation in progress
 - Date: 2026-10-08
 - Source baseline: `2b9dfaf` / `person-a/conversation-foundation`, plus the A1 action/routes slice
 - Request: complete the remaining Person A work
-- Human reviewer/approval: pending for this concrete design
+- Human reviewer/approval: repository user, October 10, 2026: "I aprove the plan, start on A2"
 - Independent review: Person B/human review requested; none performed
 
 ## Proposed behavior and purpose
@@ -106,11 +106,16 @@ This feature does not establish arbitrary Python safety or isolation.
 
 ## Human review and approval
 
-Pending. Review supported profiles, conversation output additions, accepted
-grammar, budgets, failure behavior and evidence. The request to finish Person A
-authorizes preparing this design; no human has reviewed these mechanisms yet.
+The repository user approved this concrete A2 plan on October 10, 2026 and
+requested implementation. Approval covers its four profiles, additive saved
+drafts, restricted validation, shared turn budgets and deterministic/live
+acceptance evidence. It does not approve A3/A4, arbitrary code execution, or
+changes to A1's original model-quality gate. Independent review remains pending.
 
 ## Implementation outcome
 
-Not implemented. A1's installed artifact/counter and live evaluation remain open.
-No C7 closure, generated snippet, execution result or independent review is claimed.
+Implementation started on source baseline `9ed94f0`, following the recorded
+approval. A1 now has an installed artifact and verified counter, while its
+conversation-quality acceptance remains failed. A2 retains its own real-model
+snippet acceptance; no C7 closure, execution result or independent review is
+claimed by starting implementation.
