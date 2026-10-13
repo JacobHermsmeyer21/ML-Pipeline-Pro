@@ -12,6 +12,12 @@ evidence in the [midterm plan outcomes](../plans/2026-10-13-midterm-delivery-pla
 Monitoring is still absent. The fresh original conversation baseline passes 6/10
 and remains failed; preserve older dated results below as historical records.
 
+The opt-in [guided protocol](../guides/guided-midterm-demo.md) now passes the original
+ten conversation and seven snippet scenarios on the pinned 7B profile. Fast and
+affected real-store checks plus real-model HTTP draft/replay pass. Human quality
+review and combined clean-checkout onboarding remain outstanding. Native baseline
+failures remain retained; the new result does not close a full course row.
+
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
 **Documentation source check, October 8, 2026:** baseline `c28ae06`. The

@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Guided grammar needs semantic gates](guided-model-boundary.md) | Narrow intent guards, current snapshot facts and per-method snippet guidance |
 | [Course scope requires pre-trained models and separate services](course-deliverable-scope.md) | Course acceptance, local inference, service architecture, and Kubernetes |
 | [A read-only parent check cannot fence tuning child writes](tuning-parent-fence.md) | MongoDB transactions and ownership takeover |
 | [Final evaluation must preserve recorded training artifacts](evaluation-artifacts.md) | Artifact persistence and recovery |

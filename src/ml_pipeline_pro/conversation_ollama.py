@@ -16,6 +16,15 @@ from langsmith import tracing_context
 from pydantic import ValidationError
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_guidance import (
+    GUIDED_NAMES,
+    current_evidence_ids,
+    draft_request,
+    explicit_missing_inputs,
+    guided_instructions,
+    guided_schema,
+    inspection_target,
+)
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModelError,
@@ -30,7 +39,7 @@ from ml_pipeline_pro.conversation_schemas import (
     serialized,
 )
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
-from ml_pipeline_pro.snippet_generation import SNIPPET_INSTRUCTIONS
+from ml_pipeline_pro.snippet_generation import snippet_instructions
 from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolCall
 
@@ -126,6 +135,12 @@ class OllamaConversationModel:
             "tools_hash": fingerprint(self._tools),
             "instructions_hash": fingerprint(REPLY_INSTRUCTIONS),
         }
+        if settings.chat_protocol == "guided":
+            self.provenance.update(
+                protocol="guided",
+                instructions_hash=fingerprint(guided_instructions()),
+                tools_hash=fingerprint(guided_schema()),
+            )
 
     async def __aenter__(self):
         try:
@@ -224,6 +239,8 @@ class OllamaConversationModel:
         # HTTP hooks see the SDK-normalized payload that actually reaches Ollama.
         payload = _json_object(request.content.decode("utf-8"))
         context = {"messages": payload["messages"], "tools": payload.get("tools", [])}
+        if payload.get("format"):
+            context["format"] = payload["format"]
         if len(serialized(context)) > CONTEXT_BYTES:
             raise ConversationModelError("chat_limit_exceeded", "Model context exceeds byte limit")
         input_tokens = self._count_input_tokens(payload)
@@ -294,18 +311,45 @@ class OllamaConversationModel:
             raise ConversationModelError(
                 "model_unavailable", "LangChain debug output must be disabled"
             )
-        instructions = SNIPPET_INSTRUCTIONS if snippet else REPLY_INSTRUCTIONS
-        tools = [] if snippet else self._tools
+        guided = self._settings.chat_protocol == "guided"
+        instructions = (
+            snippet_instructions(messages)
+            if snippet
+            else guided_instructions()
+            if guided
+            else REPLY_INSTRUCTIONS
+        )
+        tools = [] if snippet or guided else self._tools
         context = [{"role": "system", "content": instructions}, *self._redact(messages)]
         try:
             payload = {"messages": context, "tools": tools}
+            schema = None
+            if guided:
+                schema = (
+                    SnippetCandidate.model_json_schema()
+                    if snippet
+                    else guided_schema(
+                        current_evidence_ids(context),
+                        fact_ids=current_evidence_ids(context, facts_only=True),
+                        missing_inputs=explicit_missing_inputs(context),
+                        target=inspection_target(context),
+                        draft=draft_request(context),
+                    )
+                )
+                payload["format"] = schema
             if len(serialized(payload)) > CONTEXT_BYTES:
                 raise ConversationModelError(
                     "chat_limit_exceeded", "Model context exceeds byte limit"
                 )
             async with asyncio.timeout(self._settings.chat_model_timeout_seconds):
                 with tracing_context(enabled=False):
-                    bound = self._model.bind_tools([], stream=False) if snippet else self._bound
+                    bound = (
+                        self._model.bind(tools=[], format=schema, stream=False)
+                        if guided
+                        else self._model.bind_tools([], stream=False)
+                        if snippet
+                        else self._bound
+                    )
                     result = await bound.ainvoke(context, config={"callbacks": []})
             if not isinstance(result, AIMessage) or result.invalid_tool_calls:
                 raise ValueError
@@ -322,6 +366,38 @@ class OllamaConversationModel:
                     snippet=SnippetCandidate.model_validate(_json_object(result.content)),
                     usage=usage,
                 )
+            if guided:
+                if result.tool_calls or not isinstance(result.content, str):
+                    raise ValueError
+                envelope = self._redact(_json_object(result.content))
+                if set(envelope) not in ({"call"}, {"reply"}):
+                    raise ValueError
+                step = ModelStep.model_validate({**envelope, "usage": usage})
+                if step.call is not None and step.call.name not in GUIDED_NAMES:
+                    raise ValueError
+                if (
+                    draft_request(context)
+                    and step.call is not None
+                    and step.call.name != "generate_pipeline_snippet"
+                ):
+                    raise ValueError
+                missing_inputs = explicit_missing_inputs(context)
+                target = inspection_target(context)
+                if missing_inputs and (
+                    step.reply is None or tuple(step.reply.required_inputs) != missing_inputs
+                ):
+                    raise ValueError
+                if (
+                    not missing_inputs
+                    and target
+                    and (
+                        step.call is None
+                        or step.call.name != target[0]
+                        or step.call.arguments.get(target[1]) != target[2]
+                    )
+                ):
+                    raise ValueError
+                return step
             if result.tool_calls:
                 if len(result.tool_calls) != 1:
                     raise ValueError

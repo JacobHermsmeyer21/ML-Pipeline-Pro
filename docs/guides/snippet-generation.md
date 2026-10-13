@@ -1,5 +1,8 @@
 # Generated Python drafts
 
+For the midterm use the evaluated [guided 7B configuration](guided-midterm-demo.md).
+Its original seven-case gate now passes; human usefulness review remains required.
+
 With [local model setup](local-model-setup.md) complete and chat enabled, ask
 `POST /api/v1/chat` for a Python integration snippet. The supported profiles are
 `list_experiments`, `compare_experiments`, `create_experiment`, and

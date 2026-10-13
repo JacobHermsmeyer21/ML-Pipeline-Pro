@@ -191,3 +191,15 @@ six and fails four: missing runtime, missing objective, missing tuning limits an
 hostile record. Retain this failed baseline; it does not establish improvement
 from service extraction or close C3/C5. Monitoring, guided-AI acceptance, full A2,
 Kubernetes/CI-CD and clean-checkout/human review are still outstanding.
+
+### Slice 3: guided local model and generated drafts
+
+The [detailed guided plan](2026-10-13-guided-conversation-plan.md) records the
+single-step grammar, current-input/evidence guards, per-method draft guidance and
+review findings. Original ten/seven semantic gates pass together on the pinned
+7B profile; 542 fast and nine affected real-store cases pass. Real HTTP/local-model
+generation saves a validated draft, replays without inference, preserves history
+and rejects foreign access without creating an experiment. Retain failed attempts
+and provenance in [guided evidence](../evidence/2026-10-13-guided-demo/results.json).
+Human quality and clean-checkout review remain outstanding; monitoring/deployment
+still need implementation. Same-vendor independent review, different-vendor gap.

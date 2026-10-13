@@ -9,12 +9,13 @@ You can register datasets and models, queue training or tuning, compare validati
 results, download verified artifacts, and register model versions. Training runs
 serially on CPU. Conversation tools, a local model adapter, durable history,
 grounded reads, authenticated routes, and confirmed actions are implemented;
-validation with an installed model remains open.
+the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) passes its original
+live conversation/snippet gates; human quality and full onboarding remain open.
 Supported Python snippet generation now saves restricted, validated drafts for
 human review. See the [snippet guide](docs/guides/snippet-generation.md).
 
 The full course project is **in development**. Separate model-management, tuning,
-and monitoring services, live monitoring, full AI-generated snippet acceptance, and
+and monitoring services, live monitoring, final human AI review, and
 Kubernetes/deployment CI/CD remain outstanding. See the
 [roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 

@@ -1,6 +1,6 @@
 # Guided single-step local-model responses
 
-- Status: approved midterm direction; implementation pending
+- Status: implemented; human quality/complete onboarding pending
 - Date: 2026-10-13
 - Source baseline: `2a6d56b` / `person-a/conversation-foundation`
 - Request/approval: Jacob's October 13 approval of all scope-review recommendations and request to implement; [scope record](2026-10-13-midterm-delivery-plan.md#human-review-and-approval)
@@ -93,4 +93,37 @@ material deviations require renewed review.
 
 ## Implementation outcome
 
-Pending. Baseline failure retained in the midterm service evidence; no AI row closed.
+Guided SDK grammar, current-read fact IDs and narrow explicit English absence,
+inspection-first and draft-only guards are implemented. Guards also reject ignored
+provider constraints after inference. Source/relationship IDs can be cited;
+record/winner snapshots are required for facts. Positive-value extraction remains
+model behavior checked by the original scenarios and human confirmation.
+
+The separate same-vendor reviewer found two regressions: selecting the wrong
+comma-separated missing segment and excluding fetched comparison winners. Both
+were fixed with regression coverage. Article/plural inspection phrases fall back
+to ordinary guidance; optional `Please` draft prefixes are recognized. Different-
+vendor review was unavailable. No authorization/ownership/budget bypass identified.
+
+A diagnostic SDK request established that the canonical snippet method is lower
+case; the initial uppercase-only header hint omitted submission keys. Corrected
+case handling and selected method-specific syntax guidance. The model still
+generates request/body/result statements; no output repair/execution or fallback
+draft. Every failed attempt is retained. Existing semantic/AST/API assertions and
+budgets remain unchanged. Transport assertions now distinguish native bindings
+from the exact guided schema, preserving full payload/count verification.
+
+Windows/Python 3.11.5, pinned Ollama 0.40.2 and 7B JSON-tools artifact: original
+ten conversation and seven snippet cases all pass. Native tests remain passing.
+Fast gate: 542 pass, 71 integration deselected, 80% rounded coverage. Nine affected
+real-store cases pass. Real HTTP/local-model/MongoDB draft/replay/history/scope
+passes, no domain experiment created; one routing/one generation call, none on
+replay. Ruff/dependency checks/locked sync/build pass (offline build used after
+sandbox network failure). [Evidence](../evidence/2026-10-13-guided-demo/results.json)
+retains source/payload/format hashes, failures and raw logs; model fixture values
+are synthetic. Human quality and complete onboarding remain open; no row closed.
+
+Base `tools_hash` is a protocol-template identity, not every current schema.
+Actual transmitted format hashes are retained in both gates. Snippet base and
+rendered instruction identities are separate. The compatibility native default,
+public actions, stores and worker recovery are unchanged.

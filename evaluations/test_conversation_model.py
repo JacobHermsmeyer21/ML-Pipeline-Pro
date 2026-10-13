@@ -16,6 +16,13 @@ import httpx
 import pytest
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_guidance import (
+    current_evidence_ids,
+    draft_request,
+    explicit_missing_inputs,
+    guided_schema,
+    inspection_target,
+)
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_schemas import ChatRequest, fingerprint
@@ -224,15 +231,28 @@ class BudgetedModel:
 
 
 class ObservedCounter:
-    def __init__(self, counter):
+    def __init__(self, counter, *, protocol="native"):
         self.counter = counter
+        self.protocol = protocol
         self.last_count = None
         self.payload_hashes = []
+        self.format_hashes = []
 
     def __call__(self, payload):
-        expected = {tool["function"]["name"] for tool in native_conversation_tools()}
-        assert len(payload["tools"]) == len(expected) == 15
-        assert {tool["function"]["name"] for tool in payload["tools"]} == expected
+        if self.protocol == "guided":
+            assert payload["tools"] == []
+            assert payload["format"] == guided_schema(
+                current_evidence_ids(payload["messages"]),
+                fact_ids=current_evidence_ids(payload["messages"], facts_only=True),
+                missing_inputs=explicit_missing_inputs(payload["messages"]),
+                target=inspection_target(payload["messages"]),
+                draft=draft_request(payload["messages"]),
+            )
+            self.format_hashes.append(fingerprint(payload["format"]))
+        else:
+            expected = {tool["function"]["name"] for tool in native_conversation_tools()}
+            assert len(payload["tools"]) == len(expected) == 15
+            assert {tool["function"]["name"] for tool in payload["tools"]} == expected
         self.last_count = self.counter(payload)
         self.payload_hashes.append(fingerprint(payload))
         return self.last_count
@@ -328,7 +348,7 @@ def test_ten_real_local_model_scenarios(request):
                 counter.identity.get(key) == native.provenance[key]
                 for key in ("artifact_digest", "runtime_version", "template_hash")
             ), "Counter identity does not match installed runtime/artifact"
-            observed = ObservedCounter(counter)
+            observed = ObservedCounter(counter, protocol=settings.chat_protocol)
             # Construction is offline; attach the inspected artifact's counter
             # through the public constructor, then close the inspection clients.
             await native.close()
@@ -384,6 +404,7 @@ def test_ten_real_local_model_scenarios(request):
             report["calls"] = budgeted.calls
             report["reserved_tokens"] = budgeted.reserved_tokens
             report["request_payload_hashes"] = observed.payload_hashes
+            report["request_format_hashes"] = observed.format_hashes
             async with httpx.AsyncClient(
                 trust_env=False, follow_redirects=False, timeout=2
             ) as client:

@@ -12,12 +12,20 @@ from pathlib import Path
 import pytest
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_guidance import (
+    current_evidence_ids,
+    draft_request,
+    explicit_missing_inputs,
+    guided_schema,
+    inspection_target,
+)
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_qwen_counter import QwenInputCounter
 from ml_pipeline_pro.conversation_schemas import ChatRequest, fingerprint
 from ml_pipeline_pro.conversation_service import ConversationService
 from ml_pipeline_pro.snippet_generation import SNIPPET_INSTRUCTIONS
+from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolContext
 from tests.conversation_memory import MemoryConversations
 from tests.test_conversation_service import RecordsTransport
@@ -82,6 +90,7 @@ class EvaluatedModel:
         self.generation_calls = 0
 
     async def _call(self, messages, *, snippet):
+        self.observed["stage"] = "snippet" if snippet else "routing"
         assert self.deadline - time.monotonic() >= self.settings.chat_model_timeout_seconds, (
             "Suite deadline cannot admit a full model call"
         )
@@ -103,6 +112,8 @@ class EvaluatedModel:
         finally:
             item["duration_seconds"] = time.monotonic() - started
             item["counted_input_tokens"] = self.observed.get("last_count")
+            item["request_payload_hash"] = self.observed.get("last_payload_hash")
+            item["request_format_hash"] = self.observed.get("last_format_hash")
 
     async def generate(self, messages):
         return await self._call(messages, snippet=False)
@@ -143,11 +154,28 @@ def test_seven_real_snippet_scenarios(request):
             )
 
         def count(payload):
+            observed["last_payload_hash"] = fingerprint(payload)
+            observed["last_format_hash"] = fingerprint(payload.get("format"))
             functions = {item["function"]["name"] for item in payload.get("tools", [])}
             expected = {item["function"]["name"] for item in native_conversation_tools()}
-            assert functions == expected or functions == set(), (
-                "Unexpected request schema inventory"
-            )
+            if settings.chat_protocol == "guided":
+                assert functions == set(), "Guided requests must not bind native tools"
+                expected_format = (
+                    SnippetCandidate.model_json_schema()
+                    if observed["stage"] == "snippet"
+                    else guided_schema(
+                        current_evidence_ids(payload["messages"]),
+                        fact_ids=current_evidence_ids(payload["messages"], facts_only=True),
+                        missing_inputs=explicit_missing_inputs(payload["messages"]),
+                        target=inspection_target(payload["messages"]),
+                        draft=draft_request(payload["messages"]),
+                    )
+                )
+                assert payload["format"] == expected_format, "Unexpected guided schema"
+            else:
+                assert functions == expected or functions == set(), (
+                    "Unexpected request schema inventory"
+                )
             observed["last_count"] = counter(payload)
             return observed["last_count"]
 

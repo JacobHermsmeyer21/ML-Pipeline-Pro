@@ -11,6 +11,7 @@ Start with the [project README](../README.md) to run the backend, or the
 - [Conversation development](guides/conversation-development.md): implemented slices, model boundaries, and open acceptance work.
 - [Generated Python drafts](guides/snippet-generation.md): supported profiles, saved validation/provenance, and the opt-in A2 evaluation.
 - [Local model setup](guides/local-model-setup.md): pinned Qwen profiles, exact token admission, and reproducing the failing live gate.
+- [Guided midterm demo](guides/guided-midterm-demo.md): evaluated 7B dialogue and generated-code configuration, original gates and review limits.
 - [Verification](guides/verification.md): fast checks, real-service integration, and isolated recovery.
 
 ## Reference: APIs and architecture

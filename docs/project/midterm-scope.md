@@ -35,8 +35,9 @@ public/cloud hosting, large retrieval benchmarks and research measurements are
 deferred. Production identity/roles/TLS, immutable datasets, retention/migrations
 and coordinated backup/restore remain outstanding before shared/public use.
 Preserve existing checks. Unapproved A3/A4 plans retain their wider criteria;
-they are not retrospectively passed. A1 3/10 and A2 6/7 acceptance failures remain
-open; original semantic/rejection gates and human review still apply.
+they are not retrospectively passed. Earlier A1 3/10 and A2 6/7 failures remain
+historical evidence. The opt-in guided 7B protocol now passes the original ten/seven
+gates; [human review and onboarding](../guides/guided-midterm-demo.md) remain open.
 
 ## Delivery order and completion
 

@@ -36,6 +36,7 @@ from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
 from ml_pipeline_pro.snippet_generation import (
     SNIPPET_INSTRUCTIONS,
     SnippetGenerator,
+    snippet_instructions,
     snippet_messages,
 )
 from ml_pipeline_pro.snippet_schemas import SnippetDraft, SnippetRequest
@@ -57,6 +58,7 @@ PUBLIC_MODEL_PROVENANCE = {
     "supported_context_tokens",
     "license_sha256",
     "template_hash",
+    "protocol",
 }
 
 HOST_INSTRUCTIONS = (
@@ -294,26 +296,25 @@ class ConversationService:
         turn.history_omitted = offset > 0
         messages = [{"role": "system", "content": HOST_INSTRUCTIONS}]
         for item in prior:
-            messages.extend(
-                [
-                    {"role": "user", "content": item.user_message},
-                    {
-                        "role": "assistant",
-                        "content": serialized(
-                            context_data(
-                                {
-                                    "historical": True,
-                                    "status": item.status,
-                                    "interpretation": item.message,
-                                    "required_inputs": item.required_inputs,
-                                    "tool_evidence": [
-                                        result.model_dump() for result in item.tool_results
-                                    ],
-                                }
-                            )
-                        ).decode(),
-                    },
-                ]
+            if self.settings.chat_protocol == "native":
+                messages.append({"role": "user", "content": item.user_message})
+            messages.append(
+                {
+                    "role": "assistant",
+                    "content": serialized(
+                        context_data(
+                            {
+                                "historical": True,
+                                "status": item.status,
+                                "interpretation": item.message,
+                                "required_inputs": item.required_inputs,
+                                "tool_evidence": [
+                                    result.model_dump() for result in item.tool_results
+                                ],
+                            }
+                        )
+                    ).decode(),
+                }
             )
         messages.append(
             {
@@ -516,8 +517,10 @@ class ConversationService:
         if self.snippet_generator is None:
             raise ConversationModelError("model_unavailable", "Snippet generator is unavailable")
         messages = self._safe(snippet_messages(request, turn.user_message), context)
+        instructions = snippet_instructions(messages)
+        turn.snippet.provenance["rendered_instructions_hash"] = fingerprint(instructions)
         payload = {
-            "messages": [{"role": "system", "content": SNIPPET_INSTRUCTIONS}, *messages],
+            "messages": [{"role": "system", "content": instructions}, *messages],
             "tools": [],
         }
         if len(serialized(payload)) > CONTEXT_BYTES:

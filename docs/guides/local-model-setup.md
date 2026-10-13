@@ -1,8 +1,10 @@
 # Local Qwen setup and token verification
 
 This is an explicit development setup for Person A's approved A1 work.
-Token admission has real-runtime evidence; the conversation quality gate still
-fails. Keep C3/C5 outstanding. The application and tests never download models.
+Token admission has real-runtime evidence. Native quality failures below remain
+historical; the opt-in [guided midterm protocol](guided-midterm-demo.md) passes the
+original ten/seven gates on 7B. Human quality/onboarding remain open. The
+application and tests never download models.
 
 ## Verified setup profile
 

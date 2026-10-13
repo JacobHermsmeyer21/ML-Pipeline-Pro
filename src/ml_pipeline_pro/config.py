@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     worker_max_attempts: int = Field(default=3, ge=1, le=10)
     chat_enabled: bool = False
     chat_backend: Literal["ollama"] = "ollama"
+    chat_protocol: Literal["native", "guided"] = "native"
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
     chat_model_origin: str = "http://127.0.0.1:11434"
     chat_api_origin: str = "http://127.0.0.1:8000"

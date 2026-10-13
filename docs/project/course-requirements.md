@@ -116,3 +116,10 @@ Close a row only with its specified evidence and reviewed scope. Keep failures,
 selected-case skips, unavailable models/services, and hardware limits visible.
 The full course deliverable requires all nine rows; the earlier milestones 1-3
 completion is limited to their initial backend scope.
+
+October 13 guided update: the original ten conversation and seven snippet cases
+now pass on the opt-in pinned 7B protocol; real-model HTTP draft/replay and nine
+affected store cases pass. This supersedes the table's model-gate failure status
+for guided mode, while preserving native/older runs as historical evidence.
+C3/C5/C7 remain partial pending human quality and combined onboarding. See the
+[guided results](../guides/guided-midterm-demo.md).
