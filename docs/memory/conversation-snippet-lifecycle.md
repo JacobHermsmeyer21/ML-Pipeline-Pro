@@ -20,6 +20,14 @@ and exposes `generate_snippet`, so its documented factory avoids this defect.
 The default bare adapter also needs a verified token counter before inference.
 This finding does not establish live-model quality or real-store correctness.
 
+October 13 fix under the [approved midterm plan](../plans/2026-10-13-midterm-delivery-plan.md):
+the lazy wrapper now exposes `generate_snippet`, prepares the native adapter and
+delegates generation. The added
+[HTTP regression](../../tests/test_conversation_api.py) failed before the fix and
+passes afterward, including saved draft/history replay without reinference and
+lifespan closure. This is scripted HTTP evidence, not live model acceptance.
+The original audit/probe above remains historical evidence of the defect.
+
 Revisit when the lifecycle or model-capability interface changes. Verify the
 configured HTTP factory, lazy preparation, shared generation budget and closure
 at the route boundary; direct host/model tests alone miss this wrapper branch.

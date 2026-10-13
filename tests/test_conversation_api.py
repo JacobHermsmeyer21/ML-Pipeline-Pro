@@ -164,3 +164,49 @@ def test_native_adapter_prepares_lazily_and_saves_artifact_provenance(fake_conne
             "/api/chat",
         ]
     assert model._closed
+
+
+def test_native_adapter_generates_draft_through_http_and_replays_without_inference(
+    fake_connections,
+):
+    from ml_pipeline_pro.config import Settings
+    from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
+    from tests.conversation_memory import MemoryConversations
+    from tests.test_snippet_generation import Generator
+
+    class NativeGenerator(Generator, OllamaConversationModel):
+        prepare = AsyncMock()
+
+    model = NativeGenerator()
+    model.close = AsyncMock()
+    app = create_app(
+        Settings(_env_file=None, environment="test", chat_enabled=True),
+        chat_model_factory=lambda _: model,
+    )
+    # Keep one store across initial request, replay and history.
+    store = MemoryConversations()
+    app.dependency_overrides[get_conversation_store] = lambda: store
+    body = {"request_id": "draft", "message": "Generate a listing draft", "expected_revision": 0}
+    with TestClient(app) as client:
+        assert model.prepare.await_count == 0
+        headers = {"X-Project-ID": "demo"}
+        response = client.post("/api/v1/chat", headers=headers, json=body)
+        assert response.status_code == 200
+        saved = response.json()
+        assert saved["status"] == "completed"
+        assert saved["snippet"]["status"] == "validated"
+        assert saved["snippet"]["review_required"] is True
+        assert saved["pending_action"] is None and saved["tool_results"] == []
+        assert len(model.messages) == 1
+        model.generate_snippet.assert_awaited_once()
+        assert model.prepare.await_count == 2  # Selection and draft are both prepared lazily.
+        prepared = model.prepare.await_count
+        replay = client.post("/api/v1/chat", headers=headers, json=body)
+        assert replay.json() == saved
+        history = client.get(
+            f"/api/v1/conversations/{saved['conversation_id']}", headers=headers
+        ).json()
+        assert history["turns"][0]["snippet"] == saved["snippet"]
+        assert len(model.messages) == 1 and model.prepare.await_count == prepared
+        model.generate_snippet.assert_awaited_once()
+    model.close.assert_awaited_once()

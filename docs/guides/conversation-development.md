@@ -404,5 +404,7 @@ and the 14B profile reached three. All acceptance runs failed. No course row is
 closed by token verification or partial scenario passes.
 
 The [typed completion plan](../plans/2026-10-09-conversation-typed-completion-plan.md)
-proposes one native reply function to address formatting failures. It awaits
-human approval and preserves all existing budget/evidence acceptance checks.
+records the native reply function approved and implemented October 10. Its final
+7B run passed only three of ten original scenarios; budget/evidence checks remain
+unchanged. The [approved midterm plan](../plans/2026-10-13-midterm-delivery-plan.md)
+now prioritizes guided workflows while retaining the original acceptance gates.

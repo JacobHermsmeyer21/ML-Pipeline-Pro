@@ -122,6 +122,33 @@ or concurrent training. Record renewed review for material deviations.
 
 ## Implementation outcome
 
-Documentation scope recorded; application implementation pending. No course row
-closed. Slice outcomes will record commands/evidence, test justification, reviews,
-durable findings and commit/push results.
+Scope documentation committed/pushed as `2379c75`; no incoming branch/main commits.
+
+### Slice 1: native draft lifecycle and active tutorials
+
+The wrapper forwards native snippet generation after lazy preparation. The new
+HTTP regression failed before the fix and passed afterward. It checks a validated
+review-required draft, no domain action, saved history/replay without another
+inference and lifespan closure. Existing assertions were unchanged. Corrected
+8000 to 8001 in the Qwen tutorial and the stale typed-completion approval text.
+
+Windows/Python 3.11.5 with locked workspace uv 0.12.23: offline locked sync, Ruff
+lint/format and compatibility for 108 installed packages pass. Targeted tests:
+34 pass. Full fast gate: 507 pass, 71 integration cases deselected, no selected
+skips/failures, 79% rounded host coverage. Raw fast log/JUnit are in
+`artifacts/midterm-validation/lifecycle-unit.log` and `lifecycle-unit.xml`.
+Documentation checks: 40 files, 392 local links/anchors, two Python examples and
+31 PowerShell blocks pass; whitespace passes. Source change is lifecycle forwarding,
+not persistence/ownership, so ordinary/recovery/model gates were not rerun for
+this slice. Original model failures/human acceptance remain outstanding.
+
+The restored existing Docker stack is healthy; startup is not feature acceptance.
+Separate Codex/GPT-6 agent `/root/boundary_review` reviewed wrapper/host lifecycle,
+budgets, HTTP replay test and extraction direction. No lifecycle blocker found.
+Its low finding requested an explicit two-call preparation assertion; added and
+reran the HTTP suite. It noted mocked SDK/storage limits and future routing/store
+dependencies; retain those limits and real extraction gates. Different-vendor
+review was unavailable. This is a separate reviewer, not implementing-agent
+self-review; it is not real-runtime or concurrency proof.
+[Durable finding](../memory/conversation-snippet-lifecycle.md) now records the fix
+while preserving the original audit evidence. No course row is closed.

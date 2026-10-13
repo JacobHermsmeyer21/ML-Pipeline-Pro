@@ -40,6 +40,10 @@ class _LazyOllama:
         await self.model.prepare()
         return await self.model.generate(messages)
 
+    async def generate_snippet(self, messages):
+        await self.model.prepare()
+        return await self.model.generate_snippet(messages)
+
     async def close(self):
         await self.model.close()
 

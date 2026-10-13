@@ -23,7 +23,9 @@ specific `inputs.*` locations. See [API access and replay](../reference/api.md).
 
 ## Request and inspect a draft
 
-Use the same project headers and request replay rules as other chat requests:
+Use the same project headers and request replay rules as other chat requests.
+The local Qwen setup runs the configured chat API on port 8001; domain tools use
+the backend on port 8000. Use your configured chat origin if it differs:
 
 ```powershell
 $headers = @{ 'X-Project-ID' = 'demo' }
@@ -33,7 +35,7 @@ $body = @{
     expected_revision = 0
     message = 'Generate Python listing experiments, limit 50, offset 0. Return a draft.'
 } | ConvertTo-Json
-$turn = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/api/v1/chat' `
+$turn = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8001/api/v1/chat' `
     -Headers $headers -ContentType 'application/json' -Body $body
 $turn.snippet
 ```
