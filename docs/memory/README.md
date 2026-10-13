@@ -17,6 +17,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | [Qwen token counts depend on the pinned runtime template](conversation-qwen-runtime.md) | Explicit artifact identity, Go rendering, token admission and failed live evaluation |
 | [A native completion function does not establish model reliability](conversation-typed-completion.md) | Completion isolation, 14-schema admission, repeated native calls and semantic failures |
 | [Generated snippets need exact API shape and independent acceptance](snippet-generation-boundary.md) | Restricted Python, shared call budgets, retained generation failures and API shape checks |
+| [Native Ollama wrapping can hide snippet generation](conversation-snippet-lifecycle.md) | HTTP lifespan capability loss, reproduced native-adapter scope and unaffected Qwen composition |
 
 Keep one durable finding per file. Include date, evidence, limits, and when to
 revisit it. Index new findings here. Record rejected approaches only when source

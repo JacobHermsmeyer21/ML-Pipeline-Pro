@@ -21,6 +21,7 @@ Start with the [project README](../README.md) to run the backend, or the
 
 - [Course requirements](project/course-requirements.md): supplied instructions and acceptance checklist.
 - [Project status](project/project-status.md): dated audits, capabilities, limitations, and validation records.
+- [October 13 audit and Person A handoff](project/2026-10-13-project-audit.md): current branch state, reproduced findings, course gaps and restart point.
 - [Development method](project/development-methodology.md): design, human review, implementation, and verification.
 - [Measurement criteria](project/measurement.md): unverified improvement targets and how to evaluate them.
 - [Design plans](plans/): change-specific scope, approval, acceptance criteria, and outcomes; use the [template](plans/template.md).

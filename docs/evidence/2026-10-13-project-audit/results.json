@@ -1,0 +1,330 @@
+{
+  "client_date": "2026-10-13",
+  "recorded_at_utc": "2026-10-13T19:51:45.273088+00:00",
+  "source_revision": "7754826a054ea70882b3ac9a53179d215ccb4cf8",
+  "branch": "person-a/conversation-foundation",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.11.5",
+  "application_unchanged": true,
+  "application_source_sha256": {
+    "__init__.py": "d27f0d1afea4af26945ba686d29f75fc4f917ef50c13821328019733f64c40a6",
+    "access.py": "2f5bc44fb217b7b88dc8f8a3255c388a879ddaab60f47c37a63679d04bf8063d",
+    "api.py": "92ddb4b3f427f86b0c658e20df0be009f2855c56e302de48fae60de9816e9996",
+    "artifacts.py": "5781c6f96ac520c927c11777423a74d931be31d84048bc2cafc5145cbf697c08",
+    "config.py": "60e9c96df9650039bd7f67a3f21b6325afd9977868f59395cce88c5f6bbe7b09",
+    "connections.py": "30b151f9cc0b20d53b0c938a59334f340bf66fe09b7afcba87804623aaa8eeeb",
+    "conversation_actions.py": "b922440f1315096496497eb0a0bcdea090f1ca2c47375eaadf093d17ee566d3c",
+    "conversation_api.py": "548397f0f447d7660b2826432fcf4ef373f7af6d8290a761c1b64d15a5fd55d0",
+    "conversation_grounding.py": "28da53af00020ee9e81fa017b460f62ee6d5bdcd94e6ef7b78cb5369600e6a04",
+    "conversation_model.py": "c083fefe692990c11088c4f8d7d0b6afe55222c8060aeed73a170852aca490c3",
+    "conversation_ollama.py": "bb8796cce0a7168787e1a304e37d3c4c022ea03452940fe9baca7d036dedc6e9",
+    "conversation_qwen_counter.py": "20557610b179b4bd42c1e2e436c14178b2856ca40e95930b819e3e06c5a75408",
+    "conversation_schemas.py": "2a19fd41248b326ce0673a9ce163ae3744869a3e76ae947820600f79f85bab1e",
+    "conversation_service.py": "0a0a7758c77143962332ac792c6d0cae3d4b3e4b7993ff9e49cd94280cfb64ff",
+    "conversation_store.py": "84b6fb8c7601d189890000f569191e37762065101d929f6d93f7996b5bd9b08c",
+    "datasets.py": "0723ef0a1947d6e14d39a1ce33298fe95f7bccbe6c27c4167b26d4c6615fb348",
+    "errors.py": "f3b0b18b1fcd8ca728370cbe00fd0b0e58b69eb5e8b4700131da862d9c25f51b",
+    "execution.py": "aabca2ed1e84484d0164b3bf669cdfcabd1730d97fd983662091de69d5189e72",
+    "jobs.py": "6acc1d709517108617792faf04a68a75d0e570351f03f7e44c64d6826316daa8",
+    "logging.py": "06e77f76115784bff1a4b47fcaf95f510d1d342dd3b6f11d8fbcd022bd852dd7",
+    "main.py": "481259d28ad9cadaab6b81b184d68f2c2c0d243163bb0c31e3663431f8f37b5a",
+    "ownership.py": "a484815ffff0325a52b903495a3c18fab4e997135f5d817d822badf4434b367f",
+    "queue.py": "dcabaed362b6fd6129bda191cc8cf9f5fa06daa1991410bc84a72b15b3b647d0",
+    "repositories.py": "5b1d7a467934cbcefd0686d4b2579dc33976d18fb1a8f91e6d96d98f6ab36fc2",
+    "schemas.py": "2a65c7f77e328687435c1ace4b155a12ad191f925a537b391d979ef78c91c99d",
+    "snippet_generation.py": "2a90f54521bb8c6e7c03e0776ae4ddf6ff3acc44cf0dd79ac0e654f2c470bdd8",
+    "snippet_schemas.py": "2c7ad0df1b7f49bbae292c09e60f9ed77efa864dc32b2bd661193f1b44400a7e",
+    "snippet_validation.py": "dfa6972a3a10e9439d539160600b2544da3db3988aad51c23db783e9c05b7ca4",
+    "tool_schemas.py": "307331b71a108cffcb27dab3bb5ea48c0074de9c5acd3a1880db024616c54b9c",
+    "tool_transport.py": "7ca480399a52b351b3af7fe0485b8074b4b07a7383475cef0421488fa24ea6a7",
+    "tools.py": "04ae52c8db16a899ad91533a33ec7cad52b6b0eff0db9b3ab933b9b99cecd88c",
+    "tracking.py": "a96a25cf21d88f24c09058f329edfc4e6e68a0ef9cf0de545a4a38d6da2e87f6",
+    "training.py": "35bd44a4183294d22f1538784acf7ab1bfe9e1c0e0516f823652b8c4853d5346",
+    "training_control.py": "cf52c984ed355338bfcfee541b1e4454e0a37d0184f81b71167016c62b70fa91",
+    "tuning_api.py": "d6ac589269042b0d563e4941e45a969eef92cfee24c913eb3c0feb716d967da9",
+    "tuning_execution.py": "25ed60e73c65e0118bfcb7ecbb0fa1c426b185d0926c47505088f7217963a47e",
+    "tuning_sampler.py": "7257bcf5dfeb0f0ca8dba6be943dc1013dcd8282eb830dcf21f2a317e7902ec3",
+    "tuning_schemas.py": "24671a60e988a6e1fd769a6b3d870d7a821970df3692bcfa459da0089161655f",
+    "tuning_store.py": "cc59adf12f5ef94a70273c0ef0216006caf00feae80976eb7363300b67750543",
+    "worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9"
+  },
+  "packages": {
+    "ruff": "0.16.10",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0",
+    "langchain-core": "1.6.9",
+    "langchain-ollama": "1.1.0",
+    "pymongo": "4.18.2",
+    "httpx": "0.28.1",
+    "torch": "2.14.1+cpu",
+    "optuna": "5.0.0",
+    "numpy": "2.4.6",
+    "tokenizers": "0.22.2"
+  },
+  "checks": {
+    "sync": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\uv\\bin\\uv.exe",
+        "--cache-dir",
+        ".uv-cache",
+        "sync",
+        "--locked",
+        "--extra",
+        "training",
+        "--offline"
+      ],
+      "exit_code": 0
+    },
+    "lint": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\uv\\bin\\uv.exe",
+        "--cache-dir",
+        ".uv-cache",
+        "run",
+        "--locked",
+        "--extra",
+        "training",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "format": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\uv\\bin\\uv.exe",
+        "--cache-dir",
+        ".uv-cache",
+        "run",
+        "--locked",
+        "--extra",
+        "training",
+        "ruff",
+        "format",
+        "--check",
+        "."
+      ],
+      "exit_code": 0
+    },
+    "dependencies": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\uv\\bin\\uv.exe",
+        "--cache-dir",
+        ".uv-cache",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0
+    },
+    "links": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+        ".tools/check_methodology_docs.py"
+      ],
+      "exit_code": 0,
+      "result": {
+        "documents": 38,
+        "local_links_and_anchors": 375
+      }
+    },
+    "snippet_route_probe": {
+      "command": [
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+        "-c",
+        "import runpy; runpy.run_path('docs/evidence/2026-10-13-project-audit/snippet_route_probe.py', run_name='__main__')"
+      ],
+      "exit_code": 0
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  },
+  "fast": {
+    "tests": 506,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "deselected_integration_and_recovery": 71,
+    "command": "uv run --locked --extra training pytest -m 'not integration' --cov --cov-report=term --cov-report=json:artifacts/project-audit/2026-10-13/coverage.json --junitxml=artifacts/project-audit/2026-10-13/unit.xml",
+    "native_exit_code": 0
+  },
+  "host_coverage": {
+    "covered_lines": 2765,
+    "num_statements": 3420,
+    "percent_covered": 78.7677508016491,
+    "percent_covered_display": "79",
+    "missing_lines": 655,
+    "excluded_lines": 44,
+    "percent_statements_covered": 80.84795321637426,
+    "percent_statements_covered_display": "81",
+    "num_branches": 946,
+    "num_partial_branches": 84,
+    "covered_branches": 674,
+    "missing_branches": 272,
+    "percent_branches_covered": 71.24735729386892,
+    "percent_branches_covered_display": "71"
+  },
+  "snippet_route_probe": {
+    "direct_turn_status": "completed",
+    "direct_snippet_status": "validated",
+    "direct_generation_calls": 1,
+    "http_status": 200,
+    "http_turn_status": "failed",
+    "http_error_code": "model_unavailable",
+    "http_snippet_status": "rejected",
+    "http_validation_issues": [
+      "snippet_generation_incomplete"
+    ],
+    "http_generation_calls": 0,
+    "wrapper_type": "_LazyOllama",
+    "wrapper_exposes_generate_snippet": false,
+    "qwen_adapter_is_ollama_subclass": false,
+    "storage": "existing serial in-memory test substitute",
+    "inference": "scripted; no live model",
+    "non_ollama_factory_http_turn_status": "completed",
+    "non_ollama_factory_http_snippet_status": "validated",
+    "non_ollama_factory_generation_calls": 1
+  },
+  "example_syntax": {
+    "python_fences": 2,
+    "powershell_fences": 31,
+    "python_examples": 6
+  },
+  "documented_api_operations": 25,
+  "build": {
+    "command": "uv build --offline",
+    "native_exit_code": 0,
+    "canonical_wheel_modules": 40,
+    "private_paths_excluded": true,
+    "warning": "uv cache inside source directory; package inspection excludes cache",
+    "package_sha256": {
+      "ml_pipeline_pro-0.1.0-py3-none-any.whl": "34db5b67aa6f33ac7eff66a025986ba6a43eb477229e4156dc5d7b561cd64ef2",
+      "ml_pipeline_pro-0.1.0.tar.gz": "520c228fc0ba16a68bf3b4379f675bf69a05c2ee3fa784786089b9e523679178"
+    }
+  },
+  "compose": {
+    "command": ".tools/docker-compose.exe config --quiet",
+    "native_exit_code": 0,
+    "docker_cli_isolated_config_attempt_exit_code": 125,
+    "runtime_checked": false
+  },
+  "historical_evidence_integrity": {
+    "2026-10-10-a2-snippets": {
+      "crc_passed": true,
+      "member_hashes_checked": 103,
+      "hash_mismatches": 0
+    },
+    "2026-10-10-typed-completion": {
+      "crc_passed": true,
+      "member_hashes_checked": 202,
+      "hash_mismatches": 0
+    }
+  },
+  "a2_application_hashes_match": true,
+  "historical_A2_gates": {
+    "fast": {
+      "tests": 506,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ordinary": {
+      "tests": 61,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "live_runs": {
+      "live": {
+        "passed": 0,
+        "scenarios": 7,
+        "native_exit": 1
+      },
+      "live-refined": {
+        "passed": 5,
+        "scenarios": 7,
+        "native_exit": 1
+      },
+      "live-final": {
+        "passed": 6,
+        "scenarios": 7,
+        "native_exit": 1
+      },
+      "live-complete": {
+        "passed": 6,
+        "scenarios": 7,
+        "native_exit": 1
+      }
+    },
+    "original_A1_gate_rerun": false
+  },
+  "historical_A1_live_acceptance": {
+    "status": "failed",
+    "native_exit_code": 1,
+    "passed_scenarios": [
+      "missing_dataset_model",
+      "unsupported_action",
+      "foreign_project"
+    ],
+    "failed_scenarios": [
+      "read_guidance",
+      "comparison_history_suggestion",
+      "missing_runtime",
+      "missing_tuning_objective",
+      "missing_tuning_limits",
+      "hostile_record",
+      "evidence_status_accuracy"
+    ],
+    "generation_calls": 13,
+    "reserved_tokens": 106496,
+    "budget": {
+      "requests": 50,
+      "reserved_total_tokens": 409600,
+      "output_tokens_per_call": 512,
+      "suite_seconds": 600
+    },
+    "raw_result": "validation/live-1-results.json"
+  },
+  "local_service_tcp": {
+    "8000": "unavailable",
+    "27017": "unavailable",
+    "6379": "unavailable",
+    "11434": "unavailable"
+  },
+  "verification_gaps": [
+    "Docker daemon unavailable; no current ordinary integration or recovery runs",
+    "Local Ollama unavailable; original A1 and A2 live gates not rerun",
+    "Existing workspace environment; no clean-checkout onboarding run",
+    "No independent implementation or human usefulness review",
+    "No new remote CI status or vulnerability-advisory scan"
+  ],
+  "evidence_files_sha256": {
+    "build.txt": "cf497ad660f7e84fd2d3ddc194bd184d107bee94dd61ce7c70d02fd13570de25",
+    "compose.txt": "a6645b5ab2cd5f5958f9eba0275ba94985b53b1fd6daec1b34e6387778d35e1e",
+    "coverage.json": "cdd0d65e068bb56fd0989fe3d31048ecf49c84d3c910902c65d9366fcd7440be",
+    "dependencies.txt": "8ed686b2bafbdd6ecb27b4a93b4b49038f04a6d1c2c96582608c21577df1b1ae",
+    "diff.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "format.txt": "273e81e5999dffa54a2889cd098e6b1b5fa9937e557bd94fbc92a5cf43b546f0",
+    "links.txt": "a88b58dbe7b5a566b1ea6ae8ff2659624138925eb349848755e18fcdb650e0bc",
+    "lint.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "snippet-route-probe.json": "dec910d938c2569dfe040b9854d9d10f008249298809ce97ad9e8fae652bd989",
+    "snippet-route-probe.txt": "f62b183a2162c854ccc9dc7758f300d40ae01208c1490a86d6d9e235fd43d3a4",
+    "snippet_route_probe.txt": "1504f619bfcc85e9111074bbd444a5a0a9072a07030745ab5e8c86a8044b2ff3",
+    "sync.txt": "2f64af0379f7669810799af64ced3a6ebfb9f1d8e0a18751a73ba2902ca62752",
+    "unit.txt": "4430128c1e2fd9ae41f10b4b43f55d3b09e43bf77fed0edfdfddeaafe510591d",
+    "unit.xml": "44e11c4c8989db4c6c0594e67cd23d4a85c5bd95f9dace13527ea3e9bb0be942"
+  },
+  "raw_archive_sha256": "b873d3349009b1fae140c87e901368238bd4f5b507807cb5b3b35cc93cf97952",
+  "probe_source_sha256": "476159c95fbced74aa8ca5524cc528c97971ff6e9464e7c73d33b584d8a792de"
+}
