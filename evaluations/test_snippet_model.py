@@ -90,6 +90,8 @@ class EvaluatedModel:
         self.generation_calls = 0
 
     async def _call(self, messages, *, snippet):
+        for key in ("last_count", "last_payload_hash", "last_format_hash"):
+            self.observed.pop(key, None)
         self.observed["stage"] = "snippet" if snippet else "routing"
         assert self.deadline - time.monotonic() >= self.settings.chat_model_timeout_seconds, (
             "Suite deadline cannot admit a full model call"
