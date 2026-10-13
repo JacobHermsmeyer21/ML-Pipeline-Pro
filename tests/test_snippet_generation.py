@@ -307,7 +307,15 @@ def test_seventh_live_generation_is_admitted_and_eighth_never_reaches_model():
     async def scenario():
         native = Generator()
         native._redact = lambda value: value  # Credential-free scripted fixture only.
-        model = EvaluatedModel(native, {"last_count": 42}, config(), time.monotonic() + 120)
+        observed = {}
+        candidate = native.generate_snippet.return_value
+
+        async def generate(messages):
+            observed["last_count"] = 42  # Simulate the hook for this invocation.
+            return candidate
+
+        native.generate_snippet.side_effect = generate
+        model = EvaluatedModel(native, observed, config(), time.monotonic() + 120)
         model.generation_calls = 6
         await model.generate_snippet([])
         with pytest.raises(AssertionError, match="Seven-generation limit"):
