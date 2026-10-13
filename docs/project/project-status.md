@@ -1,5 +1,11 @@
 # Project audit and development status
 
+Current delivery scope (October 13): Jacob approved
+[one minimal all-nine midterm demonstration](midterm-scope.md) and its
+[plan](../plans/2026-10-13-midterm-delivery-plan.md). Broader unapproved A3/A4 ambitions
+are deferred. Historical evidence/failures below remain intact; no row is closed
+by this scope update.
+
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
 **Documentation source check, October 8, 2026:** baseline `c28ae06`. The

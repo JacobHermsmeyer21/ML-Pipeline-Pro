@@ -20,6 +20,7 @@ Start with the [project README](../README.md) to run the backend, or the
 ## Project: requirements, process, and evidence
 
 - [Course requirements](project/course-requirements.md): supplied instructions and acceptance checklist.
+- [Midterm scope](project/midterm-scope.md): approved minimal all-nine demo and deferred work.
 - [Project status](project/project-status.md): dated audits, capabilities, limitations, and validation records.
 - [October 13 audit and Person A handoff](project/2026-10-13-project-audit.md): current branch state, reproduced findings, course gaps and restart point.
 - [Development method](project/development-methodology.md): design, human review, implementation, and verification.

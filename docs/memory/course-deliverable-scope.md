@@ -32,6 +32,12 @@ The preceding absent-dependency finding
 remains historical to its
 stated baseline.
 
+October 13: Jacob confirmed all nine midterm requirements and approved the
+[minimal delivery plan](../plans/2026-10-13-midterm-delivery-plan.md). Keep separate
+services/shared code-image-database, guided AI, small monitoring and local Kubernetes
+CI/CD. Large A4 workloads/advanced drift/production scope are deferred. Existing
+failed gates remain failures until complete new gates pass.
+
 Revisit if the user supplies a revised course instruction or approves a different
 deployment/model scope. Do not make microservices or Kubernetes conditional on
 commercial scale, count templates as AI generation, or infer implementation

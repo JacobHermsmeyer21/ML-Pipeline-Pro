@@ -34,6 +34,13 @@ not implement or verify any outstanding requirement.
 
 ## Implementation choices and boundaries
 
+On October 13 Jacob confirmed all nine rows are required for next week's midterm
+and approved the [minimal delivery scope](midterm-scope.md) and
+[plan](../plans/2026-10-13-midterm-delivery-plan.md). Target one local classification
+demo, guided AI, one monitoring dashboard/seeded issue and Kubernetes test-cluster
+deployment. Broader drift, large benchmarks and production hardening are deferred.
+Existing model failures remain open; scope approval does not establish delivery.
+
 - Use Python/uv with its `.venv`, PyTorch, PyMongo, FastAPI, Optuna Bayesian tuning,
   and GitHub Actions. These choose among the stated alternatives; TensorFlow,
   Flask, reinforcement learning, conda, and Jenkins are not additional obligations.

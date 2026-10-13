@@ -3,6 +3,10 @@
 The current backend uses one FastAPI application, Redis/Celery workers, and
 MongoDB. The course target requires separately deployable model-management,
 tuning, and monitoring REST services. See the [roadmap](../../PLAN.md).
+The approved [midterm plan](../plans/2026-10-13-midterm-delivery-plan.md) selects
+three domain processes sharing code/image/database, thin public routing, one serial
+worker, one local-model profile and small live monitoring. This target remains
+planned until its service/real-model/deployment gates pass.
 
 ## Architecture and ownership
 

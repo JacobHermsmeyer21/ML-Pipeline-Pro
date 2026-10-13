@@ -9,6 +9,10 @@ services, Docker, Kubernetes, CI/CD, tests, and onboarding are required.
 Paid model APIs and custom language-model training are outside the required scope.
 
 The initial backend works; the **full course deliverable remains incomplete**.
+The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
+target: all nine requirements in one minimal local demonstration. Jacob approved
+the [delivery plan](docs/plans/2026-10-13-midterm-delivery-plan.md); its bounded
+architecture/workflows replace the broader immediate ambitions.
 This roadmap orders work. Individual designs require explicit human approval;
 roadmap entries do not approve implementation. Verified results and limitations
 are recorded in [project status](docs/project/project-status.md).
@@ -76,8 +80,9 @@ not establish live monitoring.
 
 **Acceptance:** A separate monitoring REST service ingests sample observations,
 exports operational and model metrics to Prometheus, and updates Grafana and alerts
-within a reviewed interval. Include label availability, drift/quality history,
-and metric/log windows. LangChain/local-model summaries cite evidence and propose
+within a declared/measured interval. Use one running sample workload, one dashboard
+and one seeded threshold issue with explicit label availability and bounded
+metric/log evidence; advanced drift is deferred. LangChain/local-model summaries cite evidence and propose
 checks or fixes; inferred causes remain labelled as hypotheses.
 
 ### 6. Generate reviewable pipeline code
@@ -112,13 +117,14 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 ## Immediate development priorities
 
 1. Preserve passing ownership, artifact, idempotency, and serial recovery gates.
-2. Finish the approved conversation scope and retain real local-model evidence.
-3. Review service extraction and the pending monitoring/deployment designs;
-   finish the approved snippet evidence and review work.
-4. Complete all nine course checklist rows with retained evidence and onboarding.
+2. Fix the documented native draft lifecycle/tutorial defects.
+3. Deliver small service, guided-AI, monitoring and Kubernetes slices; finish
+   existing snippet profiles and retain real-model evidence.
+4. Complete all nine rows with retained evidence and clean-checkout onboarding.
 
 The [two-person completion plan](docs/plans/2026-10-08-two-person-course-completion-plan.md)
-records proposed owners and handoffs; the allocation and new designs await review.
+records historical proposed owners/handoffs. The October 13 delivery plan now owns
+approved midterm scope; broader unapproved A3/A4 ambitions are deferred.
 Person A's existing conversation approval retains its recorded scope.
 
 ## Development workflow
@@ -142,6 +148,8 @@ unavailable review are gaps, not passes.
 claims and experiments. Percentages remain hypotheses until measured; retain
 baselines, seeds, hardware/configuration, raw results, failures, and limitations.
 Historical test counts do not describe a new run.
+Large retrieval workloads and research measurements are deferred; demonstrate
+saved-record retrieval/index use without speedup claims.
 
 ## Completion criteria
 
