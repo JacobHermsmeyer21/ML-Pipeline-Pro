@@ -8,7 +8,7 @@ from time import perf_counter
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, FastAPI, Request
 from pydantic import BaseModel
 from starlette.middleware.base import RequestResponseEndpoint
 from starlette.responses import Response
@@ -44,14 +44,51 @@ def create_app(
     *,
     chat_model_factory: ModelFactory | None = None,
 ) -> FastAPI:
+    """Compatibility application for existing host/recovery workflows."""
+    return _create_app(
+        settings,
+        (router, tuning_router, conversation_router),
+        chat_model_factory=chat_model_factory,
+    )
+
+
+def create_model_app(
+    settings: Settings | None = None,
+    *,
+    chat_model_factory: ModelFactory | None = None,
+) -> FastAPI:
+    """Independently deployable model management and conversation API."""
+    return _create_app(
+        settings, (router, conversation_router), chat_model_factory=chat_model_factory
+    )
+
+
+def create_tuning_app(settings: Settings | None = None) -> FastAPI:
+    """Tuning REST API; retains shared tracking references and worker repositories."""
+    return _create_app(settings, (tuning_router,))
+
+
+def _create_app(
+    settings: Settings | None,
+    routers: tuple[APIRouter, ...],
+    *,
+    chat_model_factory: ModelFactory | None = None,
+) -> FastAPI:
     settings = settings if settings is not None else Settings()
+    chat_settings = (
+        settings
+        if conversation_router in routers
+        else settings.model_copy(update={"chat_enabled": False})
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         configure_logging(settings)
         async with open_connections(settings) as connections:
             app.state.connections = connections
-            async with conversation_clients(settings, model_factory=chat_model_factory) as clients:
+            async with conversation_clients(
+                chat_settings, model_factory=chat_model_factory
+            ) as clients:
                 app.state.conversation_model, app.state.conversation_transport = clients
                 logger.info("API started")
                 try:
@@ -64,13 +101,15 @@ def create_app(
         description="Project-scoped datasets, queued training experiments, and model versions.",
         version=__version__,
         lifespan=lifespan,
+        docs_url="/tuning/docs" if routers == (tuning_router,) else "/docs",
+        openapi_url="/tuning/openapi.json" if routers == (tuning_router,) else "/openapi.json",
+        redoc_url=None if routers == (tuning_router,) else "/redoc",
         responses={422: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},
     )
     app.state.settings = settings
     install_error_handlers(app)
-    app.include_router(router)
-    app.include_router(tuning_router)
-    app.include_router(conversation_router)
+    for domain_router in routers:
+        app.include_router(domain_router)
 
     @app.middleware("http")
     async def correlate_request(request: Request, call_next: RequestResponseEndpoint) -> Response:

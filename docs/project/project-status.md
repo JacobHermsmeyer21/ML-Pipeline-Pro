@@ -6,6 +6,12 @@ Current delivery scope (October 13): Jacob approved
 are deferred. Historical evidence/failures below remain intact; no row is closed
 by this scope update.
 
+October 13 implementation: the native HTTP draft lifecycle/tutorial fixes and
+independent model/tuning APIs now have passing fast/routed ordinary/recovery
+evidence in the [midterm plan outcomes](../plans/2026-10-13-midterm-delivery-plan.md#implementation-outcome).
+Monitoring is still absent. The fresh original conversation baseline passes 6/10
+and remains failed; preserve older dated results below as historical records.
+
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
 **Documentation source check, October 8, 2026:** baseline `c28ae06`. The

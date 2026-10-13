@@ -40,6 +40,36 @@ jobs:
           uv run --locked --extra training python -c 'from importlib.metadata import version; from pathlib import Path; Path("/tmp/torch-audit.txt").write_text("torch==" + version("torch").split("+")[0] + "\n")'
           uv run --locked --extra training pip-audit -r /tmp/torch-audit.txt --no-deps --disable-pip
 
+  domain-compose-smoke:
+    runs-on: ubuntu-latest
+    needs: checks
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.12.23"
+          python-version: "3.11"
+          enable-cache: true
+      - run: uv sync --locked --extra training
+      - run: docker compose -f compose.yaml -f compose.services.yaml config --quiet
+      - run: docker compose -f compose.yaml -f compose.services.yaml up --build --wait --wait-timeout 300
+      - run: uv run --locked --extra training python scripts/check_domain_routes.py --output artifacts/domain-validation/routes.json
+      - run: uv run --locked --extra training pytest -m "integration and not recovery" --junitxml=artifacts/domain-validation/integration.xml
+        env:
+          MLPP_RUN_INTEGRATION: "1"
+          MLPP_RUN_WORKER_INTEGRATION: "1"
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: domain-service-validation
+          path: artifacts/domain-validation/
+      - if: failure()
+        run: docker compose -f compose.yaml -f compose.services.yaml logs
+      - if: always()
+        run: docker compose -f compose.yaml -f compose.services.yaml down
+
   compose-smoke:
     runs-on: ubuntu-latest
     steps:

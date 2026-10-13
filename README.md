@@ -39,6 +39,10 @@ See [conversation development](docs/guides/conversation-development.md).
 
 ## Try a workflow
 
+For the independently runnable model/tuning APIs, follow
+[domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes
+are still outstanding.
+
 - [Classification](docs/guides/workflows.md#classification-experiment-walkthrough): register inputs, train, compare, and register a version.
 - [Bounded tuning](docs/guides/workflows.md#bounded-classification-tuning): search within trial/runtime limits, inspect results, and cancel.
 - [Conversation tools](docs/guides/workflows.md#conversation-tool-layer): use typed tools over the existing API.

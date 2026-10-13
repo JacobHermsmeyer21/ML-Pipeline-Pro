@@ -1,0 +1,55 @@
+# Opt-in domain topology; the base stack remains the compatibility/recovery stack.
+x-domain: &domain
+  image: ml-pipeline-pro:local
+  build: .
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    MLPP_ENVIRONMENT: development
+    MLPP_LOG_LEVEL: ${MLPP_LOG_LEVEL:-INFO}
+    MLPP_MONGODB_URI: mongodb://mongo:27017/?directConnection=true
+    MLPP_MONGODB_DATABASE: ${MLPP_MONGODB_DATABASE:-ml_pipeline_pro}
+    MLPP_REDIS_URL: redis://redis:6379/0
+    MLPP_ARTIFACT_ROOT: /app/artifacts
+    MLPP_DATASET_ROOT: /app/examples/data
+    MLPP_CHAT_API_ORIGIN: http://api:8000
+  volumes:
+    - artifacts:/app/artifacts
+  depends_on:
+    mongo:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  healthcheck:
+    test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)"]
+    interval: 10s
+    timeout: 6s
+    retries: 5
+    start_period: 10s
+
+services:
+  api:
+    image: nginx:1.28-alpine
+    build: !reset null
+    env_file: !reset []
+    environment: !reset {}
+    volumes: !override
+      - ./deploy/gateway.conf:/etc/nginx/nginx.conf:ro
+    depends_on: !override
+      model-api:
+        condition: service_healthy
+      tuning-api:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, "http://127.0.0.1:8000/api/v1/health/ready"]
+      interval: 10s
+      timeout: 6s
+      retries: 5
+      start_period: 10s
+  model-api:
+    <<: *domain
+    command: [uvicorn, ml_pipeline_pro.main:create_model_app, --factory, --host, 0.0.0.0, --port, "8000", --no-access-log]
+  tuning-api:
+    <<: *domain
+    command: [uvicorn, ml_pipeline_pro.main:create_tuning_app, --factory, --host, 0.0.0.0, --port, "8000", --no-access-log]

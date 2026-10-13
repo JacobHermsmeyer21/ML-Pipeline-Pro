@@ -152,3 +152,42 @@ review was unavailable. This is a separate reviewer, not implementing-agent
 self-review; it is not real-runtime or concurrency proof.
 [Durable finding](../memory/conversation-snippet-lifecycle.md) now records the fix
 while preserving the original audit evidence. No course row is closed.
+
+### Slice 2: independent model/tuning APIs and routing
+
+Adds model/conversation and tuning factories, an opt-in `compose.services.yaml`
+topology, DNS-refreshing gateway and a routed CI check. The compatibility factory,
+base/recovery stack and all worker/store/transaction code remain intact. Domain
+factories preserve original operations and component schemas. Tests check route
+ownership, schema equality, auth/correlation and offline tuning client lifecycle.
+The new read-only route harness checks the running public boundary. Existing
+assertions/scenarios were not changed.
+
+Validation on Windows/Python 3.11.5, Docker 29.8.2 and Compose 5.5.1: 509 fast
+cases, 61 ordinary cases with both flags against the domain topology, and ten
+serial isolated recovery cases pass with no selected skips/failures. Ruff,
+dependency compatibility, locked sync and package build/inspection pass; the wheel
+has 40 canonical modules and source archives exclude private/cache directories.
+The existing cache-inside-source build warning remains; inspected contents are
+clean. The additional schema assertion was separately rerun after review.
+
+Gateway probes verify normal errors/correlations, unavailable tuning JSON 503,
+and recovery after replacement from `172.18.0.4` to `172.18.0.9` without gateway
+restart. A disposable keyed stack verifies both domains' access checks, same-key
+tuning replay, altered-body conflict and foreign referenced-record rejection;
+it queues only, has no worker and is removed afterward with its own volumes.
+Raw logs/JUnit/probes are in `artifacts/midterm-validation/`; retained evidence is
+indexed in [the service results](../evidence/2026-10-13-midterm-services/results.json).
+
+Separate same-vendor Codex/GPT-6 reviewer `/root/boundary_review` inspected the
+factories, tests, routing/config and unchanged ownership dependencies. No blocker;
+added component-schema comparison for its low finding and exercised its requested
+auth/unavailability/DNS boundaries. Public readiness reflects the model API's
+dependencies, not worker progress/all-domain health, as documented. Different-vendor
+review remains unavailable. Remote CI results are separate from local verification.
+
+The first unchanged ten-case model gate against this checkout/profile passes
+six and fails four: missing runtime, missing objective, missing tuning limits and
+hostile record. Retain this failed baseline; it does not establish improvement
+from service extraction or close C3/C5. Monitoring, guided-AI acceptance, full A2,
+Kubernetes/CI-CD and clean-checkout/human review are still outstanding.
