@@ -34,6 +34,11 @@ to the selected project. Training and tuning submissions require an
 | `GET /api/v1/conversations/{id}` | Read ascending saved turns (`limit=50`, maximum 100; `offset=0`) |
 | `GET /api/v1/conversations/{id}/actions/{action_id}` | Inspect the saved proposal, decision, attempts and outcome |
 | `POST /api/v1/conversations/{id}/actions/{action_id}/decision` | Approve/reject the exact saved fingerprint without inference |
+| `POST /api/v1/monitoring/observations` | Save/replay immutable project sample ID; require a project-owned model version |
+| `GET /api/v1/monitoring/observations` | Project-scoped pagination (`limit` 1-100, nonnegative `offset`) |
+| `GET /api/v1/monitoring/model-versions/{version_id}/summary` | Newest-100 observations in a 30-3600 second window; missing/partial/unknown labels explicit |
+| `POST /api/v1/monitoring/model-versions/{version_id}/diagnosis` | One local-model interpretation/checks with observation citations; review required, no changes |
+| `GET /api/v1/monitoring/metrics` | Authenticated Prometheus metrics for the selected project, bounded five-minute window |
 
 Readiness returns `503` with each dependency's status when either service is unavailable. Responses include `X-Correlation-ID`; an optional valid caller ID is preserved in the response and request logs. Errors contain `error.code`, `error.message`, and `error.correlation_id`.
 
@@ -56,3 +61,11 @@ creates no action or domain submission. Conversation history and same-request
 replay retain the original draft/provenance. See [snippet generation](../guides/snippet-generation.md).
 
 For request examples, see [workflows](../guides/workflows.md).
+
+Monitoring routes belong to the independent monitoring factory and three-domain
+topology; the compatibility application retains its original routes. Monitoring
+samples use body `sample_id` for immutable replay (409 altered input); existing
+accepted samples remain replayable after fresh-time admission expires. New samples
+must be observed within the last day and no more than five seconds in the future.
+Observed/error labels and latency are validated; unknown version references are 404.
+Monitoring POST bodies share the bounded host request cap. See [monitoring](../guides/monitoring-demo.md).

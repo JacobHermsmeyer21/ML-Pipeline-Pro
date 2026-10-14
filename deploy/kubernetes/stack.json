@@ -1,0 +1,1198 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "Namespace",
+      "metadata": {
+        "name": "mlpp-demo"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "mlpp-config",
+        "namespace": "mlpp-demo"
+      },
+      "data": {
+        "MLPP_MONGODB_URI": "mongodb://mongo:27017/?directConnection=true",
+        "MLPP_REDIS_URL": "redis://redis:6379/0",
+        "MLPP_ARTIFACT_ROOT": "/app/artifacts",
+        "MLPP_DATASET_ROOT": "/app/examples/data",
+        "MLPP_CHAT_API_ORIGIN": "http://gateway:8000",
+        "MLPP_CHAT_ENABLED": "false",
+        "MLPP_CHAT_PROTOCOL": "guided"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Secret",
+      "metadata": {
+        "name": "mlpp-project-access",
+        "namespace": "mlpp-demo"
+      },
+      "type": "Opaque",
+      "stringData": {
+        "MLPP_PROJECT_API_KEYS": "{}"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "gateway-config",
+        "namespace": "mlpp-demo"
+      },
+      "data": {
+        "nginx.conf": "events {}\n\nhttp {\n    # Docker's internal DNS allows domain containers to be replaced independently.\n    resolver kube-dns.kube-system.svc.cluster.local valid=5s ipv6=off;\n    map $http_x_correlation_id $correlation_id {\n        default $request_id;\n        \"~^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$\" $http_x_correlation_id;\n    }\n    server {\n        listen 8000;\n        client_max_body_size 0;\n        proxy_set_header Host $host;\n        proxy_set_header X-Correlation-ID $correlation_id;\n        proxy_hide_header X-Correlation-ID;\n        add_header X-Correlation-ID $correlation_id always;\n        # Never retry a mutation at the proxy boundary.\n        proxy_next_upstream off;\n        proxy_connect_timeout 2s;\n        proxy_read_timeout 130s;\n        error_page 502 504 =503 /gateway-unavailable;\n        location = /gateway-unavailable {\n            internal;\n            default_type application/json;\n            return 503 '{\"error\":{\"code\":\"service_unavailable\",\"message\":\"Domain service is unavailable\",\"correlation_id\":\"$correlation_id\"}}';\n        }\n        location ~ ^/api/v1/tuning-jobs(/|$) {\n            set $tuning_backend http://tuning-api.mlpp-demo.svc.cluster.local:8000;\n            proxy_pass $tuning_backend;\n        }\n        location /tuning/ {\n            set $tuning_backend http://tuning-api.mlpp-demo.svc.cluster.local:8000;\n            proxy_pass $tuning_backend;\n        }\n        location ~ ^/api/v1/monitoring(/|$) {\n            set $monitoring_backend http://monitoring-api.mlpp-demo.svc.cluster.local:8000;\n            proxy_pass $monitoring_backend;\n        }\n        location /monitoring/ {\n            set $monitoring_backend http://monitoring-api.mlpp-demo.svc.cluster.local:8000;\n            proxy_pass $monitoring_backend;\n        }\n        location / {\n            set $model_backend http://model-api.mlpp-demo.svc.cluster.local:8000;\n            proxy_pass $model_backend;\n        }\n    }\n}\n"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "prometheus-config",
+        "namespace": "mlpp-demo"
+      },
+      "data": {
+        "prometheus.yaml": "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\nrule_files:\n  - /etc/prometheus/alerts.yaml\nscrape_configs:\n  - job_name: mlpp-workload\n    metrics_path: /api/v1/monitoring/metrics\n    http_headers:\n      X-Project-ID:\n        values: [demo]\n    static_configs:\n      - targets: [monitoring-api:8000]\n",
+        "alerts.yaml": "groups:\n  - name: mlpp-demo\n    rules:\n      - alert: MLPPWorkloadLatencyHigh\n        expr: mlpp_workload_latency_issue == 1\n        labels:\n          severity: demo\n        annotations:\n          summary: Observed maximum latency exceeds the demo 100 ms threshold\n          description: Check declared seeded delays before investigating a regression; this window is bounded.\n"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "grafana-config",
+        "namespace": "mlpp-demo"
+      },
+      "data": {
+        "datasource.yaml": "apiVersion: 1\ndatasources:\n  - name: Prometheus\n    uid: mlpp-prometheus\n    type: prometheus\n    access: proxy\n    url: http://prometheus:9090\n    isDefault: true\n    editable: false\n",
+        "provider.yaml": "apiVersion: 1\nproviders:\n  - name: MLPP\n    folder: Midterm\n    type: file\n    options:\n      path: /etc/grafana/provisioning/dashboards\n",
+        "workload.json": "{\n  \"uid\": \"mlpp-midterm\",\n  \"title\": \"ML Pipeline Pro \\u2014 workload observations\",\n  \"schemaVersion\": 41,\n  \"version\": 1,\n  \"refresh\": \"15s\",\n  \"time\": {\n    \"from\": \"now-15m\",\n    \"to\": \"now\"\n  },\n  \"panels\": [\n    {\n      \"id\": 1,\n      \"type\": \"text\",\n      \"title\": \"Demo window and limits\",\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 0\n      },\n      \"options\": {\n        \"mode\": \"markdown\",\n        \"content\": \"Newest 100 observations in five minutes; refresh/scrape 15s. Latency issue: maximum >100ms. Missing labels = unknown accuracy. Partial=1 means incomplete evidence. Seeded latency is a declared artificial delay. No automatic fixes.\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"type\": \"timeseries\",\n      \"title\": \"Maximum latency (ms)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_workload_max_latency_ms\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    },\n    {\n      \"id\": 3,\n      \"type\": \"timeseries\",\n      \"title\": \"Latency threshold issue\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_workload_latency_issue\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 4\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    },\n    {\n      \"id\": 4,\n      \"type\": \"timeseries\",\n      \"title\": \"Errors / seeded delay observations\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_workload_error_count\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        },\n        {\n          \"refId\": \"B\",\n          \"expr\": \"mlpp_workload_seeded_count\",\n          \"legendFormat\": \"seeded {{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    },\n    {\n      \"id\": 5,\n      \"type\": \"timeseries\",\n      \"title\": \"Label coverage / accuracy\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_workload_labeled_accuracy\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        },\n        {\n          \"refId\": \"B\",\n          \"expr\": \"mlpp_workload_labeled_count\",\n          \"legendFormat\": \"labeled {{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 12\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    },\n    {\n      \"id\": 6,\n      \"type\": \"timeseries\",\n      \"title\": \"Project window partial\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_monitoring_partial\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 20\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    },\n    {\n      \"id\": 7,\n      \"type\": \"timeseries\",\n      \"title\": \"Samples in window\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"mlpp-prometheus\"\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"mlpp_monitoring_samples\",\n          \"legendFormat\": \"{{model_version_id}}\"\n        }\n      ],\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 20\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"min\": 0\n        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"legend\": {\n          \"displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        }\n      }\n    }\n  ]\n}\n"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "PersistentVolumeClaim",
+      "metadata": {
+        "name": "artifacts",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "resources": {
+          "requests": {
+            "storage": "1Gi"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "PersistentVolumeClaim",
+      "metadata": {
+        "name": "mongo-data",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "resources": {
+          "requests": {
+            "storage": "1Gi"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "PersistentVolumeClaim",
+      "metadata": {
+        "name": "redis-data",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "resources": {
+          "requests": {
+            "storage": "256Mi"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "mongo",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "mongo"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "mongo"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "mongo",
+                "image": "mongo:8.0",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "768Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "mongod",
+                  "--replSet",
+                  "mlpp",
+                  "--bind_ip_all"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 27017
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "data",
+                    "mountPath": "/data/db"
+                  }
+                ],
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "mongosh",
+                      "--quiet",
+                      "--eval",
+                      "try { rs.status(); } catch (e) { if (e.code !== 94) throw e; rs.initiate({_id: 'mlpp', members: [{_id: 0, host: 'mongo:27017'}]}); } quit(db.hello().isWritablePrimary ? 0 : 1)"
+                    ]
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "data",
+                "persistentVolumeClaim": {
+                  "claimName": "mongo-data"
+                }
+              }
+            ]
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "mongo",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "mongo"
+        },
+        "ports": [
+          {
+            "port": 27017,
+            "targetPort": 27017
+          }
+        ],
+        "clusterIP": "None",
+        "publishNotReadyAddresses": true
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "redis",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "redis"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "redis"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "redis",
+                "image": "redis:7.4-alpine",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "128Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "redis-server",
+                  "--appendonly",
+                  "yes"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 6379
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "data",
+                    "mountPath": "/data"
+                  }
+                ],
+                "readinessProbe": {
+                  "tcpSocket": {
+                    "port": 6379
+                  },
+                  "periodSeconds": 5
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "data",
+                "persistentVolumeClaim": {
+                  "claimName": "redis-data"
+                }
+              }
+            ]
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "redis",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "redis"
+        },
+        "ports": [
+          {
+            "port": 6379,
+            "targetPort": 6379
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "model-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 2,
+        "selector": {
+          "matchLabels": {
+            "app": "model-api"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "model-api"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "model-api",
+                "image": "ml-pipeline-pro:midterm",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "512Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "uvicorn",
+                  "ml_pipeline_pro.main:create_model_app",
+                  "--factory",
+                  "--host",
+                  "0.0.0.0",
+                  "--port",
+                  "8000",
+                  "--no-access-log"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 8000
+                  }
+                ],
+                "envFrom": [
+                  {
+                    "configMapRef": {
+                      "name": "mlpp-config"
+                    }
+                  },
+                  {
+                    "secretRef": {
+                      "name": "mlpp-project-access"
+                    }
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "artifacts",
+                    "mountPath": "/app/artifacts"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/ready",
+                    "port": 8000
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 5
+                },
+                "startupProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 2,
+                  "failureThreshold": 60
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "artifacts",
+                "persistentVolumeClaim": {
+                  "claimName": "artifacts"
+                }
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "fsGroup": 10001
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "model-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "model-api"
+        },
+        "ports": [
+          {
+            "port": 8000,
+            "targetPort": 8000
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "tuning-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "tuning-api"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "tuning-api"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "tuning-api",
+                "image": "ml-pipeline-pro:midterm",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "512Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "uvicorn",
+                  "ml_pipeline_pro.main:create_tuning_app",
+                  "--factory",
+                  "--host",
+                  "0.0.0.0",
+                  "--port",
+                  "8000",
+                  "--no-access-log"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 8000
+                  }
+                ],
+                "envFrom": [
+                  {
+                    "configMapRef": {
+                      "name": "mlpp-config"
+                    }
+                  },
+                  {
+                    "secretRef": {
+                      "name": "mlpp-project-access"
+                    }
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "artifacts",
+                    "mountPath": "/app/artifacts"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/ready",
+                    "port": 8000
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 5
+                },
+                "startupProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 2,
+                  "failureThreshold": 60
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "artifacts",
+                "persistentVolumeClaim": {
+                  "claimName": "artifacts"
+                }
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "fsGroup": 10001
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "tuning-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "tuning-api"
+        },
+        "ports": [
+          {
+            "port": 8000,
+            "targetPort": 8000
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "monitoring-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "monitoring-api"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "monitoring-api"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "monitoring-api",
+                "image": "ml-pipeline-pro:midterm",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "512Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "uvicorn",
+                  "ml_pipeline_pro.main:create_monitoring_app",
+                  "--factory",
+                  "--host",
+                  "0.0.0.0",
+                  "--port",
+                  "8000",
+                  "--no-access-log"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 8000
+                  }
+                ],
+                "envFrom": [
+                  {
+                    "configMapRef": {
+                      "name": "mlpp-config"
+                    }
+                  },
+                  {
+                    "secretRef": {
+                      "name": "mlpp-project-access"
+                    }
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "artifacts",
+                    "mountPath": "/app/artifacts"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/ready",
+                    "port": 8000
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 5
+                },
+                "startupProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 2,
+                  "failureThreshold": 60
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "artifacts",
+                "persistentVolumeClaim": {
+                  "claimName": "artifacts"
+                }
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "fsGroup": 10001
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "monitoring-api",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "monitoring-api"
+        },
+        "ports": [
+          {
+            "port": 8000,
+            "targetPort": 8000
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "worker",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "worker"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "worker"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "worker",
+                "image": "ml-pipeline-pro:midterm",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "1Gi",
+                    "cpu": "1"
+                  }
+                },
+                "command": [
+                  "celery",
+                  "-A",
+                  "ml_pipeline_pro.worker:app",
+                  "worker",
+                  "--loglevel=INFO",
+                  "--concurrency=1",
+                  "--queues=training,celery"
+                ],
+                "envFrom": [
+                  {
+                    "configMapRef": {
+                      "name": "mlpp-config"
+                    }
+                  },
+                  {
+                    "secretRef": {
+                      "name": "mlpp-project-access"
+                    }
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "artifacts",
+                    "mountPath": "/app/artifacts"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "artifacts",
+                "persistentVolumeClaim": {
+                  "claimName": "artifacts"
+                }
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "fsGroup": 10001
+            }
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        }
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "scheduler",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "scheduler"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "scheduler"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "scheduler",
+                "image": "ml-pipeline-pro:midterm",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "256Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "celery",
+                  "-A",
+                  "ml_pipeline_pro.worker:app",
+                  "beat",
+                  "--loglevel=INFO",
+                  "--schedule=/tmp/mlpp-celerybeat"
+                ],
+                "envFrom": [
+                  {
+                    "configMapRef": {
+                      "name": "mlpp-config"
+                    }
+                  },
+                  {
+                    "secretRef": {
+                      "name": "mlpp-project-access"
+                    }
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "artifacts",
+                    "mountPath": "/app/artifacts"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "artifacts",
+                "persistentVolumeClaim": {
+                  "claimName": "artifacts"
+                }
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "fsGroup": 10001
+            }
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        }
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "gateway",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "gateway"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "gateway"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "gateway",
+                "image": "nginx:1.28-alpine",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "128Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "ports": [
+                  {
+                    "containerPort": 8000
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/nginx/nginx.conf",
+                    "subPath": "nginx.conf"
+                  }
+                ],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/ready",
+                    "port": 8000
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "livenessProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 10,
+                  "timeoutSeconds": 5
+                },
+                "startupProbe": {
+                  "httpGet": {
+                    "path": "/api/v1/health/live",
+                    "port": 8000
+                  },
+                  "periodSeconds": 2,
+                  "failureThreshold": 60
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "gateway-config"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "gateway",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "gateway"
+        },
+        "ports": [
+          {
+            "port": 8000,
+            "targetPort": 8000
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "prometheus",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "prometheus"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "prometheus"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "prometheus",
+                "image": "prom/prometheus:v3.5.0",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "512Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "command": [
+                  "/bin/prometheus",
+                  "--config.file=/etc/prometheus/prometheus.yaml",
+                  "--storage.tsdb.retention.time=1d"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 9090
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/prometheus"
+                  }
+                ],
+                "readinessProbe": {
+                  "tcpSocket": {
+                    "port": 9090
+                  },
+                  "periodSeconds": 5
+                }
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "prometheus-config"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "prometheus",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "prometheus"
+        },
+        "ports": [
+          {
+            "port": 9090,
+            "targetPort": 9090
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "grafana",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "grafana"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "grafana"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "grafana",
+                "image": "grafana/grafana:12.1.1",
+                "imagePullPolicy": "IfNotPresent",
+                "resources": {
+                  "requests": {
+                    "memory": "128Mi",
+                    "cpu": "100m"
+                  },
+                  "limits": {
+                    "memory": "512Mi",
+                    "cpu": "500m"
+                  }
+                },
+                "ports": [
+                  {
+                    "containerPort": 3000
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/grafana/provisioning/datasources/prometheus.yaml",
+                    "subPath": "datasource.yaml"
+                  },
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/grafana/provisioning/dashboards/provider.yaml",
+                    "subPath": "provider.yaml"
+                  },
+                  {
+                    "name": "config",
+                    "mountPath": "/etc/grafana/provisioning/dashboards/workload.json",
+                    "subPath": "workload.json"
+                  }
+                ],
+                "readinessProbe": {
+                  "tcpSocket": {
+                    "port": 3000
+                  },
+                  "periodSeconds": 5
+                },
+                "env": [
+                  {
+                    "name": "GF_AUTH_ANONYMOUS_ENABLED",
+                    "value": "true"
+                  },
+                  {
+                    "name": "GF_AUTH_ANONYMOUS_ORG_ROLE",
+                    "value": "Viewer"
+                  },
+                  {
+                    "name": "GF_AUTH_DISABLE_LOGIN_FORM",
+                    "value": "true"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "grafana-config"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "grafana",
+        "namespace": "mlpp-demo"
+      },
+      "spec": {
+        "selector": {
+          "app": "grafana"
+        },
+        "ports": [
+          {
+            "port": 3000,
+            "targetPort": 3000
+          }
+        ]
+      }
+    }
+  ]
+}

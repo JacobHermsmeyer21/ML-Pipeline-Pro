@@ -32,7 +32,10 @@ SNIPPET_INSTRUCTIONS = (
     "eval/exec, printing, extra requests or automatic retries. A human must review the draft. "
     "Use the supplied client_opening_line as the with-block syntax hint. Generate its request "
     "and result statements yourself from expected_http. Comparison is GET with params as a "
-    "list of tuples [('experiment_id', supplied_id), ... , ('metric', supplied_metric)]."
+    "list of tuples [('experiment_id', supplied_id), ... , ('metric', supplied_metric)]. "
+    "Keep output compact: use single-line dictionaries/lists and omit optional whitespace "
+    "inside literals/calls. Imports may combine as import os,httpx. Keep the with-block "
+    "and its three statements on separate properly indented lines. Do not pretty-print the body."
 )
 
 
@@ -84,8 +87,8 @@ def snippet_messages(request: SnippetRequest, user_message: str) -> list[dict[st
         header_environment["Idempotency-Key"] = "MLPP_SUBMISSION_KEY"
     header_expression = (
         "{"
-        + ", ".join(
-            f"{header!r}: os.environ[{variable!r}]"
+        + ",".join(
+            f"{header!r}:os.environ[{variable!r}]"
             for header, variable in header_environment.items()
         )
         + "}"

@@ -1,0 +1,10 @@
+groups:
+  - name: mlpp-demo
+    rules:
+      - alert: MLPPWorkloadLatencyHigh
+        expr: mlpp_workload_latency_issue == 1
+        labels:
+          severity: demo
+        annotations:
+          summary: Observed maximum latency exceeds the demo 100 ms threshold
+          description: Check declared seeded delays before investigating a regression; this window is bounded.

@@ -53,9 +53,10 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --locked --extra training
-      - run: docker compose -f compose.yaml -f compose.services.yaml config --quiet
-      - run: docker compose -f compose.yaml -f compose.services.yaml up --build --wait --wait-timeout 300
+      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml config --quiet
+      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml up --build --wait --wait-timeout 300
       - run: uv run --locked --extra training python scripts/check_domain_routes.py --output artifacts/domain-validation/routes.json
+      - run: uv run --locked --extra training python scripts/deployment_smoke.py --output artifacts/domain-validation/smoke.json
       - run: uv run --locked --extra training pytest -m "integration and not recovery" --junitxml=artifacts/domain-validation/integration.xml
         env:
           MLPP_RUN_INTEGRATION: "1"
@@ -66,9 +67,40 @@ jobs:
           name: domain-service-validation
           path: artifacts/domain-validation/
       - if: failure()
-        run: docker compose -f compose.yaml -f compose.services.yaml logs
+        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml logs
       - if: always()
-        run: docker compose -f compose.yaml -f compose.services.yaml down
+        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml down
+
+  kubernetes-deploy:
+    runs-on: ubuntu-latest
+    needs: checks
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.12.23"
+          python-version: "3.11"
+          enable-cache: true
+      - run: uv sync --locked --extra training
+      - name: Install verified kind
+        run: |
+          curl --fail --location --output /tmp/kind https://kind.sigs.k8s.io/dl/v0.33.0/kind-linux-amd64
+          curl --fail --location --output /tmp/kind.sha256sum https://kind.sigs.k8s.io/dl/v0.33.0/kind-linux-amd64.sha256sum
+          echo "$(awk '{print $1}' /tmp/kind.sha256sum)  /tmp/kind" | sha256sum --check
+          chmod +x /tmp/kind
+      - run: docker build -t ml-pipeline-pro:midterm .
+      - run: uv run --locked --extra training python scripts/deploy_kind.py --kind /tmp/kind --name mlpp-ci --cleanup
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kubernetes-deployment-validation
+          path: |
+            artifacts/kubernetes-validation/*.json
+            artifacts/kubernetes-validation/*.log
+            artifacts/kubernetes-validation/replicas/*.json
+            artifacts/kubernetes-validation/replicas/*.log
 
   compose-smoke:
     runs-on: ubuntu-latest

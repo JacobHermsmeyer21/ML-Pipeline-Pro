@@ -3,7 +3,9 @@
 Actual Qwen 7B output through LangChain, October 13. Synthetic fixture identifiers;
 these drafts passed the existing AST/API checks and were never executed.
 Review clarity/usefulness, supplied inputs and required environment variables before use.
-This file does not record human acceptance. Full raw runs and failed attempts are in
+Jacob reviewed these drafts/missing-input guidance as clear/useful on October 13.
+This is qualitative acceptance for these examples, not universal model reliability.
+Full raw runs and failed attempts are in
 [the evidence archive](raw.zip), with [checksums/provenance](results.json).
 
 ## list_experiments

@@ -100,6 +100,53 @@ def draft_request(messages: list[dict]) -> bool:
     )
 
 
+def current_budgets(messages: list[dict]) -> dict[str, int]:
+    """Recognize only unambiguous supported current English integer budgets."""
+    request = current_request(messages).lower()
+    if not re.search(r"\b(?:train|training|tune|tuning)\b", request):
+        return {}
+    number = r"(?<!\S)([0-9]+)(?!\S)"
+    config_request = re.sub(r"\btotal\s+runtime\b", "total_budget", request)
+    patterns = {
+        "config.max_runtime_seconds": (
+            rf"\bruntime(?:\s+(?:is|of))?\s+{number}\s+seconds\b",
+            rf"\bconfig\s+max_runtime_seconds\s+{number}",
+        ),
+        "limits.max_trials": (rf"{number}\s+trials\b",),
+        "limits.max_runtime_seconds": (
+            rf"{number}\s+seconds\s+total\b",
+            rf"\btotal(?:\s+runtime)?(?:\s+(?:is|of))?\s+{number}\s+seconds\b",
+        ),
+    }
+    values = {}
+    for path, expressions in patterns.items():
+        source = config_request if path.startswith("config.") else request
+        matches = {
+            int(value) for expression in expressions for value in re.findall(expression, source)
+        }
+        if len(matches) == 1:
+            values[path] = matches.pop()
+    return values
+
+
+def budgets_match(call, budgets: dict[str, int]) -> bool:
+    name, arguments = call.name, call.arguments
+    if name == "generate_pipeline_snippet":
+        name = arguments.get("profile")
+        arguments = arguments.get("inputs", {})
+    if name not in {"create_experiment", "create_tuning_job"}:
+        return True
+    for path, expected in budgets.items():
+        if path.startswith("limits.") and name != "create_tuning_job":
+            continue
+        value = arguments
+        for key in path.split("."):
+            value = value.get(key) if isinstance(value, dict) else None
+        if type(value) is not int or value != expected:
+            return False
+    return True
+
+
 def current_evidence_ids(messages: list[dict], *, facts_only: bool = False) -> tuple[str, ...]:
     identifiers = set()
     for message in messages:
@@ -126,6 +173,7 @@ def guided_schema(
     missing_inputs: tuple[str, ...] = (),
     target: tuple[str, str, str] | None = None,
     draft: bool = False,
+    budgets: dict[str, int] | None = None,
 ) -> dict:
     reply = ModelReply.model_json_schema()
     definitions = reply.pop("$defs", {})
@@ -148,6 +196,16 @@ def guided_schema(
         if target and tool["name"] != target[0]:
             continue
         parameters = tool["parameters"]
+        if budgets and tool["name"] == "generate_pipeline_snippet":
+            inputs = parameters["properties"]["inputs"]
+            for parent, definition in (
+                ("config", "ToolTrainingConfig"),
+                ("limits", "ToolTuningLimits"),
+            ):
+                if any(path.startswith(parent + ".") for path in budgets):
+                    inputs.setdefault("properties", {})[parent] = {"$ref": "#/$defs/" + definition}
+                    inputs.setdefault("required", []).append(parent)
+            parameters["required"] = list(dict.fromkeys([*parameters["required"], "inputs"]))
         if target:
             parameters["properties"][target[1]]["const"] = target[2]
         for name, definition in parameters.pop("$defs", {}).items():
@@ -165,6 +223,13 @@ def guided_schema(
                 },
             }
         )
+    for path, value in (budgets or {}).items():
+        parent, field = path.split(".")
+        definition = definitions.get(
+            "ToolTrainingConfig" if parent == "config" else "ToolTuningLimits"
+        )
+        if definition is not None:
+            definition["properties"][field]["const"] = value
     result = {
         "$defs": definitions,
         "oneOf": [

@@ -123,3 +123,13 @@ affected store cases pass. This supersedes the table's model-gate failure status
 for guided mode, while preserving native/older runs as historical evidence.
 C3/C5/C7 remain partial pending human quality and combined onboarding. See the
 [guided results](../guides/guided-midterm-demo.md).
+
+October 13 delivery update: C2/C6 now have independent monitoring, actual measured
+inference observations, one Prometheus/Grafana threshold/dashboard and local-model
+advice. C8 now has an exercised local Kubernetes deployment, two model API pods'
+direct replay and a committed CI/CD job. C4 includes measured scoped query/index
+evidence at the declared demo scale, not the deferred 10,000-record benchmark.
+The complete actual-ID/history walkthrough and human draft/monitoring reviews pass;
+final clean-checkout/remote deployment closure remains pending. See the
+[combined guide](../guides/midterm-walkthrough.md) and
+[delivery outcome](../plans/2026-10-13-monitoring-deployment-plan.md#implementation-outcome).

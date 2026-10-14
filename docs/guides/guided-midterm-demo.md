@@ -59,7 +59,11 @@ October 13: all ten conversation and seven snippet cases pass on one evaluated
 model/MongoDB HTTP run saves/replays a validated draft, checks history/foreign
 access and creates no experiment. See [retained evidence](../evidence/2026-10-13-guided-demo/results.json)
 and [outputs for human review](../evidence/2026-10-13-guided-demo/human-review.md).
-Human usefulness/quality review and complete clean-checkout onboarding remain open.
+Jacob reviewed the saved examples as clear/useful on October 13. The latest delivery
+revision passes all ten conversation cases but only six of seven snippet cases:
+the longer tuning draft exceeds its unchanged 20-second call limit. The tested 3B
+alternative fails semantic acceptance and is excluded. Complete clean-checkout
+onboarding remains pending final verification.
 Older native failures remain historical evidence; these results do not establish
 universal model reliability, another runtime or concurrent capacity.
 

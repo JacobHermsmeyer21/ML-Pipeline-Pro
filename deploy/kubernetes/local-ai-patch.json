@@ -1,0 +1,26 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "volumes": [
+          {"name": "tokenizer", "hostPath": {"path": "/mlpp-local/tokenizer.json", "type": "File"}}
+        ],
+        "containers": [
+          {
+            "name": "DOMAIN_NAME",
+            "env": [
+              {"name": "MLPP_CHAT_ENABLED", "value": "true"},
+              {"name": "MLPP_CHAT_PROTOCOL", "value": "guided"},
+              {"name": "MLPP_CHAT_MODEL", "value": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1"},
+              {"name": "MLPP_CHAT_MODEL_ORIGIN", "value": "http://ollama.mlpp-demo.svc.cluster.local:11434"},
+              {"name": "MLPP_CHAT_TOKENIZER_PATH", "value": "/app/.tools/local-model-setup/tokenizer.json"}
+            ],
+            "volumeMounts": [
+              {"name": "tokenizer", "mountPath": "/app/.tools/local-model-setup/tokenizer.json", "readOnly": true}
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

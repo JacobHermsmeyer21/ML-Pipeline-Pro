@@ -1,0 +1,242 @@
+{
+  "uid": "mlpp-midterm",
+  "title": "ML Pipeline Pro \u2014 workload observations",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Demo window and limits",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Newest 100 observations in five minutes; refresh/scrape 15s. Latency issue: maximum >100ms. Missing labels = unknown accuracy. Partial=1 means incomplete evidence. Seeded latency is a declared artificial delay. No automatic fixes."
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Maximum latency (ms)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_max_latency_ms",
+          "legendFormat": "{{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Latency threshold issue",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_latency_issue",
+          "legendFormat": "{{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Errors / seeded delay observations",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_error_count",
+          "legendFormat": "{{model_version_id}}"
+        },
+        {
+          "refId": "B",
+          "expr": "mlpp_workload_seeded_count",
+          "legendFormat": "seeded {{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Label coverage / accuracy",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_labeled_accuracy",
+          "legendFormat": "{{model_version_id}}"
+        },
+        {
+          "refId": "B",
+          "expr": "mlpp_workload_labeled_count",
+          "legendFormat": "labeled {{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Project window partial",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_monitoring_partial",
+          "legendFormat": "{{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Samples in window",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_monitoring_samples",
+          "legendFormat": "{{model_version_id}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        }
+      }
+    }
+  ]
+}

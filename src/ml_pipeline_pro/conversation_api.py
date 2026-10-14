@@ -11,6 +11,7 @@ from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_actions import ConversationActions
 from ml_pipeline_pro.conversation_model import ConversationModel
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
+from ml_pipeline_pro.conversation_qwen_counter import QwenConversationModel
 from ml_pipeline_pro.conversation_schemas import (
     TOOL_BYTES,
     ActionDecision,
@@ -44,6 +45,10 @@ class _LazyOllama:
         await self.model.prepare()
         return await self.model.generate_snippet(messages)
 
+    async def generate_monitoring(self, messages):
+        await self.model.prepare()
+        return await self.model.generate_monitoring(messages)
+
     async def close(self):
         await self.model.close()
 
@@ -66,7 +71,13 @@ async def conversation_clients(
                 )
             )
             if model_factory is not None or settings.chat_model is not None:
-                model = (model_factory or OllamaConversationModel)(settings)
+                model = (
+                    model_factory(settings)
+                    if model_factory is not None
+                    else QwenConversationModel(settings, settings.chat_tokenizer_path)
+                    if settings.chat_tokenizer_path is not None
+                    else OllamaConversationModel(settings)
+                )
                 if isinstance(model, OllamaConversationModel):
                     model = _LazyOllama(model)
                 stack.push_async_callback(model.close)

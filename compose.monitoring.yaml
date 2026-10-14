@@ -1,0 +1,46 @@
+services:
+  api:
+    depends_on:
+      monitoring-api:
+        condition: service_healthy
+  monitoring-api:
+    image: ml-pipeline-pro:local
+    build: .
+    command: [uvicorn, ml_pipeline_pro.main:create_monitoring_app, --factory, --host, 0.0.0.0, --port, "8000", --no-access-log]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MLPP_MONGODB_URI: mongodb://mongo:27017/?directConnection=true
+      MLPP_REDIS_URL: redis://redis:6379/0
+      MLPP_MONGODB_DATABASE: ${MLPP_MONGODB_DATABASE:-ml_pipeline_pro}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 5
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command: [--config.file=/etc/prometheus/prometheus.yaml, --storage.tsdb.retention.time=1d]
+    volumes:
+      - ./deploy/monitoring/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./deploy/monitoring/alerts.yaml:/etc/prometheus/alerts.yaml:ro
+    ports: ["127.0.0.1:9090:9090"]
+    depends_on:
+      monitoring-api:
+        condition: service_healthy
+  grafana:
+    image: grafana/grafana:12.1.1
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    volumes:
+      - ./deploy/monitoring/grafana:/etc/grafana/provisioning:ro
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [prometheus]

@@ -6,6 +6,7 @@ import pytest
 
 from ml_pipeline_pro.conversation_guidance import (
     GUIDED_NAMES,
+    current_budgets,
     current_evidence_ids,
     draft_request,
     explicit_missing_inputs,
@@ -317,3 +318,83 @@ def test_guided_fact_ids_include_fetched_comparison_winner_but_exclude_relations
     ]
     assert current_evidence_ids(messages, facts_only=True) == ("other", "winner")
     assert current_evidence_ids(messages) == ("other", "relationship", "winner")
+
+
+@pytest.mark.parametrize(
+    "message,expected",
+    [
+        (
+            "Propose tuning. Per-trial runtime is 10 seconds, "
+            "maximum 2 trials and 40 seconds total.",
+            {
+                "config.max_runtime_seconds": 10,
+                "limits.max_trials": 2,
+                "limits.max_runtime_seconds": 40,
+            },
+        ),
+        ("Prepare training runtime 15 seconds.", {"config.max_runtime_seconds": 15}),
+        (
+            "Propose tuning total runtime 60 seconds, 3 trials.",
+            {"limits.max_runtime_seconds": 60, "limits.max_trials": 3},
+        ),
+        ("Prepare training runtime 10 seconds or runtime 15 seconds.", {}),
+        ("Propose tuning 2.5 trials and 10.5 seconds total.", {}),
+        ("Propose tuning -2 trials and -40 seconds total.", {}),
+        (
+            "Propose tuning per-trial runtime is 10 seconds, total  runtime 40 seconds.",
+            {"config.max_runtime_seconds": 10, "limits.max_runtime_seconds": 40},
+        ),
+        ("Inspect current. A historical runtime 100 seconds.", {}),
+    ],
+)
+def test_current_budget_constraints_never_borrow_history_or_choose_conflicting_values(
+    message, expected
+):
+    messages = [
+        {"role": "assistant", "content": "Old training runtime 600 seconds"},
+        {"role": "user", "content": message},
+    ]
+    assert current_budgets(messages) == expected
+    schema = guided_schema(budgets=expected)
+    if "config.max_runtime_seconds" in expected:
+        assert (
+            schema["$defs"]["ToolTrainingConfig"]["properties"]["max_runtime_seconds"]["const"]
+            == expected["config.max_runtime_seconds"]
+        )
+    assert (
+        "const"
+        not in guided_schema()["$defs"]["ToolTrainingConfig"]["properties"]["max_runtime_seconds"]
+    )
+
+
+def test_provider_ignored_current_per_trial_budget_is_rejected_without_repair():
+    async def run():
+        envelope = {
+            "call": {
+                "name": "create_tuning_job",
+                "arguments": {
+                    "dataset_id": "dataset",
+                    "model_id": "model",
+                    "config": {"max_runtime_seconds": 40},
+                    "objective_metric": "validation_f1",
+                    "limits": {"max_trials": 2, "max_runtime_seconds": 40},
+                },
+            }
+        }
+        runtime = Runtime(
+            chat_response(message={"role": "assistant", "content": json.dumps(envelope)})
+        )
+        async with runtime.model(settings(chat_protocol="guided")) as model:
+            with pytest.raises(ConversationModelError) as caught:
+                await model.generate(
+                    [
+                        {
+                            "role": "user",
+                            "content": "Propose tuning. Per-trial runtime is 10 seconds, "
+                            "2 trials, 40 seconds total.",
+                        }
+                    ]
+                )
+            assert caught.value.code == "model_invalid_response"
+
+    asyncio.run(run())

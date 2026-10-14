@@ -75,4 +75,19 @@ this document. Material changes to approved intent require renewed review.
 
 ## Implementation outcome
 
-Pending; retain real failed output in `artifacts/midterm-validation/walkthrough-final/`.
+Implemented current-only schema constants and post-decode rejection. The separate
+reviewer found signed/fractional numeric fragments and whitespace-dependent total
+runtime classification; full whitespace-delimited numeric tokens and total-runtime
+classification fix these with regressions. Conflicts/unsupported expressions remain
+unconstrained, never converted to an inferred number. Public/native defaults intact.
+
+The complete actual-ID/history walkthrough now verifies per-trial 10/total 40,
+saved replay, explicit test approval, completed tuning, generated draft/replay and
+monitoring. The script uses per-run request IDs because IDs are project-global;
+it preserves `awaiting_confirmation` turn versus `pending_confirmation` action.
+No budget assertion was weakened; failed attempts remain in the evidence. Cold
+runtime failures led to an explicit setup warmup, not hidden retries or larger gates.
+
+Focused SDK/parser/HTTP checks and full fast gate pass. Original ten conversation
+and seven snippet gates retain all attempts, semantic assertions and budgets;
+hardware/contention timing limits remain visible. Different-vendor review unavailable.

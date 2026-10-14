@@ -2,11 +2,30 @@ from unittest.mock import AsyncMock
 
 from fastapi.testclient import TestClient
 
+from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_api import get_conversation_store
+from ml_pipeline_pro.conversation_qwen_counter import QwenConversationModel
 from ml_pipeline_pro.conversation_schemas import ConversationHistory, ConversationTurn
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.main import create_app
 from tests.test_conversation_actions import fixture
+
+
+def test_explicit_tokenizer_factory_stays_offline_and_closes(fake_connections, tmp_path):
+    app = create_app(
+        Settings(
+            _env_file=None,
+            chat_enabled=True,
+            chat_model="mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+            chat_tokenizer_path=tmp_path / "absent-tokenizer.json",
+        )
+    )
+    with TestClient(app):
+        model = app.state.conversation_model
+        assert isinstance(model, QwenConversationModel)
+        assert model._native is None and model._counter is None
+    assert model._closed is True
+    assert Settings(_env_file=None, chat_tokenizer_path="").chat_tokenizer_path is None
 
 
 def test_disabled_chat_and_decisions_preserve_authenticated_audit_reads(app):

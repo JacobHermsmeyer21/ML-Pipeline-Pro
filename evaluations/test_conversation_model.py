@@ -17,6 +17,7 @@ import pytest
 
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_guidance import (
+    current_budgets,
     current_evidence_ids,
     draft_request,
     explicit_missing_inputs,
@@ -247,6 +248,7 @@ class ObservedCounter:
                 missing_inputs=explicit_missing_inputs(payload["messages"]),
                 target=inspection_target(payload["messages"]),
                 draft=draft_request(payload["messages"]),
+                budgets=current_budgets(payload["messages"]),
             )
             self.format_hashes.append(fingerprint(payload["format"]))
         else:

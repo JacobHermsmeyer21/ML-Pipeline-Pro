@@ -22,6 +22,7 @@ from ml_pipeline_pro.conversation_api import router as conversation_router
 from ml_pipeline_pro.conversation_schemas import REQUEST_BYTES
 from ml_pipeline_pro.errors import ApiError, ErrorResponse, error_response, install_error_handlers
 from ml_pipeline_pro.logging import configure_logging
+from ml_pipeline_pro.monitoring_api import router as monitoring_router
 from ml_pipeline_pro.tuning_api import router as tuning_router
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,12 @@ def create_tuning_app(settings: Settings | None = None) -> FastAPI:
     return _create_app(settings, (tuning_router,))
 
 
+def create_monitoring_app(
+    settings: Settings | None = None, *, chat_model_factory: ModelFactory | None = None
+) -> FastAPI:
+    return _create_app(settings, (monitoring_router,), chat_model_factory=chat_model_factory)
+
+
 def _create_app(
     settings: Settings | None,
     routers: tuple[APIRouter, ...],
@@ -77,7 +84,7 @@ def _create_app(
     settings = settings if settings is not None else Settings()
     chat_settings = (
         settings
-        if conversation_router in routers
+        if conversation_router in routers or monitoring_router in routers
         else settings.model_copy(update={"chat_enabled": False})
     )
 
@@ -96,14 +103,21 @@ def _create_app(
                 finally:
                     logger.info("API stopping")
 
+    docs_prefix = (
+        "/tuning"
+        if routers == (tuning_router,)
+        else "/monitoring"
+        if (routers == (monitoring_router,))
+        else ""
+    )
     app = FastAPI(
         title="ML Pipeline Pro",
         description="Project-scoped datasets, queued training experiments, and model versions.",
         version=__version__,
         lifespan=lifespan,
-        docs_url="/tuning/docs" if routers == (tuning_router,) else "/docs",
-        openapi_url="/tuning/openapi.json" if routers == (tuning_router,) else "/openapi.json",
-        redoc_url=None if routers == (tuning_router,) else "/redoc",
+        docs_url=f"{docs_prefix}/docs",
+        openapi_url=f"{docs_prefix}/openapi.json",
+        redoc_url=None if docs_prefix else "/redoc",
         responses={422: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},
     )
     app.state.settings = settings
@@ -118,8 +132,10 @@ def _create_app(
         request.state.correlation_id = correlation_id
         started = perf_counter()
         path = request.url.path
+        monitoring_post = path.startswith("/api/v1/monitoring/")
         if request.method == "POST" and (
-            path == "/api/v1/chat"
+            monitoring_post
+            or path == "/api/v1/chat"
             or (path.startswith("/api/v1/conversations/") and path.endswith("/decision"))
         ):
             body = bytearray()
@@ -128,8 +144,10 @@ def _create_app(
                     return error_response(
                         request,
                         422,
-                        "chat_limit_exceeded",
-                        "Conversation request exceeds byte limit",
+                        "monitoring_limit_exceeded" if monitoring_post else "chat_limit_exceeded",
+                        "Monitoring request exceeds byte limit"
+                        if monitoring_post
+                        else "Conversation request exceeds byte limit",
                     )
                 body.extend(chunk)
             request._body = bytes(body)

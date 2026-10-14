@@ -3,12 +3,14 @@
 The compatibility backend uses one FastAPI application, Redis/Celery workers and
 MongoDB. Model-management/conversation and tuning also have independent factories
 and a [domain Compose topology](../guides/domain-services.md) with public routing.
-The course target requires separately deployable model-management,
-tuning, and monitoring REST services. See the [roadmap](../../PLAN.md).
+The [monitoring overlay](../guides/monitoring-demo.md) completes the three independent
+REST services; [Kubernetes](../guides/kubernetes-demo.md) deploys the same image and
+shared stores. See the [roadmap](../../PLAN.md).
 The approved [midterm plan](../plans/2026-10-13-midterm-delivery-plan.md) selects
 three domain processes sharing code/image/database, thin public routing, one serial
 worker, one local-model profile and small live monitoring. This target remains
-planned until its service/real-model/deployment gates pass.
+bounded by the [midterm scope](../project/midterm-scope.md); wider production/drift
+work remains deferred.
 
 ## Architecture and ownership
 
@@ -16,7 +18,7 @@ planned until its service/real-model/deployment gates pass.
 | --- | --- | --- |
 | Tracking module | Implemented: register datasets/versions, create experiments, compare results, resolve artifacts | Datasets, models, model versions, experiments |
 | Tuning module | Implemented: validate bounded serial searches, persist reservations/trials, cancel jobs | Tuning jobs and trials |
-| Monitoring module | Required/planned: separate monitoring REST service, observations, visualization, alert evidence, and LangChain summaries/fixes | Planned monitoring summaries and alerts |
+| Monitoring service | Immutable project/version observations, capped summaries, Prometheus/Grafana, one threshold and separate LangChain interpretation/checks | Monitoring observations; summaries derived on read |
 | Conversation tool library | Implemented: 13 typed HTTP operations, trusted context, budgets/keys, public record evidence | Calls existing APIs; no owned durable records |
 | Conversation module | Partial: local adapter, grounded reads, durable turns/proposals, routes and confirmed dispatch; live-model and generated-code acceptance remains open | Conversations, turns, and action records |
 | Celery workers | Implemented training, tuning, recovery, and transactional tuning ownership | Write through the domain repository interfaces |
@@ -46,8 +48,8 @@ exist; migration and retention procedures do not.
 
 | Collection | Fields/intent | Indexes/intent |
 | --- | --- | --- |
-| `monitoring_summaries` (planned) | Project, model version, window bounds, metric aggregates, label availability | `(project_id, model_version_id, window_start)` |
-| `alerts` (planned) | Project, model version, rule, observed value, status, evidence references | `(project_id, model_version_id, created_at)` |
+| `monitoring_observations` | Immutable project/sample identity, model version, measured timestamp/latency, labels/outcome, safe fault enum/input hash | Unique `_id`; project/version/observed time and scoped pagination indexes |
+| Wider summary/alert state (deferred) | Durable historical aggregates, alert lifecycle and general drift | Outside the approved minimal midterm; current summaries/rule derive from a bounded window |
 | `conversations`, `conversation_turns` | Project, revision/turn claims, dialogue, verified record snapshots, correlations | Project/request ID and project/conversation/sequence uniqueness; history lookups |
 | `conversation_actions` | Project, immutable arguments/hash, confirmation, submission key, attempt claims/outcomes, evidence | Project/conversation/action lookups |
 

@@ -13,6 +13,7 @@ import pytest
 
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_guidance import (
+    current_budgets,
     current_evidence_ids,
     draft_request,
     explicit_missing_inputs,
@@ -171,6 +172,7 @@ def test_seven_real_snippet_scenarios(request):
                         missing_inputs=explicit_missing_inputs(payload["messages"]),
                         target=inspection_target(payload["messages"]),
                         draft=draft_request(payload["messages"]),
+                        budgets=current_budgets(payload["messages"]),
                     )
                 )
                 assert payload["format"] == expected_format, "Unexpected guided schema"

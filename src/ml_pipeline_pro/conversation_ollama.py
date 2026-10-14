@@ -18,6 +18,8 @@ from pydantic import ValidationError
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_guidance import (
     GUIDED_NAMES,
+    budgets_match,
+    current_budgets,
     current_evidence_ids,
     draft_request,
     explicit_missing_inputs,
@@ -39,6 +41,8 @@ from ml_pipeline_pro.conversation_schemas import (
     serialized,
 )
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+from ml_pipeline_pro.monitoring import MONITORING_INSTRUCTIONS
+from ml_pipeline_pro.monitoring_schemas import MonitoringAdvice, MonitoringStep
 from ml_pipeline_pro.snippet_generation import snippet_instructions
 from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolCall
@@ -300,7 +304,12 @@ class OllamaConversationModel:
     async def generate_snippet(self, messages: list[dict[str, Any]]) -> ModelStep:
         return await self._generate(messages, snippet=True)
 
-    async def _generate(self, messages: list[dict[str, Any]], *, snippet: bool) -> ModelStep:
+    async def generate_monitoring(self, messages: list[dict[str, Any]]) -> MonitoringStep:
+        return await self._generate(messages, snippet=False, monitoring=True)
+
+    async def _generate(
+        self, messages: list[dict[str, Any]], *, snippet: bool, monitoring: bool = False
+    ) -> ModelStep | MonitoringStep:
         if self._closed or not self._prepared:
             raise ConversationModelError("model_unavailable", "Local model is not prepared")
         if self._count_input_tokens is None:
@@ -313,18 +322,27 @@ class OllamaConversationModel:
             )
         guided = self._settings.chat_protocol == "guided"
         instructions = (
-            snippet_instructions(messages)
+            MONITORING_INSTRUCTIONS
+            if monitoring
+            else snippet_instructions(messages)
             if snippet
             else guided_instructions()
             if guided
             else REPLY_INSTRUCTIONS
         )
-        tools = [] if snippet or guided else self._tools
+        tools = [] if snippet or guided or monitoring else self._tools
         context = [{"role": "system", "content": instructions}, *self._redact(messages)]
         try:
             payload = {"messages": context, "tools": tools}
             schema = None
-            if guided:
+            if monitoring:
+                schema = MonitoringAdvice.model_json_schema()
+                measurements = _json_object(messages[-1]["content"])
+                schema["properties"]["observation_ids"]["items"]["enum"] = measurements[
+                    "observation_ids"
+                ]
+                payload["format"] = schema
+            elif guided:
                 schema = (
                     SnippetCandidate.model_json_schema()
                     if snippet
@@ -334,6 +352,7 @@ class OllamaConversationModel:
                         missing_inputs=explicit_missing_inputs(context),
                         target=inspection_target(context),
                         draft=draft_request(context),
+                        budgets=current_budgets(context),
                     )
                 )
                 payload["format"] = schema
@@ -345,7 +364,7 @@ class OllamaConversationModel:
                 with tracing_context(enabled=False):
                     bound = (
                         self._model.bind(tools=[], format=schema, stream=False)
-                        if guided
+                        if guided or monitoring
                         else self._model.bind_tools([], stream=False)
                         if snippet
                         else self._bound
@@ -357,6 +376,23 @@ class OllamaConversationModel:
                 "input_tokens": result.usage_metadata["input_tokens"],
                 "output_tokens": result.usage_metadata["output_tokens"],
             }
+            if monitoring:
+                if result.tool_calls or not isinstance(result.content, str):
+                    raise ValueError
+                advice = MonitoringAdvice.model_validate(self._redact(_json_object(result.content)))
+                if not set(advice.observation_ids) <= set(measurements["observation_ids"]):
+                    raise ValueError
+                return MonitoringStep(
+                    advice=advice,
+                    usage=usage,
+                    provenance={
+                        "protocol": "monitoring",
+                        "instructions_hash": fingerprint(instructions),
+                        "tools_hash": fingerprint([]),
+                        "request_format_hash": fingerprint(schema),
+                        "input_context_hash": fingerprint(payload),
+                    },
+                )
             if snippet:
                 if result.tool_calls or not isinstance(result.content, str):
                     raise ValueError
@@ -374,6 +410,8 @@ class OllamaConversationModel:
                     raise ValueError
                 step = ModelStep.model_validate({**envelope, "usage": usage})
                 if step.call is not None and step.call.name not in GUIDED_NAMES:
+                    raise ValueError
+                if step.call is not None and not budgets_match(step.call, current_budgets(context)):
                     raise ValueError
                 if (
                     draft_request(context)

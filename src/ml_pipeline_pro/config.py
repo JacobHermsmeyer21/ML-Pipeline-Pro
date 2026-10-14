@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     chat_enabled: bool = False
     chat_backend: Literal["ollama"] = "ollama"
     chat_protocol: Literal["native", "guided"] = "native"
+    chat_tokenizer_path: Path | None = None
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
     chat_model_origin: str = "http://127.0.0.1:11434"
     chat_api_origin: str = "http://127.0.0.1:8000"
@@ -47,6 +48,11 @@ class Settings(BaseSettings):
     chat_max_tool_calls: int = Field(default=4, strict=True, ge=1, le=8)
     chat_max_output_tokens: int = Field(default=1024, strict=True, ge=128, le=4096)
     chat_context_tokens: int = Field(default=8192, strict=True, ge=1024, le=16384)
+
+    @field_validator("chat_tokenizer_path", mode="before")
+    @classmethod
+    def blank_tokenizer_path(cls, value):
+        return None if isinstance(value, str) and not value.strip() else value
 
     @field_validator(
         "chat_max_model_calls",

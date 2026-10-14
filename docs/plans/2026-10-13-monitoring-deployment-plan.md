@@ -133,4 +133,38 @@ material changes to approved intent require renewed review.
 
 ## Implementation outcome
 
-Pending. No monitoring/deployment row closed by this plan.
+Implemented monitoring/API/factory, bounded immutable storage, measured producer,
+Prometheus/Grafana/rule, three-domain and explicit-AI overlays, Kubernetes manifest
+and checked deployment script/CI job. Prometheus client 0.24.1 is locked. Existing
+tracking/tuning/worker ownership and compatibility routes remain unchanged.
+
+Separate same-vendor `/root/boundary_review` found/fixed BSON response precision,
+expired fresh-time replay, wrong diagnosis instruction/format provenance and nested
+secret redaction. It requested aligned summary bounds and forced cross-pod replay;
+both are implemented/exercised. Different-vendor review unavailable. No remaining
+ownership/artifact/cleanup blocker identified; model/production capacity is unproven.
+
+Windows/Python 3.11.5, Docker 29.8.2, kubectl 1.36.1, kind 0.33.0: 562 fast cases,
+63 ordinary with both flags, ten isolated serial recovery cases pass. Recovery
+took 266 seconds; sandbox/engine failures before execution are retained separately.
+Docker Desktop returned a stale WSL prerequisite error; normal engine restart
+restored it without a system update. Locked sync/Ruff/dependencies/build pass;
+wheel contains 44 canonical modules, source archive excludes private/cache files.
+
+Measured producer: 20 actual CPU inferences, five declared 150 ms delays, verified
+checkpoint/dataset identities, no training artifact writes. Prometheus issue visible
+4.1 seconds after final accepted sample; provisioned Grafana query/refresh verified.
+The model cites actual observations/proposes inspecting the declared delay. Jacob
+reviewed that output as clear/useful October 13. A cold first call timed out; all
+failed attempts remain saved. No generalization or production-latency guarantee.
+
+Fresh local Kubernetes rollout and actual training/tuning/version/monitoring smoke
+pass; direct forwards to both model API pods return the same submitted experiment.
+Dedicated kubeconfig is excluded from evidence/Git. CI deployment and clean-checkout
+closure remain pending their final run. Demo search is three trials: two TPE startup
+trials and one posterior suggestion; model-proposed bounded follow-up uses two.
+
+Explicit tokenizer configuration preserves offline/default behavior. Setup warmup
+must match the API's 8192-token context; otherwise a cold runner reload can consume
+the unchanged 20-second inference deadline. Source and failed/accepted raw evidence
+are retained under `artifacts/midterm-validation/` pending the final evidence index.

@@ -12,6 +12,7 @@ from ml_pipeline_pro.conversation_model import ConversationModelError
 from ml_pipeline_pro.conversation_qwen_counter import (
     MODEL_TAG,
     PROFILE_IDENTITY,
+    PROFILES,
     TOKENIZER_MAX_BYTES,
     QwenConversationModel,
     QwenInputCounter,
@@ -29,8 +30,11 @@ def test_render_matches_retained_real_runtime_including_schema_numbers_and_unico
 
 
 @pytest.mark.parametrize("field", ["model_tag", *PROFILE_IDENTITY])
-def test_wrong_artifact_runtime_or_template_rejects_before_loading_a_tokenizer(field, tmp_path):
-    provenance = {"model_tag": MODEL_TAG, **PROFILE_IDENTITY, field: "unverified"}
+@pytest.mark.parametrize("tag", PROFILES)
+def test_wrong_artifact_runtime_or_template_rejects_before_loading_a_tokenizer(
+    field, tag, tmp_path
+):
+    provenance = {"model_tag": tag, **PROFILES[tag], field: "unverified"}
     with pytest.raises(ConversationModelError, match="profile is unavailable") as caught:
         QwenInputCounter(provenance, tmp_path / "absent.json")
     assert caught.value.code == "model_unavailable"

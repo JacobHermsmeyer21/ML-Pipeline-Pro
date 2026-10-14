@@ -9,14 +9,16 @@ You can register datasets and models, queue training or tuning, compare validati
 results, download verified artifacts, and register model versions. Training runs
 serially on CPU. Conversation tools, a local model adapter, durable history,
 grounded reads, authenticated routes, and confirmed actions are implemented;
-the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) passes its original
-live conversation/snippet gates; human quality and full onboarding remain open.
+the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) has retained real-model
+dialogue and generated-draft evidence. The latest full snippet gate still times out
+on its longer tuning draft; earlier passing runs are retained with their revisions.
 Supported Python snippet generation now saves restricted, validated drafts for
 human review. See the [snippet guide](docs/guides/snippet-generation.md).
 
-The full course project is **in development**. Separate model-management, tuning,
-and monitoring services, live monitoring, final human AI review, and
-Kubernetes/deployment CI/CD remain outstanding. See the
+The approved [midterm walkthrough](docs/guides/midterm-walkthrough.md) now has three
+independent domain APIs, guided local AI, generated drafts, measured monitoring
+with Prometheus/Grafana, and a local Kubernetes deployment path. Human draft and
+monitoring reviews are recorded. Clean-checkout/remote verification is in progress. See the
 [roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 
 ## Development setup
@@ -42,13 +44,15 @@ See [conversation development](docs/guides/conversation-development.md).
 
 For the independently runnable model/tuning APIs, follow
 [domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes
-are still outstanding.
+use the [monitoring](docs/guides/monitoring-demo.md) and
+[Kubernetes](docs/guides/kubernetes-demo.md) guides.
 
 - [Classification](docs/guides/workflows.md#classification-experiment-walkthrough): register inputs, train, compare, and register a version.
 - [Bounded tuning](docs/guides/workflows.md#bounded-classification-tuning): search within trial/runtime limits, inspect results, and cancel.
 - [Conversation tools](docs/guides/workflows.md#conversation-tool-layer): use typed tools over the existing API.
 - [Generated Python drafts](docs/guides/snippet-generation.md): request, inspect, and review integration snippets through chat.
 - [API reference](docs/reference/api.md): endpoints, access headers, errors, and idempotency.
+- [Complete midterm demo](docs/guides/midterm-walkthrough.md): the approved minimal all-nine workflow.
 
 The walkthroughs include demos that run without services.
 

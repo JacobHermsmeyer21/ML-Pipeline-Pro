@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Minimal monitoring/deployment boundaries](minimal-monitoring-deployment.md) | Immutable replay precision, scoped advice provenance, Kubernetes discovery and runtime setup |
 | [Guided grammar needs semantic gates](guided-model-boundary.md) | Narrow intent guards, current snapshot facts and per-method snippet guidance |
 | [Course scope requires pre-trained models and separate services](course-deliverable-scope.md) | Course acceptance, local inference, service architecture, and Kubernetes |
 | [A read-only parent check cannot fence tuning child writes](tuning-parent-fence.md) | MongoDB transactions and ownership takeover |

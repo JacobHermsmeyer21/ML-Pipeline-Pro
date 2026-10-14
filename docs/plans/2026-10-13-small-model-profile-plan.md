@@ -1,6 +1,6 @@
 # Evaluate one smaller local profile for the midterm
 
-- Status: approved one-profile midterm direction; evaluation pending
+- Status: evaluation completed; candidate rejected
 - Date: 2026-10-13
 - Source baseline: `f16e721` with checked delivery implementation in progress
 - Human approval: Jacob's approved minimal local-model recommendation/implementation request
@@ -77,4 +77,24 @@ Material changes to acceptance/defaults require renewed review.
 
 ## Implementation outcome
 
-Pending. Current 7B code timing remains a recorded acceptance gap.
+The exact installed 3B base digest is
+`357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b`;
+the derived template profile is
+`3d2938166985ac8548c5c446260ddbfb0326891cd50d286781c53a7f5d24d6dc`.
+Runtime/template identity matches the pinned setup. Shared GGUF vocabulary/type IDs,
+merges and special-token metadata match 7B; the difference is unused padding
+(151936 versus 152064 entries). The pinned tokenizer has 151665 IDs, maximum
+151664, and no padding IDs. Actual SDK/runtime counts match in the retained gates.
+
+The unchanged live gates pass **five of ten dialogue cases and one of seven snippet
+cases**. Faster output does not establish usable guidance. The candidate is rejected;
+its additive whitelist/setup choice was removed, while weights and failed evidence
+remain untouched. The demo continues to explicitly select 7B. The research license
+is retained with the evaluation, and no commercial-use permission is claimed.
+
+Separate same-vendor `/root/boundary_review` found no structural identity/rendering
+blocker and confirmed removal after semantic rejection; different-vendor unavailable.
+Latest 7B snippet acceptance still passes six of seven, with the longer tuning draft
+exceeding the unchanged 20-second limit, including after a runner reload. No gate,
+assertion, host validation, retry or deadline was relaxed. See the final delivery
+evidence for raw attempts; this remains an acceptance gap.
