@@ -118,3 +118,11 @@ conversation/snippet cases are included). The newly attempted laptop model gates
 fail: 2/10 dialogue and 0/7 snippets, with unchanged budgets. Local rebuilt-image
 walkthrough, original-record reproduction and model acceptance remain open. See
 [installation and execution evidence](../evidence/2026-10-14-prerequisite-setup/README.md).
+
+Post-reboot: rebuilt local services start, their requested-fact module matches the
+committed hash, and all 63 ordinary integration cases pass without skips. The
+walkthrough's backend succeeds but the first real-model request exceeds the client
+wait; its saved turn is interrupted before any tool read. Independent measured
+monitoring succeeds. Model acceptance and full walkthrough remain open, and the
+late server timeout needs separate mechanism diagnosis. No scope expansion or
+deadline change was implemented. See [retained local execution](../evidence/2026-10-14-post-reboot-validation/README.md).

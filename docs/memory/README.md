@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [CPU inference can overrun observed API timeout boundaries](cpu-inference-timeout-overrun.md) | Retained slow prompt/late 504, interrupted saved turn and unresolved scheduling mechanism |
 | [Laptop prerequisites and reboot boundary](laptop-test-prerequisites.md) | Installed Docker/WSL/Ollama locations, restart requirement and CPU gate failures |
 | [Requested inspection facts need a reply constraint](requested-inspection-facts.md) | Current scalar lookup references, omitted model facts and replay without repair |
 | [Minimal monitoring/deployment boundaries](minimal-monitoring-deployment.md) | Immutable replay precision, scoped advice provenance, Kubernetes discovery and runtime setup |

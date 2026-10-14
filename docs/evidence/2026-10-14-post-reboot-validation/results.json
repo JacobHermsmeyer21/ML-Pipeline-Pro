@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-14",
+  "sourceRevision": "3dd877b63d3ab02be519908488b5b0b7ba305d02",
+  "project": "mlpp-post-reboot-validation",
+  "hypervisorPresent": true,
+  "dockerServer": "29.8.2",
+  "applicationImage": "sha256:0269d528e8a3903ba26e37ef6d43df18bc7d108d547fb952ecab8dd7bd956d55",
+  "composeFiles": [
+    "compose.yaml",
+    "compose.services.yaml",
+    "compose.monitoring.yaml",
+    "compose.ai.yaml"
+  ],
+  "runtime": {
+    "version": "0.40.2"
+  },
+  "originalFailedDemoPresent": false,
+  "modelDeadlineOverride": false,
+  "generatedCodeExecuted": false,
+  "ordinary_integration": {
+    "tests": "63",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "75.199"
+  },
+  "initial_integration": {
+    "passed": 60,
+    "fixture_errors": 3,
+    "cause": "Windows pytest temp directory PermissionError"
+  },
+  "source_sha256": {
+    "src/ml_pipeline_pro/conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+    "src/ml_pipeline_pro/conversation_ollama.py": "8f7069243473007b1c2edbd43fd7d96478b2ae23ab525e8e877404fb527c1d52",
+    "uv.lock": "aa1eb72cf619d8aa46b2f9443fe125488b84229ee7119b14c6fb4efbdefd091c"
+  },
+  "running_guidance_sha256": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+  "walkthrough": {
+    "status": "failed_client_read_timeout",
+    "saved_turn_status": "interrupted",
+    "saved_turn_error": {
+      "code": "chat_interrupted",
+      "message": "Turn deadline expired; generation was not resumed"
+    },
+    "completed_tool_reads": 0,
+    "prompt_eval_seconds": 113.52421,
+    "generation_seconds": 19.54517,
+    "api_response_ms": 140929.08,
+    "configured_model_timeout_seconds": 20,
+    "configured_turn_timeout_seconds": 60,
+    "timeout_overrun_mechanism": "unresolved"
+  },
+  "model_unloaded_after_attempt": true,
+  "measured_workload": {
+    "samples": 20,
+    "declared_delays": 5,
+    "delay_seconds": 0.15,
+    "replay_equal": true,
+    "visibility_interval_not_measured": true
+  },
+  "pending": [
+    "full AI walkthrough",
+    "original failed-record reproduction",
+    "passing laptop model gates",
+    "separate boundary review",
+    "timeout-overrun mechanism diagnosis"
+  ],
+  "raw_sha256": "b9dfb275a456f4dcbeb6a353af127d3eb7bbdce4f5a4defafbb46baffb47e870"
+}

@@ -19,3 +19,11 @@ including 63 real-service tests without skips, but does not run these model gate
 No deadline/assertion changes or inferred GPU-equivalent performance are justified.
 Recheck after reboot or a separately evaluated runtime/hardware change. The model
 was unloaded after tests; explicit warmup is still needed before another gate.
+
+Same-day [post-reboot validation](../evidence/2026-10-14-post-reboot-validation/README.md)
+activates the hypervisor/WSL 2 backend; Docker starts successfully after initial
+distribution provisioning. All 63 ordinary local integration cases pass without
+skips. An old Windows pytest temp directory denies access in the initial run;
+use a fresh `--basetemp` under workspace artifacts rather than changing tests or
+broadly changing filesystem permissions. The complete AI walkthrough remains
+unsuccessful; see [observed timeout overrun](cpu-inference-timeout-overrun.md).

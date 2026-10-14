@@ -15,6 +15,14 @@ The pinned 7B local gates on this CPU laptop fail (2/10 dialogue, 0/7 snippets).
 [Setup and retained failures](../evidence/2026-10-14-prerequisite-setup/README.md)
 keep these limits separate from prior GPU success and passing scripted/service CI.
 
+After the restart, rebuilt Docker services and **63 local ordinary integration
+cases pass without skips**. Direct backend smoke and measured monitoring also pass.
+The real AI walkthrough times out at its first inspection; the saved turn is
+interrupted with no tool reads. Model prompt evaluation takes 113.524 seconds on
+CPU; the API's late 504 also leaves timeout enforcement under these conditions
+unverified. [Post-reboot evidence](../evidence/2026-10-14-post-reboot-validation/README.md)
+retains the failure and separates it from successful backend checks.
+
 Current minimal delivery (October 13): three independent APIs, guided local 7B,
 Bayesian tuning/history, generated Python, measured monitoring and Docker/Kubernetes
 are implemented. Final original ten/seven model gates, human examples, 570 fast,
