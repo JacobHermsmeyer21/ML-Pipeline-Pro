@@ -192,6 +192,19 @@
                   },
                   "periodSeconds": 5,
                   "timeoutSeconds": 5
+                },
+                "startupProbe": {
+                  "exec": {
+                    "command": [
+                      "mongosh",
+                      "--quiet",
+                      "--eval",
+                      "try { rs.status(); } catch (e) { if (e.code !== 94) throw e; rs.initiate({_id: 'mlpp', members: [{_id: 0, host: 'mongo:27017'}]}); } quit(db.hello().isWritablePrimary ? 0 : 1)"
+                    ]
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5,
+                  "failureThreshold": 12
                 }
               }
             ],

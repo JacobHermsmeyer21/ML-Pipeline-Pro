@@ -43,3 +43,18 @@ CI. Validate manifest syntax, docs/whitespace and relevant existing fast gates.
 Within Jacob's already approved reliable classroom deployment and health-probe
 implementation scope; no separate human review of this document is claimed.
 Material changes beyond that direction require renewed review. Outcome pending.
+
+Implementation: the retained DNS-outage test observes invalid membership, then one
+automatic startup-probe restart. DNS is restored to its original two replicas;
+MongoDB becomes writable with the same dataset IDs and config version 1, without
+forced reconfiguration or deleting data. A first short outage recovered before
+the probe fired and failed the restart assertion; it is retained separately.
+The final test holds the fault through the configured allowance, preserving that
+assertion. Separate same-vendor boundary review found no blocker; different-vendor
+unavailable. Startup monitoring stops after success and is not general liveness.
+
+The first remote deployment run timed out with one of two API pods available;
+its artifact lacks the cause. Add bounded read-only pod/event/application-log
+diagnostics before cleanup, preserving the original failure and all gates. This
+does not assert that the local MongoDB mechanism caused that CI timeout. Fresh
+deployment CI and the restored-cluster full demo remain pending.

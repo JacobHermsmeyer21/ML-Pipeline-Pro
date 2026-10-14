@@ -19,7 +19,19 @@ addresses; an ordinary ClusterIP cannot map the replica set's own node. Keep sha
 MongoDB transactions and one serial worker/scheduler (`Recreate`). Force submission
 replay through both individual model API pods to prove replica behavior.
 
+On kind node resume, early CoreDNS unavailability caused MongoDB's saved
+`mongo:27017` member to fail self-identification. Ping remained successful while
+`db.hello().isWritablePrimary` was false and dataset writes returned 503. Publish
+startup addresses and use the same initialization/writable check in a bounded
+startup probe, allowing process restart without forced reconfiguration or PVC
+deletion. See the [startup fix](../plans/2026-10-13-kubernetes-mongo-startup-plan.md).
+
 Warm the installed local model explicitly with the same 8192-token context. Empty
 warmup without matching context can precede another runner reload; application
 20-second deadlines remain unchanged. Cold/busy local-model failures remain saved.
 Do not infer universal capacity from a classroom workload or grammar acceptance.
+
+The smaller 3B candidate had compatible token admission but passed only five/ten
+dialogue and one/seven snippet cases; it was excluded. The current 7B tuning draft
+still exceeds the unchanged 20-second limit. Retain failed and earlier accepted
+runs with their source/profile identities; structural grammar is not semantic quality.

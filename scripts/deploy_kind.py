@@ -163,6 +163,33 @@ def main():
         print(
             "Kubernetes rollout and three-domain smoke passed; two model APIs, one serial worker."
         )
+    except Exception:
+        # Retain the failing boundary before optional cleanup removes the cluster.
+        # These reads exclude Secret values and kubeconfig credentials.
+        if created:
+            diagnostics = [
+                ("pods", ["get", "pods", "-o", "wide"]),
+                ("events", ["get", "events", "--sort-by=.metadata.creationTimestamp"]),
+                *[
+                    (name, ["logs", "deployment/" + name, "--tail=60"])
+                    for name in ("mongo", "model-api", "worker", "gateway")
+                ],
+            ]
+            for name, parts in diagnostics:
+                with (args.output / ("failure-" + name + ".log")).open(
+                    "w", encoding="utf-8"
+                ) as log:
+                    try:
+                        subprocess.run(
+                            [*kubectl, "-n", "mlpp-demo", *parts],
+                            stdout=log,
+                            stderr=subprocess.STDOUT,
+                            timeout=15,
+                            check=False,
+                        )
+                    except (OSError, subprocess.TimeoutExpired) as exc:
+                        log.write("Diagnostic unavailable: " + type(exc).__name__ + "\n")
+        raise
     finally:
         if forwarded is not None:
             forwarded.terminate()

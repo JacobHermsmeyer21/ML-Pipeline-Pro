@@ -9,6 +9,12 @@ The MongoDB headless Service publishes startup addresses so the replica set can
 identify its own node before readiness. Ordinary readiness still checks only
 MongoDB/Redis, not every domain or worker progress.
 
+MongoDB's startup probe initializes an empty replica set or checks the saved set's
+writable primary. Twelve failed five-second checks restart its process, preserving
+the PVC and configuration. This recovers the observed invalid membership when
+cluster DNS is unavailable during initial startup; it is not a recovery-time SLA.
+The [diagnosed fix](../plans/2026-10-13-kubernetes-mongo-startup-plan.md) records its test.
+
 From the repository root:
 
 ```powershell
