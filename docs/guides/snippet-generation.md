@@ -1,7 +1,8 @@
 # Generated Python drafts
 
 For the midterm use the evaluated [guided 7B configuration](guided-midterm-demo.md).
-Its original seven-case gate now passes; human usefulness review remains required.
+Its original seven-case gate passes; Jacob reviewed the retained examples as
+clear/useful. Every new draft still requires review before use.
 
 With [local model setup](local-model-setup.md) complete and chat enabled, ask
 `POST /api/v1/chat` for a Python integration snippet. The supported profiles are
@@ -95,6 +96,7 @@ The A2 evaluation is separate from A1's original ten conversation scenarios:
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+$env:MLPP_CHAT_PROTOCOL = 'guided'
 try {
     uv run --locked --extra training pytest evaluations/test_snippet_model.py `
         --local-model 'mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1' `
@@ -109,5 +111,7 @@ unsupported profile with at most seven generation calls, 1,024 output tokens per
 call and a 120-second suite deadline. It saves source/model/prompt provenance,
 safe generated outputs and validation results. It does not execute Python,
 retry/repair model output, change the original A1 gate, or establish an onboarding
-or performance result. Human usefulness review and independent boundary review
-remain required. See [A2 outcome](../plans/2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome).
+or performance result. Retained human usefulness and separate boundary reviews
+are linked from [guided evidence](guided-midterm-demo.md). Review every new draft.
+The [A2 outcome](../plans/2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome)
+retains the earlier native failures.

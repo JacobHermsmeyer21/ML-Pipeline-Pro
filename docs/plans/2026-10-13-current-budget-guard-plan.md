@@ -1,6 +1,6 @@
 # Preserve explicit current budgets in guided proposals
 
-- Status: approved minimal guided direction; implementation pending
+- Status: implemented; original model gates and actual history/budget walkthrough verified
 - Date: 2026-10-13
 - Source baseline: `dd57e17` with monitoring delivery in progress
 - Human approval: Jacob's October 13 approval of all recommendations and request to implement; [record](2026-10-13-midterm-delivery-plan.md#human-review-and-approval)

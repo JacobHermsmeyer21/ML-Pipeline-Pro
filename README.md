@@ -19,7 +19,7 @@ The approved [midterm walkthrough](docs/guides/midterm-walkthrough.md) now has t
 independent domain APIs, guided local AI, generated drafts, measured monitoring
 with Prometheus/Grafana, and a local Kubernetes deployment path. Human draft and
 monitoring reviews are recorded, and the clean-checkout/full Kubernetes AI walkthroughs
-pass. Final remote deployment verification is in progress. See the
+pass. Kubernetes and recovery [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) pass. See the
 [roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 
 ## Development setup

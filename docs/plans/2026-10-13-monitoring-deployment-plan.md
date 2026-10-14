@@ -1,6 +1,6 @@
 # Minimal monitoring and local Kubernetes delivery
 
-- Status: approved October 13 midterm direction; implementation pending
+- Status: implemented; minimal monitoring, onboarding and deployment verified
 - Date: 2026-10-13
 - Source baseline: `62b22db` / `person-a/conversation-foundation`
 - Human approval: Jacob approved all scope-review recommendations and requested implementation; [record](2026-10-13-midterm-delivery-plan.md#human-review-and-approval)
@@ -160,11 +160,14 @@ failed attempts remain saved. No generalization or production-latency guarantee.
 
 Fresh local Kubernetes rollout and actual training/tuning/version/monitoring smoke
 pass; direct forwards to both model API pods return the same submitted experiment.
-Dedicated kubeconfig is excluded from evidence/Git. CI deployment and clean-checkout
-closure remain pending their final run. Demo search is three trials: two TPE startup
+Dedicated kubeconfig is excluded from evidence/Git. Fresh checkout `2945bd2`
+with its own venv/storage and external verified runtime completes the actual AI
+walkthrough. Final [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) at `3ac78d3` passes all five jobs, including two-CPU kind
+rollout/three-trial smoke/direct replica replay and isolated recovery. Demo search is three trials: two TPE startup
 trials and one posterior suggestion; model-proposed bounded follow-up uses two.
 
 Explicit tokenizer configuration preserves offline/default behavior. Setup warmup
 must match the API's 8192-token context; otherwise a cold runner reload can consume
 the unchanged 20-second inference deadline. Source and failed/accepted raw evidence
-are retained under `artifacts/midterm-validation/` pending the final evidence index.
+are retained in the [final evidence index](../evidence/2026-10-13-midterm-delivery/README.md),
+including source/runtime identities, failed attempts and successful remote CI.

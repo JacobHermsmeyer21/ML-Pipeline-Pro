@@ -1,5 +1,9 @@
 # Project audit and Person A handoff: October 13, 2026
 
+This is the initial audit of `7754826`, retained as historical evidence. Subsequent
+approved midterm implementation and verification are tracked in [current status](project-status.md),
+[course coverage](course-requirements.md) and [delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md).
+
 Person A stopped after implementing A2 Python snippet generation, with its live
 acceptance still failing. A1 conversation quality also remains unresolved. A3
 diagnosis and A4 retrieval/onboarding have written plans awaiting approval and

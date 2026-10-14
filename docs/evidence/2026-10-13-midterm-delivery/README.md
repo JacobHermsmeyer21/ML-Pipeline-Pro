@@ -14,7 +14,7 @@ may fall on October 14. Generated interpretation is separate from measured resul
 | MongoDB startup recovery | Injected DNS failure, one automatic process restart, writable primary and identical saved IDs/config version |
 | Measured monitoring | 20 actual CPU inferences, five declared 150 ms delays; Prometheus visibility 4.1 seconds; Grafana query/refresh verified |
 | Human / independent review | Jacob: drafts/missing guidance and monitoring clear/useful; separate same-vendor boundary review, different-vendor unavailable |
-| Remote CI | Prior failures retained; final CPU-reservation correction run pending |
+| Remote CI | All five jobs pass at `3ac78d3`: tests 3.11/3.13, legacy/three-domain Compose, isolated recovery and actual kind deployment; [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) |
 
 The clean checkout reuses an explicitly installed verified external runtime/model
 and checksum-pinned tokenizer; it does not claim a fresh model download. Its isolated

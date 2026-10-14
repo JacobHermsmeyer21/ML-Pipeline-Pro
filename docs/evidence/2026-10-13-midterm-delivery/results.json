@@ -1,7 +1,7 @@
 {
   "date": "2026-10-13",
-  "captured_at_utc": "2026-10-14T03:19:07.060553+00:00",
-  "source_revision": "97994dd96a24ae2cefd2060037f12d3399d63b69",
+  "captured_at_utc": "2026-10-14T03:41:53.262740+00:00",
+  "source_revision": "3ac78d3c16142d8d2bf77372daf44eca9590a2d7",
   "working_tree": true,
   "platform": "Windows-10-10.0.19045-SP0",
   "python": "3.11.5",
@@ -68,11 +68,11 @@
   "draft_human_review": "Jacob: clear and useful; scope retained examples",
   "reviewer": "separate same-vendor /root/boundary_review",
   "different_vendor_review": "unavailable",
-  "archive_sha256": "0b5cf62b4ddbc57d71bbc7831312c8515fd7b95cd1d4e4cf7d61c7b84eb57c65",
+  "archive_sha256": "d56f3273972e82cc20d76cf1978b0bf8c700534b746b782d497e993bbcea8f76",
   "members_sha256": {
     ".github/workflows/ci.yml": "857a41224c0fe7504ace18c423e6cdab382095aa1f94afa32fa44b86ddb760d5",
     ".tools/capture_ci.py": "9c3b9b762618187569104b08fcef2b0e7393cf9393b3cb5177c36afdd8c3ba6b",
-    ".tools/check_ci.py": "d7106a22d808c88fdb72da2a20e844f53eedea0b7701262574926ead3efe8196",
+    ".tools/check_ci.py": "9566c87cc814d9725f6e4fb913eedde2273aa949b1c402af348340bfdfb59ae2",
     ".tools/check_cluster_delivery.py": "1b04767569bfa45e1587572e26b80dc582b62cdeb9966560b184c1c40b637b52",
     ".tools/check_kube_cpu_budget.py": "4a0e6b00abf0543afcd8951616ab29e89abde37c3433e21530b6f7c2f6b8dbca",
     ".tools/check_kube_mongo_startup.py": "80f3dd10adf0623c4a17fe6fabb42207c5c978f43e92d662cda2fd6abc8158aa",
@@ -117,9 +117,13 @@
     "artifacts/midterm-validation/delivery-unit.xml": "0e153fab5e9a1f7334bd0752a847e73f1dca19316cd66282e9a8af0f2969b0ed",
     "artifacts/midterm-validation/diagnostic30-snippets.json": "d408c93f80f43321a6f1445594e4a669b205e6d0a4707b61184287a8785235ef",
     "artifacts/midterm-validation/diagnostic30-snippets.log": "db883270b19df87f1058797dd283b6149be91dd9cb3382b78bbf7df8d9f94381",
+    "artifacts/midterm-validation/final-ci-jobs.json": "b7032389c4214b9a7e7ff50e1fd0db0046c1da186c3c4b6de7ba866f5ddff7a2",
+    "artifacts/midterm-validation/final-ci-run.json": "2b0be8a1b5ea1c24211f3888f57d70bf3e4b9116c0b16ab4726188cc83df73a7",
     "artifacts/midterm-validation/final-compose-up.log": "70bb9a8f30625388a1557fb403260b962b2f5569d230928af8a2fc3f4bf9b4f1",
     "artifacts/midterm-validation/final-compose.log": "e46bdccdcbb6bd1c2cf94a56cc396daa8239687f925c6433d4271141e8cca6fb",
     "artifacts/midterm-validation/final-image-build.log": "a5f428c4143ddb957e7ac7459bfea46429c377e17816d22172a9e20e869cd47c",
+    "artifacts/midterm-validation/final-kubernetes-ci-artifact.zip": "4020e8533996286f051b087e5db702884ba45f3432aed1e5e9b99fb13c014c96",
+    "artifacts/midterm-validation/final-kubernetes-ci.log": "0def52d089c4a87278315a25b47be7b6b15dc6ab3ac5ab30c5aa9e408a5012ad",
     "artifacts/midterm-validation/final-ordinary.log": "6c690086295c10b176cf7fd100ad8071785e824507bcc0d11e491cb9a94f2716",
     "artifacts/midterm-validation/final-ordinary.xml": "402a6cd4cfed8a16df2da0ee1628a3667f3538063189f86447a08831c97bf832",
     "artifacts/midterm-validation/final-package-build.log": "dcb08a28a2bec7294438b9229a82c215ec0e8fabc9e94407bdf0f157d6e2f77e",
@@ -293,6 +297,7 @@
     "artifacts/midterm-validation/serial-snippets.json": "ca5439573f3a0b9dd8ea05347c709bc008a1d77f0e954444a44237fbc52d656f",
     "artifacts/midterm-validation/serial-snippets.log": "a2aa479e6bc1b81144bcf1ad35a8696d42a503f4e512ba713fae4ab09a531b8d",
     "artifacts/midterm-validation/serial-warmup.log": "98da388d9f796d4810b8babe5e44bd7303cffd984136466e3268b92b4c6b1372",
+    "artifacts/midterm-validation/startup-ci-final.json": "c620335356a1b212818f238cad2879f37d8bde2e1bc7f7f960fa035e814821af",
     "artifacts/midterm-validation/startup-ci-initial.json": "da3cdcecfcb6860fe571077db44c47e4ac525b1055edb10612864562bf4b1766",
     "artifacts/midterm-validation/startup-ci-progress.json": "46b6b02528cef084b0a56882c970f6c86320331c4a8296e722e9d8f2497f42de",
     "artifacts/midterm-validation/startup-ci-progress2.json": "e984d488877c052db1372b5326d64f23987d3f3bfd8ceba8e3961b16c6a9b109",
@@ -1012,5 +1017,396 @@
     "selected": false,
     "gate_changed": false,
     "all_calls_already_below20": true
+  },
+  "ci": {
+    "run": {
+      "id": 38505646188,
+      "head_sha": "3ac78d3c16142d8d2bf77372daf44eca9590a2d7",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188"
+    },
+    "jobs": [
+      {
+        "id": 115662420726,
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv sync --locked --extra training",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training ruff check .",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training ruff format --check .",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training pytest -m \"not integration\" --cov --cov-report=term-missing --junitxml=artifacts/test-reports/unit.xml",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv pip check",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv export --locked --extra training --no-dev --no-emit-project --output-file /tmp/requirements.txt",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 115662420877,
+        "name": "compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv sync --locked --extra training",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose config --quiet",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose up --build --wait --wait-timeout 300",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run curl --fail http://127.0.0.1:8000/api/v1/health/ready",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training pytest -m \"integration and not recovery\" --junitxml=artifacts/test-reports/integration.xml",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training pytest -m recovery --junitxml=artifacts/recovery-validation/junit.xml",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose logs",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run docker compose down",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 115662420896,
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv sync --locked --extra training",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training ruff check .",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training ruff format --check .",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training pytest -m \"not integration\" --cov --cov-report=term-missing --junitxml=artifacts/test-reports/unit.xml",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv pip check",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv export --locked --extra training --no-dev --no-emit-project --output-file /tmp/requirements.txt",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 115662815664,
+        "name": "domain-compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv sync --locked --extra training",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml config --quiet",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml up --build --wait --wait-timeout 300",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training python scripts/check_domain_routes.py --output artifacts/domain-validation/routes.json",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training python scripts/deployment_smoke.py --output artifacts/domain-validation/smoke.json",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training pytest -m \"integration and not recovery\" --junitxml=artifacts/domain-validation/integration.xml",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml logs",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml down",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 115662815712,
+        "name": "kubernetes-deploy",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv sync --locked --extra training",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install verified kind",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run docker build -t ml-pipeline-pro:midterm .",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run uv run --locked --extra training python scripts/deploy_kind.py --kind /tmp/kind --name mlpp-ci --cleanup",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
   }
 }

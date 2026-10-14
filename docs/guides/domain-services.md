@@ -2,8 +2,10 @@
 
 Model-management and tuning run independently from the same image/repository.
 They share MongoDB, Redis and artifacts; the serial worker continues to use both
-repositories in one database session. Monitoring remains outstanding, so this
-two-domain slice does not close C2 or C8.
+repositories in one database session. This guide starts those two domains; add
+the [monitoring overlay](monitoring-demo.md) for the required third API, dashboard
+and evaluated local AI. The [complete walkthrough](midterm-walkthrough.md) and
+[Kubernetes guide](kubernetes-demo.md) cover the minimal course deployment.
 
 ## Run the domain topology
 
@@ -47,7 +49,8 @@ records through shared tracking; worker ownership writes are unchanged.
 Run [ordinary integration](verification.md#ordinary-integration) with both flags
 against the domain topology; queued HTTP cases exercise public routing. Run serial
 recovery using its original base/override files and unchanged assertions.
-Monitoring, Kubernetes and live AI acceptance remain separate outstanding gates.
+Monitoring, Kubernetes and live AI have their own retained execution evidence;
+this route probe alone does not establish those results.
 
 The read-only `scripts/check_domain_routes.py` checks actual routed OpenAPI
 ownership, domain 404 errors and correlation handling. Its `--tuning-unavailable`

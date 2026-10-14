@@ -1,6 +1,6 @@
 # Fit classroom CPU reservations to the CI node
 
-- Status: approved classroom resource scope; diagnosed correction pending
+- Status: implemented; local and remote deployment verified
 - Date: 2026-10-13
 - Baseline: `40d8dc6`
 - Human approval: Jacob's approved minimal deployable midterm implementation
@@ -50,4 +50,4 @@ tuning/version/monitoring smoke and forced same-ID replay through both new model
 pods. Separate same-vendor boundary review confirms ten times 50m plus one times
 100m equals 600m; exactly nine request fields changed, with limits/memory/replicas/
 probes intact. The total excludes system reservations and rollout surge.
-Different-vendor review unavailable. Final remote CI pending.
+Different-vendor review unavailable. Final [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) passes all five jobs. Its node has two allocatable CPUs; actual three-trial smoke and direct two-pod replay pass. This closes the measured scheduling failure without changing gates.

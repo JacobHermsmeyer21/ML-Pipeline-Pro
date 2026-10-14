@@ -20,11 +20,11 @@ work remains deferred.
 | Tuning module | Implemented: validate bounded serial searches, persist reservations/trials, cancel jobs | Tuning jobs and trials |
 | Monitoring service | Immutable project/version observations, capped summaries, Prometheus/Grafana, one threshold and separate LangChain interpretation/checks | Monitoring observations; summaries derived on read |
 | Conversation tool library | Implemented: 13 typed HTTP operations, trusted context, budgets/keys, public record evidence | Calls existing APIs; no owned durable records |
-| Conversation module | Partial: local adapter, grounded reads, durable turns/proposals, routes and confirmed dispatch; live-model and generated-code acceptance remains open | Conversations, turns, and action records |
+| Conversation module | Guided 7B demo verified: bounded local adapter, current facts/history, durable turns/drafts/proposals and exact confirmed dispatch; native failures retained | Conversations, turns, and action records |
 | Celery workers | Implemented training, tuning, recovery, and transactional tuning ownership | Write through the domain repository interfaces |
 
-Implement separately deployable model-management, tuning, and monitoring REST
-services under a reviewed extraction plan. A shared repository/image/database is
+The reviewed factories deploy model-management, tuning, and monitoring REST
+services independently. A shared repository/image/database is
 allowed; three modules in one API process are not the required service topology.
 The conversation layer can remain a bounded orchestration entry point. Preserve
 `/api/v1` compatibility through reviewed routing and keep domain repositories

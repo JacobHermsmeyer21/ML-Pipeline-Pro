@@ -112,7 +112,7 @@ passed); C3/C5 remain outstanding. See the
 | C5 | Automated optimization with LangChain and history | Demonstrated: three-trial Bayesian search includes a TPE posterior suggestion; real model proposes a bounded follow-up from refreshed history. | [Complete walkthrough](../guides/midterm-walkthrough.md); validation selection, explicit exact decision, persisted trials and original recovery gates. |
 | C6 | Monitoring, visualization, LangChain summaries/fixes | Demonstrated: 20 actual inferences, five declared delays, 15-second scraping/refresh, dashboard/rule and evidence-cited advice. | [Monitoring guide](../guides/monitoring-demo.md); visibility observed at 4.1 seconds, unknown/partial states explicit, human quality reviewed, no automatic fix. |
 | C7 | AI-generated Python through LangChain | Demonstrated: original seven-case gate passes; four draft profiles validated, saved/replayed and human examples reviewed. | [Snippet guide](../guides/snippet-generation.md), [guided results](../guides/guided-midterm-demo.md); generated code never executed, older timeout/rejection runs retained. |
-| C8 | Tests, Docker, Kubernetes, CI/CD | Local verification passes; final remote deployment run pending after CPU scheduling correction. | [Deployment guide](../guides/kubernetes-demo.md); 570 fast, 63 ordinary, ten serial recovery; actual two-pod replay/startup fault evidence; prior failed CI retained. |
+| C8 | Tests, Docker, Kubernetes, CI/CD | Demonstrated: fast/ordinary/recovery gates, Docker, actual Kubernetes rollout/smoke and successful GitHub Actions deployment. | [Deployment guide](../guides/kubernetes-demo.md); 570 fast, 63 ordinary, ten serial recovery; actual two-pod replay/startup fault evidence; [remote CI passes](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) after measured CPU correction; prior failures retained. |
 | C9 | Documentation/tutorials/use cases/optimization | Demonstrated: combined fresh-checkout tutorial completes classification, Bayesian tuning, history, drafts and measured diagnosis; Kubernetes AI tutorial also exercised. | [Combined guide](../guides/midterm-walkthrough.md), [evidence](../evidence/2026-10-13-midterm-delivery/README.md); external runtime/model reused explicitly, production/research extras deferred. |
 
 Close a row only with its specified evidence and reviewed scope. Keep failures,
@@ -124,7 +124,7 @@ October 13 guided update: the original ten conversation and seven snippet cases
 now pass on the opt-in pinned 7B protocol; real-model HTTP draft/replay and nine
 affected store cases pass. This supersedes the table's model-gate failure status
 for guided mode, while preserving native/older runs as historical evidence.
-C3/C5/C7 remain partial pending human quality and combined onboarding. See the
+This earlier slice preceded the now-retained human quality/combined onboarding evidence. See the
 [guided results](../guides/guided-midterm-demo.md).
 
 October 13 delivery update: C2/C6 now have independent monitoring, actual measured
@@ -133,6 +133,6 @@ advice. C8 now has an exercised local Kubernetes deployment, two model API pods'
 direct replay and a committed CI/CD job. C4 includes measured scoped query/index
 evidence at the declared demo scale, not the deferred 10,000-record benchmark.
 The complete actual-ID/history walkthrough and human draft/monitoring reviews pass;
-final clean-checkout/remote deployment closure remains pending. See the
+final clean-checkout and [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) now pass. See the
 [combined guide](../guides/midterm-walkthrough.md) and
 [delivery outcome](../plans/2026-10-13-monitoring-deployment-plan.md#implementation-outcome).

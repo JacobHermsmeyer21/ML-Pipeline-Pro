@@ -2,8 +2,8 @@
 
 Use these workflows after the [README setup](../../README.md#development-setup).
 The examples cover the implemented backend. Conversation routes, durable history,
-grounded reads and confirmed actions now exist; real local-model/tokenizer
-acceptance remains open. See [conversation development](conversation-development.md).
+grounded reads and confirmed actions now exist; the evaluated [guided local model](guided-midterm-demo.md)
+and [combined walkthrough](midterm-walkthrough.md) include real-model/history evidence.
 
 - [Classification experiments](#classification-experiment-walkthrough): register inputs, train, compare, download, and register versions.
 - [Bounded tuning](#bounded-classification-tuning): run a search, inspect trials, cancel, and register the evaluated winner.
@@ -373,18 +373,13 @@ existing REST API. It validates tool arguments and trusted execution context,
 returns public records with evidence references, and preserves API project
 access, correlation IDs, job budgets, and submission idempotency.
 
-This is the first slice of [milestone 4](../../PLAN.md#implementation-milestones).
-There is no language-model adapter, natural-language conversation endpoint, dialogue
-store, or durable action audit yet. See the [approved design](../plans/2026-10-06-conversation-tools-plan.md)
-for scope and verification.
-
-The next [conversation workflow plan](../plans/2026-10-06-conversation-workflows-plan.md)
-was approved October 7, 2026; implementation remains outstanding. It specifies LangChain with a locally served pre-trained model,
-project-scoped guided dialogue/history, tuning suggestions, and separately
-confirmed actions. The [course instructions](../project/course-requirements.md) require
-pre-trained-model integration, not paid external inference or training a code
-language model. This library can support the local adapter, but neither the
-adapter nor real conversational inference is implemented by this tool slice.
+This tool library was the first slice of [milestone 4](../../PLAN.md#implementation-milestones).
+The later [conversation workflow](conversation-development.md) implements the local
+LangChain adapter, chat/history endpoints, durable audit and exact confirmed actions.
+Use [guided 7B](guided-midterm-demo.md) for the evaluated class configuration. The
+[course instructions](../project/course-requirements.md) require pre-trained-model
+integration; paid external inference and training a code language model are outside
+the minimal scope. The contract examples below exercise the typed tools directly.
 
 ### Try the contract without services
 

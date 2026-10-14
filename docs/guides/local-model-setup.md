@@ -3,7 +3,8 @@
 This is an explicit development setup for Person A's approved A1 work.
 Token admission has real-runtime evidence. Native quality failures below remain
 historical; the opt-in [guided midterm protocol](guided-midterm-demo.md) passes the
-original ten/seven gates on 7B. Human quality/onboarding remain open. The
+original ten/seven gates on 7B. Human examples and clean-checkout onboarding are
+recorded in [delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md). The
 application and tests never download models.
 
 ## Verified setup profile
@@ -82,14 +83,15 @@ files. Weight storage is directed to the ignored repository directory above.
 From another terminal, select the artifact for the failure you want to reproduce:
 
 ```powershell
-& '.tools/local-model-setup/ollama-v0.40.2/ollama.exe' pull qwen2.5:14b-instruct-q4_K_M
+& '.tools/local-model-setup/ollama-v0.40.2/ollama.exe' pull qwen2.5:7b-instruct-q4_K_M
 if ($LASTEXITCODE -ne 0) { throw 'Explicit model installation failed.' }
 uv sync --locked --extra training
-uv run --locked --extra training python examples/setup_qwen_profile.py --base-model 14b
+uv run --locked --extra training python examples/setup_qwen_profile.py --base-model 7b
 if ($LASTEXITCODE -ne 0) { throw 'Local profile creation failed.' }
 ```
 
-Use `7b` and `qwen2.5:7b-instruct-q4_K_M` to reproduce the smaller profile.
+These commands select the evaluated class 7B profile. To reproduce historical
+14B diagnostics explicitly substitute `14b` and its tag; it is not the class default.
 The [setup script](../../examples/setup_qwen_profile.py) checks the installed
 source identity before creation and rejects an occupied target tag with another
 identity. It reuses installed weights and performs no model pull. The
@@ -127,9 +129,10 @@ the reviewed follow-up fixes its protocol/quality behavior.
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+$env:MLPP_CHAT_PROTOCOL = 'guided'
 try {
     uv run --locked --extra training pytest evaluations/test_conversation_model.py -m local_model_eval `
-        --local-model 'mlpp-qwen2.5:14b-instruct-q4_K_M-json-tools-v1' `
+        --local-model 'mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1' `
         --token-counter 'evaluations.qwen_counter:create_counter' `
         --eval-output 'artifacts/local-model-evaluation/results.json' `
         --junitxml 'artifacts/local-model-evaluation/junit.xml'
@@ -146,7 +149,8 @@ backend workers per [setup](setup.md#develop-the-api-on-your-host):
 
 ```powershell
 $env:MLPP_CHAT_ENABLED = 'true'
-$env:MLPP_CHAT_MODEL = 'mlpp-qwen2.5:14b-instruct-q4_K_M-json-tools-v1'
+$env:MLPP_CHAT_PROTOCOL = 'guided'
+$env:MLPP_CHAT_MODEL = 'mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1'
 uv run --locked --extra training uvicorn examples.qwen_chat_app:create_app --factory `
     --port 8001 --no-access-log
 ```
@@ -157,5 +161,6 @@ inspection and tokenizer loading occur within the first bounded generation call.
 Missing/unsupported setup fails before inference while direct API and audit reads
 remain available. History, exact decisions, budgets and project access retain
 their existing contracts. No tokenizer or weights are packaged in the wheel or
-container. Model-quality acceptance, independent review and a successful complete
-clean-checkout conversation tutorial remain outstanding.
+container. The guided 7B protocol has final semantic, boundary-review and complete
+clean-checkout tutorial evidence. Older native/14B results below retain their
+original limits and failures; they are not the selected class demo.

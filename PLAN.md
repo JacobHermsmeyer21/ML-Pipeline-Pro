@@ -8,7 +8,7 @@ local pre-trained model, and AI-generated Python snippets. Separate domain REST
 services, Docker, Kubernetes, CI/CD, tests, and onboarding are required.
 Paid model APIs and custom language-model training are outside the required scope.
 
-The initial backend works; the **full course deliverable remains incomplete**.
+The **minimal class demo has retained evidence for all nine requirements**.
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved
 the [delivery plan](docs/plans/2026-10-13-midterm-delivery-plan.md); its bounded
@@ -106,8 +106,8 @@ optional and, if enabled, requires explicit review and resource/network isolatio
 
 **Status:** Three independent domains, local Docker/Kubernetes deployment,
 actual two-pod replay, startup recovery and clean-checkout onboarding pass.
-Final remote deployment CI remains pending after correcting measured CPU admission;
-shared/public production controls retain their separate scope.
+Final remote deployment/ordinary/recovery [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) passes with the measured CPU
+reservation correction. Shared/public production controls retain their separate scope.
 
 **Acceptance:** Extract separately deployable model-management, tuning, and
 monitoring REST services under reviewed contracts. Preserve `/api/v1`, project
@@ -122,7 +122,7 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 ## Immediate development priorities
 
 1. Preserve passing ownership, artifact, idempotency, and serial recovery gates.
-2. Complete the final deployment CI verification and retain all failed attempts.
+2. Retain completed deployment CI and its prior failed attempts with source identity.
 3. Reproduce the bounded class preflight before presentation; preserve resource limits.
 4. Keep broader production/research work deferred beyond the minimal all-nine demo.
 

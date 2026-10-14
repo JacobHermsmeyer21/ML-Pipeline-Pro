@@ -41,8 +41,9 @@ selection, including when previous experiments used other limits. Saved replay m
 retain the same proposal/draft. It fails on model/worker/assertion errors, preserving
 partial results rather than presenting them as a complete demo.
 
-The separate explicit warmup loads only the already installed artifact and keeps
-it resident for 30 minutes; it generates no text and performs no pull. Cold model
+The separate explicit warmup loads only the already installed artifact and requests
+30-minute residency; it generates no text and performs no pull. Run it immediately
+before the demo, since later calls/runtime settings can change residency. Cold model
 loading exceeded the existing 20-second inference deadline in retained attempts.
 Application deadlines remain unchanged, with no hidden retry or startup load.
 

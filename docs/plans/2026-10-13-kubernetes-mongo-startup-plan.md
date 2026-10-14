@@ -1,6 +1,6 @@
 # Recover the classroom MongoDB process after early DNS startup
 
-- Status: approved deployment/probe scope; diagnosed fix pending
+- Status: implemented; isolated startup recovery and deployment verified
 - Date: 2026-10-13
 - Baseline: `2945bd2`
 - Human approval: Jacob's approved minimal deployment implementation request
@@ -57,4 +57,4 @@ The first remote deployment run timed out with one of two API pods available;
 its artifact lacks the cause. Add bounded read-only pod/event/application-log
 diagnostics before cleanup, preserving the original failure and all gates. This
 does not assert that the local MongoDB mechanism caused that CI timeout. Fresh
-deployment CI and the restored-cluster full demo remain pending.
+deployment [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) and the restored-cluster full local-AI demo now pass. The separate CPU admission correction addresses the observed remote scheduling failure; no common cause is invented.

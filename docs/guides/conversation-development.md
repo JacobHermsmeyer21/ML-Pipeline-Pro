@@ -1,5 +1,10 @@
 # Conversation development
 
+For the current class demo use [guided 7B](guided-midterm-demo.md) and the
+[complete walkthrough](midterm-walkthrough.md). Their original ten/seven gates,
+human examples and clean onboarding now pass. The native development history
+below preserves earlier failures and scope-specific review gaps.
+
 Person A starts with A1 in the [two-person allocation](../plans/2026-10-08-two-person-course-completion-plan.md).
 Its [conversation design](../plans/2026-10-06-conversation-workflows-plan.md)
 already has October 7 implementation approval. The foundation supplies the
@@ -19,10 +24,10 @@ real-MongoDB transaction-race coverage. The bounded
 model tests and real HTTP/MongoDB orchestration tests. Authenticated chat/history/
 action routes and exact confirmed dispatch now exist, with transaction-race and
 killed-chat-process recovery coverage. An explicit installed Qwen profile now
-has a verified tokenizer/runtime counter; its live conversation gate fails.
+has a verified tokenizer/runtime counter; the earlier native conversation gate fails.
 Direct tracking/tuning routes continue to use their existing contracts. Course
-C3/C5 remain outstanding; installing dependencies and scripted tests do not
-establish a working pre-trained model.
+C3/C5 are demonstrated by the later guided protocol's retained real-model results;
+the foundation/scripted checks alone do not establish those outcomes.
 
 ## Configuration
 
