@@ -94,7 +94,10 @@ is retained with the evaluation, and no commercial-use permission is claimed.
 
 Separate same-vendor `/root/boundary_review` found no structural identity/rendering
 blocker and confirmed removal after semantic rejection; different-vendor unavailable.
-Latest 7B snippet acceptance still passes six of seven, with the longer tuning draft
-exceeding the unchanged 20-second limit, including after a runner reload. No gate,
-assertion, host validation, retry or deadline was relaxed. See the final delivery
-evidence for raw attempts; this remains an acceptance gap.
+At candidate evaluation, 7B still passed six/seven snippets, with the longer tuning
+draft exceeding 20 seconds, including after a runner reload. Later runtime
+throughput improved: a 30-second diagnostic completed all calls below 20 seconds,
+then the original 20-second ten/seven gates both passed (12.19/14.54 seconds total).
+No timeout change was selected; the cause of throughput variation is unestablished.
+No gate, assertion, host validation, retry or output repair was weakened. Retain all
+attempts in [final evidence](../evidence/2026-10-13-midterm-delivery/README.md).

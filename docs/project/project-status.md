@@ -1,34 +1,29 @@
 # Project audit and development status
 
-Current delivery scope (October 13): Jacob approved
-[one minimal all-nine midterm demonstration](midterm-scope.md) and its
-[plan](../plans/2026-10-13-midterm-delivery-plan.md). Broader unapproved A3/A4 ambitions
-are deferred. Historical evidence/failures below remain intact; no row is closed
-by this scope update.
+Current minimal delivery (October 13): three independent APIs, guided local 7B,
+Bayesian tuning/history, generated Python, measured monitoring and Docker/Kubernetes
+are implemented. Final original ten/seven model gates, human examples, 570 fast,
+63 ordinary and ten serial recovery cases pass. Locked dependency/build checks pass.
+Fresh checkout/environment/storage completes the real AI walkthrough; Kubernetes
+also passes actual AI and direct submission replay through both individual API pods.
 
-October 13 implementation: the native HTTP draft lifecycle/tutorial fixes and
-independent model/tuning APIs now have passing fast/routed ordinary/recovery
-evidence in the [midterm plan outcomes](../plans/2026-10-13-midterm-delivery-plan.md#implementation-outcome).
-Monitoring is still absent. The fresh original conversation baseline passes 6/10
-and remains failed; preserve older dated results below as historical records.
+The tested MongoDB startup failure now recovers through its bounded process probe,
+preserving records/configuration. Remote deployment diagnostics exposed insufficient
+CPU reservation capacity; the corrected 600m application budget retains limits,
+all service/replica counts and every test gate. Final remote CI remains pending.
+See [delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md), the
+[combined guide](../guides/midterm-walkthrough.md) and [course checklist](course-requirements.md).
 
-The opt-in [guided protocol](../guides/guided-midterm-demo.md) now passes the original
-ten conversation and seven snippet scenarios on the pinned 7B profile. Fast and
-affected real-store checks plus real-model HTTP draft/replay pass. Human quality
-review and combined clean-checkout onboarding remain outstanding. Native baseline
-failures remain retained; the new result does not close a full course row.
+Earlier model slowdowns/failures, rejected 3B candidate, startup attempts and remote
+failures remain historical evidence. No timing guarantee, larger-scale speedup,
+universal model reliability or production readiness is claimed. Jacob's approved
+[midterm scope](midterm-scope.md) defers broader unapproved A3/A4 features.
 
 **Audit date:** October 6, 2026. **Audited baseline:** `0e37e6e17614ae146e75a576c1f60c885ee79cd0` on `main`. **Package version:** `0.1.0`.
 
-October 13 minimal delivery now implements the monitoring service, actual inference
-producer, Prometheus/Grafana threshold/visualization and separate local-model
-interpretation. Jacob reviewed drafts/missing-input guidance and the monitoring
-summary as clear/useful. A full real three-domain AI walkthrough passes after
-explicit matched-context warmup; original runtime/semantic gates remain required.
-Fresh Kubernetes rollout/smoke and forced replay through both individual model API
-pods pass. Fast gate: 562 cases; ordinary 63 and serial isolated recovery ten pass.
-Clean-checkout/final remote deployment evidence is still in progress. Earlier
-failed attempts and dated broader audits remain historical, not current closure.
+The dated audits below retain their original coverage/failures; the current delivery
+summary above supersedes their missing-feature status only within the reviewed
+minimal scope. Historical test counts do not describe the final run.
 
 **Documentation source check, October 8, 2026:** baseline `c28ae06`. The
 conversation workflow design was approved October 7, but that checkout still had

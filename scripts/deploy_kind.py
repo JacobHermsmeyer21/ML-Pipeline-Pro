@@ -76,6 +76,8 @@ def main():
                 )
         command([*kubectl, "-n", "mlpp-demo", "get", "pods", "-o", "json"], "pods")
         pods = json.loads((args.output / "pods.log").read_text())
+        command([*kubectl, "get", "nodes", "-o", "json"], "nodes")
+        nodes = json.loads((args.output / "nodes.log").read_text())
         assert (
             len([pod for pod in pods["items"] if pod["metadata"]["labels"]["app"] == "model-api"])
             == 2
@@ -147,6 +149,14 @@ def main():
             "worker_replicas": 1,
             "worker_concurrency": 1,
             "smoke": "passed",
+            "nodes": [
+                {
+                    "name": node["metadata"]["name"],
+                    "allocatable_cpu": node["status"]["allocatable"]["cpu"],
+                    "allocatable_memory": node["status"]["allocatable"]["memory"],
+                }
+                for node in nodes["items"]
+            ],
             "images": [
                 {
                     "pod": pod["metadata"]["name"],
@@ -168,6 +178,7 @@ def main():
         # These reads exclude Secret values and kubeconfig credentials.
         if created:
             diagnostics = [
+                ("nodes", ["get", "nodes", "-o", "json"]),
                 ("pods", ["get", "pods", "-o", "wide"]),
                 ("events", ["get", "events", "--sort-by=.metadata.creationTimestamp"]),
                 *[

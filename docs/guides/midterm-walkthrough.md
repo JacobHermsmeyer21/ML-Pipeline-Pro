@@ -4,10 +4,12 @@ Use one classification dataset/model, small Bayesian searches and one evaluated
 7B profile. The [course checklist](../project/course-requirements.md) remains the
 acceptance record; historical failures and broader production work remain visible.
 
-The latest seven-case code-generation gate still times out on the longer tuning
-draft. This walkthrough requests the shorter listing draft and preserves errors;
-it does not close full snippet acceptance. The faster 3B candidate failed semantic
-tests and is excluded. See the [profile evaluation](../plans/2026-10-13-small-model-profile-plan.md).
+The original ten dialogue and seven code-generation gates pass on the retained
+final 7B run. Earlier attempts timed out under slower local inference; no deadline,
+assertion or generated output was relaxed/repaired. Run the [acceptance preflight](guided-midterm-demo.md#reproduce-acceptance)
+before class, with the local runtime warmed and other heavy work quiescent. The
+faster 3B candidate failed semantics and is excluded. See the [profile evaluation](../plans/2026-10-13-small-model-profile-plan.md)
+and [final evidence](../evidence/2026-10-13-midterm-delivery/README.md).
 
 1. Install the locked environment per [setup](setup.md), then the explicit 7B
    artifact/runtime/tokenizer per [local setup](local-model-setup.md). Use `7b`

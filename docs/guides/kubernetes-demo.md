@@ -15,6 +15,13 @@ the PVC and configuration. This recovers the observed invalid membership when
 cluster DNS is unavailable during initial startup; it is not a recovery-time SLA.
 The [diagnosed fix](../plans/2026-10-13-kubernetes-mongo-startup-plan.md) records its test.
 
+The eleven application pods reserve 600m CPU total (50m for ten lightweight pods,
+100m for the serial worker), in addition to Kubernetes system reservations. CPU
+limits remain 500m per lightweight pod and one CPU for the worker. Reservations
+allow scheduling/sharing; they do not establish measured concurrent capacity. See
+[resource semantics](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/)
+and the [measured CI scheduling fix](../plans/2026-10-13-kubernetes-cpu-budget-plan.md).
+
 From the repository root:
 
 ```powershell

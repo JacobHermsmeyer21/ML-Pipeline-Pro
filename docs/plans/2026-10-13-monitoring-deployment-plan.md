@@ -144,7 +144,7 @@ secret redaction. It requested aligned summary bounds and forced cross-pod repla
 both are implemented/exercised. Different-vendor review unavailable. No remaining
 ownership/artifact/cleanup blocker identified; model/production capacity is unproven.
 
-Windows/Python 3.11.5, Docker 29.8.2, kubectl 1.36.1, kind 0.33.0: 562 fast cases,
+Windows/Python 3.11.5, Docker 29.8.2, kubectl 1.36.1, kind 0.33.0: 570 final fast cases,
 63 ordinary with both flags, ten isolated serial recovery cases pass. Recovery
 took 266 seconds; sandbox/engine failures before execution are retained separately.
 Docker Desktop returned a stale WSL prerequisite error; normal engine restart

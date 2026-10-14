@@ -9,16 +9,17 @@ You can register datasets and models, queue training or tuning, compare validati
 results, download verified artifacts, and register model versions. Training runs
 serially on CPU. Conversation tools, a local model adapter, durable history,
 grounded reads, authenticated routes, and confirmed actions are implemented;
-the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) has retained real-model
-dialogue and generated-draft evidence. The latest full snippet gate still times out
-on its longer tuning draft; earlier passing runs are retained with their revisions.
+the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) passes the original
+ten dialogue and seven snippet cases. Earlier slow/failed runs remain recorded;
+local inference capacity depends on the declared runtime and available resources.
 Supported Python snippet generation now saves restricted, validated drafts for
 human review. See the [snippet guide](docs/guides/snippet-generation.md).
 
 The approved [midterm walkthrough](docs/guides/midterm-walkthrough.md) now has three
 independent domain APIs, guided local AI, generated drafts, measured monitoring
 with Prometheus/Grafana, and a local Kubernetes deployment path. Human draft and
-monitoring reviews are recorded. Clean-checkout/remote verification is in progress. See the
+monitoring reviews are recorded, and the clean-checkout/full Kubernetes AI walkthroughs
+pass. Final remote deployment verification is in progress. See the
 [roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
 
 ## Development setup

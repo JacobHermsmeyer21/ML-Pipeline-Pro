@@ -57,11 +57,11 @@ required before increasing training concurrency.
 **Status:** Partial: 13 typed tools, locked LangChain dependencies, a tested local
 adapter, durable storage, grounded reads, authenticated routes, and confirmed
 action dispatch/recovery exist.
-An explicit installed Qwen profile has verified token admission. The approved
-[typed-completion protocol](docs/plans/2026-10-09-conversation-typed-completion-plan.md)
-is implemented, but its selected 7B run passes only three of ten scenarios.
-Successful model evaluation, independent review, and
-clean-checkout onboarding remain open. The
+The opt-in pinned 7B guided profile passes the original ten-scenario gate,
+uses actual saved history/current budgets and preserves exact confirmation.
+Separate boundary review, human examples and a clean-checkout walkthrough are
+recorded in [delivery evidence](docs/evidence/2026-10-13-midterm-delivery/README.md).
+Earlier native failures and local timing variation remain retained. The
 [conversation plan](docs/plans/2026-10-06-conversation-workflows-plan.md) was approved
 October 7, 2026; its outcome and the
 [development guide](docs/guides/conversation-development.md) track each slice.
@@ -75,8 +75,10 @@ tests and a bounded live-model evaluation with model/runtime/resource provenance
 
 ### 5. Add monitoring and diagnosis
 
-**Status:** Not started. Existing logs, health checks, and experiment metrics do
-not establish live monitoring.
+**Status:** Minimal scope demonstrated: independent monitoring API, immutable
+observations, measured CPU workload, Prometheus threshold/15-second scraping,
+Grafana dashboard and evidence-linked local-model advice. Human usefulness reviewed.
+Wider drift, notification routing and automatic fixes remain deferred.
 
 **Acceptance:** A separate monitoring REST service ingests sample observations,
 exports operational and model metrics to Prometheus, and updates Grafana and alerts
@@ -88,9 +90,10 @@ checks or fixes; inferred causes remain labelled as hypotheses.
 ### 6. Generate reviewable pipeline code
 
 **Status:** A2's approved generation/validation and saved-draft implementation
-exists. Real-model acceptance and review evidence are recorded in the
-[A2 outcome](docs/plans/2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome);
-course closure still requires its full evidence and human review.
+exists. All seven original local-model cases pass on the final guided 7B run,
+with four validated draft profiles and no execution. Human review of retained
+examples and separate boundary review are recorded in [delivery evidence](docs/evidence/2026-10-13-midterm-delivery/README.md).
+Historical failures remain in the [A2 outcome](docs/plans/2026-10-08-person-a-snippet-generation-plan.md#implementation-outcome).
 
 **Acceptance:** Conversational requests generate Python snippets through
 LangChain/local inference. Record assumptions and model/prompt provenance; check
@@ -101,8 +104,10 @@ optional and, if enabled, requires explicit review and resource/network isolatio
 
 ### 7. Prepare deployment and onboarding
 
-**Status:** Partial: local Docker/Compose, CI checks, and backend tutorials exist.
-Independent domain services, Kubernetes, and deployment CI/CD remain outstanding.
+**Status:** Three independent domains, local Docker/Kubernetes deployment,
+actual two-pod replay, startup recovery and clean-checkout onboarding pass.
+Final remote deployment CI remains pending after correcting measured CPU admission;
+shared/public production controls retain their separate scope.
 
 **Acceptance:** Extract separately deployable model-management, tuning, and
 monitoring REST services under reviewed contracts. Preserve `/api/v1`, project
@@ -117,10 +122,9 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 ## Immediate development priorities
 
 1. Preserve passing ownership, artifact, idempotency, and serial recovery gates.
-2. Fix the documented native draft lifecycle/tutorial defects.
-3. Deliver small service, guided-AI, monitoring and Kubernetes slices; finish
-   existing snippet profiles and retain real-model evidence.
-4. Complete all nine rows with retained evidence and clean-checkout onboarding.
+2. Complete the final deployment CI verification and retain all failed attempts.
+3. Reproduce the bounded class preflight before presentation; preserve resource limits.
+4. Keep broader production/research work deferred beyond the minimal all-nine demo.
 
 The [two-person completion plan](docs/plans/2026-10-08-two-person-course-completion-plan.md)
 records historical proposed owners/handoffs. The October 13 delivery plan now owns

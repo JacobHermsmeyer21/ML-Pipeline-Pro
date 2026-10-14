@@ -59,11 +59,14 @@ October 13: all ten conversation and seven snippet cases pass on one evaluated
 model/MongoDB HTTP run saves/replays a validated draft, checks history/foreign
 access and creates no experiment. See [retained evidence](../evidence/2026-10-13-guided-demo/results.json)
 and [outputs for human review](../evidence/2026-10-13-guided-demo/human-review.md).
-Jacob reviewed the saved examples as clear/useful on October 13. The latest delivery
-revision passes all ten conversation cases but only six of seven snippet cases:
-the longer tuning draft exceeds its unchanged 20-second call limit. The tested 3B
-alternative fails semantic acceptance and is excluded. Complete clean-checkout
-onboarding remains pending final verification.
+Jacob reviewed the saved examples as clear/useful on October 13. Final delivery
+gates pass all ten conversation and seven snippet cases with the original 20-second
+call and 120-second suite limits. Earlier slower runs timed out on the longer tuning
+draft; their throughput variation is not attributed to an established cause. A
+30-second diagnostic finished every call below 20 seconds, so no deadline change
+was selected. The 3B alternative failed semantics and is excluded. A fresh checkout,
+environment/storage and full Kubernetes/local-model walkthrough also pass. See
+[final evidence and limits](../evidence/2026-10-13-midterm-delivery/README.md).
 Older native failures remain historical evidence; these results do not establish
 universal model reliability, another runtime or concurrent capacity.
 

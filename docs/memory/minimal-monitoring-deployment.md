@@ -32,6 +32,13 @@ warmup without matching context can precede another runner reload; application
 Do not infer universal capacity from a classroom workload or grammar acceptance.
 
 The smaller 3B candidate had compatible token admission but passed only five/ten
-dialogue and one/seven snippet cases; it was excluded. The current 7B tuning draft
-still exceeds the unchanged 20-second limit. Retain failed and earlier accepted
-runs with their source/profile identities; structural grammar is not semantic quality.
+dialogue and one/seven snippet cases; it was excluded. Earlier 7B attempts exceeded
+20 seconds on the tuning draft; final original ten/seven gates pass after observed
+throughput improved. A separate 30-second diagnostic needed no call over 20 seconds;
+no deadline was changed. Cause of timing variation is unestablished. Keep all runs
+with source/profile identities; grammar is not semantic quality or capacity proof.
+
+The CI node could not schedule its eleventh pod with 1100m application CPU requests.
+Use 50m for ten lightweight pods plus 100m for the serial worker (600m total), leaving
+control-plane reservations separate. Limits, worker count and replay gates stay intact;
+this fixes admission rather than proving peak concurrent demand. See the [CPU plan](../plans/2026-10-13-kubernetes-cpu-budget-plan.md).

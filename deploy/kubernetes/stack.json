@@ -157,7 +157,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "768Mi",
@@ -273,7 +273,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "128Mi",
@@ -367,7 +367,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "512Mi",
@@ -498,7 +498,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "512Mi",
@@ -629,7 +629,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "512Mi",
@@ -845,7 +845,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "256Mi",
@@ -929,7 +929,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "128Mi",
@@ -1034,7 +1034,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "512Mi",
@@ -1125,7 +1125,7 @@
                 "resources": {
                   "requests": {
                     "memory": "128Mi",
-                    "cpu": "100m"
+                    "cpu": "50m"
                   },
                   "limits": {
                     "memory": "512Mi",
