@@ -1,6 +1,6 @@
 # Preserve explicitly requested inspection facts
 
-- Status: implemented scripted boundary; live-service/model acceptance pending
+- Status: implemented; remote service checks pass; local model/walkthrough acceptance remains open
 - Date: 2026-10-13
 - Baseline: `db7002e`
 - Request: Jacob's failed real demo at the inspection assertion
@@ -109,3 +109,12 @@ gates therefore remain outstanding. Historical successful runs are not evidence
 for this correction. Separate boundary review is unavailable; inspection by the
 implementing assistant is self-review only. No ownership/state/rate arithmetic
 changes were made. Commit/push and remote CI are reported in the task handoff.
+
+Subsequent October 14 setup: Jacob authorized installing prerequisites. Docker,
+WSL and the pinned runtime/7B profile/tokenizer are installed; Windows requires a
+restart before local containers can run. The implementation's complete remote CI
+passes, including all 63 ordinary integration cases without skips (the nine
+conversation/snippet cases are included). The newly attempted laptop model gates
+fail: 2/10 dialogue and 0/7 snippets, with unchanged budgets. Local rebuilt-image
+walkthrough, original-record reproduction and model acceptance remain open. See
+[installation and execution evidence](../evidence/2026-10-14-prerequisite-setup/README.md).

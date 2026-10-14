@@ -17,3 +17,8 @@ failure/replay without another model call. These are scripted boundary tests.
 Live-model grammar acceptance, failed-record reproduction and a fresh walkthrough
 remain unverified on this checkout because its services/runtime are unavailable.
 Revisit when widening supported request syntax or tool snapshot shapes.
+
+Later October 14: [prerequisites are installed](../evidence/2026-10-14-prerequisite-setup/README.md)
+and all remote CI jobs pass, including 63 real-service cases without skips. The
+local CPU model attempts fail (2/10 dialogue, 0/7 snippets); Windows restart is
+required for local containers. Successful live correction acceptance remains open.

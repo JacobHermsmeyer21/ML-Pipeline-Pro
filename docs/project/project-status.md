@@ -8,6 +8,13 @@ and decoded-reply guard are implemented with scripted boundary coverage;
 keeps real-service/model acceptance and separate review outstanding. The earlier
 delivery evidence below does not verify this correction or guarantee every demo run.
 
+Later October 14: the correction's complete remote CI succeeds, including 63
+ordinary integration cases without skips. User-authorized laptop prerequisite
+installation is complete; Windows requires a restart to activate WSL virtualization.
+The pinned 7B local gates on this CPU laptop fail (2/10 dialogue, 0/7 snippets).
+[Setup and retained failures](../evidence/2026-10-14-prerequisite-setup/README.md)
+keep these limits separate from prior GPU success and passing scripted/service CI.
+
 Current minimal delivery (October 13): three independent APIs, guided local 7B,
 Bayesian tuning/history, generated Python, measured monitoring and Docker/Kubernetes
 are implemented. Final original ten/seven model gates, human examples, 570 fast,

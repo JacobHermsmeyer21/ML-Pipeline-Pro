@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-14",
+  "sourceRevision": "f13d5c32337a37a15949bcc8e0ba9dec99338fe0",
+  "windows": {
+    "Caption": "Microsoft Windows 10 Home",
+    "Version": "10.0.19045",
+    "BuildNumber": "19045"
+  },
+  "machine": {
+    "Model": "Aspire A515-46",
+    "TotalPhysicalMemory": 19261304832,
+    "HypervisorPresent": false
+  },
+  "processor": {
+    "Name": "AMD Ryzen 3 3350U with Radeon Vega Mobile Gfx  ",
+    "VirtualizationFirmwareEnabled": true
+  },
+  "graphics": {
+    "Name": "AMD Radeon(TM) Vega 6 Graphics",
+    "AdapterRAM": 2147483648
+  },
+  "prerequisites": {
+    "status": "installed",
+    "rebootRequired": true,
+    "steps": [
+      {
+        "restartNeeded": true,
+        "name": "Microsoft-Windows-Subsystem-Linux"
+      },
+      {
+        "restartNeeded": true,
+        "name": "VirtualMachinePlatform"
+      },
+      {
+        "name": "WSL MSI",
+        "exitCode": 0
+      }
+    ]
+  },
+  "docker": {
+    "exitCode": 0,
+    "installerVersion": "4.95.0.242831"
+  },
+  "ollamaVersion": "0.40.2",
+  "installedModels": [
+    {
+      "name": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+      "digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+      "size": 4683086977
+    },
+    {
+      "name": "qwen2.5:7b-instruct-q4_K_M",
+      "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+      "size": 4683087332
+    }
+  ],
+  "sha256": {
+    "ollamaArchive": "e29ad1d5063dd4b54b2492d9b00adab2cff9621bfa654b6c92aa8d6f1fdfe7fc",
+    "tokenizer": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
+  },
+  "ci": {
+    "run": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38598353569",
+    "artifactId": 11913381252,
+    "errors": 0,
+    "tests": 63,
+    "failures": 0,
+    "skipped": 0
+  },
+  "generatedCodeExecuted": false,
+  "ci_status": {
+    "status": "completed",
+    "url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38598353569",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "compose-smoke",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "domain-compose-smoke",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "kubernetes-deploy",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "model_tests": {
+    "dialogue": {
+      "passed": 2,
+      "total": 10,
+      "seconds": 290.85
+    },
+    "snippets": {
+      "passed": 0,
+      "total": 7,
+      "seconds": 121.83
+    }
+  },
+  "source_sha256": {
+    "src/ml_pipeline_pro/conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+    "src/ml_pipeline_pro/conversation_ollama.py": "8f7069243473007b1c2edbd43fd7d96478b2ae23ab525e8e877404fb527c1d52",
+    "evaluations/test_conversation_model.py": "076afddcab8afe066db19f63161c848fc1f56d9116e5ab7e588bb597a97ddec3",
+    "evaluations/test_snippet_model.py": "7fa2943c5c2ad505d426933ff2a0c6d0a7c2ca8dd5b03b087765a3cec2e21154",
+    "uv.lock": "aa1eb72cf619d8aa46b2f9443fe125488b84229ee7119b14c6fb4efbdefd091c"
+  },
+  "model_unloaded_after_tests": true,
+  "pending": [
+    "Windows restart",
+    "local rebuilt-image integration/walkthrough",
+    "original failed-record reproduction",
+    "passing laptop model gates",
+    "separate boundary review"
+  ],
+  "raw_sha256": "b710eb866983621ebd08436c527f47548fc4b033e82abc1b8b07bcec64dd89d6"
+}

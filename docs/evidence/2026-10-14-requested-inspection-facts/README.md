@@ -37,3 +37,9 @@ walkthrough and original ten/seven local-model gates were not run. Separate boun
 review is unavailable; implementing-assistant inspection is self-review. Historical
 October 13 passes do not verify this change. No model weights were downloaded,
 generated Python executed, or original failed demo rewritten.
+
+Subsequent authorized [prerequisite installation and live attempts](../2026-10-14-prerequisite-setup/README.md)
+supersede the missing-software state above: all implementation CI jobs now pass,
+including 63 real-service cases without skips. The pinned 7B laptop gates fail
+(2/10 dialogue, 0/7 snippets), and Windows restart is required for local containers.
+This follow-up does not convert the failed model gates into acceptance.
