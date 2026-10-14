@@ -26,6 +26,7 @@ from ml_pipeline_pro.conversation_guidance import (
     guided_instructions,
     guided_schema,
     inspection_target,
+    requested_facts,
 )
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
@@ -353,6 +354,7 @@ class OllamaConversationModel:
                         target=inspection_target(context),
                         draft=draft_request(context),
                         budgets=current_budgets(context),
+                        required_facts=requested_facts(context),
                     )
                 )
                 payload["format"] = schema
@@ -409,6 +411,13 @@ class OllamaConversationModel:
                 if set(envelope) not in ({"call"}, {"reply"}):
                     raise ValueError
                 step = ModelStep.model_validate({**envelope, "usage": usage})
+                required_facts = requested_facts(context)
+                if (
+                    required_facts
+                    and step.reply is not None
+                    and ([fact.model_dump() for fact in step.reply.facts] != required_facts)
+                ):
+                    raise ValueError
                 if step.call is not None and step.call.name not in GUIDED_NAMES:
                     raise ValueError
                 if step.call is not None and not budgets_match(step.call, current_budgets(context)):

@@ -1,5 +1,6 @@
 import asyncio
 import json
+from copy import deepcopy
 
 import httpx
 import pytest
@@ -12,13 +13,213 @@ from ml_pipeline_pro.conversation_guidance import (
     explicit_missing_inputs,
     guided_schema,
     inspection_target,
+    requested_facts,
 )
 from ml_pipeline_pro.conversation_model import ConversationModelError, native_conversation_tools
 from ml_pipeline_pro.conversation_schemas import CONTEXT_BYTES, ChatRequest
 from ml_pipeline_pro.conversation_service import ConversationService
 from tests.conversation_memory import MemoryConversations
 from tests.test_conversation_ollama import REPLY, Runtime, chat_response, settings
-from tests.test_conversation_service import CONTEXT, RecordsTransport, ScriptedModel, config, reply
+from tests.test_conversation_service import (
+    CONTEXT,
+    RecordsTransport,
+    ScriptedModel,
+    config,
+    experiment,
+    reply,
+)
+
+
+def inspection_messages(field="metrics.validation_f1"):
+    return [
+        {
+            "role": "user",
+            "content": f"Inspect experiment selected. Return a verified {field} fact.",
+        },
+        {
+            "role": "tool",
+            "name": "get_experiment",
+            "tool_call_id": "lookup",
+            "content": json.dumps(
+                {
+                    "status": "succeeded",
+                    "data": {
+                        "id": "selected",
+                        "project_id": "demo",
+                        "status": "failed",
+                        "metrics": {"validation_f1": 0.0, "validation_accuracy": 0.5},
+                    },
+                    "evidence": [
+                        {
+                            "kind": "experiment",
+                            "role": "record",
+                            "record_id": "selected",
+                            "project_id": "demo",
+                        }
+                    ],
+                }
+            ),
+        },
+    ]
+
+
+@pytest.mark.parametrize(
+    "field", ["status", "metrics.validation_f1", "metrics.validation_accuracy"]
+)
+def test_requested_inspection_scalar_references_are_required_in_actual_sdk_format(field):
+    async def scenario():
+        messages = inspection_messages(field)
+        facts = [{"record_id": "selected", "field": field}]
+        assert requested_facts(messages) == facts
+        runtime = Runtime(
+            chat_response(
+                message={
+                    "role": "assistant",
+                    "content": json.dumps({"reply": {**REPLY, "facts": facts}}),
+                }
+            )
+        )
+        async with runtime.model(settings(chat_protocol="guided")) as model:
+            step = await model.generate(messages)
+            assert [fact.model_dump() for fact in step.reply.facts] == facts
+        payload = json.loads(runtime.requests[-1].content)
+        assert payload["format"] == guided_schema(
+            ("selected",), fact_ids=("selected",), required_facts=facts
+        )
+        assert runtime.token_requests[-1] == payload
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        "failed",
+        "foreign",
+        "relationship",
+        "wrong_id",
+        "wrong_kind",
+        "wrong_tool",
+        "absent",
+        "null",
+        "object",
+        "history",
+        "embedded",
+        "negation",
+        "draft",
+        "missing",
+    ],
+)
+def test_requested_facts_do_not_borrow_unavailable_or_unrequested_evidence(change):
+    messages = inspection_messages()
+    result = json.loads(messages[-1]["content"])
+    if change == "failed":
+        result["status"] = "error"
+    elif change == "foreign":
+        result["evidence"][0]["project_id"] = "foreign"
+    elif change == "relationship":
+        result["evidence"][0]["role"] = "source"
+    elif change == "wrong_id":
+        result["data"]["id"] = "other"
+    elif change == "wrong_kind":
+        result["evidence"][0]["kind"] = "model"
+    elif change == "wrong_tool":
+        messages[-1]["name"] = "get_model"
+    elif change == "absent":
+        del result["data"]["metrics"]
+    elif change in {"null", "object"}:
+        result["data"]["metrics"]["validation_f1"] = None if change == "null" else {}
+    elif change == "history":
+        messages.insert(0, {"role": "assistant", "content": messages[0]["content"]})
+        messages[1]["content"] = "Inspect experiment selected. Explain results."
+    elif change == "embedded":
+        result["data"]["name"] = messages[0]["content"]
+        messages[0]["content"] = "Inspect experiment selected. Explain results."
+    elif change == "negation":
+        messages[0]["content"] = (
+            "Inspect experiment selected. Do not return a verified metrics.validation_f1 fact."
+        )
+    elif change == "draft":
+        messages[0]["content"] = "Generate Python. Return a verified metrics.validation_f1 fact."
+    elif change == "missing":
+        messages[0]["content"] += " Prepare training, runtime is missing."
+    messages[-1]["content"] = json.dumps(result)
+    assert requested_facts(messages) == []
+
+
+@pytest.mark.parametrize("separator", [". Return", " and return"])
+def test_actual_status_phrase_and_current_request_precedence(separator):
+    messages = inspection_messages("status")
+    messages[0]["content"] = f"Inspect selected{separator} its actual status as a verified fact."
+    assert requested_facts(messages) == [{"record_id": "selected", "field": "status"}]
+    historical = deepcopy(messages)
+    historical[0]["role"] = "assistant"
+    assert requested_facts([*historical, {"role": "user", "content": "Explain results"}]) == []
+
+
+@pytest.mark.parametrize("facts", [[], [{"record_id": "selected", "field": "status"}]])
+def test_provider_cannot_omit_or_replace_required_fact_reference(facts):
+    async def scenario():
+        runtime = Runtime(
+            chat_response(
+                message={
+                    "role": "assistant",
+                    "content": json.dumps({"reply": {**REPLY, "facts": facts}}),
+                }
+            )
+        )
+        async with runtime.model(settings(chat_protocol="guided")) as model:
+            with pytest.raises(ConversationModelError) as caught:
+                await model.generate(inspection_messages())
+            assert caught.value.code == "model_invalid_response"
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("omit", [False, True])
+def test_guided_host_preserves_verified_value_or_saves_omission_failure_without_retry(omit):
+    async def scenario():
+        responses = [
+            {"call": {"name": "get_experiment", "arguments": {"experiment_id": "run-selected"}}},
+            {
+                "reply": {
+                    **REPLY,
+                    "facts": [] if omit else [{"record_id": "run-selected", "field": "status"}],
+                }
+            },
+        ]
+
+        async def respond(_):
+            return httpx.Response(
+                200,
+                json=chat_response(
+                    message={"role": "assistant", "content": json.dumps(responses.pop(0))}
+                ),
+            )
+
+        runtime = Runtime(overrides={"/api/chat": respond})
+        store = MemoryConversations()
+        record = {**experiment(), "id": "run-selected"}
+        transport = RecordsTransport({"/api/v1/experiments/run-selected": record})
+        request = ChatRequest(
+            request_id="inspection",
+            expected_revision=0,
+            message="Inspect experiment run-selected. Return a verified status fact.",
+        )
+        async with runtime.model(settings(chat_protocol="guided")) as model:
+            service = ConversationService(config(chat_protocol="guided"), store, model, transport)
+            result = await service.chat(CONTEXT, request)
+            replay = await service.chat(CONTEXT, request)
+        assert result == replay and not responses
+        assert len(transport.calls) == 1 and result.pending_action is None
+        if omit:
+            assert result.status == "failed" and not result.facts
+            assert result.error["code"] == "model_invalid_response"
+        else:
+            assert result.status == "completed"
+            assert result.facts[0].value == "queued"
+
+    asyncio.run(scenario())
 
 
 @pytest.mark.parametrize(

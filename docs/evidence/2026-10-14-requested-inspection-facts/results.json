@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-14",
+  "baseline": "b39599da161049e4c2fe60c78107039774356004",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.11.17",
+  "source_sha256": {
+    "src/ml_pipeline_pro/conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+    "src/ml_pipeline_pro/conversation_ollama.py": "8f7069243473007b1c2edbd43fd7d96478b2ae23ab525e8e877404fb527c1d52",
+    "tests/test_conversation_guidance.py": "3887df7fe6690824614775d18115361ac04343a54128f48d3a38d948fcfbdf9a",
+    "examples/midterm_walkthrough.py": "6ef8a2cce1f90cd24b97d2f3d32854c35f2fbed4f37737e13200014c3f97ecce",
+    "uv.lock": "aa1eb72cf619d8aa46b2f9443fe125488b84229ee7119b14c6fb4efbdefd091c"
+  },
+  "ports": {
+    "8000": false,
+    "11434": false,
+    "27017": false,
+    "6379": false
+  },
+  "packages": {
+    "ml_pipeline_pro-0.1.0-py3-none-any.whl": {
+      "entries": 47,
+      "sha256": "bf246679be7c31b7128334a15453e6503f5902656324d8b35cd62a8e2914ef29",
+      "excluded_private_caches": true
+    },
+    "ml_pipeline_pro-0.1.0.tar.gz": {
+      "entries": 258,
+      "sha256": "e2c4bfa34a022e599c3e484dec705bd3e4f5577669160acea167f2774efa351f",
+      "excluded_private_caches": true
+    }
+  },
+  "pending": [
+    "nine affected real-service cases",
+    "rebuilt-image failed-record inspection",
+    "fresh complete walkthrough",
+    "ten dialogue and seven snippet local-model cases",
+    "separate boundary review"
+  ]
+}

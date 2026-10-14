@@ -1,10 +1,10 @@
 # Preserve explicitly requested inspection facts
 
-- Status: approved guided-fact scope; diagnosed fix pending
+- Status: implemented scripted boundary; live-service/model acceptance pending
 - Date: 2026-10-13
 - Baseline: `db7002e`
 - Request: Jacob's failed real demo at the inspection assertion
-- Human approval: existing approved guided schema/fact direction and current bug report
+- Human approval: Jacob explicitly approved this plan on October 14, 2026 ("i aprove this plan"); scope is the requested-fact guard and verification below.
 - Independent review: separate boundary review; different-vendor unavailable
 
 ## Proposed behavior and purpose
@@ -77,10 +77,35 @@ guard but does not rewrite saved turns, actions, drafts or training records.
 
 ## Human review and approval
 
-Correction inside Jacob's already approved guided schema/fact semantics and request
-to fix the demo; no separate human review of this document is claimed. Material
-changes to public contracts, budgets or action permissions require renewed review.
+Jacob explicitly approved this document on October 14, 2026 with "i aprove this
+plan", following the branch switch and explanation of the pending inspection fix.
+Approval covers the narrow requested-reference constraint and unchanged acceptance
+gates above. Material changes to public contracts, budgets or action permissions
+require renewed review.
 
 ## Implementation outcome
 
-Pending. The original saved omission is retained as the failing baseline.
+October 14: Jacob approved this plan. The implementation adds only a guided
+current-request reference constraint and decoded-reply rejection; native behavior,
+public contracts, budgets and persistence are unchanged. Supported positive
+clauses cover verified status/validation metrics and actual status, including the
+existing `Inspect ID and return its actual status` evaluation phrasing.
+
+New tests verify the actual SDK schema/admission payload, zero-valued metrics,
+negative evidence/request cases and host value rendering/failure/replay. No
+existing assertions, model scenarios or budgets were weakened. The walkthrough
+assertion now names its saved result file without changing its condition.
+The first full run exposed a new test fixture using the reserved placeholder ID
+`experiment`; it now uses `run-selected` to reach the intended inspection boundary.
+The saved error assertion uses the public dictionary shape. These corrections
+preserve both the required failure and no-regeneration assertions.
+
+See [verification evidence](../evidence/2026-10-14-requested-inspection-facts/README.md)
+for commands, results and retained raw logs. This checkout has no Docker CLI,
+running API/MongoDB/Redis/Ollama, model artifact, or original
+`artifacts/my-demo/results.json`. Nine affected real-service cases, rebuilt-image
+failed-record inspection, fresh full walkthrough, and original ten/seven real-model
+gates therefore remain outstanding. Historical successful runs are not evidence
+for this correction. Separate boundary review is unavailable; inspection by the
+implementing assistant is self-review only. No ownership/state/rate arithmetic
+changes were made. Commit/push and remote CI are reported in the task handoff.

@@ -1,5 +1,13 @@
 # Project audit and development status
 
+October 14 correction: Jacob approved the
+[requested inspection facts plan](../plans/2026-10-13-requested-inspection-facts-plan.md)
+after a later demo omitted a requested structured fact. The narrow guided schema
+and decoded-reply guard are implemented with scripted boundary coverage;
+[new verification evidence](../evidence/2026-10-14-requested-inspection-facts/README.md)
+keeps real-service/model acceptance and separate review outstanding. The earlier
+delivery evidence below does not verify this correction or guarantee every demo run.
+
 Current minimal delivery (October 13): three independent APIs, guided local 7B,
 Bayesian tuning/history, generated Python, measured monitoring and Docker/Kubernetes
 are implemented. Final original ten/seven model gates, human examples, 570 fast,

@@ -100,6 +100,49 @@ def draft_request(messages: list[dict]) -> bool:
     )
 
 
+def requested_facts(messages: list[dict]) -> list[dict[str, str]]:
+    """Require narrow explicit inspection references from current supplied scalars."""
+    if explicit_missing_inputs(messages) or draft_request(messages):
+        return []
+    request = current_request(messages)
+    target = inspection_target([{"role": "user", "content": request}])
+    if target is None:
+        return []
+    fields = re.findall(
+        r"(?:^|[.!?;]\s*|\band\s+)return\s+(?:a\s+verified\s+"
+        r"(metrics\.validation_f1|metrics\.validation_accuracy|status)\s+fact"
+        r"|(?:its\s+)?actual\s+(status)\s+as\s+a\s+verified\s+fact)\b",
+        request,
+        re.IGNORECASE,
+    )
+    requested = sorted({(first or second).lower() for first, second in fields})
+    for message in reversed(messages):
+        if message.get("role") != "tool" or message.get("name") != target[0]:
+            continue
+        result = json.loads(message["content"])
+        data = result.get("data", {})
+        if result.get("status") != "succeeded" or data.get("id") != target[2]:
+            continue
+        if not any(
+            item.get("record_id") == target[2]
+            and item.get("role") == "record"
+            and item.get("kind") == target[0].removeprefix("get_")
+            and item.get("project_id") == data.get("project_id")
+            and item.get("project_id") is not None
+            for item in result.get("evidence", [])
+        ):
+            continue
+        facts = []
+        for field in requested:
+            value = data
+            for key in field.split("."):
+                value = value.get(key) if isinstance(value, dict) else None
+            if type(value) in {str, int, float, bool}:
+                facts.append({"record_id": target[2], "field": field})
+        return facts
+    return []
+
+
 def current_budgets(messages: list[dict]) -> dict[str, int]:
     """Recognize only unambiguous supported current English integer budgets."""
     request = current_request(messages).lower()
@@ -174,6 +217,7 @@ def guided_schema(
     target: tuple[str, str, str] | None = None,
     draft: bool = False,
     budgets: dict[str, int] | None = None,
+    required_facts: list[dict[str, str]] | None = None,
 ) -> dict:
     reply = ModelReply.model_json_schema()
     definitions = reply.pop("$defs", {})
@@ -189,6 +233,9 @@ def guided_schema(
     if missing_inputs:
         reply["required"] = list(dict.fromkeys([*reply["required"], "required_inputs"]))
         reply["properties"]["required_inputs"]["const"] = list(missing_inputs)
+    if required_facts:
+        reply["required"] = list(dict.fromkeys([*reply["required"], "facts"]))
+        reply["properties"]["facts"]["const"] = required_facts
     calls = []
     for tool in guided_tools():
         if draft and tool["name"] != "generate_pipeline_snippet":

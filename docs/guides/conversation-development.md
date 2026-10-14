@@ -357,6 +357,17 @@ independent review.
 
 ## Opt-in installed-model evaluation
 
+Guided inspection supports explicit requests such as `Inspect experiment ID.
+Return a verified metrics.validation_f1 fact.` The other supported fields are
+`metrics.validation_accuracy` and `status`; `Return its actual status as a verified
+fact` is also supported. After the matching successful current lookup supplies
+that scalar, the transmitted reply schema requires its exact reference. Output
+that omits or replaces the reference is rejected, without inserting facts or
+retrying the saved turn. The evidence ledger still renders the value. Failed,
+foreign, absent-field and relationship-only evidence cannot require a reference;
+historical prompts and record text do not select requested fields. This narrow
+English guard does not promise general intent extraction.
+
 The [evaluation gate](../../evaluations/test_conversation_model.py) runs ten synthetic
 scenarios in one bounded session: guided read, validation comparison/history-based
 tuning proposal, missing dataset/model, missing runtime, missing objective,

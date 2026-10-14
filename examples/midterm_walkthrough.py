@@ -65,7 +65,9 @@ def main():
             f"Inspect experiment {backend['training']['id']}. Return a verified "
             "metrics.validation_f1 fact and guide my next pipeline step in one sentence.",
         )
-        assert inspection["status"] == "completed" and inspection["facts"]
+        assert inspection["status"] == "completed" and inspection["facts"], (
+            f"Inspection omitted verified facts or failed; inspect {args.output / 'results.json'}"
+        )
         assert any(fact["record_id"] == backend["training"]["id"] for fact in inspection["facts"])
         prompt = (
             f"Compare {backend['training']['id']} and {backend['tuning']['best_experiment_id']} "
