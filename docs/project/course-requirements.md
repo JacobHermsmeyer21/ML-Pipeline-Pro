@@ -103,7 +103,14 @@ The selected 7B profile still fails the original gate (three of ten scenarios
 passed); C3/C5 remain outstanding. See the
 [typed-completion outcome](../plans/2026-10-09-conversation-typed-completion-plan.md#implementation-outcome).
 
-| ID | Requirement | Current minimal coverage | Retained evidence / limits |
+October 14 reproducibility limit: the table retains the October 13 demonstrated
+scope. Later CPU-laptop gates pass 2/10 dialogue and 0/7 snippets; the rebuilt-stack
+walkthrough times out before a tool read. Successful laptop reproduction of
+C3/C5/C7 and the complete C9 tutorial remains outstanding, as does live acceptance
+of the requested-fact correction. Backend/service passes do not close those gaps.
+See the [current reconciliation and evidence](../evidence/2026-10-14-branch-sync/README.md).
+
+| ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |
 | C2 | Separate model-management, tuning, monitoring services | Demonstrated: three independent FastAPI processes, shared image/storage and gateway in Compose/Kubernetes. | [Domain guide](../guides/domain-services.md), [monitoring](../guides/monitoring-demo.md), [Kubernetes](../guides/kubernetes-demo.md); contracts/ownership preserved. |

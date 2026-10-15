@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
@@ -14,6 +15,8 @@ from evaluations.test_conversation_model import (
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_schemas import ConversationTurn, ModelReply, ModelStep
+from tests.test_conversation_guidance import inspection_messages
+from tests.test_conversation_ollama import REPLY, Runtime, chat_response, settings
 
 
 def model():
@@ -105,3 +108,33 @@ def test_evaluation_rejects_missing_completion_schema_before_counting():
     with pytest.raises(AssertionError):
         counter({"tools": payload["tools"][:-1]})
     assert calls == [payload]
+
+
+def test_guided_eval_retains_host_fact_constraints_after_sdk_drops_tool_names():
+    async def run():
+        facts = [{"record_id": "selected", "field": "metrics.validation_f1"}]
+        runtime = Runtime(
+            chat_response(
+                message={
+                    "role": "assistant",
+                    "content": json.dumps({"reply": {**REPLY, "facts": facts}}),
+                }
+            )
+        )
+        runtime.tokens = 42  # Match the fixture response's observed prompt count.
+        counter = ObservedCounter(runtime.count, protocol="guided")
+        config = settings(chat_protocol="guided")
+        async with runtime.model(config, count_input_tokens=counter) as native:
+            budgeted = BudgetedModel(native, counter, config, deadline=time.monotonic() + 600)
+            await budgeted.generate(inspection_messages())
+            payload = json.loads(runtime.requests[-1].content)
+            assert "name" not in payload["messages"][-1]
+            assert counter.required_facts == facts
+            assert counter.last_count == runtime.tokens
+            assert runtime.token_requests == [payload]
+            payload["format"]["oneOf"][1]["properties"]["reply"]["properties"]["facts"].pop("const")
+            with pytest.raises(AssertionError):
+                counter(payload)
+            assert len(runtime.token_requests) == 1
+
+    asyncio.run(run())

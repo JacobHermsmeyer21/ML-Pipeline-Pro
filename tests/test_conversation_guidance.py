@@ -157,14 +157,36 @@ def test_actual_status_phrase_and_current_request_precedence(separator):
     assert requested_facts([*historical, {"role": "user", "content": "Explain results"}]) == []
 
 
-@pytest.mark.parametrize("facts", [[], [{"record_id": "selected", "field": "status"}]])
+def test_requested_facts_require_a_current_lookup_and_do_not_reuse_an_older_metric():
+    messages = inspection_messages()
+    assert requested_facts(messages[:1]) == []
+    latest = deepcopy(messages[-1])
+    result = json.loads(latest["content"])
+    del result["data"]["metrics"]["validation_f1"]
+    latest["content"] = json.dumps(result)
+    assert requested_facts([*messages, latest]) == []
+
+
+@pytest.mark.parametrize(
+    "facts",
+    [
+        None,
+        [],
+        [{"record_id": "selected", "field": "status"}],
+        [{"record_id": "other", "field": "metrics.validation_f1"}],
+    ],
+)
 def test_provider_cannot_omit_or_replace_required_fact_reference(facts):
     async def scenario():
+        candidate = {**REPLY}
+        candidate.pop("facts", None)
+        if facts is not None:
+            candidate["facts"] = facts
         runtime = Runtime(
             chat_response(
                 message={
                     "role": "assistant",
-                    "content": json.dumps({"reply": {**REPLY, "facts": facts}}),
+                    "content": json.dumps({"reply": candidate}),
                 }
             )
         )
@@ -172,6 +194,19 @@ def test_provider_cannot_omit_or_replace_required_fact_reference(facts):
             with pytest.raises(ConversationModelError) as caught:
                 await model.generate(inspection_messages())
             assert caught.value.code == "model_invalid_response"
+        assert sum(request.url.path == "/api/chat" for request in runtime.requests) == 1
+
+    asyncio.run(scenario())
+
+
+def test_requested_fact_constraint_does_not_change_native_mode():
+    async def scenario():
+        runtime = Runtime(
+            chat_response(message={"role": "assistant", "content": json.dumps(REPLY)})
+        )
+        async with runtime.model(settings(chat_protocol="native")) as model:
+            step = await model.generate(inspection_messages())
+            assert step.reply.facts == []
 
     asyncio.run(scenario())
 

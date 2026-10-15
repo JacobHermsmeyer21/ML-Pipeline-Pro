@@ -19,6 +19,7 @@ from ml_pipeline_pro.conversation_guidance import (
     explicit_missing_inputs,
     guided_schema,
     inspection_target,
+    requested_facts,
 )
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
@@ -94,6 +95,8 @@ class EvaluatedModel:
         for key in ("last_count", "last_payload_hash", "last_format_hash"):
             self.observed.pop(key, None)
         self.observed["stage"] = "snippet" if snippet else "routing"
+        # Keep host reference checks before the SDK removes tool-message names.
+        self.observed["required_facts"] = requested_facts(messages)
         assert self.deadline - time.monotonic() >= self.settings.chat_model_timeout_seconds, (
             "Suite deadline cannot admit a full model call"
         )
@@ -173,6 +176,7 @@ def test_seven_real_snippet_scenarios(request):
                         target=inspection_target(payload["messages"]),
                         draft=draft_request(payload["messages"]),
                         budgets=current_budgets(payload["messages"]),
+                        required_facts=observed["required_facts"],
                     )
                 )
                 assert payload["format"] == expected_format, "Unexpected guided schema"

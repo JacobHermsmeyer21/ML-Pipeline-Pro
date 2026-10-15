@@ -66,7 +66,8 @@ def main():
             "metrics.validation_f1 fact and guide my next pipeline step in one sentence.",
         )
         assert inspection["status"] == "completed" and inspection["facts"], (
-            f"Inspection omitted verified facts or failed; inspect {args.output / 'results.json'}"
+            f"AI inspection must complete with verified facts; got status={inspection['status']}, "
+            f"error={inspection.get('error')}. Saved response: {args.output / 'results.json'}"
         )
         assert any(fact["record_id"] == backend["training"]["id"] for fact in inspection["facts"])
         prompt = (

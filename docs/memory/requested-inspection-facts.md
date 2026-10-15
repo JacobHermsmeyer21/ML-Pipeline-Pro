@@ -22,3 +22,11 @@ Later October 14: [prerequisites are installed](../evidence/2026-10-14-prerequis
 and all remote CI jobs pass, including 63 real-service cases without skips. The
 local CPU model attempts fail (2/10 dialogue, 0/7 snippets); Windows restart is
 required for local containers. Successful live correction acceptance remains open.
+
+Same-day branch reconciliation confirmed that the locked LangChain/Ollama SDK
+removes tool-message `name` before HTTP admission. Evaluation observers must
+derive required references from the original host messages before that projection;
+recomputing them from the transmitted messages loses the constraint and falsely
+rejects the correct schema. Both gates now retain those references while comparing
+the complete actual SDK schema. [Scripted evidence and regression](../evidence/2026-10-14-branch-sync/README.md)
+verify this without claiming a new real-model pass.

@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-14",
+  "branch": "person-a/conversation-foundation",
+  "starting_revision": "b39599d",
+  "integrated_base": "377f64b2b13935e7b31f3a52e3fe31ef2e14dcc2",
+  "working_tree_tested": true,
+  "application_changed_from_integrated_base": false,
+  "fast": {
+    "passed": 598,
+    "integration_deselected": 73,
+    "elapsed_seconds": 44.37,
+    "reported_host_coverage_percent": 80
+  },
+  "focused": {
+    "passed": 75
+  },
+  "fresh_service_or_live_model_tests_run": false,
+  "service_gap": "Docker Linux engine pipe unavailable",
+  "baseline_ci": {
+    "head": "377f64b2b13935e7b31f3a52e3fe31ef2e14dcc2",
+    "conclusion": "success",
+    "url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38607154597"
+  },
+  "review": "implementing-assistant self-review; separate original boundary review outstanding",
+  "source_sha256": {
+    "PLAN.md": "494cc3eed62e71ea999fb02145d86cc9604c1ab0cb8995a3971d0641dfe63ce6",
+    "docs/memory/requested-inspection-facts.md": "d3d6c2845fcca7fd13949a961cbbedd7b16948fc3f4dfe5b67e9a1c07ab5e4e8",
+    "docs/project/course-requirements.md": "fa1aa7e19898824739f2bd57eebed9e7a00f5b45099b0c2d456f13aecf737e44",
+    "docs/project/project-status.md": "1815fc68ea73edffc2be84fc1c98c83ee2ae73402508c4075eaa0ed532502509",
+    "evaluations/test_conversation_model.py": "7a0f975b15cd9f372ccbfb1a9903cb66b31c7e8a7c07b03e390e865c7da49c40",
+    "evaluations/test_snippet_model.py": "99f62a5e924e28d46107b275f9f1f725f2d851a9410f3ccff072aa593261cca3",
+    "examples/midterm_walkthrough.py": "75f6146df52d6cf618897c39a1efa5c35f86d8d44caeba5fc35342514e80adca",
+    "tests/test_conversation_evaluation.py": "656f0ba77d19e1bbb3ce14f0a6fd6746aad6af6cb391afe882e796279974bc21",
+    "tests/test_conversation_guidance.py": "255900f2fef73240b983c3f5fcd6ba8a000bfffecafffdd4e6361f30e1de0724"
+  }
+}

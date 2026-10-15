@@ -23,6 +23,7 @@ from ml_pipeline_pro.conversation_guidance import (
     explicit_missing_inputs,
     guided_schema,
     inspection_target,
+    requested_facts,
 )
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
@@ -218,6 +219,8 @@ class BudgetedModel:
         self.calls.append(observed)  # Failed calls consume their reservation too.
         started = time.monotonic()
         try:
+            # The SDK drops tool-message names; derive references from host context.
+            self.counter.required_facts = requested_facts(messages)
             step = await self.model.generate(messages)
             observed["usage"] = step.usage
             assert step.usage["input_tokens"] == self.counter.last_count, (
@@ -235,6 +238,7 @@ class ObservedCounter:
     def __init__(self, counter, *, protocol="native"):
         self.counter = counter
         self.protocol = protocol
+        self.required_facts = []
         self.last_count = None
         self.payload_hashes = []
         self.format_hashes = []
@@ -249,6 +253,7 @@ class ObservedCounter:
                 target=inspection_target(payload["messages"]),
                 draft=draft_request(payload["messages"]),
                 budgets=current_budgets(payload["messages"]),
+                required_facts=self.required_facts,
             )
             self.format_hashes.append(fingerprint(payload["format"]))
         else:

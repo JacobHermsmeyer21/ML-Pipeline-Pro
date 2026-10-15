@@ -1,5 +1,23 @@
 # Project audit and development status
 
+October 14 branch reconciliation: the working branch now includes the three
+published commits through `377f64b`; `origin/main` is already an ancestor. Four
+overlapping local/published edits were reconciled, preserving the published
+inspection guard and its project/evidence checks. The evaluation observers now
+retain host fact references before the SDK drops tool-message names, while still
+checking the exact transmitted schema. See the [reconciliation record](../evidence/2026-10-14-branch-sync/README.md)
+for new checks, merge decisions and the current handoff.
+
+Current delivery assessment: the bounded backend, three services, monitoring,
+generated-code pipeline and deployment path are implemented, with retained
+October 13 acceptance and later passing service/CI evidence. Reliable AI operation
+on the CPU laptop remains outstanding: the latest full gates pass only 2/10
+dialogue and 0/7 snippet cases, and the post-reboot walkthrough times out before
+its first tool read. Timely timeout enforcement under that load needs diagnosis.
+The requested-fact correction still needs successful real-model walkthrough
+acceptance and separate boundary review. Production hardening and larger research
+claims remain deferred. Historical inventories below retain their dated scope.
+
 October 14 correction: Jacob approved the
 [requested inspection facts plan](../plans/2026-10-13-requested-inspection-facts-plan.md)
 after a later demo omitted a requested structured fact. The narrow guided schema
