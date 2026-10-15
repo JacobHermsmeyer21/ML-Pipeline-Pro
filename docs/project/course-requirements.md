@@ -110,6 +110,12 @@ C3/C5/C7 and the complete C9 tutorial remains outstanding, as does live acceptan
 of the requested-fact correction. Backend/service passes do not close those gaps.
 See the [current reconciliation and evidence](../evidence/2026-10-14-branch-sync/README.md).
 
+October 15 evidence update: a fresh October 14 run on the Ryzen 7 / RX 9070
+workstation passes the original ten/seven gates and the complete real-ID tutorial,
+including the requested-fact correction. [Retained workstation evidence](../evidence/2026-10-14-rx9070-walkthrough/README.md)
+supplies that machine's current reproduction of C3/C5/C7/C9; CPU-laptop failures,
+original-record reproduction and separate review remain open.
+
 | ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |

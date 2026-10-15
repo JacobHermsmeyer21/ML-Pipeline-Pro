@@ -1,5 +1,16 @@
 # Project audit and development status
 
+October 15 evidence update, for the October 14 run on clean `add6862`: the Ryzen 7
+7800X3D / RX 9070 workstation passes all ten original dialogue scenarios, all seven
+snippet scenarios, and the complete rebuilt-service AI walkthrough in 20.35 seconds
+after startup/warmup. The requested F1 fact, history-based proposal, explicit
+bounded approval, successful tuning, saved draft/replay and monitoring diagnosis
+all pass. Prometheus detects the seeded issue and Grafana serves the dashboard.
+See the [retained workstation run](../evidence/2026-10-14-rx9070-walkthrough/README.md).
+This establishes fresh-record live correction/tutorial acceptance on that machine;
+the CPU-laptop timeout mechanism, original-record reproduction and separate
+boundary review remain open. New generated outputs still require human review.
+
 October 14 branch reconciliation: the working branch now includes the three
 published commits through `377f64b`; `origin/main` is already an ancestor. Four
 overlapping local/published edits were reconciled, preserving the published
@@ -14,8 +25,9 @@ October 13 acceptance and later passing service/CI evidence. Reliable AI operati
 on the CPU laptop remains outstanding: the latest full gates pass only 2/10
 dialogue and 0/7 snippet cases, and the post-reboot walkthrough times out before
 its first tool read. Timely timeout enforcement under that load needs diagnosis.
-The requested-fact correction still needs successful real-model walkthrough
-acceptance and separate boundary review. Production hardening and larger research
+The workstation run above now supplies successful fresh-record real-model
+walkthrough evidence; original-record reproduction and separate boundary review
+remain open. Production hardening and larger research
 claims remain deferred. Historical inventories below retain their dated scope.
 
 October 14 correction: Jacob approved the

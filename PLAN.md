@@ -11,9 +11,11 @@ Paid model APIs and custom language-model training are outside the required scop
 The **minimal class demo has retained evidence for all nine requirements**.
 October 14 CPU-laptop reproduction remains unsuccessful: the latest dialogue and
 snippet gates fail, and the walkthrough times out before its first tool read.
-Resolve that environment's AI acceptance and diagnose the observed timeout overrun
-before claiming the presentation setup is ready; retain the existing limits.
-See the [current handoff](docs/evidence/2026-10-14-branch-sync/README.md).
+The October 14 Ryzen 7 / RX 9070 run passes all ten/seven original AI scenarios
+and the full rebuilt-service tutorial in 20.35 seconds after startup/warmup.
+See the [workstation evidence](docs/evidence/2026-10-14-rx9070-walkthrough/README.md),
+archived October 15. CPU-laptop acceptance and its observed timeout overrun remain
+unresolved; retain the existing limits and distinguish the presentation machines.
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved
 the [delivery plan](docs/plans/2026-10-13-midterm-delivery-plan.md); its bounded

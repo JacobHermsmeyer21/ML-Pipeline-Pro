@@ -1,6 +1,6 @@
 # Preserve explicitly requested inspection facts
 
-- Status: implemented; remote service checks pass; local model/walkthrough acceptance remains open
+- Status: implemented; fresh-record GPU model/walkthrough checks pass; original-record reproduction and separate review remain open
 - Date: 2026-10-13
 - Baseline: `db7002e`
 - Request: Jacob's failed real demo at the inspection assertion
@@ -126,3 +126,15 @@ wait; its saved turn is interrupted before any tool read. Independent measured
 monitoring succeeds. Model acceptance and full walkthrough remain open, and the
 late server timeout needs separate mechanism diagnosis. No scope expansion or
 deadline change was implemented. See [retained local execution](../evidence/2026-10-14-post-reboot-validation/README.md).
+
+October 15 evidence update: the October 14 run on the Ryzen 7 / RX 9070 workstation
+uses clean `add6862`, a rebuilt isolated ten-service stack and the pinned 7B/Vulkan
+profile. All original ten dialogue and seven snippet scenarios pass. The complete
+walkthrough finishes in 20.35 seconds after startup/warmup, returns the requested
+actual-record F1 fact, completes the history-based exact-approved tuning, replays
+the saved proposal/draft, and generates monitoring advice from retained samples.
+All deadlines/assertions remain unchanged. [Retained evidence](../evidence/2026-10-14-rx9070-walkthrough/README.md)
+now establishes successful fresh-record live correction and full tutorial on that
+machine. Original failed-record reproduction, separate boundary review and the
+CPU-laptop timeout/acceptance gaps remain open; new output human review is not
+claimed. This follow-up changes documentation/evidence only.

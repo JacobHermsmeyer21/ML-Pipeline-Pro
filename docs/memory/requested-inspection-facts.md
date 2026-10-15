@@ -30,3 +30,10 @@ recomputing them from the transmitted messages loses the constraint and falsely
 rejects the correct schema. Both gates now retain those references while comparing
 the complete actual SDK schema. [Scripted evidence and regression](../evidence/2026-10-14-branch-sync/README.md)
 verify this without claiming a new real-model pass.
+
+October 15 evidence update: the [October 14 workstation run](../evidence/2026-10-14-rx9070-walkthrough/README.md)
+on clean `add6862` passes all ten/seven original model scenarios and the complete
+rebuilt-service walkthrough. A fresh actual experiment returns the explicitly
+requested validation-F1 reference and host value 1.0. This supplies real-model
+fresh-record acceptance; original failed-record reproduction, separate boundary
+review and the other CPU laptop's failed acceptance remain outstanding.

@@ -1,0 +1,169 @@
+{
+  "run_date": "2026-10-14",
+  "archive_date": "2026-10-15",
+  "source_revision": "add6862dad3e0a3e15747896126191dd13529ac5",
+  "source_clean_at_start": true,
+  "all_recorded_source_hashes_match_at_archive": true,
+  "recorded_source_hash_count": 51,
+  "source_provenance": "raw.zip:provenance.json",
+  "hardware": {
+    "cpu": [
+      {
+        "Name": "AMD Ryzen 7 7800X3D 8-Core Processor           ",
+        "NumberOfCores": 8,
+        "NumberOfLogicalProcessors": 16
+      }
+    ],
+    "gpu": [
+      {
+        "Name": "AMD Radeon(TM) Graphics",
+        "DriverVersion": "32.0.21045.5002"
+      },
+      {
+        "Name": "AMD Radeon RX 9070",
+        "DriverVersion": "32.0.31041.1004"
+      }
+    ],
+    "memory": [
+      {
+        "TotalVisibleMemorySize": 32565172,
+        "FreePhysicalMemory": 18855436
+      }
+    ]
+  },
+  "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+  "model_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+  "runtime_version": "0.40.2",
+  "image_id": "sha256:7f3a7fa5b6e5ca730eabdac85ee856ecef193cd49df747654c5f35ce11ed4412",
+  "loaded_model_vram_bytes": 5119263374,
+  "api_settings": {
+    "chat_protocol": "guided",
+    "chat_model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+    "chat_model_timeout_seconds": 20.0,
+    "chat_timeout_seconds": 60.0,
+    "chat_max_model_calls": 5,
+    "chat_context_tokens": 8192,
+    "chat_max_output_tokens": 1024
+  },
+  "docker_project": "mlpp-rx9070-walkthrough-20261014",
+  "dialogue_gate": {
+    "passed": 10,
+    "failed": 0,
+    "pytest_seconds": 11.93,
+    "budgets": {
+      "requests": 50,
+      "reserved_total_tokens": 409600,
+      "output_tokens_per_call": 512,
+      "suite_seconds": 600
+    }
+  },
+  "snippet_gate": {
+    "passed": 7,
+    "failed": 0,
+    "pytest_seconds": 14.83,
+    "budgets": {
+      "generation_calls": 7,
+      "output_tokens_per_call": 1024,
+      "suite_seconds": 120
+    }
+  },
+  "walkthrough": {
+    "exit_code": 0,
+    "elapsed_seconds": 20.3547332,
+    "startup_warmup_and_prior_gates_excluded": true,
+    "training_status": "succeeded",
+    "backend_tuning_status": "succeeded",
+    "confirmed_tuning_status": "succeeded",
+    "inspection_fact": {
+      "record_id": "236538cd-d389-4c93-a173-d6c5ee43d0c4",
+      "field": "metrics.validation_f1",
+      "value": 1.0
+    },
+    "saved_proposal_replay_equal": true,
+    "draft_replay_equal": true,
+    "generated_python_executed": false
+  },
+  "monitoring": {
+    "actual_inference_samples": 20,
+    "declared_150ms_delays": 5,
+    "additional_synthetic_smoke_samples": 1,
+    "diagnosis_sample_count": 21,
+    "diagnosis_seeded_count": 6,
+    "max_latency_ms": 151.1261000050581,
+    "mean_latency_ms": 43.18649047622568,
+    "proposed_checks": [
+      "inspect_seeded_delay",
+      "profile_inference",
+      "check_resources"
+    ],
+    "prometheus_issue": 1,
+    "alert_state": "firing",
+    "dashboard_refresh": "15s",
+    "scrape_latency_measured": false
+  },
+  "review": {
+    "implementing_assistant_source_consistency_checks": true,
+    "independent_boundary_review": false,
+    "human_quality_review_of_new_outputs": false
+  },
+  "not_rerun": [
+    "full ordinary integration suite",
+    "serial recovery suite",
+    "Kubernetes rollout",
+    "original failed-record replay"
+  ],
+  "unresolved": [
+    "CPU-laptop timeout-overrun mechanism and acceptance",
+    "original failed-record reproduction",
+    "separate boundary review"
+  ],
+  "retained_files_sha256": {
+    "hardware.json": "8031679f2f3a933b850f4594627e6db06668bc4ce8377038e8caa24b03107854",
+    "provenance.json": "e71fe61a225ea31bb04628c8e01ef08a7eee8d181522c15fc61c8ea99bb80fb5",
+    "container-provenance.json": "eacde62066ed550fac4d86d49f3a21a2c1c28a64915b8d1055ce4c75686ede11",
+    "image-id.txt": "bf079e96acaf8b0351615efa5f52e273baa5ecb234a99d6966e96a82b36383da",
+    "version.json": "160158f5600f98f74fcc6c48030c86a324595a6ade5f7b6b057ab72181fa8485",
+    "selected-model.json": "b833a8e722b9f40f9d14b0ec0688c4ad14f88ea087017061b7ee7cd100c3a867",
+    "warmed-model.json": "885081a693db9fe940f3faec5ba9e49e90b1f4322d6bc0efee531a97db1504c9",
+    "initial-loaded.json": "7f9fc2997f5fc9f5a40bc2302e51ed9331c744cd56a88e709136d1762ff7be89",
+    "warmup.txt": "98da388d9f796d4810b8babe5e44bd7303cffd984136466e3268b92b4c6b1372",
+    "demo-warmup.txt": "98da388d9f796d4810b8babe5e44bd7303cffd984136466e3268b92b4c6b1372",
+    "compose-up.txt": "5ae5de661a55a13d05e1a3c02de5cb23b722aea81408e5bceba26d7f82e16ae7",
+    "services.json": "969deb3bae2d01ff093eb8f7a35d7b7921ba8c862405b601d08f1e15ce2a2213",
+    "ready.json": "2a53ba00d3a7a2888acf7911869b4e0cfdd745653b3eeb787d3fdb92c93cead6",
+    "conversation.json": "1050d0c572d181a32401af09cc733e7c34f56af5306a6e3526b166f287fcdb37",
+    "conversation.xml": "ff2ffe07a320caa29b4d16896a1b8e631819a6164a17fe16bf2b6f181d681f9b",
+    "conversation.txt": "ffcf5f46511e0788afaf48e03dd5838a117eb7bc30c3d5590144badccb759051",
+    "snippets.json": "dd3ad7eeaadbd7bc0a95a5817b8b28b4c499b213279bd1bf9eee8bb9d0786697",
+    "snippets.xml": "47d9643dbd256fbc8cc86f85d02e717b7e365fe4d88a0226744ff73d97050177",
+    "snippets.txt": "86fda9db307b03aa3a26bfa77dbea2a64e760a9cdbcd0a4346c8683730aa46d4",
+    "walkthrough-exit.json": "35c3ed8ae98887f80f62ed7b87bbb093bbd1273f04d4adbfc01ea8a9fe1c079d",
+    "walkthrough.txt": "b3df55709eaaebec523be63d81f8b8ce6019c60a8d4d37b6012383e2850a5c7b",
+    "walkthrough/backend.json": "dc7a82faf8f51002669294e5c3139f020f86be0cc1d8187fb177393bc99c50ae",
+    "walkthrough/results.json": "6586ebeaad13c41246cdaa5521a0205e917884022a748b086c7726bde352dd19",
+    "walkthrough/workload.json": "21658658f84190b641cf75b805fed8dcf097f5d846278beff05b03bcc04d5260",
+    "generated-draft.py": "efd79fb0ea6d99c4d453ab465e5b54dcce987ce836bdaeeb18b51da35490279d",
+    "grafana-dashboard.json": "a065b8572cc2127616f4d8071cfb7800b9a5f6ed71e3ebc53b53bbcd33e92b12",
+    "prometheus-issue.json": "7b851dd5c2c5524bc5829d86da569b25c9b1407d7fac187214a95c7e834a06e4",
+    "prometheus-rules.json": "07d5caa4690f929aa52133710ed6facbe62b99672ac0a30df396db66c06efd1f",
+    "compute-log-excerpt.txt": "0f78d2479b005df53bcc2cc87bd42036d96097c666716800722bc653c35dfdd2",
+    "service-logs.txt": "af21275356d0631a036786c7a4a76feb6c3f6ce0e599c488cdf9f7fc5eef90c2"
+  },
+  "archive_sha256": "a6ae50dad43fbd73daefb0bb41f744178d3857a78f59c79ab346d0b23d3af1a2",
+  "documentation_checks": {
+    "documentation": {
+      "documents": 64,
+      "local_links_and_anchors": 521
+    },
+    "archive_contents_verified": true,
+    "saved_generated_source_matches_model_output": true,
+    "generated_source_syntax": "pass; not executed",
+    "raw_execution_consistency": "pass",
+    "whitespace": "pass",
+    "tested_source_ci": {
+      "head": "add6862dad3e0a3e15747896126191dd13529ac5",
+      "conclusion": "success",
+      "url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38665644851"
+    }
+  }
+}

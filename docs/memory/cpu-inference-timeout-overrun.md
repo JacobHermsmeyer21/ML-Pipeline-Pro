@@ -17,3 +17,8 @@ fact-omission failure. Investigate scheduling, resource observations and the act
 blocking boundary before proposing a fix; changes to execution/concurrency require
 review. Keep original deadlines and assertions. A faster earlier GPU run or cached
 retry cannot substitute for acceptance on this laptop.
+
+The [October 14 RX 9070 run](../evidence/2026-10-14-rx9070-walkthrough/README.md),
+archived October 15, passes ten/seven original gates and the full walkthrough with
+the same deadlines on a Ryzen 7 workstation. That is separate hardware/runtime
+evidence; it does not diagnose or repair this CPU-laptop timeout-overrun mechanism.
