@@ -52,3 +52,15 @@ missing protected-process access. These observations do not resolve the sampling
 delay or API timeout-overrun mechanism. This actual-laptop run supersedes the
 preceding session's workstation/access limitation only; application acceptance and
 the separate deployment timing design remain outstanding.
+
+October 19 [plugged-in complete-workflow rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
+uses the unchanged application through its existing Compose gateway on clean
+`e605e24`. With AC connected, the first inspection still returns 504 after
+87.885 seconds and saves an interrupted turn with no tool reads. Independent
+diagnosis returns 503 / `chat_timeout` after 30.188 seconds; a Python draft times
+out at its 90-second client, with an eventual 409 after 92.736 seconds and no
+saved snippet. Cancellation and a final idle runner are retained in filtered
+logs. These show the failure also occurs while plugged in; they do not isolate
+power effects or establish the blocking/timeout-overrun mechanism. Backend,
+measured inference/observation replay and dashboard/alert checks pass separately.
+The five-minute profile remains unimplemented; full laptop acceptance remains open.

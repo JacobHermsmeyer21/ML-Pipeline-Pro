@@ -4,6 +4,13 @@ Use one classification dataset/model, small Bayesian searches and one evaluated
 7B profile. The [course checklist](../project/course-requirements.md) remains the
 acceptance record; historical failures and broader production work remain visible.
 
+**Presentation-laptop status, October 19:** the plugged-in rehearsal passes
+training/tuning and independent measured monitoring but fails the complete AI
+workflow at its first inspection. Separate diagnosis and Python-draft attempts
+also time out. See [the current rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
+before relying on the commands below for a live laptop demonstration. The
+five-minute profile remains a pending design; current deadlines are unchanged.
+
 The original ten dialogue and seven code-generation gates pass on the retained
 final 7B run. Earlier attempts timed out under slower local inference; no deadline,
 assertion or generated output was relaxed/repaired. Run the [acceptance preflight](guided-midterm-demo.md#reproduce-acceptance)

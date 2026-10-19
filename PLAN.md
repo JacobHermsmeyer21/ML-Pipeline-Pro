@@ -16,6 +16,13 @@ and the full rebuilt-service tutorial in 20.35 seconds after startup/warmup.
 See the [workstation evidence](docs/evidence/2026-10-14-rx9070-walkthrough/README.md),
 archived October 15. CPU-laptop acceptance and its observed timeout overrun remain
 unresolved; retain the existing limits and distinguish the presentation machines.
+
+The [October 19 plugged-in laptop rehearsal](docs/evidence/2026-10-19-laptop-rehearsal/README.md)
+passes backend and independent monitoring checks, but the full AI walkthrough
+still fails at its first inspection. Independent diagnosis and Python draft
+attempts also time out. The proposed five-minute timing profile remains awaiting
+review and implementation; this rehearsal changes no application settings.
+
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved
 the [delivery plan](docs/plans/2026-10-13-midterm-delivery-plan.md); its bounded

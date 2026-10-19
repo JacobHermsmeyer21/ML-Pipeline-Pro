@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "markdown_files": 5,
+  "local_links_and_anchors": 98,
+  "archive_payload_files": 22,
+  "source_hashes": 57,
+  "archive_crc_manifest_json_python_syntax": "passed",
+  "saved_facts_power_source_and_failures": "passed",
+  "review": "self-review; independent boundary review remains outstanding"
+}

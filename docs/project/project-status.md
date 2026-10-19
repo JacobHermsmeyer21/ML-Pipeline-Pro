@@ -1,5 +1,18 @@
 # Project audit and development status
 
+October 19 plugged-in presentation-laptop rehearsal on clean `e605e24`: the
+existing deployed sources match the checkout and all ten services are running.
+Training, three-trial tuning, versions/submission replay and independent measured
+monitoring pass. The complete walkthrough fails on its first AI inspection:
+HTTP 504 after 87.885 seconds, with an interrupted saved turn and no tool reads.
+Independent diagnosis returns 503 / `chat_timeout` after 30.188 seconds; a Python
+draft request times out at the client after 90.187 seconds with no saved snippet.
+Prometheus retains the version's issue and firing alert; Grafana serves its
+dashboard. Runner cancellation/idle is observed, but timeout-overrun attribution
+and full laptop acceptance remain open. No application, timeout or model changes
+were made; the five-minute profile is still planning only. See the
+[complete rehearsal record](../evidence/2026-10-19-laptop-rehearsal/README.md).
+
 October 18 repository audit against `cb67bb8`: Jacob confirmed the October 20 demo
 will use the CPU laptop. Minimal Person B services/monitoring/deployment/tutorial
 work is already implemented; reliable laptop AI is the immediate blocker. Fresh

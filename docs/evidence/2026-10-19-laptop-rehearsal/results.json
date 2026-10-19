@@ -1,0 +1,233 @@
+{
+  "date": "2026-10-19",
+  "source_revision": "e605e24ccf006e47b7fbd1ffbb7450c1152ca79b",
+  "source_working_tree_at_start": "",
+  "machine": {
+    "cpu": "AMD Ryzen 3 3350U with Radeon Vega Mobile Gfx",
+    "manufacturer": "Acer",
+    "machine": "Aspire A515-46"
+  },
+  "power_start": {
+    "read_ok": true,
+    "ac_line_status": 1,
+    "battery_percent": 20
+  },
+  "power_end": {
+    "read_ok": true,
+    "ac_line_status": 1,
+    "battery_percent": 23
+  },
+  "deployed_source_matches": {
+    "model-api": true,
+    "tuning-api": true,
+    "monitoring-api": true
+  },
+  "deployed_image_ids": {
+    "model-api": "sha256:0269d528e8a3903ba26e37ef6d43df18bc7d108d547fb952ecab8dd7bd956d55",
+    "tuning-api": "sha256:0269d528e8a3903ba26e37ef6d43df18bc7d108d547fb952ecab8dd7bd956d55",
+    "monitoring-api": "sha256:0269d528e8a3903ba26e37ef6d43df18bc7d108d547fb952ecab8dd7bd956d55"
+  },
+  "deployed_chat_settings": {
+    "chat_enabled": true,
+    "chat_protocol": "guided",
+    "chat_model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+    "chat_timeout_seconds": 60.0,
+    "chat_model_timeout_seconds": 20.0,
+    "chat_max_model_calls": 5,
+    "chat_max_output_tokens": 1024,
+    "chat_context_tokens": 8192
+  },
+  "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+  "model_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+  "ollama_version": {
+    "version": "0.40.2"
+  },
+  "warmup": {
+    "argv": [
+      "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+      "examples/warm_local_model.py",
+      "--model",
+      "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1"
+    ],
+    "started_utc": "2026-10-19T15:11:49.124461+00:00",
+    "power_before": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 20
+    },
+    "exit_code": 0,
+    "elapsed_seconds": 16.375,
+    "ended_utc": "2026-10-19T15:12:05.497881+00:00",
+    "power_after": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 20
+    }
+  },
+  "walkthrough": {
+    "argv": [
+      "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+      "examples/midterm_walkthrough.py",
+      "--confirm-demo-proposal",
+      "--output",
+      "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-rehearsal-20261019\\walkthrough"
+    ],
+    "started_utc": "2026-10-19T15:12:16.338915+00:00",
+    "power_before": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 20
+    },
+    "exit_code": 1,
+    "elapsed_seconds": 90.45400000002701,
+    "ended_utc": "2026-10-19T15:13:46.794358+00:00",
+    "power_after": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 20
+    }
+  },
+  "complete_workflow_passed": false,
+  "first_ai_inspection": {
+    "status_code": 504,
+    "server_duration_ms": 87884.69,
+    "public_saved_status": "interrupted",
+    "saved_tool_result_count": 0,
+    "pending_action": null
+  },
+  "backend": {
+    "training_status": "succeeded",
+    "training_id": "4957c1a7-4561-44b7-8ac8-dea3f53d3055",
+    "tuning_status": "succeeded",
+    "completed_trials": 3,
+    "submission_replays": 10,
+    "changed_submission_status": 409,
+    "foreign_project_status": 404,
+    "model_version_id": "24b8a58e-3ba0-4cb6-8581-1bcfefe21ebb",
+    "artifact_verified_by_monitoring_producer": true
+  },
+  "independent_monitoring": {
+    "execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 11.35899999999674,
+      "argv": [
+        "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+        "examples/monitor_workload.py",
+        "--model-id",
+        "b9b70de0-f255-4879-8483-58f0e6b43dff",
+        "--version-id",
+        "24b8a58e-3ba0-4cb6-8581-1bcfefe21ebb",
+        "--output",
+        "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-rehearsal-20261019\\independent-workload.json"
+      ],
+      "scope": "Independent monitoring after failed AI walkthrough; not complete workflow acceptance"
+    },
+    "inferences": 20,
+    "declared_delays": 5,
+    "sample_replay_equal": true,
+    "checkpoint_sha256": "fc6d48717c7df4147fe3859e5b8538aab2adacf337e095af39d626b3dbf20f15",
+    "checkpoint_size_bytes": 3221,
+    "current_summary_samples": 20,
+    "current_summary_issue": "latency_threshold_exceeded",
+    "prometheus_samples_retained": 17,
+    "prometheus_issue_samples": 17,
+    "first_retained_issue_utc": "2026-10-19T15:13:44.197000+00:00",
+    "own_current_alerts": [
+      {
+        "labels": {
+          "alertname": "MLPPWorkloadLatencyHigh",
+          "instance": "monitoring-api:8000",
+          "job": "mlpp-workload",
+          "model_version_id": "24b8a58e-3ba0-4cb6-8581-1bcfefe21ebb",
+          "severity": "demo"
+        },
+        "annotations": {
+          "description": "Check declared seeded delays before investigating a regression; this window is bounded.",
+          "summary": "Observed maximum latency exceeds the demo 100 ms threshold"
+        },
+        "state": "firing",
+        "activeAt": "2026-10-19T15:19:20.549262992Z",
+        "value": "1e+00"
+      }
+    ],
+    "grafana_dashboard_http_status": 200,
+    "grafana_refresh": "15s",
+    "visual_browser_review": false
+  },
+  "independent_diagnosis": {
+    "scope": "One independent component attempt after failed walkthrough; no generation retry",
+    "started_utc": "2026-10-19T15:16:03.681824+00:00",
+    "power_before": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 21
+    },
+    "path": "/api/v1/monitoring/model-versions/24b8a58e-3ba0-4cb6-8581-1bcfefe21ebb/diagnosis",
+    "request": null,
+    "elapsed_seconds": 30.18799999996554,
+    "status_code": 503,
+    "correlation_id": "646cd045d1b6847dcdcf7727dd32f096",
+    "response": {
+      "error": {
+        "code": "chat_timeout",
+        "message": "Monitoring explanation timed out",
+        "correlation_id": "646cd045d1b6847dcdcf7727dd32f096"
+      }
+    },
+    "passed": false,
+    "ended_utc": "2026-10-19T15:16:33.872208+00:00",
+    "power_after": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 21
+    }
+  },
+  "independent_draft": {
+    "scope": "One independent component attempt after failed walkthrough; no generation retry",
+    "started_utc": "2026-10-19T15:17:41.455188+00:00",
+    "power_before": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 21
+    },
+    "path": "/api/v1/chat",
+    "request": {
+      "request_id": "4957c1a7-4561-44b7-8ac8-dea3f53d3055-independent-python",
+      "message": "Generate Python listing experiments, limit 50, offset 0. Do not execute.",
+      "expected_revision": 0
+    },
+    "elapsed_seconds": 90.18699999997625,
+    "passed": false,
+    "exception": "ReadTimeout",
+    "exception_message": "timed out",
+    "ended_utc": "2026-10-19T15:19:11.641860+00:00",
+    "power_after": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 21
+    }
+  },
+  "independent_draft_saved_status": "interrupted",
+  "independent_draft_eventual_server_response": {
+    "status_code": 409,
+    "duration_ms": 92736.05
+  },
+  "model_runner_final_log_all_slots_idle": true,
+  "final_readiness_http_status": 200,
+  "not_reached_in_walkthrough": [
+    "comparison/history-guided AI proposal",
+    "exact proposal approval and resulting tuning",
+    "validated draft and draft replay",
+    "AI monitoring diagnosis"
+  ],
+  "not_run": [
+    "original ten-dialogue/seven-snippet gates",
+    "ordinary integration suite",
+    "isolated recovery suite",
+    "Kubernetes rollout/restart/replica checks"
+  ],
+  "changes": "Documentation/evidence only; no application, configuration, timeout, model, assertion or generated output changed",
+  "orchestration_provenance": "Untracked helper edited between phases; final helper retained. Executed committed walkthrough/producer scripts match recorded clean revision hashes.",
+  "limits": "One plugged-in laptop rehearsal, no correctness or timing pass for full AI; no timeout-root-cause attribution, performance-generalization or independent-review claim",
+  "raw_archive_sha256": "9ddccec0a2d763c048b428feb1259847719632ca6e7dfd352df534baeea3b9a9"
+}
