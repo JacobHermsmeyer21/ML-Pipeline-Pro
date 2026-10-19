@@ -1,0 +1,34 @@
+﻿{
+    "analyze_prompt.py":  {
+                              "sha256":  "94921acdb04c59de98c4dcb333cad3e6eaa2c75c10bc65d1f70acf620c9cabc8",
+                              "bytes":  7855
+                          },
+    "current-machine.json":  {
+                                 "sha256":  "18bcedb914ec8423058f514bfe79adc464f1cc7ab4cc929b28f1cdf01627cd4a",
+                                 "bytes":  1864
+                             },
+    "fast-tests.log":  {
+                           "sha256":  "e2cabafb77ff3d86b5ff8e68d10a01379121b5b7d9234459c694111c0a7173a2",
+                           "bytes":  17622
+                       },
+    "offline-analysis.json":  {
+                                  "sha256":  "d9b98a198c61300b6b239f2b9f0bc56eacc0219dbef7f4475583a0fde3f7e7ba",
+                                  "bytes":  7904
+                              },
+    "pip-check.log":  {
+                          "sha256":  "d42890463d191e96b966ee94e8a57229c9fdbe0dee73093e6fc67f9e71668bd8",
+                          "bytes":  782
+                      },
+    "ruff-check.log":  {
+                           "sha256":  "af352a86840ad0af3d37ea0d9197f868363a6dac6b1c2ef5d2722f6b41d2d9af",
+                           "bytes":  42
+                       },
+    "ruff-format.log":  {
+                            "sha256":  "830bbbf0d06b478b85ae155b1d82192f2c985680b4de805f88fbf3927295bcab",
+                            "bytes":  60
+                        },
+    "sync.log":  {
+                     "sha256":  "015acb7ae2ffe6b5604cd50e6ad3e8ac514fa2198e5cbda44f2e5821ce5f9a55",
+                     "bytes":  786
+                 }
+}

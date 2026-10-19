@@ -1,0 +1,285 @@
+{
+  "started_utc": "2026-10-19T02:37:48.063365+00:00",
+  "finished_utc": "2026-10-19T02:37:48.895016+00:00",
+  "source_revision": "9e2dcaf91dd3861ef626750a73cb1dd28a8dc51f",
+  "working_tree": "?? docs/evidence/2026-10-18-qwen-cost-investigation/\n?? docs/plans/2026-10-18-qwen-cpu-prompt-cost-plan.md",
+  "script_sha256": "94921acdb04c59de98c4dcb333cad3e6eaa2c75c10bc65d1f70acf620c9cabc8",
+  "python": "3.11.5",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "packages": {
+    "tokenizers": "0.22.2",
+    "langchain-ollama": "1.1.0",
+    "ollama": "0.6.3"
+  },
+  "baseline_inputs_sha256": {
+    "request.json": "f19f7fb9507375f344ae5ca627780837405cc08afe8c0d1747112b11a780635f",
+    "result.json": "5692e81772f5fe32852410cd827cd3638e7fb8e9f399276fa559d24ed88f5ca2",
+    "response.json": "2251f2f27a807fe996eda89a93cff30b6fa16edb5ccc9fcf3c5b934a574b0f66"
+  },
+  "tokenizer_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+  "counter_identity": {
+    "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+    "runtime_version": "0.40.2",
+    "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+  },
+  "live_inference_requests": 0,
+  "measurement_machine": "Workstation; see current-machine.json, not the laptop",
+  "method": {
+    "workload": "Unchanged retained read_guidance SDK request",
+    "preparation_repetitions": 3,
+    "unreported_count_warmups": 3,
+    "count_repetitions": 30,
+    "standalone_segment_counts_are_additive": false,
+    "ablations": "Token counts only; incomplete policies, never sent or supported",
+    "projection": "Constant laptop prompt throughput, unchanged generation and other time",
+    "projection_is_measured_inference": false
+  },
+  "preparation_observations": [
+    {
+      "wall_seconds": 0.246810499986168,
+      "process_cpu_seconds": 0.203125
+    },
+    {
+      "wall_seconds": 0.26871000000392087,
+      "process_cpu_seconds": 0.265625
+    },
+    {
+      "wall_seconds": 0.23420470001292415,
+      "process_cpu_seconds": 0.234375
+    }
+  ],
+  "count_observations": [
+    {
+      "wall_seconds": 0.0015273000171873719,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014173999952618033,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014738999889232218,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.00151269999332726,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.001490199996624142,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0023913999903015792,
+      "process_cpu_seconds": 0.015625,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0023477000067941844,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.001509599998826161,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0015970000240486115,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0015411000058520585,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014851000159978867,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014870000013615936,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.001566199993249029,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0015154000138863921,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014558999973814934,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.001524699997389689,
+      "process_cpu_seconds": 0.015625,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014540999836754054,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014878000074531883,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.002018599974690005,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0026291999965906143,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0016823000041767955,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014396999904420227,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014365999959409237,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0015258000057656318,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.002210900012869388,
+      "process_cpu_seconds": 0.015625,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0023392000002786517,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0015762000111863017,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0016192000184673816,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014977999962866306,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    },
+    {
+      "wall_seconds": 0.0014640000008512288,
+      "process_cpu_seconds": 0.0,
+      "tokens": 1109
+    }
+  ],
+  "segments": [
+    {
+      "segment": "guided_policy_including_catalog_label",
+      "utf8_bytes": 2724,
+      "standalone_tokens": 535
+    },
+    {
+      "segment": "tool_catalog",
+      "utf8_bytes": 2028,
+      "standalone_tokens": 367
+    },
+    {
+      "segment": "host_policy",
+      "utf8_bytes": 936,
+      "standalone_tokens": 160
+    },
+    {
+      "segment": "history_marker",
+      "utf8_bytes": 98,
+      "standalone_tokens": 17
+    },
+    {
+      "segment": "user_request",
+      "utf8_bytes": 94,
+      "standalone_tokens": 19
+    }
+  ],
+  "full_rendered_tokens": 1109,
+  "rendered_utf8_bytes": 5964,
+  "ablations": [
+    {
+      "case": "original",
+      "rendered_tokens": 1109
+    },
+    {
+      "case": "catalog_removed",
+      "rendered_tokens": 731
+    },
+    {
+      "case": "host_policy_removed",
+      "rendered_tokens": 949
+    },
+    {
+      "case": "catalog_and_host_policy_removed",
+      "rendered_tokens": 571
+    }
+  ],
+  "retained_laptop_baseline": {
+    "runtime_seconds": 99.3578565,
+    "http_wall_seconds": 99.35899999999674,
+    "prompt_seconds": 88.330474,
+    "generation_seconds": 10.946295,
+    "load_seconds": 0.0493319,
+    "other_seconds_including_load": 0.08108750000000242,
+    "prompt_fraction_of_runtime": 0.889013482290653,
+    "prompt_tokens_per_second": 12.555123388107258,
+    "maximum_input_tokens_for_20s_at_same_rates": 112.65231982679046,
+    "runtime_if_prompt_tokens_halved_estimate_seconds": 55.1926195,
+    "overall_speedup_if_all_prompt_cost_vanished_upper_bound": 9.010103394889946
+  },
+  "constant_throughput_projections": [
+    {
+      "case": "original",
+      "rendered_tokens": 1109,
+      "estimated_runtime_seconds": 99.3578565
+    },
+    {
+      "case": "catalog_removed",
+      "rendered_tokens": 731,
+      "estimated_runtime_seconds": 69.25062550631199
+    },
+    {
+      "case": "host_policy_removed",
+      "rendered_tokens": 949,
+      "estimated_runtime_seconds": 86.61405502119025
+    },
+    {
+      "case": "catalog_and_host_policy_removed",
+      "rendered_tokens": 571,
+      "estimated_runtime_seconds": 56.506824027502255
+    }
+  ]
+}

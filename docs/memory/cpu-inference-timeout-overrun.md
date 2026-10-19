@@ -38,3 +38,9 @@ hypotheses; no cause is confirmed. Memory/commit availability does not measure
 disk paging. Live deadline expiry was not triggered, so these data do not close
 the API timeout-overrun or under-load cancellation gaps. Test one separately
 reviewed inference/workload change at a time after reviewing this baseline.
+
+The [same-day offline cost audit](qwen-prompt-processing-cost.md) reproduces the
+1,109-token input and quantifies prompt contributors. It finds no process-level
+evidence to attribute contention and reports no measured inference improvement.
+Its new trial plan awaits review and actual laptop access; the current session
+is verified as the RX 9070 workstation.

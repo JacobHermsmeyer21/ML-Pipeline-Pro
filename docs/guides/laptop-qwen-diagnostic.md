@@ -1,5 +1,10 @@
 # Laptop Qwen latency diagnostic
 
+The [October 18 cost investigation](../evidence/2026-10-18-qwen-cost-investigation/README.md)
+attributes the saved prompt's tokens and explains why CPU saturation alone does
+not establish contention. Its [follow-up experiment plan](../plans/2026-10-18-qwen-cpu-prompt-cost-plan.md)
+awaits review; no inference speedup or application-default change is established.
+
 This implements Jacob's [approved bounded plan](../plans/2026-10-18-laptop-qwen-diagnostic-plan.md).
 It diagnoses eventual first-step response on the Acer Ryzen 3 3350U laptop. A
 successful result does not pass the original ten dialogue/seven snippet cases or
