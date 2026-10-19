@@ -41,6 +41,7 @@ from ml_pipeline_pro.conversation_schemas import (
     fingerprint,
     serialized,
 )
+from ml_pipeline_pro.conversation_timing import timed_boundary
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
 from ml_pipeline_pro.monitoring import MONITORING_INSTRUCTIONS
 from ml_pipeline_pro.monitoring_schemas import MonitoringAdvice, MonitoringStep
@@ -174,6 +175,10 @@ class OllamaConversationModel:
         return _json_object(response.text)
 
     async def prepare(self) -> None:
+        with timed_boundary("model_prepare"):
+            await self._prepare()
+
+    async def _prepare(self) -> None:
         """Read local identity/capabilities; never pull or load a model."""
         if self._closed:
             raise ConversationModelError("model_unavailable", "Local model client is closed")
@@ -248,7 +253,8 @@ class OllamaConversationModel:
             context["format"] = payload["format"]
         if len(serialized(context)) > CONTEXT_BYTES:
             raise ConversationModelError("chat_limit_exceeded", "Model context exceeds byte limit")
-        input_tokens = self._count_input_tokens(payload)
+        with timed_boundary("token_admission"):
+            input_tokens = self._count_input_tokens(payload)
         if type(input_tokens) is not int or input_tokens < 0:
             raise ValueError
         if (
@@ -309,6 +315,12 @@ class OllamaConversationModel:
         return await self._generate(messages, snippet=False, monitoring=True)
 
     async def _generate(
+        self, messages: list[dict[str, Any]], *, snippet: bool, monitoring: bool = False
+    ) -> ModelStep | MonitoringStep:
+        with timed_boundary("model_inference"):
+            return await self._generate_step(messages, snippet=snippet, monitoring=monitoring)
+
+    async def _generate_step(
         self, messages: list[dict[str, Any]], *, snippet: bool, monitoring: bool = False
     ) -> ModelStep | MonitoringStep:
         if self._closed or not self._prepared:

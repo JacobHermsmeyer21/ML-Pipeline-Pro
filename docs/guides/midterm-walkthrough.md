@@ -9,7 +9,10 @@ training/tuning and independent measured monitoring but fails the complete AI
 workflow at its first inspection. Separate diagnosis and Python-draft attempts
 also time out. See [the current rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
 before relying on the commands below for a live laptop demonstration. The
-five-minute profile remains a pending design; current deadlines are unchanged.
+five-minute profile is now approved; see [the explicit profile](laptop-five-minute.md)
+for its coordinated deployment, evaluation and walkthrough commands. Historical
+results above used the unchanged default profile; new-profile acceptance must be
+recorded separately.
 
 The original ten dialogue and seven code-generation gates pass on the retained
 final 7B run. Earlier attempts timed out under slower local inference; no deadline,

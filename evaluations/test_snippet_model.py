@@ -26,6 +26,7 @@ from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_qwen_counter import QwenInputCounter
 from ml_pipeline_pro.conversation_schemas import ChatRequest, fingerprint
 from ml_pipeline_pro.conversation_service import ConversationService
+from ml_pipeline_pro.conversation_timing import timing_profile
 from ml_pipeline_pro.snippet_generation import SNIPPET_INSTRUCTIONS
 from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolContext
@@ -129,11 +130,13 @@ class EvaluatedModel:
 
 
 def test_seven_real_snippet_scenarios(request):
+    profile = timing_profile(request.config.getoption("--timing-profile"))
     tag = request.config.getoption("--local-model")
     assert tag, "An explicit installed model tag is required"
     output = Path(request.config.getoption("--eval-output"))
     observed = {}
     report = {
+        "timing_profile": profile.name,
         "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "working_tree": True,
         "platform": platform.platform(),
@@ -143,16 +146,29 @@ def test_seven_real_snippet_scenarios(request):
             for path in sorted(Path("src/ml_pipeline_pro").glob("*.py"))
         },
         "instructions_hash": fingerprint(SNIPPET_INSTRUCTIONS),
-        "budget": {"generation_calls": 7, "output_tokens_per_call": 1024, "suite_seconds": 120},
+        "budget": {
+            "generation_calls": 7,
+            "output_tokens_per_call": 1024,
+            "suite_seconds": profile.snippet_suite_seconds,
+            "complete_reply_seconds": profile.client_seconds,
+        },
         "human_quality_review_required": True,
         "code_execution": False,
         "cases": [],
     }
 
     async def run():
-        deadline = time.monotonic() + 120
+        deadline = time.monotonic() + profile.snippet_suite_seconds
         settings = Settings(
-            _env_file=None, chat_enabled=True, chat_model=tag, chat_max_output_tokens=1024
+            _env_file=None,
+            chat_enabled=True,
+            chat_model=tag,
+            chat_max_output_tokens=1024,
+            **profile.settings_overrides(),
+        )
+        report["budget"].update(
+            model_seconds=settings.chat_model_timeout_seconds,
+            turn_seconds=settings.chat_timeout_seconds,
         )
         async with OllamaConversationModel(settings) as inspection:
             counter = QwenInputCounter(
@@ -195,6 +211,7 @@ def test_seven_real_snippet_scenarios(request):
                 item = {"scenario": name, "prompt_hash": fingerprint(prompt)}
                 transport = RecordsTransport({})
                 service = ConversationService(settings, MemoryConversations(), model, transport)
+                started = time.monotonic()
                 try:
                     async with asyncio.timeout(max(0, deadline - time.monotonic())):
                         turn = await service.chat(
@@ -227,17 +244,25 @@ def test_seven_real_snippet_scenarios(request):
                             and turn.snippet.review_required is True
                         )
                         assert turn.snippet.code and turn.snippet.provenance["artifact_digest"]
+                    assert time.monotonic() - started <= profile.client_seconds, (
+                        "Complete reply exceeded timing profile"
+                    )
                     item["passed"] = True
                 except Exception as exc:
                     item["passed"] = False
                     # Do not retain exception strings containing raw model/provider data.
                     item["failure_type"] = type(exc).__name__
+                item["elapsed_seconds"] = time.monotonic() - started
                 report["cases"].append(item)
+                if profile.name == "laptop-five-minute" and not item["passed"]:
+                    report["stopped_after_failure"] = name
+                    report["unrun_scenarios"] = list(CASES)[len(report["cases"]) :]
+                    break  # An incomplete seven-case gate must still fail below.
             report["calls"] = model.calls
             report["generation_calls"] = model.generation_calls
 
     async def bounded_run():
-        async with asyncio.timeout(120):
+        async with asyncio.timeout(profile.snippet_suite_seconds):
             await run()
 
     try:

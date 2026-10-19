@@ -1,0 +1,15 @@
+# Apply after compose.services.yaml, compose.monitoring.yaml and compose.ai.yaml.
+# Render the gateway first with scripts/render_laptop_profile.py.
+x-laptop-budget: &laptop-budget
+  MLPP_CHAT_MODEL_TIMEOUT_SECONDS: "240"
+  MLPP_CHAT_TIMEOUT_SECONDS: "270"
+services:
+  model-api:
+    environment:
+      <<: *laptop-budget
+  monitoring-api:
+    environment:
+      <<: *laptop-budget
+  api:
+    volumes: !override
+      - ./artifacts/laptop-five-minute/gateway.conf:/etc/nginx/nginx.conf:ro

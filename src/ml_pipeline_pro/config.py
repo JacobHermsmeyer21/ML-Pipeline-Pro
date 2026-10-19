@@ -41,8 +41,8 @@ class Settings(BaseSettings):
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
     chat_model_origin: str = "http://127.0.0.1:11434"
     chat_api_origin: str = "http://127.0.0.1:8000"
-    chat_timeout_seconds: float = Field(default=60, gt=0, le=120, allow_inf_nan=False)
-    chat_model_timeout_seconds: float = Field(default=20, gt=0, le=60, allow_inf_nan=False)
+    chat_timeout_seconds: float = Field(default=60, gt=0, le=300, allow_inf_nan=False)
+    chat_model_timeout_seconds: float = Field(default=20, gt=0, le=300, allow_inf_nan=False)
     chat_action_timeout_seconds: float = Field(default=30, gt=0, le=60, allow_inf_nan=False)
     chat_max_model_calls: int = Field(default=5, strict=True, ge=1, le=10)
     chat_max_tool_calls: int = Field(default=4, strict=True, ge=1, le=8)

@@ -1,5 +1,19 @@
 # Project audit and development status
 
+October 19 five-minute profile implementation: Jacob approved the
+[existing design](../plans/2026-10-18-laptop-deployment-readiness-plan.md). The
+opt-in profile coordinates 240-second model, 270-second turn, 300-second client and
+310-second gateway bounds; defaults, ownership and semantic gates remain unchanged.
+All 644 full fast cases and 23 final focused cases pass; package build, lint/format
+and dependency compatibility pass. All 63 ordinary integration cases and a fresh
+complete ten-case isolated recovery run pass. The preceding recovery run retained
+one Docker CLI restart timeout; its unchanged boundary also passes separately,
+without an assertion or timeout change. The underlying stall cause is unresolved.
+Separate same-vendor source review identified
+and resolved Kubernetes backend DNS rendering and evaluation continuation after
+failure. Deployment, live cancellation and complete laptop acceptance are being
+recorded separately and remain unverified by those fast checks.
+
 October 19 plugged-in presentation-laptop rehearsal on clean `e605e24`: the
 existing deployed sources match the checkout and all ten services are running.
 Training, three-trial tuning, versions/submission replay and independent measured

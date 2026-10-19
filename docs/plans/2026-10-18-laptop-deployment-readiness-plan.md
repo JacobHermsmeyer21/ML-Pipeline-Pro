@@ -1,6 +1,6 @@
 # Prepare the CPU laptop for local deployment
 
-- Status: approved; implementation in progress
+- Status: implemented; live laptop acceptance pending
 - Date: 2026-10-18
 - Source baseline: `91b0aef` / `person-a/conversation-foundation`
 - Request: correctness takes priority over speed; prepare the CPU laptop for the local class demo. Jacob selected a maximum five-minute wait for one complete AI reply.
@@ -163,7 +163,44 @@ the complete-reply ceiling, original deadlines and ownership fences remain bindi
 
 ## Implementation outcome
 
-Planning only. No application, gateway, evaluation assertion or deployed resource
-has changed. Laptop gates, timeout verification, rehearsal and implementation
-review remain outstanding. Commit/push of this plan is recorded in the session
-handoff; it does not establish deployment readiness.
+October 19 implementation is complete under Jacob's approval. The explicit
+profile, coordinated deployment/client budgets and payload-free boundary logs are
+implemented; verification and live laptop acceptance are being recorded separately.
+Default budgets and every semantic assertion remain unchanged. New assertions
+require complete replies to meet the selected client timing criterion. New tests
+check finite configuration ceilings, profile isolation, shared multi-call expiry,
+cancellation, failed/late response retention and deployment routing/replica safety.
+
+Separate read-only review by the `timing_review` agent (same OpenAI vendor;
+different-vendor review unavailable) covered timeout arithmetic, cancellation
+scopes, persisted ownership/replay, rendering and the original semantic gates.
+Its P1 finding identified missing Kubernetes backend DNS qualification; the
+renderer now preserves all three service FQDNs, with exact regression assertions.
+Its P2 finding identified automatic continuation after failed evaluation calls;
+the laptop profile now stops after the first failed case and retains the unused
+scenario list. Original failure/count gates remain binding. Review did not execute
+services; live cancellation, actual runner idleness and full acceptance remain
+execution requirements. No ownership/state-machine/concurrency redesign was made.
+
+Verification before the implementation commit: locked sync, Ruff lint/format,
+dependency compatibility and package build pass. The full fast run passes 644
+cases (73 integration deselected, 81% rounded coverage); 23 final focused checks
+also pass, including two subsequently added profile/late-response regressions.
+All 63 ordinary integration cases pass against the rebuilt laptop Compose stack;
+all installed application-module hashes match the checkout and both AI domains
+use 240/270-second budgets. Local links/anchors and 13 PowerShell examples pass.
+
+The first full recovery execution passes nine cases and fails one at the existing
+90-second `docker compose start worker` command limit before its final-evaluation
+recovery assertions. Its saved job remains evaluating; no recovery pass is inferred.
+After preserving/stopping the old presentation stack, the unchanged boundary
+passes alone in 63.92 seconds and a fresh full isolated run passes all ten cases
+in 349.15 seconds. No assertion, command limit or application source was changed
+between these runs. The original incident and raw logs remain retained; its
+underlying Docker/scheduling cause is unresolved. The presentation volumes remain
+intact. Live model gates, Kubernetes rollout/restart and the complete walkthrough
+are the next execution steps and are not established by these checks.
+
+uv warns that its workspace cache may enter the source package. Archive inspection
+finds zero cache entries and confirms both new modules in the wheel; build exits
+zero. This warning is recorded rather than suppressing it or changing packaging.

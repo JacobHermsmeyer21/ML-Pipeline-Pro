@@ -10,11 +10,36 @@ from pathlib import Path
 
 import httpx
 
+from ml_pipeline_pro.conversation_timing import PROFILE_NAMES, timing_profile
+
+
+def timed_ai_post(client, path, *, profile, result, output, **kwargs):
+    """Retain failed attempts too; a late success cannot pass the response criterion."""
+    item = {"path": path}
+    result.setdefault("ai_requests", []).append(item)
+    started = time.monotonic()
+    try:
+        response = client.post(path, timeout=profile.client_seconds, **kwargs)
+        item["status_code"] = response.status_code
+        item["response"] = response.json()
+        response.raise_for_status()
+        assert time.monotonic() - started <= profile.client_seconds, (
+            "Complete reply exceeded timing profile"
+        )
+        return response
+    except Exception as exc:
+        item["failure_type"] = type(exc).__name__
+        raise
+    finally:
+        item["elapsed_seconds"] = time.monotonic() - started
+        output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--origin", default="http://127.0.0.1:8000")
     parser.add_argument("--project", default="demo")
+    parser.add_argument("--timing-profile", choices=PROFILE_NAMES, default="default")
     parser.add_argument("--output", type=Path, default=Path("artifacts/midterm-walkthrough"))
     parser.add_argument(
         "--confirm-demo-proposal",
@@ -22,6 +47,7 @@ def main():
         help="Explicitly approve this bounded test proposal; Python remains unexecuted",
     )
     args = parser.parse_args()
+    profile = timing_profile(args.timing_profile)
     args.output.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
@@ -40,7 +66,13 @@ def main():
     headers = {"X-Project-ID": args.project}
     if key := os.getenv("MLPP_API_KEY"):
         headers["X-API-Key"] = key
-    result = {"backend": backend, "code_execution": False, "dialogue": []}
+    result = {
+        "backend": backend,
+        "code_execution": False,
+        "dialogue": [],
+        "timing_profile": profile.name,
+        "complete_reply_seconds": profile.client_seconds,
+    }
     with httpx.Client(
         base_url=args.origin, headers=headers, timeout=90, trust_env=False, follow_redirects=False
     ) as client:
@@ -53,7 +85,14 @@ def main():
             }
             if previous:
                 body["conversation_id"] = previous["conversation_id"]
-            response = client.post("/api/v1/chat", json=body)
+            response = timed_ai_post(
+                client,
+                "/api/v1/chat",
+                json=body,
+                profile=profile,
+                result=result,
+                output=args.output / "results.json",
+            )
             response.raise_for_status()
             turn = response.json()
             result["dialogue"].append(turn)
@@ -90,7 +129,14 @@ def main():
         assert arguments["limits"]["max_runtime_seconds"] == 40
         assert arguments["objective_metric"] == "validation_f1"
         assert any(item["status"] == "succeeded" for item in tuning["tool_results"])
-        replay = client.post("/api/v1/chat", json=body)
+        replay = timed_ai_post(
+            client,
+            "/api/v1/chat",
+            json=body,
+            profile=profile,
+            result=result,
+            output=args.output / "results.json",
+        )
         replay.raise_for_status()
         assert replay.json() == tuning
         result["saved_proposal_replay_equal"] = True
@@ -123,7 +169,17 @@ def main():
             "python", "Generate Python listing experiments, limit 50, offset 0. Do not execute."
         )
         assert draft["snippet"]["status"] == "validated" and draft["snippet"]["review_required"]
-        assert client.post("/api/v1/chat", json=draft_body).json() == draft
+        assert (
+            timed_ai_post(
+                client,
+                "/api/v1/chat",
+                json=draft_body,
+                profile=profile,
+                result=result,
+                output=args.output / "results.json",
+            ).json()
+            == draft
+        )
         result["draft_replay_equal"] = True
         result["history"] = client.get("/api/v1/conversations/" + tuning["conversation_id"]).json()
     subprocess.run(
@@ -143,9 +199,15 @@ def main():
         ],
         check=True,
     )
-    with httpx.Client(base_url=args.origin, headers=headers, timeout=90, trust_env=False) as client:
-        diagnosis = client.post(
-            f"/api/v1/monitoring/model-versions/{backend['version']['id']}/diagnosis"
+    with httpx.Client(
+        base_url=args.origin, headers=headers, timeout=90, trust_env=False, follow_redirects=False
+    ) as client:
+        diagnosis = timed_ai_post(
+            client,
+            f"/api/v1/monitoring/model-versions/{backend['version']['id']}/diagnosis",
+            profile=profile,
+            result=result,
+            output=args.output / "results.json",
         )
         diagnosis.raise_for_status()
         result["monitoring"] = diagnosis.json()

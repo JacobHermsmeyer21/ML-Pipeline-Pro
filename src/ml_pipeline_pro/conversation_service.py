@@ -31,6 +31,7 @@ from ml_pipeline_pro.conversation_schemas import (
     serialized,
 )
 from ml_pipeline_pro.conversation_store import TurnClaim
+from ml_pipeline_pro.conversation_timing import timed_boundary
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
 from ml_pipeline_pro.snippet_generation import (
@@ -157,7 +158,8 @@ class ConversationService:
     async def chat(self, context: ToolContext, request: ChatRequest) -> ConversationTurn:
         state = {"claim": None}
         try:
-            return await self._chat(context, request, state)
+            with timed_boundary("complete_turn", context.correlation_id):
+                return await self._chat(context, request, state)
         except PyMongoError:
             claim = state["claim"]
             raise ApiError(
@@ -182,7 +184,8 @@ class ConversationService:
         turn = None
         try:
             async with asyncio.timeout(self.settings.chat_timeout_seconds):
-                claim = await self.store.reserve(context, request, deadline=deadline)
+                with timed_boundary("turn_reservation", context.correlation_id):
+                    claim = await self.store.reserve(context, request, deadline=deadline)
                 state["claim"] = claim
                 if claim.replayed:
                     return claim.turn
@@ -208,7 +211,10 @@ class ConversationService:
         except TimeoutError:
             # The original turn deadline has expired, so a completion cannot own it.
             if claim is not None:
-                await self.store.history(context.project_id, claim.turn.conversation_id, limit=1)
+                with timed_boundary("timeout_reconciliation", context.correlation_id):
+                    await self.store.history(
+                        context.project_id, claim.turn.conversation_id, limit=1
+                    )
             raise ApiError(
                 504,
                 "chat_timeout",
@@ -248,7 +254,8 @@ class ConversationService:
                 # Reject the whole oversized snapshot; never publish truncated evidence.
                 turn = self._minimal_failure(claim, turn)
             try:
-                return await self.store.finish(context, claim, turn)
+                with timed_boundary("failure_persistence", context.correlation_id):
+                    return await self.store.finish(context, claim, turn)
             except ApiError as failed:
                 if failed.code != "chat_limit_exceeded":
                     raise
@@ -277,7 +284,8 @@ class ConversationService:
     ) -> ConversationTurn:
         if len(serialized(turn.model_dump())) > RECORD_BYTES:
             raise self._limit("Conversation reply exceeds the record byte limit")
-        return await self.store.finish(context, claim, turn, proposal=proposal)
+        with timed_boundary("turn_persistence", context.correlation_id):
+            return await self.store.finish(context, claim, turn, proposal=proposal)
 
     async def _run(
         self, context: ToolContext, claim: TurnClaim, turn: ConversationTurn

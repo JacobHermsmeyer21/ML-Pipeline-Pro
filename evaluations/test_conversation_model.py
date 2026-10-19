@@ -29,6 +29,7 @@ from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_schemas import ChatRequest, fingerprint
 from ml_pipeline_pro.conversation_service import ConversationService
+from ml_pipeline_pro.conversation_timing import timing_profile
 from ml_pipeline_pro.schemas import (
     DatasetRecord,
     ExperimentComparison,
@@ -320,6 +321,7 @@ def check_case(name, turn, transport):
 
 
 def test_ten_real_local_model_scenarios(request):
+    profile = timing_profile(request.config.getoption("--timing-profile"))
     tag, counter_spec = (
         request.config.getoption("--local-model"),
         request.config.getoption("--token-counter"),
@@ -332,6 +334,7 @@ def test_ten_real_local_model_scenarios(request):
     counter_file = Path(inspect.getsourcefile(factory))
     output = Path(request.config.getoption("--eval-output"))
     report = {
+        "timing_profile": profile.name,
         "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "working_tree": True,
         "platform": platform.platform(),
@@ -345,7 +348,11 @@ def test_ten_real_local_model_scenarios(request):
 
     async def run():
         settings = Settings(
-            _env_file=None, chat_enabled=True, chat_model=tag, chat_max_output_tokens=512
+            _env_file=None,
+            chat_enabled=True,
+            chat_model=tag,
+            chat_max_output_tokens=512,
+            **profile.settings_overrides(),
         )
         native = OllamaConversationModel(settings)
         try:
@@ -375,7 +382,10 @@ def test_ten_real_local_model_scenarios(request):
                 "requests": 50,
                 "reserved_total_tokens": 50 * settings.chat_context_tokens,
                 "output_tokens_per_call": 512,
-                "suite_seconds": 600,
+                "suite_seconds": profile.dialogue_suite_seconds,
+                "model_seconds": settings.chat_model_timeout_seconds,
+                "turn_seconds": settings.chat_timeout_seconds,
+                "complete_reply_seconds": profile.client_seconds,
             }
             failures = []
             store = MemoryConversations()
@@ -401,6 +411,9 @@ def test_ten_real_local_model_scenarios(request):
                     conversation_id, revision = turn.conversation_id, turn.revision
                     item["turn"] = turn.model_dump(mode="json")
                     check_case(name, turn, transport)
+                    assert time.monotonic() - started <= profile.client_seconds, (
+                        "Complete reply exceeded timing profile"
+                    )
                     item["status"] = "passed"
                 except Exception as exc:
                     item.update(status="failed", error_type=type(exc).__name__)
@@ -408,6 +421,10 @@ def test_ten_real_local_model_scenarios(request):
                 finally:
                     item["elapsed_seconds"] = time.monotonic() - started
                     report["cases"].append(item)
+                if profile.name == "laptop-five-minute" and item["status"] == "failed":
+                    report["stopped_after_failure"] = name
+                    report["unrun_scenarios"] = list(PROMPTS)[len(report["cases"]) :]
+                    break  # Inspect runner idleness before any further inference.
             report["calls"] = budgeted.calls
             report["reserved_tokens"] = budgeted.reserved_tokens
             report["request_payload_hashes"] = observed.payload_hashes
@@ -432,10 +449,10 @@ def test_ten_real_local_model_scenarios(request):
         finally:
             await native.close()
 
-    deadline = time.monotonic() + 600
+    deadline = time.monotonic() + profile.dialogue_suite_seconds
 
     async def bounded_run():
-        async with asyncio.timeout(600):
+        async with asyncio.timeout(profile.dialogue_suite_seconds):
             await run()
 
     report["status"] = "failed"

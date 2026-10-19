@@ -19,6 +19,7 @@ from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_model import ConversationModelError
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_schemas import CONTEXT_BYTES, serialized
+from ml_pipeline_pro.conversation_timing import timed_boundary
 
 MODEL_TAG = "qwen2.5:7b-instruct-q4_K_M"
 PROFILE_IDENTITY = {
@@ -348,11 +349,15 @@ class QwenConversationModel:
         if self._closed or self.settings.chat_model is None:
             raise _unsupported()
         if self._native is None:
-            self._native = OllamaConversationModel(self.settings, count_input_tokens=self._count)
+            with timed_boundary("model_construction"):
+                self._native = OllamaConversationModel(
+                    self.settings, count_input_tokens=self._count
+                )
         try:
             await self._native.prepare()
             if self._counter is None:
-                self._counter = QwenInputCounter(self._native.provenance, self.tokenizer_path)
+                with timed_boundary("tokenizer_preparation"):
+                    self._counter = QwenInputCounter(self._native.provenance, self.tokenizer_path)
             if monitoring:
                 return await self._native.generate_monitoring(messages)
             if snippet:

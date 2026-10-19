@@ -57,6 +57,11 @@ configuration; actual credentials must be supplied privately, including scraping
 
 ## Optional evaluated local AI
 
+For the CPU presentation laptop, use the approved
+[five-minute profile](laptop-five-minute.md#kubernetes), which renders the canonical
+stack and AI patch with matching gateway/API budgets. Default deployment below
+keeps its original timing settings.
+
 The default Kubernetes smoke needs no weights or external model credentials.
 To enable the already installed Windows/Docker Desktop runtime, mount/copy the
 verified tokenizer into the explicitly named test node. Weights stay with Ollama:

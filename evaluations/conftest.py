@@ -3,3 +3,6 @@ def pytest_addoption(parser):
     group.addoption("--local-model", default=None, help="Explicit installed Ollama model tag")
     group.addoption("--token-counter", default=None, help="Reviewed local module:counter_factory")
     group.addoption("--eval-output", default="artifacts/local-model-evaluation/results.json")
+    group.addoption(
+        "--timing-profile", choices=("default", "laptop-five-minute"), default="default"
+    )

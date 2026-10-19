@@ -89,3 +89,10 @@ review before implementation.
 
 Application code is in [`src/ml_pipeline_pro`](src/ml_pipeline_pro/), tests in
 [`tests`](tests/), and runnable examples in [`examples`](examples/).
+
+The opt-in [five-minute laptop profile](docs/guides/laptop-five-minute.md) allows
+240 seconds per model call, 270 seconds per complete turn and a 300-second client
+wait. Default call/turn settings remain 20/60 seconds; their allowed finite ceiling
+is 300 seconds with model <= turn. Use the matching deployment and client profile;
+increasing only a client wait cannot extend the application's budget. Readiness
+requires the retained laptop gates and complete demo results, not configuration alone.

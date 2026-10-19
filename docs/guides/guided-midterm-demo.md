@@ -33,6 +33,11 @@ instructions are not replayed as current input. Exact confirmation remains requi
 
 ## Reproduce acceptance
 
+The approved [laptop profile](laptop-five-minute.md) adds the explicit
+`--timing-profile laptop-five-minute` option to each gate below. It selects longer
+call/turn/suite budgets and records them separately; every semantic assertion and
+scenario remains required. Omitting the option preserves the original budgets.
+
 The original ten/seven scenarios and budgets remain intact. Synthetic records in
 these gates are not measured ML results. Neither gate executes generated Python.
 

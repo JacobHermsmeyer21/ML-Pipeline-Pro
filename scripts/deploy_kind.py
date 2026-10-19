@@ -12,6 +12,9 @@ from uuid import uuid4
 
 import httpx
 
+from ml_pipeline_pro.conversation_timing import PROFILE_NAMES
+from ml_pipeline_pro.laptop_deployment import render_laptop_profile
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -21,6 +24,7 @@ def main():
     parser.add_argument("--output", type=Path, default=Path("artifacts/kubernetes-validation"))
     parser.add_argument("--port", type=int, default=18000)
     parser.add_argument("--cleanup", action="store_true")
+    parser.add_argument("--timing-profile", choices=PROFILE_NAMES, default="default")
     args = parser.parse_args()
     if not args.name.startswith("mlpp-") or not args.name.replace("-", "").isalnum():
         parser.error("Use an explicitly named mlpp-* test cluster")
@@ -57,8 +61,25 @@ def main():
             [args.kind, "load", "docker-image", "ml-pipeline-pro:midterm", "--name", args.name],
             "load",
         )
-        command([*kubectl, "apply", "-f", "deploy/kubernetes/stack.json"], "apply")
-        manifest = json.loads(Path("deploy/kubernetes/stack.json").read_text())
+        manifest_path = Path("deploy/kubernetes/stack.json")
+        if args.timing_profile == "laptop-five-minute":
+            root = Path(__file__).resolve().parents[1]
+            manifest_path = render_laptop_profile(root, args.output / "laptop-profile")
+            command(
+                ["docker", "exec", args.name + "-control-plane", "mkdir", "-p", "/mlpp-local"],
+                "tokenizer-directory",
+            )
+            command(
+                [
+                    "docker",
+                    "cp",
+                    str(root / ".tools/local-model-setup/tokenizer.json"),
+                    args.name + "-control-plane:/mlpp-local/tokenizer.json",
+                ],
+                "tokenizer-copy",
+            )
+        command([*kubectl, "apply", "-f", str(manifest_path)], "apply")
+        manifest = json.loads(manifest_path.read_text())
         for item in manifest["items"]:
             if item["kind"] == "Deployment":
                 name = item["metadata"]["name"]
@@ -143,6 +164,7 @@ def main():
                 "replicas",
             )
         report = {
+            "timing_profile": args.timing_profile,
             "cluster": args.name,
             "namespace": "mlpp-demo",
             "model_api_replicas": 2,

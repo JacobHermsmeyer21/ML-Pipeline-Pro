@@ -20,8 +20,10 @@ unresolved; retain the existing limits and distinguish the presentation machines
 The [October 19 plugged-in laptop rehearsal](docs/evidence/2026-10-19-laptop-rehearsal/README.md)
 passes backend and independent monitoring checks, but the full AI walkthrough
 still fails at its first inspection. Independent diagnosis and Python draft
-attempts also time out. The proposed five-minute timing profile remains awaiting
-review and implementation; this rehearsal changes no application settings.
+attempts also time out. That rehearsal used the default timing profile. Jacob
+subsequently approved the [five-minute implementation](docs/plans/2026-10-18-laptop-deployment-readiness-plan.md)
+on October 19; coordinated budgets and timing instrumentation are implemented,
+with new-profile laptop acceptance being recorded separately.
 
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved
