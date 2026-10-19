@@ -1,10 +1,10 @@
 # Preserve gateway liveness during laptop inference
 
-- Status: awaiting human review; no implementation authorized by this plan
+- Status: approved; implementation and verification in progress
 - Date: 2026-10-19
 - Source baseline: `533a2ed` on `person-a/conversation-foundation`
 - Request: follow-up to Jacob's approved five-minute implementation and demo rerun
-- Human reviewer/approval: pending; five-minute approval does not cover probe redesign
+- Human reviewer/approval: Jacob approved on October 19, 2026: "i approve, go for it".
 - Independent review: same-vendor read-only evidence review by `timing_review`;
   targeted implementation review required; different-vendor availability unknown
 
@@ -46,7 +46,8 @@ recorded sleep intersects neither new execution window. This supplies standalone
 model acceptance and leaves the diagnosed deployed gateway failure unchanged.
 Jacob accepts the new saved outputs on October 19 in the
 [human decision](../evidence/2026-10-19-laptop-awake-gates/human-review-decision.json).
-This is output acceptance; approval of this deployment-health design remains pending.
+That earlier decision accepts the saved outputs. Jacob subsequently approves this
+deployment-health design on October 19: "i approve, go for it".
 
 ## Requirements
 
@@ -140,13 +141,17 @@ repair/retry failed generation.
 
 ## Human review and approval
 
-Pending. Jacob approved the five-minute timing/deployment plan on October 19;
-this newly diagnosed gateway health design has not been approved. No production
-or local probe, resource or concurrency change has been made under this plan.
+Jacob approved on October 19, 2026: "i approve, go for it", responding to the
+prepared gateway-health plan. Approval covers the opt-in gateway-local liveness
+endpoint/probe change, unchanged truthful readiness, synchronized resource/health
+evidence, required checks and the original laptop deployment/model/demo reruns.
+The five-minute budgets, model/prompts, application probe thresholds, replicas,
+resources, serial execution and original ownership/deadlines remain binding.
+The separate live-expiry experiment remains outside this plan's approved scope.
 
 ## Implementation outcome
 
-Not implemented. The current change records evidence and a reviewable follow-up.
+Implementation and verification are now authorized and in progress.
 The original five-minute implementation remains committed; its laptop acceptance
 is incomplete. See the [durable finding](../memory/laptop-inference-probe-restarts.md).
 
