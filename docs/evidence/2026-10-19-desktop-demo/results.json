@@ -1,0 +1,208 @@
+{
+  "source_revision": "bf07213ed2564cfc9c97efb35504c22f2d9cf9c7",
+  "started_at": "2026-10-19T21:53:29.665499+00:00",
+  "finished_at": "2026-10-19T21:54:35.209790+00:00",
+  "hardware": {
+    "cpu": {
+      "Name": "AMD Ryzen 7 7800X3D 8-Core Processor           ",
+      "NumberOfCores": 8,
+      "NumberOfLogicalProcessors": 16
+    },
+    "system": {
+      "Manufacturer": "Micro-Star International Co., Ltd.",
+      "Model": "MS-7E62",
+      "TotalPhysicalMemory": 33346736128
+    },
+    "gpu": [
+      {
+        "Name": "AMD Radeon(TM) Graphics"
+      },
+      {
+        "Name": "AMD Radeon RX 9070"
+      }
+    ]
+  },
+  "timing_profile": "default",
+  "application_timeouts_seconds": {
+    "model": 20,
+    "turn": 60,
+    "client": 90
+  },
+  "fast_tests": {
+    "passed": 647,
+    "integration_deselected": 73,
+    "coverage_percent_rounded": 81,
+    "pytest_seconds": 59.48
+  },
+  "conversation_gate": {
+    "scenarios": 10,
+    "all_passed": true,
+    "budget": {
+      "requests": 50,
+      "reserved_total_tokens": 409600,
+      "output_tokens_per_call": 512,
+      "suite_seconds": 600,
+      "model_seconds": 20.0,
+      "turn_seconds": 60.0,
+      "complete_reply_seconds": 90
+    }
+  },
+  "snippet_gate": {
+    "scenarios": 7,
+    "all_passed": true,
+    "budget": {
+      "generation_calls": 7,
+      "output_tokens_per_call": 1024,
+      "suite_seconds": 120,
+      "complete_reply_seconds": 90,
+      "model_seconds": 20.0,
+      "turn_seconds": 60.0
+    }
+  },
+  "command_results": [
+    {
+      "name": "warmup",
+      "args": [
+        "examples/warm_local_model.py",
+        "--model",
+        "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1"
+      ],
+      "started_at": "2026-10-19T21:53:29.711264+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 13.79700000000048
+    },
+    {
+      "name": "conversation-gate",
+      "args": [
+        "-m",
+        "pytest",
+        "evaluations/test_conversation_model.py",
+        "--local-model",
+        "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "--token-counter",
+        "evaluations.qwen_counter:create_counter",
+        "--eval-output",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\desktop-demo-20261019\\conversation.json",
+        "--junitxml",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\desktop-demo-20261019\\conversation.junit.xml"
+      ],
+      "started_at": "2026-10-19T21:53:43.512197+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 13.234000000000378
+    },
+    {
+      "name": "snippet-gate",
+      "args": [
+        "-m",
+        "pytest",
+        "evaluations/test_snippet_model.py",
+        "--local-model",
+        "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "--eval-output",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\desktop-demo-20261019\\snippets.json",
+        "--junitxml",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\desktop-demo-20261019\\snippets.junit.xml"
+      ],
+      "started_at": "2026-10-19T21:53:56.744965+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 15.79700000000048
+    },
+    {
+      "name": "demo-warmup",
+      "args": [
+        "examples/warm_local_model.py",
+        "--model",
+        "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1"
+      ],
+      "started_at": "2026-10-19T21:54:12.549980+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7189999999991414
+    },
+    {
+      "name": "walkthrough",
+      "args": [
+        "examples/midterm_walkthrough.py",
+        "--confirm-demo-proposal",
+        "--output",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\desktop-demo-20261019\\walkthrough"
+      ],
+      "started_at": "2026-10-19T21:54:13.261903+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 21.95299999999952
+    }
+  ],
+  "walkthrough": {
+    "training_id": "0e82cd95-7f59-4bb7-8373-b8012fde26a6",
+    "training_validation_f1": 1.0,
+    "initial_tuning_trials": 3,
+    "confirmed_tuning_trials": 2,
+    "proposal_replay_equal": true,
+    "draft_replay_equal": true,
+    "generated_code_executed": false,
+    "measurements": {
+      "model_version_id": "23169940-c15f-42db-986c-45215fe1e5b4",
+      "as_of": "2026-10-19T21:54:32.515000Z",
+      "window_seconds": 300,
+      "observation_ids": [
+        "65beed72-8cc8-50fc-a3a0-5345d3df10b5",
+        "49ad064b-f010-540b-8308-382715465330",
+        "1ba85e86-f28b-5670-b3b3-fdf829405829",
+        "6956207f-5a62-5b27-84c0-c50e52705ebb",
+        "416bf82e-8e70-5db8-b4fd-dc6fe91e5f4a",
+        "7458aaff-f50e-5d6a-962a-48a7bf137e4a",
+        "81974346-1a3d-536c-99f5-701098712728",
+        "71566286-da06-5d9a-9c23-7bf2495c03b9",
+        "0482c9e7-3ebd-5195-b101-5eba3466fa53",
+        "9d7206ab-cff9-5920-b0af-6681c0bbe416",
+        "bec60c55-c4dd-5e86-adfb-0e5dcac169ca",
+        "84584c43-587f-53b2-a919-fc66de08e116",
+        "9d1b0ff5-270a-54e2-962c-d7403c324b18",
+        "62709c30-9820-51a3-a475-996b8b95fe0a",
+        "b2a65f64-6c30-5bf6-ac19-ff90aafc6116",
+        "92d61485-1298-5426-8ce7-d5c384f1a004",
+        "7172317a-2798-5f58-b8d0-f486d7660d2c",
+        "4196b96f-0ab1-5dcc-9504-bb961b4b2cc1",
+        "95ef9292-183c-52cf-bab3-abc92ec5704b",
+        "43628f4b-0ce5-5fe0-9839-6834322ad64e",
+        "82f6e12a-7458-5723-ae4a-40f6748fb8a1"
+      ],
+      "sample_count": 21,
+      "partial": false,
+      "availability": "observed",
+      "latest_observed_at": "2026-10-19T21:54:32.106000Z",
+      "mean_latency_ms": 43.242780952451064,
+      "max_latency_ms": 151.12720000070112,
+      "error_count": 0,
+      "labeled_count": 20,
+      "labeled_accuracy": 1.0,
+      "seeded_count": 6,
+      "latency_threshold_ms": 100.0,
+      "issue": "latency_threshold_exceeded"
+    },
+    "human_usefulness_review": "not claimed"
+  },
+  "capture": {
+    "running_containers": 10,
+    "containers_with_healthchecks": 6,
+    "all_configured_healthchecks_healthy": true,
+    "no_container_restarts": true,
+    "capture_incidents": [
+      "Initial metric query used an incorrect name and returned an empty result. The source-defined mlpp_workload_latency_issue query returns 1.",
+      "The initial capture asserted that every container had a healthcheck. Compose defines no healthcheck for worker, scheduler, Grafana or Prometheus. All ten are running; all six configured checks are healthy. No application test or assertion was changed."
+    ],
+    "dashboard_url": "http://127.0.0.1:3000/d/mlpp-midterm?from=1792446799665&to=1792446905209"
+  },
+  "source_modules_per_domain": 46,
+  "not_rerun": [
+    "ordinary integration suite",
+    "isolated recovery suite",
+    "Kubernetes deployment",
+    "remote CI"
+  ],
+  "cpu_laptop_acceptance": "unchanged; desktop result is separate",
+  "archive": {
+    "file": "raw.zip",
+    "payloads": 38,
+    "sha256": "64d30f01ea6d693f1c76f3f7006d1b7b5eb0dd5e821c11e220dac57424d394f9"
+  }
+}

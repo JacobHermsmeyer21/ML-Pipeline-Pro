@@ -4,6 +4,12 @@ Use one classification dataset/model, small Bayesian searches and one evaluated
 7B profile. The [course checklist](../project/course-requirements.md) remains the
 acceptance record; historical failures and broader production work remain visible.
 
+**Desktop rerun, October 19:** the Ryzen 7 / RX 9070 workstation passes all ten
+dialogue and seven snippet scenarios with the original timing profile, then
+completes this workflow in 21.953 seconds. The [saved demo evidence](../evidence/2026-10-19-desktop-demo/README.md)
+includes generated outputs for review. This workstation result leaves the
+separate presentation-laptop deployment gaps below open.
+
 **Presentation-laptop status, October 19:** the implemented five-minute profile
 passes its first actual-ID inspection in 210.532 seconds. The full Kubernetes
 walkthrough fails on the next turn when a liveness-triggered gateway restart
