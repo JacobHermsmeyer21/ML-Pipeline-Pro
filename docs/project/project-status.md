@@ -1,5 +1,21 @@
 # Project audit and development status
 
+October 19 five-minute laptop rerun on clean `533a2ed`: the correct first
+inspection passes in 210.532 seconds. The complete Kubernetes walkthrough fails
+on the comparison/proposal turn: liveness-triggered gateway termination breaks
+client delivery after 132.937 seconds, before the selected reply windows expire.
+The serving API persists an honest internal transport-error reply, with no facts,
+proposal or submission. Broader probe/DNS delays have no confirmed resource cause.
+Backend smoke, two-pod replay, preserved-record/artifact node restart and all five
+implementation CI jobs pass; original cold-rollout/import failures remain retained.
+A separate fixture dialogue gate passes eight cases before Windows sleeps during
+the ninth; that suite fails/incompletely records the ninth, the tenth is unrun,
+and snippets remain unrun. Sleep-inclusive timings are not active CPU benchmarks.
+See [the complete evidence](../evidence/2026-10-19-laptop-five-minute/README.md).
+The five-minute implementation is delivered; complete laptop and live-expiry
+acceptance remain open. A [deployment-health plan](../plans/2026-10-19-laptop-deployment-health-plan.md)
+awaits review before changing health semantics or resource settings.
+
 October 19 five-minute profile implementation: Jacob approved the
 [existing design](../plans/2026-10-18-laptop-deployment-readiness-plan.md). The
 opt-in profile coordinates 240-second model, 270-second turn, 300-second client and
@@ -11,8 +27,8 @@ one Docker CLI restart timeout; its unchanged boundary also passes separately,
 without an assertion or timeout change. The underlying stall cause is unresolved.
 Separate same-vendor source review identified
 and resolved Kubernetes backend DNS rendering and evaluation continuation after
-failure. Deployment, live cancellation and complete laptop acceptance are being
-recorded separately and remain unverified by those fast checks.
+failure. Deployment, live cancellation and complete laptop acceptance are
+distinguished in the later evidence above; fast checks alone do not verify them.
 
 October 19 plugged-in presentation-laptop rehearsal on clean `e605e24`: the
 existing deployed sources match the checkout and all ten services are running.

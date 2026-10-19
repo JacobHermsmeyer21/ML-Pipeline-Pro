@@ -1,6 +1,6 @@
 # Prepare the CPU laptop for local deployment
 
-- Status: implemented; live laptop acceptance pending
+- Status: implemented; live laptop acceptance incomplete after retained failed rerun
 - Date: 2026-10-18
 - Source baseline: `91b0aef` / `person-a/conversation-foundation`
 - Request: correctness takes priority over speed; prepare the CPU laptop for the local class demo. Jacob selected a maximum five-minute wait for one complete AI reply.
@@ -204,3 +204,35 @@ are the next execution steps and are not established by these checks.
 uv warns that its workspace cache may enter the source package. Archive inspection
 finds zero cache entries and confirms both new modules in the wheel; build exits
 zero. This warning is recorded rather than suppressing it or changing packaging.
+
+Live execution on committed `533a2ed` is now retained in the
+[five-minute evidence](../evidence/2026-10-19-laptop-five-minute/README.md).
+Kubernetes backend smoke, direct replay through both model API pods and a controlled
+node stop/start with identical saved records and verified artifact hashes pass.
+Initial cold dependency rollout and multi-platform import failures remain recorded;
+continued checks use the unchanged rollout limits. All five implementation CI jobs pass.
+
+The full plugged-in walkthrough fails: its first correct inspection completes in
+210.532 seconds, but the comparison/proposal request loses client delivery after
+132.937 seconds when Kubernetes terminates the gateway for failed liveness. The
+serving model API persists an honest tool transport-error reply after 135.566 seconds,
+with no facts, proposal or submission. The immediate delivery failure is confirmed;
+the wider probe/DNS delay resource cause is unmeasured. Original 270-second deadlines
+remain intact. Runtime logs end idle. Proposal confirmation, generated Python and
+measured diagnosis are not reached; F1/F2 and full readiness are not established.
+
+The separate dialogue gate passes eight cases then fails during a recorded Windows
+sleep in the ninth; the tenth remains unrun. AC changes from connected to battery.
+The 4902.953-second case duration includes sleep and cannot measure active CPU
+inference or verify timely expiry. The original snippet gate is unrun in this profile.
+Live under-load deadline expiry and human quality review remain open. No failure
+was repaired, retried or converted to a skip/pass. A separate same-vendor evidence
+review validates archive/source hashes, JUnit/CI counts and the restart sequence;
+its reporting findings add gate-specific sleep/power context and avoid claiming the
+exact internal tool socket mechanism. Different-vendor review remains unavailable.
+
+The implementation is committed and pushed as `533a2ed`; its scope is delivered,
+but acceptance is incomplete. No additional timeout/probe/resource/model change
+was made. The [deployment-health follow-up](2026-10-19-laptop-deployment-health-plan.md)
+requires renewed human review before implementation, as required for a material
+deviation from this timing design. See the [durable finding](../memory/laptop-inference-probe-restarts.md).

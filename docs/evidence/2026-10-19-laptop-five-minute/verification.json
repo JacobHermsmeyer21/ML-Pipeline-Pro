@@ -1,0 +1,7 @@
+{
+  "archive_crc": "pass",
+  "manifest_payloads": 171,
+  "exact_hashes_sizes": "pass",
+  "credentials_environment_dump_kubeconfig_weights_installers": "excluded",
+  "source_revision": "533a2ed0ef7cc70205c06ad218fabe2f9365dfb0"
+}

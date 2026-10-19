@@ -116,6 +116,14 @@ including the requested-fact correction. [Retained workstation evidence](../evid
 supplies that machine's current reproduction of C3/C5/C7/C9; CPU-laptop failures,
 original-record reproduction and separate review remain open.
 
+October 19 laptop update: the approved five-minute implementation passes a correct
+first inspection in 210.532 seconds, but its complete Kubernetes tutorial fails
+on a liveness-triggered gateway restart before the next reply window expires.
+Backend, replica replay, preserved-data restart and implementation CI pass.
+Eight direct dialogue cases pass before Windows sleep interrupts the ninth;
+the full ten/seven gates and complete laptop C3/C5/C7/C9 reproduction remain open.
+No course row is closed by a partial run. See [retained evidence](../evidence/2026-10-19-laptop-five-minute/README.md).
+
 | ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |

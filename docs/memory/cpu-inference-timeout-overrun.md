@@ -63,4 +63,12 @@ saved snippet. Cancellation and a final idle runner are retained in filtered
 logs. These show the failure also occurs while plugged in; they do not isolate
 power effects or establish the blocking/timeout-overrun mechanism. Backend,
 measured inference/observation replay and dashboard/alert checks pass separately.
-The five-minute profile remains unimplemented; full laptop acceptance remains open.
+That run preceded the approved five-minute implementation; full laptop acceptance
+remains open.
+
+The later [five-minute Kubernetes run](laptop-inference-probe-restarts.md) passes
+its first inspection in 210.532 seconds, but liveness-triggered gateway termination
+breaks the next turn before its reply window expires. Its wider probe/DNS delays
+have no confirmed resource cause. The direct dialogue gate is separately interrupted
+by a recorded laptop sleep after eight passing cases. Neither event resolves the
+earlier active-load API timeout-overrun mechanism.

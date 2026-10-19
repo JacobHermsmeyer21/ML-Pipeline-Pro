@@ -23,7 +23,13 @@ still fails at its first inspection. Independent diagnosis and Python draft
 attempts also time out. That rehearsal used the default timing profile. Jacob
 subsequently approved the [five-minute implementation](docs/plans/2026-10-18-laptop-deployment-readiness-plan.md)
 on October 19; coordinated budgets and timing instrumentation are implemented,
-with new-profile laptop acceptance being recorded separately.
+with [new-profile laptop evidence](docs/evidence/2026-10-19-laptop-five-minute/README.md)
+now retained. The first inspection passes in 210.532 seconds, but a liveness-triggered
+gateway restart breaks the next turn before its reply deadline. The separate
+dialogue gate passes eight cases before a recorded laptop sleep interrupts the
+ninth; snippets remain unrun. All five implementation CI jobs pass. Full laptop
+acceptance remains open. The [deployment-health follow-up](docs/plans/2026-10-19-laptop-deployment-health-plan.md)
+awaits review; further timeout increases are not the next proposed change.
 
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved

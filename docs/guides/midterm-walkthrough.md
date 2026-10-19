@@ -4,15 +4,15 @@ Use one classification dataset/model, small Bayesian searches and one evaluated
 7B profile. The [course checklist](../project/course-requirements.md) remains the
 acceptance record; historical failures and broader production work remain visible.
 
-**Presentation-laptop status, October 19:** the plugged-in rehearsal passes
-training/tuning and independent measured monitoring but fails the complete AI
-workflow at its first inspection. Separate diagnosis and Python-draft attempts
-also time out. See [the current rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
-before relying on the commands below for a live laptop demonstration. The
-five-minute profile is now approved; see [the explicit profile](laptop-five-minute.md)
-for its coordinated deployment, evaluation and walkthrough commands. Historical
-results above used the unchanged default profile; new-profile acceptance must be
-recorded separately.
+**Presentation-laptop status, October 19:** the implemented five-minute profile
+passes its first actual-ID inspection in 210.532 seconds. The full Kubernetes
+walkthrough fails on the next turn when a liveness-triggered gateway restart
+breaks client delivery before its reply deadline. The separate dialogue gate
+passes eight cases before a Windows sleep interruption; full ten/seven acceptance
+remains open. See [the newest evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
+and [the explicit profile](laptop-five-minute.md) before relying on this tutorial
+for the laptop demonstration. The [earlier default-profile rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
+retains its first-inspection/diagnosis/draft timeout failures separately.
 
 The original ten dialogue and seven code-generation gates pass on the retained
 final 7B run. Earlier attempts timed out under slower local inference; no deadline,

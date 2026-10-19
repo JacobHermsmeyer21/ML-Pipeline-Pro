@@ -3,6 +3,9 @@
 For the October 20 demo, see the [October 18 audit](docs/project/2026-10-18-repo-audit.md).
 The minimal course features are implemented, but AI acceptance on the chosen CPU
 laptop remains unsuccessful; the passing full AI walkthrough used the RX 9070 workstation.
+The [five-minute laptop rerun](docs/evidence/2026-10-19-laptop-five-minute/README.md)
+passes its first inspection, then fails during a gateway liveness restart. Full
+laptop acceptance remains open; more reply time is not the next proposed fix.
 
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,

@@ -1,5 +1,13 @@
 # Five-minute laptop profile
 
+**October 19 result:** implemented and pushed on `533a2ed`. The first actual-ID
+inspection passes in 210.532 seconds, but a liveness-triggered gateway restart
+breaks the next turn before its reply deadline. The full demo fails. The separate
+dialogue gate passes eight cases before a Windows sleep interruption; the remaining
+cases and snippets do not establish acceptance. See [retained evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
+and the [unapproved health follow-up](../plans/2026-10-19-laptop-deployment-health-plan.md).
+Keep AC connected and the laptop awake throughout live gates.
+
 Jacob approved the [deployment plan](../plans/2026-10-18-laptop-deployment-readiness-plan.md)
 on October 19. This explicit profile keeps the pinned 7B model, prompts, token/call
 limits, exact confirmation and generated-code validation. Default timeouts remain
