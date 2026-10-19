@@ -110,8 +110,13 @@ approved one-machine scope and is not existing laptop acceptance.
 
 Jacob proposed an eight-minute Qwen diagnostic. The
 [bounded diagnostic plan](../plans/2026-10-18-laptop-qwen-diagnostic-plan.md)
-is ready for human review; it isolates a representative request without changing
-application deadlines or claiming a laptop run from the current workstation.
+was approved by Jacob on October 18 and implemented as `0f6ed20`. The actual
+laptop [single-request diagnostic](../evidence/2026-10-18-laptop-qwen-diagnostic/README.md)
+returns the correct first inspection step in 99.359 seconds after separate
+24.281-second warmup. Prompt processing accounts for 88.330474 seconds. This
+passes eventual first-step response within eight minutes, while exceeding the
+unchanged 20-second call limit. Full laptop gates/tutorial and the API timeout
+mechanism remain outstanding; no inference configuration was changed.
 
 **October 19:** rehearse the exact final arrangement with the original ten/seven
 gates and complete actual-ID walkthrough. Verify training, Bayesian tuning, exact

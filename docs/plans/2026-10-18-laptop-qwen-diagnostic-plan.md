@@ -1,6 +1,6 @@
 # Diagnose Qwen latency on the presentation laptop
 
-- Status: approved; implementation and laptop diagnostic in progress
+- Status: implemented; single laptop diagnostic passed, application acceptance outstanding
 - Date: 2026-10-18
 - Source baseline: `cb67bb8` / `person-a/conversation-foundation`
 - Request: recommend laptop inference improvements; try an eight-minute diagnostic to determine whether Qwen eventually responds.
@@ -144,7 +144,26 @@ passes for 109 installed packages. Local links/anchors, the PowerShell guide
 example and `git diff --check` pass. Raw logs/JUnit are under
 `artifacts/laptop-qwen-diagnostic/`. No service/ownership implementation changed,
 so ordinary/recovery integration was not selected for this diagnostic addition.
-The single live request remains pending immediately after the harness commit.
+The harness was committed and pushed as `0f6ed20` before the live request.
+
+The [retained laptop run](../evidence/2026-10-18-laptop-qwen-diagnostic/README.md)
+on clean `0f6ed20` passes the bounded eventual-response diagnostic: separate
+warmup 24.281 seconds, one measured request 99.359 seconds, expected strict
+`get_experiment(exp-low)` read, no tool dispatch/retry/domain write. Runtime
+prompt processing is 88.330474 seconds for 1,109 tokens; generation is 10.946295
+seconds for 18 tokens. The prompt count matches admission; zero prompt tokens
+were cached. Ollama reports context 8192 and zero VRAM bytes; the runner logs
+CPU buffers and ends idle. Request, response, timing/resource snapshots, identities,
+raw fast logs and evidence hashes are retained in the linked directory.
+
+This completes the approved single diagnostic only. The first step exceeds the
+unchanged 20-second application call limit; original ten/seven gates and complete
+laptop tutorial remain outstanding. The earlier API timeout overrun mechanism
+is unresolved. Eight CPU/memory samples show approximately 99.99% system CPU busy
+and 3.64-3.86 GiB available physical memory, without proving absence of paging.
+Actual resource sample intervals vary from 5.547 to 32.219 seconds despite the
+requested five-second sleep; the cause is unknown. Real deadline expiry was not
+exercised. No further request or inference-setting experiment ran under this plan.
 
 Separate review: same-vendor Codex agent `/root/diagnostic_review`, October 18,
 2026, read-only review of the script/tests against this plan. Submitted scope:
@@ -156,6 +175,10 @@ one-request and setup-failure behavior. All four were corrected and re-reviewed
 with no remaining blocker. Machine fields are allowlisted and the CIM snapshot
 is an operator prerequisite rather than hardware attestation. No external-vendor
 review was available. The reviewer sent no live inference.
+The same reviewer independently recomputed the saved CPU/memory/rate and timing
+arithmetic after the run; all fields match the raw observations. A wording finding
+was resolved by describing five seconds as the sampling target, with actual gaps
+retained explicitly.
 
 No application setting, dependency, model gate, persistent record or production
 behavior changes are included. CPU busy observations use bounded Windows API

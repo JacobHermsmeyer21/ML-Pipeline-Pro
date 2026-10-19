@@ -22,3 +22,19 @@ The [October 14 RX 9070 run](../evidence/2026-10-14-rx9070-walkthrough/README.md
 archived October 15, passes ten/seven original gates and the full walkthrough with
 the same deadlines on a Ryzen 7 workstation. That is separate hardware/runtime
 evidence; it does not diagnose or repair this CPU-laptop timeout-overrun mechanism.
+
+October 18 follow-up: the [approved direct diagnostic](../evidence/2026-10-18-laptop-qwen-diagnostic/README.md)
+on clean `0f6ed20` receives the correct first `get_experiment(exp-low)` step in
+99.359 seconds, after 24.281 seconds separate warmup. Prompt processing takes
+88.330474 seconds for 1,109 uncached tokens; generation takes 10.946295 seconds
+for 18 tokens. CPU residency is confirmed. This proves eventual first-step
+response within the diagnostic's eight-minute budget, not a complete turn or
+application-gate pass; the 20-second call limit is unchanged.
+
+Eight raw Windows API snapshots show approximately 99.99% system CPU busy and
+3.64-3.86 GiB available physical memory. Intended five-second sampling produces
+actual gaps up to 32.219 seconds. Scheduling delay and blocking inspection remain
+hypotheses; no cause is confirmed. Memory/commit availability does not measure
+disk paging. Live deadline expiry was not triggered, so these data do not close
+the API timeout-overrun or under-load cancellation gaps. Test one separately
+reviewed inference/workload change at a time after reviewing this baseline.

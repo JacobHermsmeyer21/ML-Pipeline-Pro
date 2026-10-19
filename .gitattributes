@@ -1,3 +1,4 @@
 * text=auto eol=lf
 # Preserve execution evidence byte-for-byte for recorded SHA-256 verification.
 docs/evidence/2026-10-08-conversation-actions/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/evidence/2026-10-18-laptop-qwen-diagnostic/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

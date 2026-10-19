@@ -1,0 +1,24 @@
+{
+  "source": "result.json resource_samples",
+  "sample_count": 8,
+  "observed_interval_seconds": 97.93699999997625,
+  "intervals_seconds": [
+    5.546999999962281,
+    17.40600000001723,
+    32.21899999998277,
+    22.18700000003446,
+    6.98499999998603,
+    7.73399999999674,
+    5.85899999999674
+  ],
+  "system_cpu_busy_fraction": 0.9999201405526273,
+  "cpu_idle_delta_100ns": 312500,
+  "cpu_kernel_plus_user_delta_100ns": 3913125000,
+  "physical_available_min_bytes": 3912450048,
+  "physical_available_max_bytes": 4141330432,
+  "commit_available_min_bytes": 3579437056,
+  "commit_available_max_bytes": 3648045056,
+  "prompt_tokens_per_second": 12.555123388107258,
+  "generation_tokens_per_second": 1.644392006610456,
+  "prompt_cached_tokens": 0
+}

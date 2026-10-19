@@ -50,7 +50,8 @@ The full response is never repaired or parsed by extracting a JSON substring.
 
 Inspect `result.json`, `request.json`, `warmup.json` and `response.json` when
 present. Timings convert runtime nanoseconds to seconds; input/output token
-counts remain separate. Five-second Windows API samples record available physical
+counts remain separate. Windows API sampling targets five-second intervals;
+saved monotonic timestamps expose actual delays. Samples record available physical
 memory, system commit availability and cumulative CPU times. Commit availability
 does not measure disk paging activity. CPU busy fraction over an interval is
 `1 - delta(idle) / (delta(kernel) + delta(user))`; kernel time includes idle.

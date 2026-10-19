@@ -1,0 +1,218 @@
+{
+  "started_utc": "2026-10-19T02:13:57.398342+00:00",
+  "source_revision": "0f6ed208ab983db050cb4e441075b15cb688f632",
+  "working_tree": "",
+  "script_sha256": "3b7a4447bd4358a2201cc2db66a6386ea98f401fb36043bccc55303c18b945e9",
+  "machine": {
+    "cpu": "AMD Ryzen 3 3350U with Radeon Vega Mobile Gfx  ",
+    "cores": 4,
+    "logical_processors": 4,
+    "manufacturer": "Acer",
+    "model": "Aspire A515-46",
+    "physical_memory_bytes": 19261304832,
+    "gpu": [
+      "AMD Radeon(TM) Vega 6 Graphics"
+    ],
+    "power_plan": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)"
+  },
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.11.17",
+  "scenario": "read_guidance",
+  "budget": {
+    "inference_seconds": 480,
+    "warmup_seconds": 120
+  },
+  "application_acceptance": "not evaluated",
+  "diagnostic_status": "passed",
+  "phase": "complete",
+  "inference_requests": 1,
+  "resource_samples": [
+    {
+      "monotonic_seconds": 378747.656,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 4141330432,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3579437056,
+      "cpu_idle_100ns": 31803750000,
+      "cpu_kernel_100ns": 77788437500,
+      "cpu_user_100ns": 41320937500
+    },
+    {
+      "monotonic_seconds": 378753.203,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3983286272,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3598098432,
+      "cpu_idle_100ns": 31803906250,
+      "cpu_kernel_100ns": 77823750000,
+      "cpu_user_100ns": 41507500000
+    },
+    {
+      "monotonic_seconds": 378770.609,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3982360576,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3648045056,
+      "cpu_idle_100ns": 31803906250,
+      "cpu_kernel_100ns": 77874843750,
+      "cpu_user_100ns": 41971718750
+    },
+    {
+      "monotonic_seconds": 378802.828,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3977703424,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3596378112,
+      "cpu_idle_100ns": 31803906250,
+      "cpu_kernel_100ns": 78011250000,
+      "cpu_user_100ns": 42944375000
+    },
+    {
+      "monotonic_seconds": 378825.015,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3988332544,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3624890368,
+      "cpu_idle_100ns": 31803906250,
+      "cpu_kernel_100ns": 78165781250,
+      "cpu_user_100ns": 43836250000
+    },
+    {
+      "monotonic_seconds": 378832.0,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3957800960,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3607375872,
+      "cpu_idle_100ns": 31804062500,
+      "cpu_kernel_100ns": 78251093750,
+      "cpu_user_100ns": 44200156250
+    },
+    {
+      "monotonic_seconds": 378839.734,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3912450048,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3599220736,
+      "cpu_idle_100ns": 31804062500,
+      "cpu_kernel_100ns": 78318125000,
+      "cpu_user_100ns": 44459218750
+    },
+    {
+      "monotonic_seconds": 378845.593,
+      "physical_total_bytes": 19261304832,
+      "physical_available_bytes": 3934330880,
+      "commit_limit_bytes": 29041631232,
+      "commit_available_bytes": 3594633216,
+      "cpu_idle_100ns": 31804062500,
+      "cpu_kernel_100ns": 78389062500,
+      "cpu_user_100ns": 44633437500
+    }
+  ],
+  "cache_conditions": "Explicit warmup only; existing runtime prefix cache not cleared",
+  "runner_activity_after_cancellation": "not cancelled; complete response received",
+  "provenance": {
+    "backend": "ollama",
+    "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+    "packages": {
+      "langchain-core": "1.6.9",
+      "langchain-ollama": "1.1.0",
+      "ollama": "0.6.3"
+    },
+    "context_tokens": 8192,
+    "max_output_tokens": 1024,
+    "tools_hash": "aad6464b733b9724e4a5eb99f8aff8a5e3cbc0eb9b925e644f043fa652733188",
+    "instructions_hash": "2b8b0b5881599b5ddb055e77ad766688f4438abbf8e844821d47ea16f72ffe05",
+    "protocol": "guided",
+    "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+    "runtime_version": "0.40.2",
+    "supported_context_tokens": 32768,
+    "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+    "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+  },
+  "counter_identity": {
+    "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+    "runtime_version": "0.40.2",
+    "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+  },
+  "request_sha256": "f19f7fb9507375f344ae5ca627780837405cc08afe8c0d1747112b11a780635f",
+  "request_fingerprint": "407504168017d81a115fbd376ef0c653c9a7ca0d4c8bf755ea3aa12b81f18558",
+  "admitted_input_tokens": 1109,
+  "loaded_before_warmup": {
+    "models": []
+  },
+  "warmup_seconds": 24.28100000001723,
+  "loaded_after_warmup": {
+    "models": [
+      {
+        "name": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "size": 5455793356,
+        "digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-10-18T22:24:23.9427973-04:00",
+        "size_vram": 0,
+        "context_length": 8192,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "inference_wall_seconds": 99.35899999999674,
+  "eventual_response": true,
+  "timings": {
+    "total_duration_seconds": 99.3578565,
+    "load_duration_seconds": 0.0493319,
+    "prompt_eval_duration_seconds": 88.330474,
+    "eval_duration_seconds": 10.946295,
+    "prompt_eval_count": 1109,
+    "eval_count": 18
+  },
+  "validated_step": {
+    "call": {
+      "name": "get_experiment",
+      "arguments": {
+        "experiment_id": "exp-low"
+      }
+    },
+    "reply": null,
+    "snippet": null,
+    "usage": {
+      "input_tokens": 1109,
+      "output_tokens": 18
+    }
+  },
+  "semantic_valid": true,
+  "loaded_after_response": {
+    "models": [
+      {
+        "name": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "size": 5455793356,
+        "digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-10-18T22:26:03.3158004-04:00",
+        "size_vram": 0,
+        "context_length": 8192,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "finished_utc": "2026-10-19T02:16:03.862121+00:00"
+}
