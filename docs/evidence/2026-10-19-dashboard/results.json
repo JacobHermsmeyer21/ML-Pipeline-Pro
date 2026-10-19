@@ -119,5 +119,12 @@
     "size_bytes": 4879641,
     "sha256": "0a65bfe53b0cb3d08b9e37a3dc510be3fb1f3fcbe036c319a6b007d0a7816d2b",
     "member_hash_verification": "passed"
+  },
+  "delivery": {
+    "implementation_commit": "9f5009212900b06d6d29d88e58e3a6296fb7eca8",
+    "origin_push_succeeded": true,
+    "branch": "person-a/conversation-foundation",
+    "date": "2026-10-19",
+    "force_push": false
   }
 }
