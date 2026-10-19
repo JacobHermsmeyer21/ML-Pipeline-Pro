@@ -1,5 +1,17 @@
 # Project audit and development status
 
+Later October 19, after Jacob reconnects AC and requests continuation: the original
+ten conversation and seven snippet scenarios all pass on the CPU laptop with the
+five-minute profile. Maximum complete replies are 184.875 and 229.219 seconds.
+The fresh full gates run on clean `dbc9a86`; all 54 common source/harness/lockfile
+hashes match the preceding implementation. AC is connected at both ends of each
+gate, neither execution window intersects recorded sleep, and both runners end
+idle. Five generated drafts pass validation and are never executed; new human
+quality review remains pending. See [fresh evidence and exact outputs](../evidence/2026-10-19-laptop-awake-gates/README.md).
+The earlier sleep-interrupted gate and failed deployed walkthrough below remain
+retained. Full deployed laptop acceptance, gateway-health remediation and live
+under-load deadline-expiry evidence remain outstanding.
+
 October 19 five-minute laptop rerun on clean `533a2ed`: the correct first
 inspection passes in 210.532 seconds. The complete Kubernetes walkthrough fails
 on the comparison/proposal turn: liveness-triggered gateway termination breaks

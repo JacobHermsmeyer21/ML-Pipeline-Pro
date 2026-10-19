@@ -7,9 +7,10 @@ acceptance record; historical failures and broader production work remain visibl
 **Presentation-laptop status, October 19:** the implemented five-minute profile
 passes its first actual-ID inspection in 210.532 seconds. The full Kubernetes
 walkthrough fails on the next turn when a liveness-triggered gateway restart
-breaks client delivery before its reply deadline. The separate dialogue gate
-passes eight cases before a Windows sleep interruption; full ten/seven acceptance
-remains open. See [the newest evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
+breaks client delivery before its reply deadline. After AC reconnection,
+[fresh standalone gates](../evidence/2026-10-19-laptop-awake-gates/README.md) pass
+all ten dialogue and seven snippet scenarios. The complete deployed walkthrough
+remains open. See [deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
 and [the explicit profile](laptop-five-minute.md) before relying on this tutorial
 for the laptop demonstration. The [earlier default-profile rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
 retains its first-inspection/diagnosis/draft timeout failures separately.

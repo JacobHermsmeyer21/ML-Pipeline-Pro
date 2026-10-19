@@ -1,0 +1,6 @@
+{
+  "payload_files": 86,
+  "archive_crc_manifest_hashes_sizes": "pass",
+  "credentials_environment_dump_kubeconfig_weights": "excluded",
+  "source_hashes_match_previous_run": 54
+}

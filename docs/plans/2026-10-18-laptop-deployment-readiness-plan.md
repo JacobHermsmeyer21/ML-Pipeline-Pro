@@ -236,3 +236,14 @@ but acceptance is incomplete. No additional timeout/probe/resource/model change
 was made. The [deployment-health follow-up](2026-10-19-laptop-deployment-health-plan.md)
 requires renewed human review before implementation, as required for a material
 deviation from this timing design. See the [durable finding](../memory/laptop-inference-probe-restarts.md).
+
+Later October 19, Jacob confirms AC power/awake availability and requests
+continuation. A [fresh complete model execution](../evidence/2026-10-19-laptop-awake-gates/README.md)
+on clean `dbc9a86` passes all original ten conversation and seven snippet scenarios.
+Maximum complete replies are 184.875/229.219 seconds; every semantic assertion,
+token/call/output cap and selected budget remains unchanged. Both runners end idle,
+and neither execution window intersects Windows' recorded between-gate sleep.
+All 54 common source/harness/lockfile hashes match the earlier execution. No output
+is repaired or generated Python executed. The original interrupted failure remains
+retained. This resolves the later standalone model-gate gap only: the deployed
+walkthrough, new human review and live under-load expiry acceptance remain open.

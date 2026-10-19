@@ -7,6 +7,12 @@ window permits the first inspection, but does not establish presentation readine
 [Results](results.json), [archive verification](verification.json), and the
 [raw archive](raw.zip) retain successes, failures and execution provenance.
 
+Later on October 19, Jacob reconnects AC and requests continuation. A
+[fresh full standalone execution](../2026-10-19-laptop-awake-gates/README.md) passes
+all ten dialogue and seven snippet scenarios. This supersedes the incomplete
+model-gate status for that later run only; the failed deployed walkthrough and
+the original interrupted raw evidence below remain unchanged.
+
 ## Arrangement and implementation
 
 The actual Acer Aspire A515-46 uses a Ryzen 3 3350U / Vega 6 CPU arrangement,

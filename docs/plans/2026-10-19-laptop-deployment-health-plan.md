@@ -40,6 +40,12 @@ semantic failure or active CPU benchmark. No OS power policy change is proposed.
 No unresolved product-intent question is required for the profile-only design;
 human approval of this expanded health scope is the remaining decision.
 
+Later [fresh AC model gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass all original ten/seven scenarios without an application or model change;
+recorded sleep intersects neither new execution window. This supplies standalone
+model acceptance and leaves the diagnosed deployed gateway failure unchanged.
+Human review of the new saved outputs remains pending.
+
 ## Requirements
 
 | ID | Type | Requirement | Acceptance evidence |

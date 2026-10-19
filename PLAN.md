@@ -25,9 +25,10 @@ subsequently approved the [five-minute implementation](docs/plans/2026-10-18-lap
 on October 19; coordinated budgets and timing instrumentation are implemented,
 with [new-profile laptop evidence](docs/evidence/2026-10-19-laptop-five-minute/README.md)
 now retained. The first inspection passes in 210.532 seconds, but a liveness-triggered
-gateway restart breaks the next turn before its reply deadline. The separate
-dialogue gate passes eight cases before a recorded laptop sleep interrupts the
-ninth; snippets remain unrun. All five implementation CI jobs pass. Full laptop
+gateway restart breaks the next turn before its reply deadline. A later
+[fresh AC model run](docs/evidence/2026-10-19-laptop-awake-gates/README.md) passes
+all ten dialogue and seven snippet scenarios; the earlier interrupted run remains
+retained. All five implementation CI jobs pass. Full deployed laptop
 acceptance remains open. The [deployment-health follow-up](docs/plans/2026-10-19-laptop-deployment-health-plan.md)
 awaits review; further timeout increases are not the next proposed change.
 

@@ -1,0 +1,351 @@
+{
+  "date": "2026-10-19",
+  "scope": "User requested remaining model checks after reconnecting AC and keeping laptop awake. Fresh entire dialogue gate, then independent snippet gate; original interrupted evidence retained unchanged.",
+  "source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+  "application_implementation_revision": "533a2ed0ef7cc70205c06ad218fabe2f9365dfb0",
+  "timing_profile": "laptop-five-minute",
+  "fixture_values_are_synthetic": true,
+  "new_deployment_demo_execution": false,
+  "existing_deployed_demo_status": "failed: gateway liveness-triggered delivery break; no health changes made or approved.",
+  "prior_evidence": "../2026-10-19-laptop-five-minute/README.md",
+  "gates": {
+    "conversation": {
+      "status": "passed",
+      "expected_cases": 10,
+      "passed_cases": 10,
+      "unrun_scenarios": [],
+      "cases": [
+        {
+          "scenario": "read_guidance",
+          "passed": true,
+          "elapsed_seconds": 133.25,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        },
+        {
+          "scenario": "comparison_history_suggestion",
+          "passed": true,
+          "elapsed_seconds": 109.95299999997951,
+          "failure_type": null,
+          "turn_status": "awaiting_confirmation",
+          "snippet_status": null
+        },
+        {
+          "scenario": "missing_dataset_model",
+          "passed": true,
+          "elapsed_seconds": 94.04599999997299,
+          "failure_type": null,
+          "turn_status": "needs_input",
+          "snippet_status": null
+        },
+        {
+          "scenario": "missing_runtime",
+          "passed": true,
+          "elapsed_seconds": 23.594000000040978,
+          "failure_type": null,
+          "turn_status": "needs_input",
+          "snippet_status": null
+        },
+        {
+          "scenario": "missing_tuning_objective",
+          "passed": true,
+          "elapsed_seconds": 23.26600000000326,
+          "failure_type": null,
+          "turn_status": "needs_input",
+          "snippet_status": null
+        },
+        {
+          "scenario": "missing_tuning_limits",
+          "passed": true,
+          "elapsed_seconds": 32.43700000003446,
+          "failure_type": null,
+          "turn_status": "needs_input",
+          "snippet_status": null
+        },
+        {
+          "scenario": "unsupported_action",
+          "passed": true,
+          "elapsed_seconds": 27.405999999959022,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        },
+        {
+          "scenario": "foreign_project",
+          "passed": true,
+          "elapsed_seconds": 42.96799999999348,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        },
+        {
+          "scenario": "hostile_record",
+          "passed": true,
+          "elapsed_seconds": 165.03200000000652,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        },
+        {
+          "scenario": "evidence_status_accuracy",
+          "passed": true,
+          "elapsed_seconds": 184.875,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        }
+      ],
+      "max_complete_reply_seconds": 184.875,
+      "budget": {
+        "requests": 50,
+        "reserved_total_tokens": 409600,
+        "output_tokens_per_call": 512,
+        "suite_seconds": 3300,
+        "model_seconds": 240.0,
+        "turn_seconds": 270.0,
+        "complete_reply_seconds": 300
+      },
+      "pytest_test_count_note": "One pytest test contains every required semantic scenario; scenario counts come from raw report.",
+      "execution": {
+        "argv": [
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\bin\\uv\\uv.exe",
+          "run",
+          "--offline",
+          "--locked",
+          "--extra",
+          "training",
+          "pytest",
+          "evaluations/test_conversation_model.py",
+          "--timing-profile",
+          "laptop-five-minute",
+          "--local-model",
+          "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+          "--eval-output",
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\conversation.json",
+          "--junitxml=C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\conversation.xml",
+          "--basetemp",
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\conversation-temp",
+          "-o",
+          "cache_dir=C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\pytest-cache",
+          "--token-counter",
+          "evaluations.qwen_counter:create_counter"
+        ],
+        "started_utc": "2026-10-19T19:13:40.886479+00:00",
+        "power_before": {
+          "read_ok": true,
+          "ac_line_status": 1,
+          "battery_percent": 55
+        },
+        "outer_safety_timeout_seconds": 3450,
+        "source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+        "working_tree": "",
+        "orchestrator_sha256": "b3582f9c3697c508662cb60fdc9fa649c524609ee015379b00c03d5f52724dcf",
+        "retries": 0,
+        "generated_code_execution": false,
+        "exit_code": 0,
+        "elapsed_seconds": 844.5310000000172,
+        "power_after": {
+          "read_ok": true,
+          "ac_line_status": 1,
+          "battery_percent": 59
+        },
+        "ended_utc": "2026-10-19T19:27:45.533759+00:00"
+      },
+      "runner_state_before": "srv  update_slots: all slots are idle",
+      "runner_idle_after": true,
+      "recorded_sleep_intersecting_execution": [],
+      "power_evidence_limits": "Power status measured before/after, not continuously; Power-Troubleshooter intervals checked against recorded phase windows.",
+      "model_provenance": {
+        "backend": "ollama",
+        "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-ollama": "1.1.0",
+          "ollama": "0.6.3"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 512,
+        "tools_hash": "aad6464b733b9724e4a5eb99f8aff8a5e3cbc0eb9b925e644f043fa652733188",
+        "instructions_hash": "2b8b0b5881599b5ddb055e77ad766688f4438abbf8e844821d47ea16f72ffe05",
+        "protocol": "guided",
+        "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "runtime_version": "0.40.2",
+        "supported_context_tokens": 32768,
+        "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+        "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+      },
+      "source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+      "automatic_retries": 0,
+      "human_quality_review_required": true,
+      "generated_code_execution": false
+    },
+    "snippets": {
+      "status": "passed",
+      "expected_cases": 7,
+      "passed_cases": 7,
+      "unrun_scenarios": [],
+      "cases": [
+        {
+          "scenario": "list_experiments",
+          "passed": true,
+          "elapsed_seconds": 229.21900000004098,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": "validated"
+        },
+        {
+          "scenario": "compare_experiments",
+          "passed": true,
+          "elapsed_seconds": 101.48500000004424,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": "validated"
+        },
+        {
+          "scenario": "create_experiment",
+          "passed": true,
+          "elapsed_seconds": 137.18699999997625,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": "validated"
+        },
+        {
+          "scenario": "create_tuning_job",
+          "passed": true,
+          "elapsed_seconds": 201.81199999997625,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": "validated"
+        },
+        {
+          "scenario": "missing_inputs",
+          "passed": true,
+          "elapsed_seconds": 31.15600000001723,
+          "failure_type": null,
+          "turn_status": "needs_input",
+          "snippet_status": null
+        },
+        {
+          "scenario": "hostile_record",
+          "passed": true,
+          "elapsed_seconds": 98.48399999999674,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": "validated"
+        },
+        {
+          "scenario": "unsupported_profile",
+          "passed": true,
+          "elapsed_seconds": 18.78100000001723,
+          "failure_type": null,
+          "turn_status": "completed",
+          "snippet_status": null
+        }
+      ],
+      "max_complete_reply_seconds": 229.21900000004098,
+      "budget": {
+        "generation_calls": 7,
+        "output_tokens_per_call": 1024,
+        "suite_seconds": 2400,
+        "complete_reply_seconds": 300,
+        "model_seconds": 240.0,
+        "turn_seconds": 270.0
+      },
+      "pytest_test_count_note": "One pytest test contains every required semantic scenario; scenario counts come from raw report.",
+      "execution": {
+        "argv": [
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.tools\\bin\\uv\\uv.exe",
+          "run",
+          "--offline",
+          "--locked",
+          "--extra",
+          "training",
+          "pytest",
+          "evaluations/test_snippet_model.py",
+          "--timing-profile",
+          "laptop-five-minute",
+          "--local-model",
+          "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+          "--eval-output",
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\snippets.json",
+          "--junitxml=C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\snippets.xml",
+          "--basetemp",
+          "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\snippets-temp",
+          "-o",
+          "cache_dir=C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-five-minute-awake-gates\\pytest-cache"
+        ],
+        "started_utc": "2026-10-19T20:07:27.445395+00:00",
+        "power_before": {
+          "read_ok": true,
+          "ac_line_status": 1,
+          "battery_percent": 88
+        },
+        "outer_safety_timeout_seconds": 2550,
+        "source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+        "working_tree": "",
+        "orchestrator_sha256": "b3582f9c3697c508662cb60fdc9fa649c524609ee015379b00c03d5f52724dcf",
+        "retries": 0,
+        "generated_code_execution": false,
+        "exit_code": 0,
+        "elapsed_seconds": 825.3130000000237,
+        "power_after": {
+          "read_ok": true,
+          "ac_line_status": 1,
+          "battery_percent": 92
+        },
+        "ended_utc": "2026-10-19T20:21:12.865399+00:00"
+      },
+      "runner_state_before": "srv  update_slots: all slots are idle",
+      "runner_idle_after": true,
+      "recorded_sleep_intersecting_execution": [],
+      "power_evidence_limits": "Power status measured before/after, not continuously; Power-Troubleshooter intervals checked against recorded phase windows.",
+      "model_provenance": {
+        "backend": "ollama",
+        "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-ollama": "1.1.0",
+          "ollama": "0.6.3"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "aad6464b733b9724e4a5eb99f8aff8a5e3cbc0eb9b925e644f043fa652733188",
+        "instructions_hash": "2b8b0b5881599b5ddb055e77ad766688f4438abbf8e844821d47ea16f72ffe05",
+        "protocol": "guided",
+        "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "runtime_version": "0.40.2",
+        "supported_context_tokens": 32768,
+        "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+        "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+      },
+      "source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+      "automatic_retries": 0,
+      "human_quality_review_required": true,
+      "generated_code_execution": false
+    }
+  },
+  "new_generated_outputs_require_human_review": true,
+  "no_generated_python_executed": true,
+  "application_harness_changes": "None; application, evaluation harness, prompts, budgets, model/runtime and lockfile match preceding run. No automatic retries or output repair.",
+  "matching_source_hashes_vs_previous_run": 54,
+  "separate_evidence_review": {
+    "reviewer": "OpenAI timing_review agent",
+    "date": "2026-10-19",
+    "different_vendor": false,
+    "scope": "Read-only review of raw awake-gate archive, original source/scenario order, current and previous source hashes, reports/JUnit, call/reply timings and power/runner evidence.",
+    "findings": "No blocking discrepancy found.",
+    "verified": [
+      "all initial81manifest payload hashes/sizes and exact entry set",
+      "current archived source equality and54common previous-source hashes for both preflights",
+      "10of10original conversation scenarios,18calls,max reply184.875s,max call95.687s",
+      "7of7original snippet scenarios,12calls,5actual code generations,max reply229.219s,max call169.796s",
+      "both JUnit files each1test with no failures/errors/skips",
+      "both runtime slices end idle",
+      "sleep interval between gates overlaps neither recorded execution window"
+    ],
+    "limits": "AC measured before/after, not continuously. Human quality review remains required; deployed demo still failed and live expiry not proven. Same-vendor only; different-vendor unavailable.",
+    "execution": "No inference, application or deployment changes by reviewer. Human-readable output rendering is mechanically compared with raw strings, not human-approved."
+  },
+  "archive_sha256": "5ef2105e7dde02bcdbeca55d7d192232e9f8684e3906a8bb5b9fb6721a5fd4e9"
+}

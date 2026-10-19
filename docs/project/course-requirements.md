@@ -124,6 +124,13 @@ Eight direct dialogue cases pass before Windows sleep interrupts the ninth;
 the full ten/seven gates and complete laptop C3/C5/C7/C9 reproduction remain open.
 No course row is closed by a partial run. See [retained evidence](../evidence/2026-10-19-laptop-five-minute/README.md).
 
+Later October 19, the [fresh AC model gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass all ten conversation and seven snippet scenarios on the CPU laptop with the
+five-minute profile. Five generated drafts are validated and saved, never executed;
+new human quality review is pending. This resolves the incomplete standalone gate
+status for that later run, while complete deployed C3/C5/C7/C9 reproduction remains
+open because the gateway walkthrough still fails. Earlier raw failures are preserved.
+
 | ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |

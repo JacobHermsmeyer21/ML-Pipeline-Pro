@@ -1,10 +1,11 @@
 # Five-minute laptop profile
 
-**October 19 result:** implemented and pushed on `533a2ed`. The first actual-ID
-inspection passes in 210.532 seconds, but a liveness-triggered gateway restart
-breaks the next turn before its reply deadline. The full demo fails. The separate
-dialogue gate passes eight cases before a Windows sleep interruption; the remaining
-cases and snippets do not establish acceptance. See [retained evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
+**October 19 result:** implemented and pushed on `533a2ed`. After AC reconnection,
+[fresh original gates](../evidence/2026-10-19-laptop-awake-gates/README.md) pass all
+ten dialogue and seven snippet scenarios; the slowest complete replies are 184.875
+and 229.219 seconds. The deployed demo still fails: its first actual-ID inspection
+passes in 210.532 seconds, but a liveness-triggered gateway restart breaks the next
+turn before its reply deadline. See [retained deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
 and the [unapproved health follow-up](../plans/2026-10-19-laptop-deployment-health-plan.md).
 Keep AC connected and the laptop awake throughout live gates.
 

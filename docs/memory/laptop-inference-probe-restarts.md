@@ -25,6 +25,15 @@ records the ninth; the tenth and snippets remain unrun. Its huge sleep-inclusive
 timings cannot diagnose active inference speed or validate timely cancellation.
 Actual runtime logs end idle. Rerun remaining gates only with AC/awake prerequisites.
 
+After Jacob reconnects AC and requests continuation, a
+[fresh complete standalone run](../evidence/2026-10-19-laptop-awake-gates/README.md)
+passes all ten conversation and seven snippet scenarios. Maximum complete replies
+are 184.875 and 229.219 seconds; both runners end idle. Windows records a sleep
+between the gates, intersecting neither execution window. Application/harness/model
+bytes and settings are unchanged. This supersedes the earlier incomplete model-gate
+status only; the deployed gateway failure, live-expiry gap and pending human output
+review remain. Generated Python is never executed.
+
 Revisit after the reviewed deployment change and lightweight resource evidence,
 then repeat the original complete walkthrough and full model gates. This finding
 does not close the earlier live timeout-overrun or original-record reproduction gaps.
