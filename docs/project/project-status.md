@@ -1,5 +1,16 @@
 # Project audit and development status
 
+October 19 desktop dashboard: the approved prototype is implemented as a working
+local workspace at `/dashboard/`, with scoped CSV uploads/shared worker storage,
+training/results/artifact/version controls, local-agent history and exact decisions,
+reviewable Python drafts and real embedded Grafana graphs. All 684 fast, 75
+ordinary integration and ten isolated recovery cases pass without selected skips.
+Chrome verifies the real dataset-to-model journey, uncertainty/double-click/project
+boundaries, graph/summary automatic refresh and both desktop layouts. Jacob approves
+the visual direction. Independent boundary review and a separately executed full
+usability checklist remain outstanding. [Evidence and limits](../evidence/2026-10-19-dashboard/README.md)
+are separate from the laptop runs below; no broader course completion is claimed.
+
 Newest user direction, October 19: Jacob requests health checks stop interrupting
 work and one or two no-limit runs to observe completion time. The
 [diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md) records

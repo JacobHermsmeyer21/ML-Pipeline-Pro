@@ -17,3 +17,13 @@ build exclusions or a root-scoped example exception before distributing an sdist
 inspect actual archive paths after any correction. No packaging behavior changed
 in the audit. [Evidence](../evidence/2026-10-18-repo-audit/README.md) retains the
 package hashes and unexpected path, without packaging binaries or private files.
+
+
+October 19 dashboard build reproduced the ignored nested example. Explicit
+sdist descendant exclusions (`/.tools/**`, plus workspace cache/artifact paths)
+remove it in this same existing workspace. Directory-only patterns (`/.tools`)
+did not remove the descendant. The corrected archive still contains the public
+root `.env.example` and all seven dashboard assets; wheel assets match source
+bytes. Keep inspecting actual distributions after packaging changes. This fixes
+selection for the observed path without claiming the earlier ignore-layer cause
+was established. See the [dashboard evidence](../evidence/2026-10-19-dashboard/README.md).

@@ -1,0 +1,187 @@
+{
+  "uid": "mlpp-workspace",
+  "title": "ML Pipeline Pro - workspace monitoring",
+  "schemaVersion": 41,
+  "version": 2,
+  "refresh": "15s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "model_version_id",
+        "type": "textbox",
+        "hide": 2,
+        "current": {
+          "text": "unselected",
+          "value": "unselected"
+        },
+        "query": "unselected"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Inference latency - $model_version_id",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_mean_latency_ms{model_version_id=\"${model_version_id}\"}",
+          "legendFormat": "Mean"
+        },
+        {
+          "refId": "B",
+          "expr": "mlpp_workload_max_latency_ms{model_version_id=\"${model_version_id}\"}",
+          "legendFormat": "Maximum"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Labeled inference accuracy - $model_version_id",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_labeled_accuracy{model_version_id=\"${model_version_id}\"}",
+          "legendFormat": "Accuracy among labeled observations"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Errors and declared artificial delays - $model_version_id",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mlpp-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "mlpp_workload_error_count{model_version_id=\"${model_version_id}\"}",
+          "legendFormat": "Inference errors"
+        },
+        {
+          "refId": "B",
+          "expr": "mlpp_workload_seeded_count{model_version_id=\"${model_version_id}\"}",
+          "legendFormat": "Declared seeded delay samples"
+        }
+      ]
+    }
+  ],
+  "timepicker": {
+    "refresh_intervals": [
+      "15s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  }
+}

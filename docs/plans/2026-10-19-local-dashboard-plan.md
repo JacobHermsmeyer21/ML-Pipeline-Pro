@@ -1,6 +1,6 @@
 # Local dashboard for tonight's demo
 
-- Status: approved; implementation pending the approval-record commit
+- Status: implemented and locally verified; independent boundary review unavailable
 - Date: October 19, 2026; deadline **11:00 pm America/New_York (ET)**
 - Source baseline: `98b4908` on `person-a/conversation-foundation`
 - Request: add datasets, talk to an agent and train models through a dashboard
@@ -273,14 +273,63 @@ for the design of it while you work on it". Proceed with implementation and show
 the initial browser layout while completing the working controls; label any
 prototype-only content clearly until connected to real records.
 
+Jacob reviewed the running design and replied, "Yes—keep this visual direction."
+He then said "looks good, use that prototype dashboard" and "keep going." Keep the
+prototype's slate/teal styling and right agent panel in the working product. This
+is design-direction approval; it does not establish an independently executed
+full usability checklist.
+
 ## Implementation outcome
 
-Plan only. No dashboard, upload route, configuration, model or deployment change
-has been implemented under this plan. Record source revisions, actual checks and
-browser/human review, raw evidence, deviations, remaining gaps, durable findings,
-completion commits and push results here after approval and execution.
+Implemented the approved local workspace, retaining the prototype design. The
+[guide](../guides/dashboard.md) covers startup, CSV mapping, training, exact agent
+decisions, artifacts/versions and embedded monitoring. The
+[retained evidence](../evidence/2026-10-19-dashboard/README.md) records safe outcomes,
+source/image/model identity, screenshots, raw failures, tests and browser scripts.
 
-Planning verification: both changed Markdown files pass 35 local link/anchor
-checks, all nine template sections are present, six source checks support the
-stated current boundaries, official Grafana references were inspected and
-`git diff --check` passes. No application tests were run for this plan-only change.
+Final local gates: locked sync, Ruff lint/format (219 files), dependency check
+(109 compatible packages), package build/content inspection, 684 fast cases with
+81% rounded coverage, all 75 ordinary cases with both required flags and all ten
+serial isolated recovery cases pass without selected skips. Published incoming
+application commit `1152aa8` was integrated before the full reruns. Later incoming
+`288277e` adds laptop evidence/documentation only and was integrated preserving
+both memory-index updates. Python service/test sources are unchanged across the
+final service and browser checks; later static/graph refinements have fresh
+browser/package verification. No current remote CI result is claimed here.
+
+Real Chrome controls completed fresh CSV upload (80/20/20 rows and matching hash),
+model creation, bounded worker training, validation comparison, checkpoint
+hash/size verification, version registration, local-model fact inspection,
+rejection with no job, one exact approval with one completed run, saved Python
+draft/reload and monitoring explanation. Duplicate clicks, malformed accepted
+training acknowledgement, lost first chat reply, delayed old-project response,
+unavailable service, key storage/reload and keyboard controls were exercised.
+The original training key/body and chat request/revision survive uncertainty.
+
+All three actual Grafana canvases show version-filtered measured inference data,
+and their values match Prometheus/saved observations. A fresh empty version picks
+up later real samples without manual refresh. Explicitly allowing the 15-second
+Grafana interval fixes its previously inactive refresh; a separate fenced summary
+poll keeps availability/diagnosis controls current without recreating chart frames.
+Full-dashboard links preserve the selected version and time range. Screenshots
+at 1440x900 and 1280x800 fit without horizontal overflow. The measured fixture
+producer declares five injected delays among 20 CPU inferences; these plots do
+not establish production performance or training-loss history.
+
+Confirmed defects were fixed at their failing boundaries: upload UTC timestamps
+now match BSON milliseconds on exact replay; valid model selector labels and
+initial dialog focus pass the accessibility tree/keyboard check; explicit sdist
+descendant exclusions remove an ignored nested tool-checkout example. Tests keep
+full equality/limit/ownership assertions. No dependency, default AI deadline,
+serial worker policy or generated-code execution was added.
+
+Jacob approved the visual direction and requested using this prototype. An
+independently executed complete first-time-user checklist and independent boundary
+review were unavailable; implementing-assistant review is self-review. Numeric
+CSV/explicit split scope, browser-session history discovery, bounded demo-project
+monitoring and retained orphan uploads remain as planned. Narrow layouts stack
+the agent instead of adding a drawer; approved desktop layouts keep the right
+panel. Other formats, laptop rollout and broader course gaps remain outside this
+change. Service/data volumes stay available; rollback preserves upload mounts.
+
+Completion commit and origin push are recorded after delivery below.

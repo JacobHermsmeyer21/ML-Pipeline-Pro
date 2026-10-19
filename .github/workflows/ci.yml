@@ -53,8 +53,8 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --locked --extra training
-      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml config --quiet
-      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml up --build --wait --wait-timeout 300
+      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml -f compose.dashboard.yaml config --quiet
+      - run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml -f compose.dashboard.yaml up --build --wait --wait-timeout 300
       - run: uv run --locked --extra training python scripts/check_domain_routes.py --output artifacts/domain-validation/routes.json
       - run: uv run --locked --extra training python scripts/deployment_smoke.py --output artifacts/domain-validation/smoke.json
       - run: uv run --locked --extra training pytest -m "integration and not recovery" --junitxml=artifacts/domain-validation/integration.xml
@@ -67,9 +67,9 @@ jobs:
           name: domain-service-validation
           path: artifacts/domain-validation/
       - if: failure()
-        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml logs
+        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml -f compose.dashboard.yaml logs
       - if: always()
-        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml down
+        run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml -f compose.dashboard.yaml down
 
   kubernetes-deploy:
     runs-on: ubuntu-latest
@@ -114,8 +114,8 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --locked --extra training
-      - run: docker compose config --quiet
-      - run: docker compose up --build --wait --wait-timeout 300
+      - run: docker compose -f compose.yaml -f tests/integration/compose.uploads.yaml config --quiet
+      - run: docker compose -f compose.yaml -f tests/integration/compose.uploads.yaml up --build --wait --wait-timeout 300
       - run: curl --fail http://127.0.0.1:8000/api/v1/health/ready
       - run: uv run --locked --extra training pytest -m "integration and not recovery" --junitxml=artifacts/test-reports/integration.xml
         env:
@@ -135,6 +135,6 @@ jobs:
           name: recovery-validation
           path: artifacts/recovery-validation/
       - if: failure()
-        run: docker compose logs
+        run: docker compose -f compose.yaml -f tests/integration/compose.uploads.yaml logs
       - if: always()
-        run: docker compose down
+        run: docker compose -f compose.yaml -f tests/integration/compose.uploads.yaml down

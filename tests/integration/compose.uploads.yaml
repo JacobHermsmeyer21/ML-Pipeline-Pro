@@ -1,0 +1,12 @@
+# Compatibility-stack gate for API-to-worker upload storage. Production remains opt-in.
+services:
+  api:
+    environment:
+      MLPP_DATASET_UPLOAD_ENABLED: "true"
+    volumes:
+      - integration-uploads:/app/examples/data/uploads
+  worker:
+    volumes:
+      - integration-uploads:/app/examples/data/uploads:ro
+volumes:
+  integration-uploads:

@@ -1,0 +1,15 @@
+# Apply after compose.services.yaml, compose.monitoring.yaml and compose.ai.yaml.
+services:
+  model-api:
+    environment:
+      MLPP_DATASET_UPLOAD_ENABLED: "true"
+    volumes:
+      - dashboard-uploads:/app/examples/data/uploads
+  worker:
+    volumes:
+      - dashboard-uploads:/app/examples/data/uploads:ro
+  grafana:
+    environment:
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+volumes:
+  dashboard-uploads:

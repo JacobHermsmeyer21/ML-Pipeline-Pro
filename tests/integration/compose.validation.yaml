@@ -3,16 +3,23 @@ x-validation: &validation
   environment:
     MLPP_ENVIRONMENT: test
     MLPP_PROJECT_API_KEYS: "{}"
+    MLPP_DATASET_UPLOAD_ENABLED: "true"
 
 services:
   api:
     <<: *validation
     ports: !override ["127.0.0.1:18000:8000"]
+    volumes:
+      - validation-uploads:/app/examples/data/uploads
   worker:
     <<: *validation
+    volumes:
+      - validation-uploads:/app/examples/data/uploads:ro
   scheduler:
     <<: *validation
   mongo:
     ports: !override ["127.0.0.1:37017:27017"]
   redis:
     ports: !override ["127.0.0.1:16379:6379"]
+volumes:
+  validation-uploads:

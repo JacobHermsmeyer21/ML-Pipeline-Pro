@@ -1,0 +1,123 @@
+{
+  "recorded_at": "2026-10-19T23:36:41.419425+00:00",
+  "status": "local_implementation_verified",
+  "branch": "person-a/conversation-foundation",
+  "baseline": "288277eff0156b02e9247f749c380bbcef3e7fc1",
+  "application_baseline": "1152aa858eca169d49e1d5d003bab2229e4cddf9",
+  "url": "http://127.0.0.1:8000/dashboard/",
+  "gates": {
+    "fast": {
+      "tests": 684,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 51.255,
+      "report": "fast-complete.junit.xml"
+    },
+    "ordinary": {
+      "tests": 75,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 41.664,
+      "report": "integration-integrated.junit.xml"
+    },
+    "recovery": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 281.48,
+      "report": "recovery-integrated.junit.xml"
+    }
+  },
+  "coverage_percent_rounded": 81,
+  "locked_sync_lint_format_pip_build": "passed",
+  "browser": {
+    "backend": "browser-backend-20261019T232102.json",
+    "agent": "browser-agent-20261019T232105.json",
+    "graphs": "browser-graphs-20261019T233002.json",
+    "resilience": "browser-resilience-20261019T233009.json",
+    "refresh_boundary": "browser-refresh-boundary-20261019T232917.json",
+    "diagnosis": "browser-diagnosis.json",
+    "comparison": "browser-comparison-trials.json",
+    "page_exceptions": [],
+    "viewports": [
+      "1440x900",
+      "1280x800"
+    ],
+    "agent_journey_seconds": 10.458822,
+    "chat_http_max_seconds": 2.4879000000003724,
+    "chat_http_seconds": [
+      2.282,
+      0.01640000000037253,
+      1.1459000000003725,
+      2.4879000000003724,
+      1.5195
+    ],
+    "diagnosis_http_seconds": 2.7439000000003726,
+    "layout": "browser-layout-final.json",
+    "final_layout_status": "passed"
+  },
+  "dataset_id": "50486dab-290d-4596-b569-3bb3c4f32f37",
+  "model_id": "f9514643-e96a-476c-9d8e-29edd34f7b39",
+  "experiment_id": "64f8958e-3c7d-4775-a16e-eb444ad3f03e",
+  "initial_registered_version_id": "3ec45192-e16a-4330-b019-956b7a05c5fd",
+  "monitored_version_id": "f5307743-0380-40f0-a72d-bafbd746a3d1",
+  "source_match": {
+    "installed_files_checked": 56,
+    "all_match_source": true,
+    "desktop_default_model_and_turn_budgets_unchanged": true
+  },
+  "package": {
+    "packaged_static_assets": [
+      "ml_pipeline_pro/dashboard/agent.js",
+      "ml_pipeline_pro/dashboard/app.js",
+      "ml_pipeline_pro/dashboard/core.js",
+      "ml_pipeline_pro/dashboard/example.csv",
+      "ml_pipeline_pro/dashboard/index.html",
+      "ml_pipeline_pro/dashboard/styles.css",
+      "ml_pipeline_pro/dashboard/workspace.js"
+    ],
+    "wheel_matches_source_bytes": true,
+    "private_paths_in_sdist": false
+  },
+  "image_id": "sha256:b92a1b953fd8a65d4aabfa3760034a7438de201680c5669904d6af3a2d2c26e0",
+  "safe_settings": {
+    "chat_enabled": true,
+    "chat_model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+    "chat_timeout_seconds": 60.0,
+    "chat_model_timeout_seconds": 20.0,
+    "chat_unbounded_diagnostic": false,
+    "dataset_upload_enabled": true,
+    "dataset_max_bytes": 10000000,
+    "dataset_max_rows": 100000
+  },
+  "model_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+  "grafana_refresh_query_windows_before": 1,
+  "grafana_refresh_query_windows_after": 2,
+  "services_running": 10,
+  "selected_skips": 0,
+  "independent_boundary_review": "unavailable; implementing-assistant self-review only",
+  "human_review": "Jacob approved prototype visual direction; independent complete first-time-user walkthrough not executed",
+  "remaining_scope_limits": [
+    "numeric CSV classification with explicit train/validation/test splits",
+    "bounded latest-100/five-minute demo-project monitoring",
+    "browser-session conversation discovery",
+    "published upload orphans retained",
+    "no laptop rollout or broader course completion claimed"
+  ],
+  "new_python_tests": {
+    "fast": 23,
+    "ordinary": 2,
+    "purpose": "upload/publication/replay/size/project/cancellation boundaries and packaged static/config contracts; no weakened assertions"
+  },
+  "source_notes": "Final Python/test sources match the integrated gates. Later static/Grafana refinements have passing browser and package checks. Incoming 288277e only changes documentation/evidence.",
+  "raw_archive": {
+    "path": "raw.zip",
+    "files": 252,
+    "size_bytes": 4879641,
+    "sha256": "0a65bfe53b0cb3d08b9e37a3dc510be3fb1f3fcbe036c319a6b007d0a7816d2b",
+    "member_hash_verification": "passed"
+  }
+}

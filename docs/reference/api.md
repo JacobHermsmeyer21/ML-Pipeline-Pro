@@ -1,5 +1,35 @@
 # API reference
 
+## Dataset upload
+
+`POST /api/v1/datasets/upload` is an opt-in model-service route. Supply the usual
+project/key headers, `Content-Type: text/csv`, the raw CSV body, and query metadata
+`name`, `version`, repeated `feature_columns`, optional `target_column=target` and
+`split_column=split`. The original `POST /datasets` JSON registration route remains
+available. Both routes enforce project ownership of the reserved `uploads/` files.
+
+Set `MLPP_DATASET_UPLOAD_ENABLED=true`, or use `compose.dashboard.yaml`. The API
+counts received bytes independently of `Content-Length` and allows the smaller of
+10,000,000 bytes and `MLPP_DATASET_MAX_BYTES`; receipt is limited to 30 seconds.
+The existing CSV validation and row/class limits also apply. The gateway has a
+10,000,000-byte outer guard on this exact route only. Responses use the existing
+error envelope/correlation header: 201 created, 200 matching name/version/content/
+column replay, 400 interrupted body, 403 access denied, 404 disabled/foreign file,
+408 receipt timeout, 409 identity/file conflict, 413 oversized body, 415 unsupported
+media type, 422 invalid CSV/metadata and 503 unavailable storage.
+
+Files are published without replacement under project-scoped content hashes,
+then registered with the existing `DatasetRecord`. Concurrent identical uploads
+converge on one identity; conflicting versions are not replaced. A database
+acknowledgement can be lost after commit, so published files are retained on
+uncertain writes and the same upload can recover its saved record. Only the
+request's private staging file is automatically removed. Never delete a shared
+uploads volume while registered datasets reference it.
+
+`GET /dashboard/` serves the packaged UI; `GET /dashboard/config.json` exposes
+public capability/limit information without credentials. See the
+[dashboard guide](../guides/dashboard.md) for local startup and browser workflows.
+
 Open [interactive API docs](http://127.0.0.1:8000/docs) after
 [setup](../guides/setup.md). Run example requests from the repository root.
 

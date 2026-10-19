@@ -42,3 +42,19 @@ The CI node could not schedule its eleventh pod with 1100m application CPU reque
 Use 50m for ten lightweight pods plus 100m for the serial worker (600m total), leaving
 control-plane reservations separate. Limits, worker count and replay gates stay intact;
 this fixes admission rather than proving peak concurrent demand. See the [CPU plan](../plans/2026-10-13-kubernetes-cpu-budget-plan.md).
+
+
+October 19 dashboard verification found that a configured `refresh=15s` alone did
+not establish live updates in pinned Grafana 12.1.1. An initially empty solo panel
+stayed empty after Prometheus had the new measurements. The visible-page trace
+contained one query window. Explicit `timepicker.refresh_intervals` including
+`15s` restored a second advancing window after 15 seconds, consistent with the
+[refresh-picker construction](https://github.com/grafana/grafana/blob/v12.1.1/public/app/features/dashboard-scene/serialization/transformSaveModelToScene.ts#L357).
+The UI summary also required its own bounded, non-overlapping refresh; otherwise
+it still reported no observations after charts populated. Selection/project and
+request fences reject stale reads, and summary polling preserves existing frames.
+The [fresh-version browser boundary](../evidence/2026-10-19-dashboard/README.md)
+starts with no data, then records real samples and observes automatic graph and
+summary updates without user refresh. Recheck actual query timing and that
+transition after Grafana/configuration changes; HTTP 200 and an iframe load event
+alone do not establish chart rendering or refreshing.

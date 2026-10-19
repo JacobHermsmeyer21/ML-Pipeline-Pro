@@ -6,6 +6,7 @@ Start with the [project README](../README.md) to run the backend, or the
 ## Guides: set up, use, and verify
 
 - [Setup](guides/setup.md): Docker, host development, configuration, data, and artifacts.
+- [Local dashboard](guides/dashboard.md): upload CSVs, train models, review agent decisions and inspect embedded Grafana graphs.
 - [Domain services](guides/domain-services.md): independent model/tuning processes and compatibility routing.
 - [Workflows](guides/workflows.md): classification, tuning, and typed conversation tools.
 - [Conversation development](guides/conversation-development.md): implemented slices, model boundaries, and open acceptance work.

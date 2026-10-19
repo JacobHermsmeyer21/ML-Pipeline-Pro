@@ -45,6 +45,9 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/ml_pipeline_pro"]
 
+[tool.hatch.build.targets.sdist]
+exclude = ["/.tools/**", "/.venv/**", "/.cache/**", "/.uv-cache/**", "/artifacts/**"]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 100

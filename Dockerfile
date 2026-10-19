@@ -15,8 +15,8 @@ COPY src ./src
 COPY examples ./examples
 RUN uv sync --locked --no-dev --extra training --no-editable \
     && useradd --create-home --uid 10001 app \
-    && mkdir -p /app/artifacts \
-    && chown app:app /app/artifacts
+    && mkdir -p /app/artifacts /app/examples/data/uploads \
+    && chown app:app /app/artifacts /app/examples/data/uploads
 
 USER app
 EXPOSE 8000

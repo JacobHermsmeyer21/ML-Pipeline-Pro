@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     dependency_timeout_seconds: float = Field(default=2.0, gt=0, le=30)
     artifact_root: Path = Path("artifacts")
     dataset_root: Path = Path("examples/data")
+    dataset_upload_enabled: bool = False
     dataset_max_bytes: int = Field(default=10_000_000, ge=1, le=100_000_000)
     dataset_max_rows: int = Field(default=100_000, ge=3, le=1_000_000)
     project_api_keys: dict[str, SecretStr] = Field(default_factory=dict)

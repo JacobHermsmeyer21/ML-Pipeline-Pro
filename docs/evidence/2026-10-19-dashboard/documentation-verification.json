@@ -1,0 +1,21 @@
+{
+  "files": [
+    "PLAN.md",
+    "README.md",
+    "docs/README.md",
+    "docs/evidence/2026-10-19-dashboard/README.md",
+    "docs/guides/dashboard.md",
+    "docs/guides/verification.md",
+    "docs/memory/README.md",
+    "docs/memory/conversation-store-replay.md",
+    "docs/memory/dataset-upload-publication.md",
+    "docs/memory/minimal-monitoring-deployment.md",
+    "docs/memory/source-package-ignore-exception.md",
+    "docs/plans/2026-10-19-local-dashboard-plan.md",
+    "docs/project/project-status.md",
+    "docs/reference/api.md"
+  ],
+  "local_links_checked": 232,
+  "errors": [],
+  "powershell_examples_parsed": 2
+}

@@ -12,7 +12,7 @@ from ml_pipeline_pro.schemas import DatasetRecord, ExperimentRecord, ModelRecord
 
 class TrackingStore:
     def __init__(self, database) -> None:
-        self.datasets = MongoRepository(database, "datasets", DatasetRecord)
+        self.datasets = DatasetRepository(database, "datasets", DatasetRecord)
         self.models = MongoRepository(database, "models", ModelRecord)
         self.experiments = ExperimentRepository(database, "experiments", ExperimentRecord)
         self.versions = ModelVersionRepository(database, "model_versions", ModelVersionRecord)
@@ -84,3 +84,11 @@ class ModelVersionRepository(MongoRepository[ModelVersionRecord]):
             .limit(limit)
         )
         return [self._decode(document) async for document in cursor]
+
+
+class DatasetRepository(MongoRepository[DatasetRecord]):
+    async def by_identity(self, project_id: str, name: str, version: str):
+        document = await self.collection.find_one(
+            {"project_id": project_id, "name": name, "version": version}
+        )
+        return self._decode(document) if document is not None else None

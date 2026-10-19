@@ -24,7 +24,8 @@ See [AGENTS.md](../../AGENTS.md#verification-commands) for the standing gate pol
 With Docker Compose 2.24 or later installed:
 
 ```powershell
-docker compose up --build --wait --wait-timeout 300
+docker compose -f compose.yaml -f tests/integration/compose.uploads.yaml `
+    up --build --wait --wait-timeout 300
 if ($LASTEXITCODE -ne 0) { throw 'Integration stack failed to start.' }
 uv sync --locked --extra training
 $env:MLPP_RUN_INTEGRATION = '1'
@@ -40,7 +41,11 @@ try {
 On macOS/Linux use
 `MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 uv run --locked --extra training pytest -m "integration and not recovery"`.
 Both flags are required; omitting the worker flag skips three queued workflow
-cases. The training extra is required for real training and direct tuning recovery.
+cases and the uploaded-CSV worker case. The upload test overlay enables the new
+route and shares durable CSV storage with a read-only worker mount. A domain stack
+using `compose.dashboard.yaml` already provides that capability. Upload boundary
+cases require it; a disabled route is a verification failure, not a skipped pass.
+The training extra is required for real training and direct tuning recovery.
 Tests delete their generated metadata; queued artifacts remain in the shared volume.
 For independent services/ports, use the [isolated repeat setup](#repeat-the-full-suite)
 and its `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and

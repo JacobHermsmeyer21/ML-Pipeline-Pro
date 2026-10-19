@@ -20,6 +20,8 @@ from ml_pipeline_pro.connections import check_readiness, open_connections
 from ml_pipeline_pro.conversation_api import ModelFactory, conversation_clients
 from ml_pipeline_pro.conversation_api import router as conversation_router
 from ml_pipeline_pro.conversation_schemas import REQUEST_BYTES
+from ml_pipeline_pro.dashboard_api import install_dashboard
+from ml_pipeline_pro.dataset_uploads import router as upload_router
 from ml_pipeline_pro.errors import ApiError, ErrorResponse, error_response, install_error_handlers
 from ml_pipeline_pro.logging import configure_logging
 from ml_pipeline_pro.monitoring_api import router as monitoring_router
@@ -124,6 +126,9 @@ def _create_app(
     install_error_handlers(app)
     for domain_router in routers:
         app.include_router(domain_router)
+    if router in routers:
+        app.include_router(upload_router)
+        install_dashboard(app)
 
     @app.middleware("http")
     async def correlate_request(request: Request, call_next: RequestResponseEndpoint) -> Response:

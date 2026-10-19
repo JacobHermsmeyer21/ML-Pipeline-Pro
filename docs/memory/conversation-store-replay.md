@@ -28,3 +28,13 @@ chat HTTP authentication, action decisions/dispatch, unknown-outcome recovery,
 or chat process loss. No model or upstream HTTP call runs in a transaction.
 Revisit when implementing those pending operations or changing persistence/time
 precision; retain immutable IDs, the original deadline and parent-write predicates.
+
+
+October 19 CSV upload replay confirmed the same precision boundary: the first
+real-service concurrent upload returned a timestamp ending `995710`, while its
+saved replay returned `995000`. Upload candidate timestamps now use UTC
+milliseconds before insertion/response construction. The full-response equality
+assertion remains intact; concurrent upload, ordinary registration replay and
+worker ingestion pass. See [upload implementation](../../src/ml_pipeline_pro/dataset_uploads.py),
+[real upload regression](../../tests/integration/test_dataset_uploads.py) and
+[retained dashboard evidence](../evidence/2026-10-19-dashboard/README.md).

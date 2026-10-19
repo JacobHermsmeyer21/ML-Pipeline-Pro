@@ -57,6 +57,14 @@ See [conversation development](docs/guides/conversation-development.md).
 
 ## Try a workflow
 
+The [local dashboard](docs/guides/dashboard.md) brings CSV upload, model training,
+saved experiments, local-agent chat and embedded Grafana panels into one browser
+workspace at `http://127.0.0.1:8000/dashboard/`. Use the dashboard Compose overlay
+for durable shared uploads and Grafana embedding. Uploads are disabled by default.
+The additive `POST /api/v1/datasets/upload` accepts raw `text/csv` with dataset
+metadata in query parameters; [the API reference](docs/reference/api.md#dataset-upload)
+documents its limits, project scope, replay and failure responses.
+
 For the independently runnable model/tuning APIs, follow
 [domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes
 use the [monitoring](docs/guides/monitoring-demo.md) and

@@ -53,7 +53,7 @@ class MemoryRepository:
 
 class MemoryStore:
     def __init__(self) -> None:
-        self.datasets = MemoryRepository(("project_id", "name", "version"))
+        self.datasets = MemoryDatasets(("project_id", "name", "version"))
         self.models = MemoryRepository(("project_id", "name"))
         self.experiments = MemoryExperiments(("project_id", "submission_key"))
         self.versions = MemoryVersions(("project_id", "model_id", "version"))
@@ -65,6 +65,20 @@ class MemoryVersions(MemoryRepository):
         return [record for record in records if record.model_id == model_id][
             offset : offset + limit
         ]
+
+
+class MemoryDatasets(MemoryRepository):
+    async def by_identity(self, project_id, name, version):
+        return next(
+            (
+                record.model_copy(deep=True)
+                for record in self.records.values()
+                if record.project_id == project_id
+                and record.name == name
+                and record.version == version
+            ),
+            None,
+        )
 
 
 class MemoryExperiments(MemoryRepository):

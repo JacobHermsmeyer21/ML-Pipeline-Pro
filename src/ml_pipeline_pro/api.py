@@ -14,6 +14,7 @@ from redis.exceptions import RedisError
 
 from ml_pipeline_pro.access import project_access
 from ml_pipeline_pro.artifacts import ArtifactError, read_artifact
+from ml_pipeline_pro.dataset_files import check_dataset_scope
 from ml_pipeline_pro.datasets import DatasetValidationError, load_dataset
 from ml_pipeline_pro.errors import ApiError, ErrorResponse
 from ml_pipeline_pro.queue import Publisher, get_publisher
@@ -55,6 +56,7 @@ SubmissionKey = Annotated[
 
 @router.post("/datasets", response_model=DatasetRecord, status_code=201, tags=["datasets"])
 async def create_dataset(body: DatasetCreate, project: Project, store: Store, request: Request):
+    check_dataset_scope(body.uri, project, request.app.state.settings)
     try:
         loaded = await asyncio.to_thread(load_dataset, body, request.app.state.settings)
     except DatasetValidationError as exc:

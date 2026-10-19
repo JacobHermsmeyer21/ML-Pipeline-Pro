@@ -8,3 +8,4 @@ docs/evidence/2026-10-19-laptop-five-minute/** -text whitespace=blank-at-eol,bla
 docs/evidence/2026-10-19-laptop-awake-gates/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-19-laptop-gateway-health/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-19-laptop-unbounded/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/evidence/2026-10-19-dashboard/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

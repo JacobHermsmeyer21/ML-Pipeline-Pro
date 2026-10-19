@@ -166,9 +166,14 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 Jacob requested a local dashboard by 11 pm ET on October 19, with CSV datasets,
 agent-guided training and attractive embedded Grafana graphs. The
 [dashboard plan](docs/plans/2026-10-19-local-dashboard-plan.md) is approved with
-timed checkpoints removed: advance as soon as work and checks permit. Dashboard
-implementation and verification remain outstanding. Its desktop scope is
-separate from the laptop investigation below.
+timed checkpoints removed: advance as soon as work and checks permit. The
+prototype design is now the working desktop dashboard, with CSV upload, real
+training/agent decisions and live version-filtered Grafana panels. Local fast,
+ordinary, isolated recovery and real-browser checks pass; see
+[dashboard evidence](docs/evidence/2026-10-19-dashboard/README.md). Jacob approved
+the visual direction; independent boundary review and a separately executed full
+usability checklist remain outstanding. Its desktop scope is separate from the
+laptop investigation below.
 
 Jacob confirmed October 18 that the October 20 presentation will use the CPU
 laptop. Reliable AI on that machine is the immediate blocker; workstation success
