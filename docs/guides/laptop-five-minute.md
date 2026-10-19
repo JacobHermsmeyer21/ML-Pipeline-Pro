@@ -6,7 +6,7 @@ ten dialogue and seven snippet scenarios; the slowest complete replies are 184.8
 and 229.219 seconds. The deployed demo still fails: its first actual-ID inspection
 passes in 210.532 seconds, but a liveness-triggered gateway restart breaks the next
 turn before its reply deadline. See [retained deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
-and the [unapproved health follow-up](../plans/2026-10-19-laptop-deployment-health-plan.md).
+and the [approved health follow-up](../plans/2026-10-19-laptop-deployment-health-plan.md).
 Keep AC connected and the laptop awake throughout live gates.
 
 Jacob approved the [deployment plan](../plans/2026-10-18-laptop-deployment-readiness-plan.md)
@@ -90,3 +90,29 @@ rejects a late success. Boundary logs identify construction, preparation, token
 admission, inference/cancellation, reservation and persistence without logging
 prompts, credentials or exception text. These logs measure boundaries; they do not
 by themselves establish the cause of the historical timeout overruns.
+
+## Gateway health
+
+Jacob approved the health follow-up on October 19. The rendered laptop gateway
+serves exact `GET /gateway-live` locally as `200 {"status":"alive"}`, preserving
+the normal `X-Correlation-ID` response header. Its Kubernetes liveness probe uses
+that path. Readiness/startup remain on the upstream API health paths with their
+existing thresholds; local nginx health does not imply that an API is available.
+Default deployments and the canonical gateway/manifest are unchanged.
+
+The explicit real-nginx negative check requires Docker and the already installed
+`nginx:1.28-alpine` image. It creates only its own test bridge, gateway and sleeping
+backend, checks failed DNS and refused upstream TCP, then removes those containers
+and network. It never runs a model or changes the presentation cluster:
+
+```powershell
+uv run --locked --extra training python scripts/check_laptop_gateway.py `
+    --output artifacts/laptop-gateway-check
+```
+
+Require local liveness 200 while upstream health/readiness and the non-exact
+`/gateway-live/` path return the existing correlated 503. Retain the actual nginx
+DNS/refused-connection logs. Before claiming laptop readiness, rebuild/redeploy,
+verify effective probe paths/source hashes, collect lightweight host/VM/probe/DNS
+resource evidence and repeat the original complete walkthrough. Wider API stalls
+or restarts require retained failure evidence and further review.

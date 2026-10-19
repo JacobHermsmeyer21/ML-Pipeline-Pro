@@ -1,6 +1,6 @@
 # Preserve gateway liveness during laptop inference
 
-- Status: approved; implementation and verification in progress
+- Status: implemented; live laptop rehearsal and acceptance pending
 - Date: 2026-10-19
 - Source baseline: `533a2ed` on `person-a/conversation-foundation`
 - Request: follow-up to Jacob's approved five-minute implementation and demo rerun
@@ -160,3 +160,46 @@ and narrow health scope. Its remaining finding identified an unspecified live-ex
 experiment. That experiment is now explicitly excluded from this approval scope
 and remains an outstanding requirement of the earlier five-minute plan; an ordinary
 successful workflow cannot close it. Different-vendor review remains unavailable.
+
+The opt-in renderer now adds exact local `/gateway-live` and changes only the
+laptop Kubernetes gateway's liveness path. Canonical/default deployments,
+readiness/startup, application probes, thresholds, resources, replicas, retry
+policy and all timing/model limits remain unchanged. New manifest assertions
+compare those settings against canonical definitions; a new case checks exact
+local rendering and preservation of canonical source bytes. No test was weakened.
+
+Pre-live verification passes: locked sync, lint, formatting, all 647 fast cases
+(73 integration deselected, 81% rounded coverage, 151.00 seconds), dependency
+compatibility and package build. All 18 focused checks pass. Real nginx returns
+local 200 during proven upstream NXDOMAIN and refused TCP while upstream health,
+readiness and non-exact `/gateway-live/` return correlated 503; no model is invoked.
+All 63 ordinary integration cases pass against the rebuilt Kubernetes deployment
+with both required flags (87.58 seconds, no selected skips). Both model API pods
+and the tuning/monitoring APIs import installed modules whose hashes match the
+checkout; AI settings remain 240/270 seconds. Rollout preserves prior saved records,
+artifact hashes/sizes and submission identity. Backend/replica smoke also passes.
+
+The separate OpenAI `timing_review` agent finds no concrete defect in the submitted
+renderer, assertions and real-nginx check. Its read-only review verifies meaningful
+NXDOMAIN/TCP-refusal preconditions and preserved health/routing/replica constraints;
+it executes no service. Different-vendor review is unavailable. Live continuity and
+resource attribution remain execution requirements, not established by this review.
+
+Retained setup/verification incidents: the first focused attempt lacks its output
+parent; the first nginx attempt fails at Docker port discovery on an internal
+bridge. Their corrected executions preserve every success assertion. The first
+full format check finds unformatted displayed draft examples from prior evidence;
+Ruff formats only the presentation, verified AST-equivalent to the five raw saved
+strings. Original model reports/archive and human decision remain unchanged. The
+post-rollout collector initially tries a completed historical pod; separate active
+installation verification checks all four running, non-deleting API pods instead.
+The actual rollout and preserved-data comparison had already succeeded. These
+incidents and raw command exits will be retained with final live evidence.
+
+uv's workspace-cache warning remains recorded. Archive inspection finds zero
+`.uv-cache` entries and confirms the updated renderer in the wheel. No ownership,
+queue, worker or recovery logic changes, so the prior complete isolated recovery
+result is retained without claiming a new recovery execution. The controlled node
+restart and full instrumented walkthrough/model reruns are recorded separately.
+The controlled named-node stop/start now passes in 112.531 seconds, preserving
+identical saved records, artifact hashes/sizes and submission replay identity.

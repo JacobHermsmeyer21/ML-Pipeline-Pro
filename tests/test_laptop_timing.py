@@ -1,4 +1,5 @@
 import asyncio
+import copy
 import json
 import logging
 from pathlib import Path
@@ -136,6 +137,33 @@ def test_rendered_laptop_manifest_preserves_replicas_routing_and_retry_policy(tm
     assert "X-Correlation-ID $correlation_id" in gateway
     for path in ["/api/v1/tuning-jobs", "/api/v1/monitoring", "/tuning/", "/monitoring/"]:
         assert path in gateway
+
+    # The approved health change affects only gateway liveness, including its path.
+    for item in canonical["items"]:
+        if item["kind"] != "Deployment":
+            continue
+        actual = by_name[("Deployment", item["metadata"]["name"])]
+        before = item["spec"]["template"]["spec"]["containers"][0]
+        after = actual["spec"]["template"]["spec"]["containers"][0]
+        assert actual["spec"]["replicas"] == item["spec"]["replicas"]
+        for key in ["resources", "readinessProbe", "startupProbe", "livenessProbe"]:
+            expected = copy.deepcopy(before.get(key))
+            if item["metadata"]["name"] == "gateway" and key == "livenessProbe":
+                expected["httpGet"]["path"] = "/gateway-live"
+            assert after.get(key) == expected
+
+
+def test_laptop_liveness_is_exact_local_and_does_not_modify_canonical_files(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    paths = [root / "deploy/gateway.conf", root / "deploy/kubernetes/stack.json"]
+    original = [path.read_bytes() for path in paths]
+    render_laptop_profile(root, tmp_path)
+    gateway = (tmp_path / "gateway.conf").read_text()
+    location = gateway.split("location = /gateway-live {", 1)[1].split("}", 1)[0]
+    assert "proxy_pass" not in location
+    assert "return 200" in location
+    assert "add_header X-Correlation-ID $correlation_id always;" in gateway
+    assert [path.read_bytes() for path in paths] == original
 
 
 def test_walkthrough_records_failed_response_and_uses_selected_client_wait(tmp_path):

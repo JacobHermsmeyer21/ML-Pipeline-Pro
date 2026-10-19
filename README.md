@@ -101,3 +101,11 @@ wait. Default call/turn settings remain 20/60 seconds; their allowed finite ceil
 is 300 seconds with model <= turn. Use the matching deployment and client profile;
 increasing only a client wait cannot extend the application's budget. Readiness
 requires the retained laptop gates and complete demo results, not configuration alone.
+
+In this opt-in profile, `GET /gateway-live` returns `200 {"status":"alive"}`
+locally from nginx with the usual correlation header. Kubernetes uses it only for
+gateway liveness; readiness and startup still check the upstream API. Validate the
+failure boundary with `uv run --locked --extra training python scripts/check_laptop_gateway.py`.
+This uses an already installed `nginx:1.28-alpine` image in a disposable test network,
+does not pull images or invoke a model, and saves DNS/TCP failure evidence under
+`artifacts/laptop-gateway-check/`.

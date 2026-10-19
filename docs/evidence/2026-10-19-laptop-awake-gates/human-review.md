@@ -4,8 +4,11 @@ Status: **accepted by Jacob, October 19, 2026**. Jacob reviewed these saved outp
 and said, "ive reviewed, looks good. what is next". See the
 [review decision](human-review-decision.json) for scope and execution evidence.
 Values below use synthetic fixture records, not measured model quality.
-Generated Python is saved exactly and has never been
-executed. See [run evidence](README.md) and [raw outputs](raw.zip).
+Original generated Python is saved exactly in the [raw outputs](raw.zip) and has
+never been executed. The displayed copies below use Ruff formatting; their ASTs
+are verified equivalent to the raw saved strings. Code hashes identify those raw
+strings. Jacob's review decision refers to the original saved outputs.
+See [run evidence](README.md).
 
 ## Conversation examples
 
@@ -185,8 +188,18 @@ Saved status: `validated`; review required. Code SHA-256:
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.get('/api/v1/experiments', params={'limit': 50, 'offset': 0})
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.get("/api/v1/experiments", params={"limit": 50, "offset": 0})
     response.raise_for_status()
     data = response.json()
 ```
@@ -199,8 +212,25 @@ Saved status: `validated`; review required. Code SHA-256:
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.get('/api/v1/experiments/compare', params=[('experiment_id', 'exp-a'), ('experiment_id', 'exp-b'), ('metric', 'validation_f1')])
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.get(
+        "/api/v1/experiments/compare",
+        params=[
+            ("experiment_id", "exp-a"),
+            ("experiment_id", "exp-b"),
+            ("metric", "validation_f1"),
+        ],
+    )
     response.raise_for_status()
     data = response.json()
 ```
@@ -213,8 +243,33 @@ Saved status: `validated`; review required. Code SHA-256:
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY'],'Idempotency-Key':os.environ['MLPP_SUBMISSION_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.post('/api/v1/experiments', json={'config': {'batch_size': 16, 'epochs': 30, 'hidden_units': 16, 'learning_rate': 0.01, 'max_runtime_seconds': 10, 'seed': 42}, 'dataset_id': 'dataset', 'model_id': 'model'})
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+        "Idempotency-Key": os.environ["MLPP_SUBMISSION_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.post(
+        "/api/v1/experiments",
+        json={
+            "config": {
+                "batch_size": 16,
+                "epochs": 30,
+                "hidden_units": 16,
+                "learning_rate": 0.01,
+                "max_runtime_seconds": 10,
+                "seed": 42,
+            },
+            "dataset_id": "dataset",
+            "model_id": "model",
+        },
+    )
     response.raise_for_status()
     data = response.json()
 ```
@@ -227,8 +282,42 @@ Saved status: `validated`; review required. Code SHA-256:
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY'],'Idempotency-Key':os.environ['MLPP_SUBMISSION_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.post('/api/v1/tuning-jobs', json={'config': {'batch_size': 16, 'epochs': 30, 'hidden_units': 16, 'learning_rate': 0.01, 'max_runtime_seconds': 10, 'seed': 42}, 'dataset_id': 'dataset', 'direction': 'maximize', 'limits': {'concurrency': 1, 'max_runtime_seconds': 40, 'max_trials': 2}, 'model_id': 'model', 'objective_metric': 'validation_f1', 'sampler_seed': 42, 'search_space': {'batch_size': {'choices': [8, 16, 32]}, 'hidden_units': {'high': 64, 'low': 8, 'step': 8}, 'learning_rate': {'high': 0.05, 'log': True, 'low': 0.0001}}})
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+        "Idempotency-Key": os.environ["MLPP_SUBMISSION_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.post(
+        "/api/v1/tuning-jobs",
+        json={
+            "config": {
+                "batch_size": 16,
+                "epochs": 30,
+                "hidden_units": 16,
+                "learning_rate": 0.01,
+                "max_runtime_seconds": 10,
+                "seed": 42,
+            },
+            "dataset_id": "dataset",
+            "direction": "maximize",
+            "limits": {"concurrency": 1, "max_runtime_seconds": 40, "max_trials": 2},
+            "model_id": "model",
+            "objective_metric": "validation_f1",
+            "sampler_seed": 42,
+            "search_space": {
+                "batch_size": {"choices": [8, 16, 32]},
+                "hidden_units": {"high": 64, "low": 8, "step": 8},
+                "learning_rate": {"high": 0.05, "log": True, "low": 0.0001},
+            },
+        },
+    )
     response.raise_for_status()
     data = response.json()
 ```
@@ -241,8 +330,18 @@ Saved status: `validated`; review required. Code SHA-256:
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.get('/api/v1/experiments', params={'limit': 50, 'offset': 0})
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.get("/api/v1/experiments", params={"limit": 50, "offset": 0})
     response.raise_for_status()
     data = response.json()
 ```

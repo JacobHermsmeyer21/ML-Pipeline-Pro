@@ -13,6 +13,16 @@ def render_laptop_profile(root: Path, output: Path) -> Path:
     if gateway.count(original) != 1:
         raise ValueError("Canonical gateway timeout changed; review laptop rendering")
     gateway = gateway.replace(original, "proxy_read_timeout 310s;")
+    anchor = "        location = /gateway-unavailable {"
+    if gateway.count(anchor) != 1:
+        raise ValueError("Canonical gateway locations changed; review laptop rendering")
+    gateway = gateway.replace(
+        anchor,
+        "        location = /gateway-live {\n"
+        "            default_type application/json;\n"
+        '            return 200 \'{"status":"alive"}\';\n'
+        "        }\n" + anchor,
+    )
     manifest = json.loads((root / "deploy/kubernetes/stack.json").read_text())
     patch = json.loads((root / "deploy/kubernetes/local-ai-patch.json").read_text())
     local = patch["spec"]["template"]["spec"]
@@ -30,6 +40,9 @@ def render_laptop_profile(root: Path, output: Path) -> Path:
         if item["kind"] != "Deployment":
             continue
         name = item["metadata"]["name"]
+        if name == "gateway":
+            container = item["spec"]["template"]["spec"]["containers"][0]
+            container["livenessProbe"]["httpGet"]["path"] = "/gateway-live"
         if name not in {"model-api", "monitoring-api"}:
             continue
         spec = item["spec"]["template"]["spec"]
