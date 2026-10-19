@@ -1,8 +1,10 @@
-# New laptop outputs awaiting human review
+# Laptop outputs: human review
 
-Status: **pending human review**. Automated original ten/seven gates pass; this
-document does not record human approval. Values below use synthetic fixture records,
-not measured model quality. Generated Python is saved exactly and has never been
+Status: **accepted by Jacob, October 19, 2026**. Jacob reviewed these saved outputs
+and said, "ive reviewed, looks good. what is next". See the
+[review decision](human-review-decision.json) for scope and execution evidence.
+Values below use synthetic fixture records, not measured model quality.
+Generated Python is saved exactly and has never been
 executed. See [run evidence](README.md) and [raw outputs](raw.zip).
 
 ## Conversation examples
@@ -247,9 +249,10 @@ with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID
 
 ## Human decision
 
-- [ ] The fixture replies are clear and reflect the supplied facts/status.
-- [ ] The proposed tuning arguments and explicit-confirmation boundary are clear.
-- [ ] The generated drafts are understandable and appropriate for their stated profiles.
-- [ ] Missing-input, hostile-record and unsupported-operation behavior is acceptable.
+- [x] The fixture replies are clear and reflect the supplied facts/status.
+- [x] The proposed tuning arguments and explicit-confirmation boundary are clear.
+- [x] The generated drafts are understandable and appropriate for their stated profiles.
+- [x] Missing-input, hostile-record and unsupported-operation behavior is acceptable.
 
-Reviewer/date/decision: pending.
+Reviewer/date/decision: Jacob / October 19, 2026 / accepted saved outputs.
+This records output review; the separate deployment-health plan still awaits approval.

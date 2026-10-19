@@ -1,0 +1,15 @@
+{
+  "reviewer": "Jacob",
+  "date": "2026-10-19",
+  "recorded_utc": "2026-10-19T21:09:26Z",
+  "decision": "accepted",
+  "user_message": "ive reviewed, looks good. what is next",
+  "scope": "Saved conversation examples and five generated Python drafts in human-review.md from the original ten/seven laptop model gates.",
+  "execution_source_revision": "dbc9a863ef0e5452eb11b05e74a4c245eb27ae93",
+  "reviewed_artifact_commit": "d9b8be3",
+  "raw_archive_sha256": "5ef2105e7dde02bcdbeca55d7d192232e9f8684e3906a8bb5b9fb6721a5fd4e9",
+  "generated_code_executed": false,
+  "deployment_health_design_approval": "pending; output review does not approve that separate design",
+  "complete_deployed_laptop_walkthrough": "still failed; not rerun by this review",
+  "execution_evidence_policy": "Raw results and raw.zip retain the original pre-review state; this later human judgment is recorded separately."
+}

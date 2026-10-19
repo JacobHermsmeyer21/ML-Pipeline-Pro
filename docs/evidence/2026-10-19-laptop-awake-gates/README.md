@@ -7,7 +7,11 @@ approved five-minute profile. These are standalone real-model checks with synthe
 API fixtures. The deployed gateway demo remains failed and was not rerun here.
 
 See [results](results.json), [raw logs/reports/source](raw.zip),
-[archive verification](verification.json), and [new outputs awaiting human review](human-review.md).
+[archive verification](verification.json), and [human-reviewed outputs](human-review.md).
+Jacob accepted the saved conversation examples and five generated drafts on
+October 19: "ive reviewed, looks good. what is next". The
+[separate decision record](human-review-decision.json) preserves this later judgment;
+raw execution reports retain their original pre-review state.
 The preceding failed/interrupted evidence is preserved unchanged; this is a
 user-requested fresh execution, with no automatic retries or output repair.
 
@@ -74,8 +78,8 @@ does not represent the latency of one reply.
 
 The fixture history-guided proposal retains explicit confirmation; no action is
 submitted. All five generated drafts are validated but **never executed**. Automated
-acceptance does not record a human judgment of clarity/usefulness; the exact saved
-replies and draft strings are available in [human-review.md](human-review.md).
+acceptance is separate from Jacob's later human acceptance of clarity/usefulness;
+the exact saved replies and draft strings are available in [human-review.md](human-review.md).
 
 ## Power, runner state and limits
 
@@ -96,8 +100,8 @@ workflow, resolve the gateway restart, attribute resource pressure, prove live
 under-load timeout enforcement, or establish universal reliability/speedup.
 No deployment health, resource or concurrency setting changed. The
 [health follow-up plan](../../plans/2026-10-19-laptop-deployment-health-plan.md)
-still awaits human review. New human output review and the complete laptop
-walkthrough remain outstanding.
+still awaits human review. The complete laptop walkthrough remains outstanding;
+Jacob's saved-output review is complete.
 
 No application or integration suite was repeated for this evidence-only update:
 application/harness bytes are unchanged, and the earlier fast/ordinary/recovery/CI
@@ -110,4 +114,5 @@ manifest/source hashes, original scenario order/counts, call/reply timings, JUni
 runner-idle evidence and the non-overlapping sleep interval. No blocking discrepancy
 was found; the reviewer emphasizes before/after AC sampling, pending human quality
 review and unresolved deployment/live-expiry limits. Different-vendor review was
-unavailable. This review executed no inference or deployment changes.
+unavailable. This review executed no inference or deployment changes and preceded
+Jacob's later output acceptance recorded above.

@@ -44,7 +44,9 @@ Later [fresh AC model gates](../evidence/2026-10-19-laptop-awake-gates/README.md
 pass all original ten/seven scenarios without an application or model change;
 recorded sleep intersects neither new execution window. This supplies standalone
 model acceptance and leaves the diagnosed deployed gateway failure unchanged.
-Human review of the new saved outputs remains pending.
+Jacob accepts the new saved outputs on October 19 in the
+[human decision](../evidence/2026-10-19-laptop-awake-gates/human-review-decision.json).
+This is output acceptance; approval of this deployment-health design remains pending.
 
 ## Requirements
 

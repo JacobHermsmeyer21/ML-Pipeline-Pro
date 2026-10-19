@@ -246,4 +246,6 @@ and neither execution window intersects Windows' recorded between-gate sleep.
 All 54 common source/harness/lockfile hashes match the earlier execution. No output
 is repaired or generated Python executed. The original interrupted failure remains
 retained. This resolves the later standalone model-gate gap only: the deployed
-walkthrough, new human review and live under-load expiry acceptance remain open.
+walkthrough and live under-load expiry acceptance remain open. Jacob subsequently
+accepts the saved conversation examples and five drafts on October 19, recorded
+in the [human decision](../evidence/2026-10-19-laptop-awake-gates/human-review-decision.json).

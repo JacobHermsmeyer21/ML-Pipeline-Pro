@@ -127,7 +127,9 @@ No course row is closed by a partial run. See [retained evidence](../evidence/20
 Later October 19, the [fresh AC model gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
 pass all ten conversation and seven snippet scenarios on the CPU laptop with the
 five-minute profile. Five generated drafts are validated and saved, never executed;
-new human quality review is pending. This resolves the incomplete standalone gate
+Jacob accepts the saved conversation examples and drafts on October 19 in the
+[human decision](../evidence/2026-10-19-laptop-awake-gates/human-review-decision.json).
+This resolves the incomplete standalone gate
 status for that later run, while complete deployed C3/C5/C7/C9 reproduction remains
 open because the gateway walkthrough still fails. Earlier raw failures are preserved.
 

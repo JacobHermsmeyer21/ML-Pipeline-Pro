@@ -31,8 +31,10 @@ passes all ten conversation and seven snippet scenarios. Maximum complete replie
 are 184.875 and 229.219 seconds; both runners end idle. Windows records a sleep
 between the gates, intersecting neither execution window. Application/harness/model
 bytes and settings are unchanged. This supersedes the earlier incomplete model-gate
-status only; the deployed gateway failure, live-expiry gap and pending human output
-review remain. Generated Python is never executed.
+status only; the deployed gateway failure and live-expiry gap remain. Jacob accepts
+the saved conversation examples and five drafts on October 19 in the
+[human decision](../evidence/2026-10-19-laptop-awake-gates/human-review-decision.json).
+Generated Python is never executed; the deployment-health design still awaits approval.
 
 Revisit after the reviewed deployment change and lightweight resource evidence,
 then repeat the original complete walkthrough and full model gates. This finding
