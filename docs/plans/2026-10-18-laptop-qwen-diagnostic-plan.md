@@ -1,11 +1,11 @@
 # Diagnose Qwen latency on the presentation laptop
 
-- Status: awaiting human review; implementation pending
+- Status: approved; implementation and laptop diagnostic in progress
 - Date: 2026-10-18
 - Source baseline: `cb67bb8` / `person-a/conversation-foundation`
 - Request: recommend laptop inference improvements; try an eight-minute diagnostic to determine whether Qwen eventually responds.
-- Human reviewer/approval: pending review of this bounded diagnostic design; the suggestion of a longer run does not approve application timeout/default changes.
-- Independent review: no reviewer yet; seek separate review of wall-clock cancellation and request/token bounds before calling the harness reviewed.
+- Human reviewer/approval: Jacob, October 18, 2026: "Look at diagnositc plan, I approve it, start running tests on this laptop". Approval covers the bounded diagnostic and harness below; application timeout/default changes remain excluded.
+- Independent review: a separate same-vendor Codex agent reviewed wall-clock cancellation, request/token/size bounds, tool isolation, strict validation and failure reporting on October 18. Four findings were corrected and re-reviewed; see the implementation outcome. External-vendor review unavailable.
 
 ## Proposed behavior and purpose
 
@@ -116,13 +116,47 @@ own agreed arrangement and end-to-end rehearsal.
 
 ## Human review and approval
 
-Pending. Review covers this one-request diagnostic and its harness only. It does
+Jacob approved on October 18, 2026 in the request quoted above. Review covers this
+one-request diagnostic and its harness only. It does
 not approve higher application deadlines, a new model/runtime, prompt-contract
 changes or replacing the approved one-machine demo. Implementation starts after
 explicit review; source inspection and this reviewable plan are already complete.
 
 ## Implementation outcome
 
-Not implemented or executed. The current workstation cannot supply a laptop
-measurement. No new application setting, model gate, test assertion or production
-behavior changes are part of this plan record.
+The [diagnostic harness](../../evaluations/laptop_qwen_diagnostic.py) and
+[operator guide](../guides/laptop-qwen-diagnostic.md) are implemented on the actual
+Acer Aspire A515-46 / Ryzen 3 3350U presentation laptop. The runtime reports
+Ollama 0.40.2; model residency was empty before testing. Actual CIM metadata,
+including Vega 6, 19,261,304,832 bytes physical RAM and the Balanced power plan,
+is saved locally under `artifacts/laptop-qwen-diagnostic/machine.json`.
+
+Thirteen new deterministic checks pass: original host-fixture/SDK capture,
+strict read/argument/envelope/token validation, response-body and wall bounds,
+no retry, nanosecond conversion, complete-run request counts and failure stops,
+and rejection of a different machine before transport. These checks exercise
+diagnostic safety/acceptance boundaries; existing assertions and original model
+gates are unchanged. Locked sync passes (114 resolved / 109 installed packages),
+Ruff lint and formatting pass (182 files), and all **611 fast cases pass**, with
+73 integration/recovery cases deselected, no selected skips or warnings, 80%
+rounded host coverage and 221.18 seconds test time. Dependency compatibility
+passes for 109 installed packages. Local links/anchors, the PowerShell guide
+example and `git diff --check` pass. Raw logs/JUnit are under
+`artifacts/laptop-qwen-diagnostic/`. No service/ownership implementation changed,
+so ordinary/recovery integration was not selected for this diagnostic addition.
+The single live request remains pending immediately after the harness commit.
+
+Separate review: same-vendor Codex agent `/root/diagnostic_review`, October 18,
+2026, read-only review of the script/tests against this plan. Submitted scope:
+wall cancellation, request/token/size bounds, exact SDK bytes, retry/tool
+isolation, semantic validation, provenance and failure paths. Findings: bound
+metadata reads; check resident name/digest/context; prevent post-response
+metadata errors from retaining a passing status; test the complete orchestrator's
+one-request and setup-failure behavior. All four were corrected and re-reviewed
+with no remaining blocker. Machine fields are allowlisted and the CIM snapshot
+is an operator prerequisite rather than hardware attestation. No external-vendor
+review was available. The reviewer sent no live inference.
+
+No application setting, dependency, model gate, persistent record or production
+behavior changes are included. CPU busy observations use bounded Windows API
+samples; physical/commit availability does not establish actual disk paging.

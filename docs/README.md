@@ -11,6 +11,7 @@ Start with the [project README](../README.md) to run the backend, or the
 - [Conversation development](guides/conversation-development.md): implemented slices, model boundaries, and open acceptance work.
 - [Generated Python drafts](guides/snippet-generation.md): supported profiles, saved validation/provenance, and the opt-in A2 evaluation.
 - [Local model setup](guides/local-model-setup.md): pinned Qwen profiles, exact token admission, and opt-in model evaluation.
+- [Laptop Qwen diagnostic](guides/laptop-qwen-diagnostic.md): one warmed, bounded inspection request with retained latency and semantic evidence.
 - [Guided midterm demo](guides/guided-midterm-demo.md): evaluated 7B dialogue and generated-code configuration, original gates and review limits.
 - [Monitoring demo](guides/monitoring-demo.md): actual inference observations, Grafana/Prometheus and evidence-linked local-model advice.
 - [Kubernetes demo](guides/kubernetes-demo.md): isolated local deployment, replica scope and CI/CD.
