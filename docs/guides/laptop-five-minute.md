@@ -1,12 +1,17 @@
 # Five-minute laptop profile
 
-**October 19 result:** implemented and pushed on `533a2ed`. After AC reconnection,
+**October 19 result:** timing implemented on `533a2ed`, local gateway liveness on
+`bf07213`, both pushed. After AC reconnection,
 [fresh original gates](../evidence/2026-10-19-laptop-awake-gates/README.md) pass all
 ten dialogue and seven snippet scenarios; the slowest complete replies are 184.875
-and 229.219 seconds. The deployed demo still fails: its first actual-ID inspection
-passes in 210.532 seconds, but a liveness-triggered gateway restart breaks the next
-turn before its reply deadline. See [retained deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
-and the [approved health follow-up](../plans/2026-10-19-laptop-deployment-health-plan.md).
+and 229.219 seconds. The [latest deployed demo](../evidence/2026-10-19-laptop-gateway-health/README.md)
+still fails at its first AI inspection after 144.094 seconds. Local nginx health
+also stalls; Kubernetes restarts the gateway while the server finishes within
+167.506 seconds. The [approved health change](../plans/2026-10-19-laptop-deployment-health-plan.md)
+passes implementation checks but fails live acceptance. Resource attribution is
+incomplete; a [bounded diagnosis](../plans/2026-10-19-laptop-resource-diagnosis-plan.md)
+awaits review. Do not increase reply time or claim deployed readiness from the
+standalone gate passes.
 Keep AC connected and the laptop awake throughout live gates.
 
 Jacob approved the [deployment plan](../plans/2026-10-18-laptop-deployment-readiness-plan.md)

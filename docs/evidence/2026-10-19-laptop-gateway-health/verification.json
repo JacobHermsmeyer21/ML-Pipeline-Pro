@@ -1,0 +1,22 @@
+{
+  "verified_utc": "2026-10-19T21:56:51.332191+00:00",
+  "archive_crc": "pass",
+  "payload_sha256_and_sizes": "pass",
+  "payload_count": 214,
+  "uncompressed_bytes": 4310098,
+  "archive_bytes": 616673,
+  "archive_sha256": "ba18bdddfe8744293e66cddfcfb707231b67ce67b252942995712deeebb62593",
+  "manifest_sha256": "af8538414e7d54489efa32fe35b14b764be3e7fd3313333e876a0aad26a86411",
+  "results_sha256": "9801b0628cc5dd96b8007208b99346b9142dc044d9712e59b297056f34d12349",
+  "asserted_fast_focused_ordinary_counts": [
+    647,
+    18,
+    63
+  ],
+  "all_five_ci_jobs_success": true,
+  "old_generated_display_asts_equal": 5,
+  "active_gateway_restart_confirmed": true,
+  "failed_live_request_preserved": true,
+  "raw_prior_archives_and_decision_unchanged": true,
+  "limits": "Local verification; read-only reviewer did not independently verify this archive."
+}

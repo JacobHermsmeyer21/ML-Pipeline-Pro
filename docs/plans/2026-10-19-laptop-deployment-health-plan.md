@@ -1,12 +1,12 @@
 # Preserve gateway liveness during laptop inference
 
-- Status: implemented; live laptop rehearsal and acceptance pending
+- Status: implemented; live laptop acceptance failed and remains incomplete
 - Date: 2026-10-19
 - Source baseline: `533a2ed` on `person-a/conversation-foundation`
 - Request: follow-up to Jacob's approved five-minute implementation and demo rerun
 - Human reviewer/approval: Jacob approved on October 19, 2026: "i approve, go for it".
-- Independent review: same-vendor read-only evidence review by `timing_review`;
-  targeted implementation review required; different-vendor availability unknown
+- Independent review: same-vendor read-only implementation/evidence review by
+  `timing_review` completed; different-vendor review unavailable
 
 ## Proposed behavior and purpose
 
@@ -151,7 +151,9 @@ The separate live-expiry experiment remains outside this plan's approved scope.
 
 ## Implementation outcome
 
-Implementation and verification are now authorized and in progress.
+Implementation and verification were authorized; implementation is pushed as
+`bf07213`. The live acceptance run fails; see the
+[complete result and raw evidence](../evidence/2026-10-19-laptop-gateway-health/README.md).
 The original five-minute implementation remains committed; its laptop acceptance
 is incomplete. See the [durable finding](../memory/laptop-inference-probe-restarts.md).
 
@@ -203,3 +205,30 @@ result is retained without claiming a new recovery execution. The controlled nod
 restart and full instrumented walkthrough/model reruns are recorded separately.
 The controlled named-node stop/start now passes in 112.531 seconds, preserving
 identical saved records, artifact hashes/sizes and submission replay identity.
+
+The unchanged full walkthrough on clean `bf07213` fails at its first AI inspection:
+client `RemoteProtocolError` after 144.094 seconds. Local `/gateway-live` itself
+times out; Kubernetes orders gateway restart at 21:41:45 UTC. Later pod status
+confirms restart count four versus initial three, old container completion at
+21:42:28 and replacement start at 21:42:33. Preserve lagging initial/final snapshots
+instead of inferring no restart. The serving API also logs shutdown during broad
+probe failures, then persists the turn after 167.506 seconds, below 270. Its saved
+tool-transport-error reply has no verified facts, pending action or submission.
+This does not establish model semantic failure, deadline exhaustion or timely
+cancellation. The original runtime slice's idle=false remains unchanged; a later
+timestamped read independently observes idle=true. No generation is retried.
+
+F1/F2 checks pass, but N1/N3 fail. N2 yields useful measurements with gaps: host
+available memory reaches 557.81 MiB and node CPU PSI some avg10 reaches 98.74 in
+the last successful read, while gateway cgroup throttling remains zero in three
+successful samples. Host/node gaps reach 34.588/79.125 seconds, direct vmmem CPU
+access fails and the selected PIDs miss the actual inference worker. Page input
+also peaks before inference. No particular resource cause or OOM is proved.
+
+Per this plan's first-failure condition, fresh ten/seven gates are unrun; prior
+complete standalone passes remain separately retained. All five implementation CI
+jobs pass. AC is connected and the temporary keep-awake request is released without
+changing power policy. No resource, model, thread or API probe setting is changed.
+The separate live-expiry experiment and full laptop/course acceptance remain open.
+The [resource diagnosis plan](2026-10-19-laptop-resource-diagnosis-plan.md) is a
+reviewable next step, awaiting approval before another measured inference run.

@@ -1,0 +1,500 @@
+{
+  "implementation_revision": "bf07213ed2564cfc9c97efb35504c22f2d9cf9c7",
+  "plan": "docs/plans/2026-10-19-laptop-deployment-health-plan.md",
+  "approval": {
+    "reviewer": "Jacob",
+    "date": "2026-10-19",
+    "quote": "i approve, go for it"
+  },
+  "fast": {
+    "tests": 647,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "focused": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ordinary": {
+    "tests": 63,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ci": {
+    "id": 39329050544,
+    "head_sha": "bf07213ed2564cfc9c97efb35504c22f2d9cf9c7",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544",
+    "created_at": "2026-10-19T21:38:19Z",
+    "updated_at": "2026-10-19T21:46:10Z",
+    "jobs": [
+      {
+        "id": 118322270294,
+        "name": "compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T21:38:22Z",
+        "completed_at": "2026-10-19T21:46:09Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544/job/118322270294"
+      },
+      {
+        "id": 118322270570,
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T21:38:22Z",
+        "completed_at": "2026-10-19T21:39:51Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544/job/118322270570"
+      },
+      {
+        "id": 118322270594,
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T21:38:22Z",
+        "completed_at": "2026-10-19T21:39:15Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544/job/118322270594"
+      },
+      {
+        "id": 118322954287,
+        "name": "kubernetes-deploy",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T21:39:54Z",
+        "completed_at": "2026-10-19T21:44:21Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544/job/118322954287"
+      },
+      {
+        "id": 118322954424,
+        "name": "domain-compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T21:39:53Z",
+        "completed_at": "2026-10-19T21:42:36Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39329050544/job/118322954424"
+      }
+    ]
+  },
+  "live": {
+    "passed": false,
+    "request": {
+      "path": "/api/v1/chat",
+      "failure_type": "RemoteProtocolError",
+      "elapsed_seconds": 144.09399999998277
+    },
+    "client_command": {
+      "argv": [
+        "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\.venv\\Scripts\\python.exe",
+        "examples/midterm_walkthrough.py",
+        "--origin",
+        "http://127.0.0.1:18000",
+        "--timing-profile",
+        "laptop-five-minute",
+        "--confirm-demo-proposal",
+        "--output",
+        "C:\\Users\\Jacob\\Desktop\\ML-Pipeline-Pro\\artifacts\\laptop-health-demo"
+      ],
+      "started_utc": "2026-10-19T21:39:24.472483+00:00",
+      "power_before": {
+        "read_ok": true,
+        "ac_line_status": 1,
+        "battery_percent": 100
+      },
+      "outer_safety_timeout_seconds": 1800,
+      "source_revision": "bf07213ed2564cfc9c97efb35504c22f2d9cf9c7",
+      "working_tree": "",
+      "orchestrator_sha256": "b3582f9c3697c508662cb60fdc9fa649c524609ee015379b00c03d5f52724dcf",
+      "retries": 0,
+      "generated_code_execution": false,
+      "exit_code": 1,
+      "elapsed_seconds": 165.84299999999348,
+      "power_after": {
+        "read_ok": true,
+        "ac_line_status": 1,
+        "battery_percent": 100
+      },
+      "ended_utc": "2026-10-19T21:42:10.430181+00:00"
+    },
+    "server_complete_turn_seconds": 167.505905,
+    "original_deadline_utc": "2026-10-19T21:44:16.260Z",
+    "gateway_liveness_killing_utc": "2026-10-19T21:41:45Z",
+    "gateway_later_status": {
+      "allocatedResources": {
+        "cpu": "50m",
+        "memory": "128Mi"
+      },
+      "containerID": "containerd://910fb54b7961d5a9870aa8aa9e045483b7516a8c99bcc5042e95f6411582c10b",
+      "image": "docker.io/library/nginx:1.28-alpine",
+      "imageID": "docker.io/library/nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "lastState": {
+        "terminated": {
+          "containerID": "containerd://68712c34a4a06d1dc9e7fe412e62fb48b3d51a644dd98ab7ebb839b917041630",
+          "exitCode": 0,
+          "finishedAt": "2026-10-19T21:42:28Z",
+          "reason": "Completed",
+          "startedAt": "2026-10-19T21:36:18Z"
+        }
+      },
+      "name": "gateway",
+      "ready": true,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "128Mi"
+        },
+        "requests": {
+          "cpu": "50m",
+          "memory": "128Mi"
+        }
+      },
+      "restartCount": 4,
+      "started": true,
+      "state": {
+        "running": {
+          "startedAt": "2026-10-19T21:42:33Z"
+        }
+      },
+      "user": {
+        "linux": {
+          "gid": 0,
+          "supplementalGroups": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            10,
+            11,
+            20,
+            26,
+            27
+          ],
+          "uid": 0
+        }
+      },
+      "volumeMounts": [
+        {
+          "mountPath": "/etc/nginx/nginx.conf",
+          "name": "config"
+        },
+        {
+          "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+          "name": "kube-api-access-xkdb9",
+          "readOnly": true,
+          "recursiveReadOnly": "Disabled"
+        }
+      ]
+    },
+    "saved_turn": {
+      "conversation_id": "0eba93dd-00c0-4b5a-91fc-9596f6b4c002",
+      "turn_id": "394bf318-012a-4285-a68d-c9dd6a3cf739",
+      "request_id": "ff828fc4-a6fa-4e3f-99ba-5b83a40011b4-inspect",
+      "revision": 1,
+      "status": "completed",
+      "user_message": "Inspect experiment ff828fc4-a6fa-4e3f-99ba-5b83a40011b4. Return a verified metrics.validation_f1 fact and guide my next pipeline step in one sentence.",
+      "message": "Failed to retrieve experiment details. Please ensure the experiment ID is correct and try again.",
+      "correlation_id": "8c1424ac372e5a61552dae187842356f",
+      "required_inputs": [],
+      "facts": [],
+      "evidence": [],
+      "tool_results": [
+        {
+          "status": "error",
+          "tool_name": "get_experiment",
+          "correlation_id": "8c1424ac372e5a61552dae187842356f",
+          "http_status": null,
+          "error": {
+            "code": "tool_transport_error",
+            "message": "API request could not be completed",
+            "correlation_id": "8c1424ac372e5a61552dae187842356f",
+            "details": null
+          }
+        }
+      ],
+      "pending_action": null,
+      "snippet": null,
+      "history_omitted": false,
+      "error": null,
+      "model_provenance": {
+        "backend": "ollama",
+        "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-ollama": "1.1.0",
+          "ollama": "0.6.3"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "aad6464b733b9724e4a5eb99f8aff8a5e3cbc0eb9b925e644f043fa652733188",
+        "instructions_hash": "2b8b0b5881599b5ddb055e77ad766688f4438abbf8e844821d47ea16f72ffe05",
+        "protocol": "guided",
+        "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "runtime_version": "0.40.2",
+        "supported_context_tokens": 32768,
+        "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+        "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+      }
+    },
+    "original_idle": false,
+    "later_idle": {
+      "collected_utc": "2026-10-19T21:45:49.748897+00:00",
+      "runner_final_state": "srv  update_slots: all slots are idle",
+      "runner_idle": true,
+      "original_summary_idle_false_preserved": true,
+      "history_collection": "Pure MongoDB reads and history GETs; no generation, action confirmation or replay POST."
+    }
+  },
+  "resources": {
+    "derived_utc": "2026-10-19T21:50:27.864441+00:00",
+    "host_samples": 13,
+    "node_samples": 5,
+    "available_memory_min_bytes": {
+      "value": 584904704,
+      "utc": "2026-10-19T21:41:30.5346469Z",
+      "valid_samples": 13
+    },
+    "pages_input_max_per_second": {
+      "value": 21097.89052257683,
+      "utc": "2026-10-19T21:39:41.9886056Z",
+      "valid_samples": 13
+    },
+    "host_max_gap_seconds": 34.58814199999999,
+    "host_max_sample_duration_seconds": 31.17621009999999,
+    "node_max_gap_seconds": 79.125,
+    "host_process_selection": [
+      {
+        "pid": 5896,
+        "name": "com.docker.backend"
+      },
+      {
+        "pid": 11696,
+        "name": "com.docker.backend"
+      },
+      {
+        "pid": 8432,
+        "name": "ollama"
+      },
+      {
+        "pid": 13520,
+        "name": "vmmem"
+      }
+    ],
+    "host_process_access_errors": [
+      "process_access_unavailable:5"
+    ],
+    "all_sampled_ac_connected": true,
+    "node": [
+      {
+        "utc": "2026-10-19T21:39:12.260262+00:00",
+        "sample_gap_seconds": null,
+        "duration_seconds": 1.625,
+        "node_read_started_utc": "2026-10-19T21:39:12.461794+00:00",
+        "node_read_duration_seconds": 0.20300000003771856,
+        "node_read_error": null,
+        "node_read_exit_code": 0,
+        "cpu_pressure": "some avg10=60.29 avg60=27.06 avg300=24.77 total=5114506289\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory_pressure": "some avg10=0.59 avg60=0.30 avg300=0.10 total=21040957\nfull avg10=0.49 avg60=0.23 avg300=0.05 total=15210566\n",
+        "mem_available_kib": 6636000,
+        "gateway_cpu_stat": "usage_usec 154369\nuser_usec 52551\nsystem_usec 101817\nnice_usec 0\nnr_periods 73\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0\n",
+        "probes": [
+          {
+            "path": "/gateway-live",
+            "utc": "2026-10-19T21:39:12.674818+00:00",
+            "status_code": 200,
+            "elapsed_seconds": 0.030999999959021807
+          },
+          {
+            "path": "/api/v1/health/ready",
+            "utc": "2026-10-19T21:39:12.694185+00:00",
+            "status_code": 200,
+            "elapsed_seconds": 0.9220000000204891
+          }
+        ],
+        "dns": {
+          "started_utc": "2026-10-19T21:39:13.619688+00:00",
+          "exit_code": 0,
+          "stdout": "Server:\t\t10.96.0.10\nAddress:\t10.96.0.10:53\n\n\nName:\tmodel-api.mlpp-demo.svc.cluster.local\nAddress: 10.96.136.233\n\n",
+          "stderr": "",
+          "duration_seconds": 0.26600000000325963,
+          "limits": "Duration includes Kubernetes exec/control-plane overhead, not raw DNS latency."
+        }
+      },
+      {
+        "utc": "2026-10-19T21:39:42.443238+00:00",
+        "sample_gap_seconds": 30.18699999997625,
+        "duration_seconds": 0.5310000000172295,
+        "node_read_started_utc": "2026-10-19T21:39:42.660406+00:00",
+        "node_read_duration_seconds": 0.2809999999590218,
+        "node_read_error": null,
+        "node_read_exit_code": 0,
+        "cpu_pressure": "some avg10=20.08 avg60=25.25 avg300=24.64 total=5121083687\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory_pressure": "some avg10=0.02 avg60=0.18 avg300=0.09 total=21058076\nfull avg10=0.02 avg60=0.14 avg300=0.05 total=15222291\n",
+        "mem_available_kib": 6534028,
+        "gateway_cpu_stat": "usage_usec 214298\nuser_usec 65035\nsystem_usec 149262\nnice_usec 0\nnr_periods 118\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0\n",
+        "probes": [
+          {
+            "path": "/gateway-live",
+            "utc": "2026-10-19T21:39:42.951570+00:00",
+            "status_code": 200,
+            "elapsed_seconds": 0.01600000000325963
+          },
+          {
+            "path": "/api/v1/health/ready",
+            "utc": "2026-10-19T21:39:42.966893+00:00",
+            "status_code": 200,
+            "elapsed_seconds": 0.015000000013969839
+          }
+        ],
+        "dns": null
+      },
+      {
+        "utc": "2026-10-19T21:40:13.337731+00:00",
+        "sample_gap_seconds": 30.89100000000326,
+        "duration_seconds": 76.60899999999674,
+        "node_read_started_utc": "2026-10-19T21:40:44.841968+00:00",
+        "node_read_duration_seconds": 19.92200000002049,
+        "node_read_error": "TimeoutExpired",
+        "node_read_exit_code": null,
+        "cpu_pressure": null,
+        "memory_pressure": null,
+        "mem_available_kib": null,
+        "gateway_cpu_stat": null,
+        "probes": [
+          {
+            "path": "/gateway-live",
+            "utc": "2026-10-19T21:41:04.762097+00:00",
+            "unavailable": "ReadTimeout",
+            "elapsed_seconds": 3.1560000000172295
+          },
+          {
+            "path": "/api/v1/health/ready",
+            "utc": "2026-10-19T21:41:07.920157+00:00",
+            "unavailable": "ReadTimeout",
+            "elapsed_seconds": 3.014999999955762
+          }
+        ],
+        "dns": {
+          "started_utc": "2026-10-19T21:41:10.930171+00:00",
+          "unavailable": "TimeoutExpired",
+          "duration_seconds": 19.01600000000326,
+          "limits": "Duration includes Kubernetes exec/control-plane overhead, not raw DNS latency."
+        }
+      },
+      {
+        "utc": "2026-10-19T21:41:32.462588+00:00",
+        "sample_gap_seconds": 79.125,
+        "duration_seconds": 22.93700000003446,
+        "node_read_started_utc": "2026-10-19T21:41:41.229709+00:00",
+        "node_read_duration_seconds": 8.14100000000326,
+        "node_read_error": "TimeoutExpired",
+        "node_read_exit_code": null,
+        "cpu_pressure": null,
+        "memory_pressure": null,
+        "mem_available_kib": null,
+        "gateway_cpu_stat": null,
+        "probes": [
+          {
+            "path": "/gateway-live",
+            "utc": "2026-10-19T21:41:49.373350+00:00",
+            "unavailable": "ReadTimeout",
+            "elapsed_seconds": 3.0160000000032596
+          },
+          {
+            "path": "/api/v1/health/ready",
+            "utc": "2026-10-19T21:41:52.392805+00:00",
+            "unavailable": "ReadTimeout",
+            "elapsed_seconds": 3.01500000001397
+          }
+        ],
+        "dns": null
+      },
+      {
+        "utc": "2026-10-19T21:42:02.916546+00:00",
+        "sample_gap_seconds": 30.45300000003772,
+        "duration_seconds": 19.04699999996228,
+        "node_read_started_utc": "2026-10-19T21:42:08.073456+00:00",
+        "node_read_duration_seconds": 1.9690000000409782,
+        "node_read_error": null,
+        "node_read_exit_code": 0,
+        "cpu_pressure": "some avg10=98.74 avg60=64.96 avg300=35.06 total=5191363240\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+        "memory_pressure": "some avg10=0.41 avg60=0.61 avg300=0.22 total=21689541\nfull avg10=0.00 avg60=0.00 avg300=0.02 total=15228204\n",
+        "mem_available_kib": 6655816,
+        "gateway_cpu_stat": "usage_usec 241579\nuser_usec 69314\nsystem_usec 172265\nnice_usec 0\nnr_periods 135\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0\n",
+        "probes": [
+          {
+            "path": "/gateway-live",
+            "utc": "2026-10-19T21:42:10.042496+00:00",
+            "unavailable": "RemoteProtocolError",
+            "elapsed_seconds": 0.3279999999795109
+          },
+          {
+            "path": "/api/v1/health/ready",
+            "utc": "2026-10-19T21:42:10.364675+00:00",
+            "unavailable": "ReadError",
+            "elapsed_seconds": 0.0
+          }
+        ],
+        "dns": {
+          "started_utc": "2026-10-19T21:42:10.371818+00:00",
+          "unavailable": "TimeoutExpired",
+          "duration_seconds": 11.59399999998277,
+          "limits": "Duration includes Kubernetes exec/control-plane overhead, not raw DNS latency."
+        }
+      }
+    ],
+    "limits": [
+      "Inference worker llama-server absent from fixed selected host PIDs.",
+      "vmmem CPU/working-set counter access denied; later process snapshot is separate.",
+      "Page input includes file-backed reads; paging is not proof of swap thrashing.",
+      "CPU PSI is pressure, not application CPU utilization.",
+      "Raw command windows and gaps bound interpretation; timeouts can return late.",
+      "Original initial/final pod status and idle=false are retained despite later observations."
+    ]
+  },
+  "acceptance": {
+    "F1": "pass",
+    "F2": "pass",
+    "N1": "fail",
+    "N2": "retained samples; attribution incomplete",
+    "N3": "fail"
+  },
+  "fresh_dialogue_snippet_gates": "unrun after first generation failure; prior cohort passes retained separately",
+  "live_expiry": "outstanding; no expiry experiment authorized or executed",
+  "new_isolated_recovery_execution": false,
+  "package_inspection": [
+    {
+      "name": "ml_pipeline_pro-0.1.0-py3-none-any.whl",
+      "sha256": "a59b0a3b1e91d0ab9301e3c3e29a831905d3b7c49866851b835d6de7dac3bd4d",
+      "bytes": 103168,
+      "cache_entries": 0
+    },
+    {
+      "name": "ml_pipeline_pro-0.1.0.tar.gz",
+      "sha256": "1b409b65102a41d1357c3eb4cc55857dac4efb3dc2dc2771f61580c5be7c7cde",
+      "bytes": 17795767,
+      "cache_entries": 0
+    }
+  ],
+  "old_display_asts_equal_raw_strings": 5,
+  "no_retries": true,
+  "generated_code_execution": false,
+  "review": {
+    "reviewer": "OpenAI timing_review agent",
+    "scope": "read-only renderer, probe/routing preconditions, timeline/resource arithmetic, text/diagnostic bounds",
+    "different_vendor_available": false,
+    "services_executed": false,
+    "findings_resolved": [
+      "preserve stale pod/idle observations separately",
+      "limit resource attribution",
+      "distinguish image identities",
+      "total capture budget and finite idle polling"
+    ]
+  },
+  "next_plan_status": "awaiting human review; no new run or resource change authorized"
+}

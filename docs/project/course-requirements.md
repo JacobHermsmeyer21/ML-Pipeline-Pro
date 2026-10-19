@@ -133,6 +133,15 @@ This resolves the incomplete standalone gate
 status for that later run, while complete deployed C3/C5/C7/C9 reproduction remains
 open because the gateway walkthrough still fails. Earlier raw failures are preserved.
 
+Latest October 19 health follow-up: approved local gateway liveness is implemented
+and passes 647 fast/63 ordinary cases plus implementation CI. The
+[new deployed walkthrough](../evidence/2026-10-19-laptop-gateway-health/README.md)
+still fails at its first AI request because even local health stalls and Kubernetes
+orders a restart. Server turn completion is within the approved budget. Broader
+resource attribution remains incomplete; full laptop C3/C5/C7/C9 reproduction and
+real under-load expiry remain outstanding. Fresh ten/seven gates are unrun after
+the first generation failure; preceding standalone passes remain separately valid.
+
 | ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
 | --- | --- | --- | --- |
 | C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |

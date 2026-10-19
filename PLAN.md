@@ -29,8 +29,14 @@ gateway restart breaks the next turn before its reply deadline. A later
 [fresh AC model run](docs/evidence/2026-10-19-laptop-awake-gates/README.md) passes
 all ten dialogue and seven snippet scenarios; the earlier interrupted run remains
 retained. All five implementation CI jobs pass. Full deployed laptop
-acceptance remains open. The [deployment-health follow-up](docs/plans/2026-10-19-laptop-deployment-health-plan.md)
-awaits review; further timeout increases are not the next proposed change.
+acceptance remains open. Jacob approves the [deployment-health follow-up](docs/plans/2026-10-19-laptop-deployment-health-plan.md),
+implemented as `bf07213`: all 647 fast/63 ordinary cases and five CI jobs pass.
+The [new full walkthrough](docs/evidence/2026-10-19-laptop-gateway-health/README.md)
+still fails on its first AI request after 144.094 seconds; even local gateway
+liveness stalls and Kubernetes restarts it. The server saves the turn within
+167.506 seconds. Resource attribution remains incomplete; the
+[bounded diagnostic plan](docs/plans/2026-10-19-laptop-resource-diagnosis-plan.md)
+awaits review. No further timeout/resource/model changes are made.
 
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved

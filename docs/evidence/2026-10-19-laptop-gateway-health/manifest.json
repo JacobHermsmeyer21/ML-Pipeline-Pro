@@ -1,0 +1,1297 @@
+{
+  "created_utc": "2026-10-19T21:56:51.065850+00:00",
+  "implementation_revision": "bf07213ed2564cfc9c97efb35504c22f2d9cf9c7",
+  "entries": [
+    {
+      "path": "demo/backend.json",
+      "source": "artifacts/laptop-health-demo/backend.json",
+      "bytes": 10028,
+      "sha256": "7a3be62782925db7962a0b0fc388974595b2cb744ef620c2559c7160b0fa8252"
+    },
+    {
+      "path": "demo/results.json",
+      "source": "artifacts/laptop-health-demo/results.json",
+      "bytes": 10965,
+      "sha256": "e8897fa8d353478939f66243ccf41cc2918c4d1c1366eb22e2a8bb8a4e9346d1"
+    },
+    {
+      "path": "orchestration-dependencies/kubernetes_demo.py",
+      "source": "artifacts/laptop-five-minute-validation/kubernetes_demo.py",
+      "bytes": 6888,
+      "sha256": "56745144fc79363a9556e61e02d9a021e90db8d2d28d6284bec3f25f6c8dbda4"
+    },
+    {
+      "path": "orchestration-dependencies/restart_kubernetes.py",
+      "source": "artifacts/laptop-five-minute-validation/restart_kubernetes.py",
+      "bytes": 4297,
+      "sha256": "c6c729d2eb9be281eb21a270da3973e279cf3cf20f499e96909c4038fce1a335"
+    },
+    {
+      "path": "orchestration-dependencies/run_command.py",
+      "source": "artifacts/laptop-five-minute-validation/run_command.py",
+      "bytes": 2607,
+      "sha256": "b3582f9c3697c508662cb60fdc9fa649c524609ee015379b00c03d5f52724dcf"
+    },
+    {
+      "path": "prior-record-baseline/smoke.json",
+      "source": "artifacts/laptop-five-minute-kubernetes/smoke.json",
+      "bytes": 10028,
+      "sha256": "cb680b9f3bd9819d984cdba70ac19cd4e089b39bfef42c9b41bebe4dd059cee6"
+    },
+    {
+      "path": "source/Dockerfile",
+      "source": "Dockerfile",
+      "bytes": 731,
+      "sha256": "b68cb9eea7ecf19d8946fdaaea579a7209fc70f69ed4e4942d62a40388c7379f"
+    },
+    {
+      "path": "source/deploy/gateway.conf",
+      "source": "deploy/gateway.conf",
+      "bytes": 1767,
+      "sha256": "589d40daa7b557057ff9cdbd90014338fe4e746dda6c7d916c2485247dd07aa4"
+    },
+    {
+      "path": "source/deploy/kubernetes/local-ai-patch.json",
+      "source": "deploy/kubernetes/local-ai-patch.json",
+      "bytes": 934,
+      "sha256": "96c51b3240c1cf898f85614d4b99527f8675b02b111e979e723058e867939aa0"
+    },
+    {
+      "path": "source/deploy/kubernetes/ollama-local.json",
+      "source": "deploy/kubernetes/ollama-local.json",
+      "bytes": 182,
+      "sha256": "71ac481f7f67fc3b196067eba4fb4eb0d06b6e2fc753a989c75c9c7a7e2906e0"
+    },
+    {
+      "path": "source/deploy/kubernetes/stack.json",
+      "source": "deploy/kubernetes/stack.json",
+      "bytes": 39915,
+      "sha256": "e84fedf4de5d38efca24a23a354f03cea3916046cb78517a00b07e9466e78d53"
+    },
+    {
+      "path": "source/deploy/monitoring/alerts.yaml",
+      "source": "deploy/monitoring/alerts.yaml",
+      "bytes": 376,
+      "sha256": "c538c9344a51bd8dd71d48219df9b3560d9aa0558cc783cc62c069d93492948d"
+    },
+    {
+      "path": "source/deploy/monitoring/grafana/dashboards/provider.yaml",
+      "source": "deploy/monitoring/grafana/dashboards/provider.yaml",
+      "bytes": 137,
+      "sha256": "612f3dc817566bcf2a7659deaf93eeb5b136d86ea80c90a55827d4e3a3548130"
+    },
+    {
+      "path": "source/deploy/monitoring/grafana/dashboards/workload.json",
+      "source": "deploy/monitoring/grafana/dashboards/workload.json",
+      "bytes": 5118,
+      "sha256": "a3c5e6a5443a5e16e9d0624c25855f094c1454287d374566298f4744827a3fb2"
+    },
+    {
+      "path": "source/deploy/monitoring/grafana/datasources/prometheus.yaml",
+      "source": "deploy/monitoring/grafana/datasources/prometheus.yaml",
+      "bytes": 184,
+      "sha256": "a63a3578425b991d499d13c444b8948b91b5d5318786a86b36b167730be80df4"
+    },
+    {
+      "path": "source/deploy/monitoring/prometheus.yaml",
+      "source": "deploy/monitoring/prometheus.yaml",
+      "bytes": 311,
+      "sha256": "4998e66c607a6ad2060d0f0cee6d4acaf6fd552cad4aabc3c3bcc56f1e54d716"
+    },
+    {
+      "path": "source/evaluations/laptop_resource_observer.ps1",
+      "source": "evaluations/laptop_resource_observer.ps1",
+      "bytes": 8685,
+      "sha256": "f056db2e27585eb1980d604e441cefa46f4eeec2fe295d55a1d1d16ce782d1fd"
+    },
+    {
+      "path": "source/examples/midterm_walkthrough.py",
+      "source": "examples/midterm_walkthrough.py",
+      "bytes": 8862,
+      "sha256": "87c94c99b4630dcc4c7b061e707e8484739032c0f2942ef4b4be615c91e465a2"
+    },
+    {
+      "path": "source/pyproject.toml",
+      "source": "pyproject.toml",
+      "bytes": 1700,
+      "sha256": "d487a8e6aea6520603d62f4ee6d2bad0cfc02a5ce1ba9744c13af5a37cfde145"
+    },
+    {
+      "path": "source/scripts/check_api_replicas.py",
+      "source": "scripts/check_api_replicas.py",
+      "bytes": 3906,
+      "sha256": "eed8dbb54564e7a467b805c0a23cb73e465304e80895a5d3ac249c80e900da6a"
+    },
+    {
+      "path": "source/scripts/check_laptop_gateway.py",
+      "source": "scripts/check_laptop_gateway.py",
+      "bytes": 6504,
+      "sha256": "67d7c3a1ed35cb46a4d833d5030e8551f395f5eaf4d7d5b84bf6ff2d04a73ee2"
+    },
+    {
+      "path": "source/scripts/deployment_smoke.py",
+      "source": "scripts/deployment_smoke.py",
+      "bytes": 5628,
+      "sha256": "5dc87dc092b9f68efe32a3759c3d78eecf6bf135946c19c3d8850cb20280f64d"
+    },
+    {
+      "path": "source/scripts/render_laptop_profile.py",
+      "source": "scripts/render_laptop_profile.py",
+      "bytes": 515,
+      "sha256": "e23f6880a554b31715404050f80714125f7bc9a68337b40e9bf409f0a55434c0"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/__init__.py",
+      "source": "src/ml_pipeline_pro/__init__.py",
+      "bytes": 54,
+      "sha256": "d27f0d1afea4af26945ba686d29f75fc4f917ef50c13821328019733f64c40a6"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/access.py",
+      "source": "src/ml_pipeline_pro/access.py",
+      "bytes": 908,
+      "sha256": "2f5bc44fb217b7b88dc8f8a3255c388a879ddaab60f47c37a63679d04bf8063d"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/api.py",
+      "source": "src/ml_pipeline_pro/api.py",
+      "bytes": 11984,
+      "sha256": "92ddb4b3f427f86b0c658e20df0be009f2855c56e302de48fae60de9816e9996"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/artifacts.py",
+      "source": "src/ml_pipeline_pro/artifacts.py",
+      "bytes": 2108,
+      "sha256": "5781c6f96ac520c927c11777423a74d931be31d84048bc2cafc5145cbf697c08"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/config.py",
+      "source": "src/ml_pipeline_pro/config.py",
+      "bytes": 7540,
+      "sha256": "1187f631a5cc0957008d6e084452ee06a546fe87f0330861331d95d677726117"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/connections.py",
+      "source": "src/ml_pipeline_pro/connections.py",
+      "bytes": 2136,
+      "sha256": "30b151f9cc0b20d53b0c938a59334f340bf66fe09b7afcba87804623aaa8eeeb"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_actions.py",
+      "source": "src/ml_pipeline_pro/conversation_actions.py",
+      "bytes": 8151,
+      "sha256": "b922440f1315096496497eb0a0bcdea090f1ca2c47375eaadf093d17ee566d3c"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_api.py",
+      "source": "src/ml_pipeline_pro/conversation_api.py",
+      "bytes": 6593,
+      "sha256": "bcf4a645b5475eaa1b6ade819a9a8a17b806e9efb7264f168f18f788449536cc"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_grounding.py",
+      "source": "src/ml_pipeline_pro/conversation_grounding.py",
+      "bytes": 6079,
+      "sha256": "28da53af00020ee9e81fa017b460f62ee6d5bdcd94e6ef7b78cb5369600e6a04"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_guidance.py",
+      "source": "src/ml_pipeline_pro/conversation_guidance.py",
+      "bytes": 15473,
+      "sha256": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_model.py",
+      "source": "src/ml_pipeline_pro/conversation_model.py",
+      "bytes": 6879,
+      "sha256": "c083fefe692990c11088c4f8d7d0b6afe55222c8060aeed73a170852aca490c3"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_ollama.py",
+      "source": "src/ml_pipeline_pro/conversation_ollama.py",
+      "bytes": 21450,
+      "sha256": "c7453a3f0bcd2ec8f5182da57053dd3ac1ac926d6d2be709831b3ff2ccd530ea"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_qwen_counter.py",
+      "source": "src/ml_pipeline_pro/conversation_qwen_counter.py",
+      "bytes": 14854,
+      "sha256": "b7111c90421ade0d33533e5785280de02f29dbd1b9529dd8c52cf5a32c622ca3"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_schemas.py",
+      "source": "src/ml_pipeline_pro/conversation_schemas.py",
+      "bytes": 4881,
+      "sha256": "2a19fd41248b326ce0673a9ce163ae3744869a3e76ae947820600f79f85bab1e"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_service.py",
+      "source": "src/ml_pipeline_pro/conversation_service.py",
+      "bytes": 25681,
+      "sha256": "b686491b97e389e77d0db0ac966fafeb9eca6e6629a203cf70cad4db22c65191"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_store.py",
+      "source": "src/ml_pipeline_pro/conversation_store.py",
+      "bytes": 27950,
+      "sha256": "84b6fb8c7601d189890000f569191e37762065101d929f6d93f7996b5bd9b08c"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/conversation_timing.py",
+      "source": "src/ml_pipeline_pro/conversation_timing.py",
+      "bytes": 1780,
+      "sha256": "213af385adef1a1b8a1add0c6cc6669509e51c662e22d8344771dcb9c43d5b13"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/datasets.py",
+      "source": "src/ml_pipeline_pro/datasets.py",
+      "bytes": 4205,
+      "sha256": "0723ef0a1947d6e14d39a1ce33298fe95f7bccbe6c27c4167b26d4c6615fb348"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/errors.py",
+      "source": "src/ml_pipeline_pro/errors.py",
+      "bytes": 3723,
+      "sha256": "f3b0b18b1fcd8ca728370cbe00fd0b0e58b69eb5e8b4700131da862d9c25f51b"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/execution.py",
+      "source": "src/ml_pipeline_pro/execution.py",
+      "bytes": 3901,
+      "sha256": "aabca2ed1e84484d0164b3bf669cdfcabd1730d97fd983662091de69d5189e72"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/jobs.py",
+      "source": "src/ml_pipeline_pro/jobs.py",
+      "bytes": 9778,
+      "sha256": "6acc1d709517108617792faf04a68a75d0e570351f03f7e44c64d6826316daa8"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/laptop_deployment.py",
+      "source": "src/ml_pipeline_pro/laptop_deployment.py",
+      "bytes": 3536,
+      "sha256": "291062cc2b6e72ed4cc572b05946f1f22f79a98758621b730c77ccd6ed344281"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/logging.py",
+      "source": "src/ml_pipeline_pro/logging.py",
+      "bytes": 3046,
+      "sha256": "06e77f76115784bff1a4b47fcaf95f510d1d342dd3b6f11d8fbcd022bd852dd7"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/main.py",
+      "source": "src/ml_pipeline_pro/main.py",
+      "bytes": 7233,
+      "sha256": "21362466bc9584a2816891583ab83c4d07cc7abbd51bbf766be421940d4e1009"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/monitoring.py",
+      "source": "src/ml_pipeline_pro/monitoring.py",
+      "bytes": 8626,
+      "sha256": "b711ac1ca3afaf04af78769008d1150a8d5f306834c393a3c80a937a21b7a94c"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/monitoring_api.py",
+      "source": "src/ml_pipeline_pro/monitoring_api.py",
+      "bytes": 5346,
+      "sha256": "ef9fd09c876f4f18759569089da1d54363ca447f0e5499389468e7c396bf3c6e"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/monitoring_schemas.py",
+      "source": "src/ml_pipeline_pro/monitoring_schemas.py",
+      "bytes": 3028,
+      "sha256": "dbe004483c34b594736e82116e1a09d41230bb9e6f9f4983214634a3e69ad890"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/ownership.py",
+      "source": "src/ml_pipeline_pro/ownership.py",
+      "bytes": 1509,
+      "sha256": "a484815ffff0325a52b903495a3c18fab4e997135f5d817d822badf4434b367f"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/queue.py",
+      "source": "src/ml_pipeline_pro/queue.py",
+      "bytes": 2090,
+      "sha256": "dcabaed362b6fd6129bda191cc8cf9f5fa06daa1991410bc84a72b15b3b647d0"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/repositories.py",
+      "source": "src/ml_pipeline_pro/repositories.py",
+      "bytes": 2563,
+      "sha256": "5b1d7a467934cbcefd0686d4b2579dc33976d18fb1a8f91e6d96d98f6ab36fc2"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/schemas.py",
+      "source": "src/ml_pipeline_pro/schemas.py",
+      "bytes": 4835,
+      "sha256": "2a65c7f77e328687435c1ace4b155a12ad191f925a537b391d979ef78c91c99d"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/snippet_generation.py",
+      "source": "src/ml_pipeline_pro/snippet_generation.py",
+      "bytes": 5835,
+      "sha256": "a17c8ebc441e3c09f488335623a0054ad6b4b241f35886b8969e5b844ca3a191"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/snippet_schemas.py",
+      "source": "src/ml_pipeline_pro/snippet_schemas.py",
+      "bytes": 2559,
+      "sha256": "2c7ad0df1b7f49bbae292c09e60f9ed77efa864dc32b2bd661193f1b44400a7e"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/snippet_validation.py",
+      "source": "src/ml_pipeline_pro/snippet_validation.py",
+      "bytes": 8286,
+      "sha256": "dfa6972a3a10e9439d539160600b2544da3db3988aad51c23db783e9c05b7ca4"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tool_schemas.py",
+      "source": "src/ml_pipeline_pro/tool_schemas.py",
+      "bytes": 4345,
+      "sha256": "307331b71a108cffcb27dab3bb5ea48c0074de9c5acd3a1880db024616c54b9c"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tool_transport.py",
+      "source": "src/ml_pipeline_pro/tool_transport.py",
+      "bytes": 5884,
+      "sha256": "7ca480399a52b351b3af7fe0485b8074b4b07a7383475cef0421488fa24ea6a7"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tools.py",
+      "source": "src/ml_pipeline_pro/tools.py",
+      "bytes": 15887,
+      "sha256": "04ae52c8db16a899ad91533a33ec7cad52b6b0eff0db9b3ab933b9b99cecd88c"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tracking.py",
+      "source": "src/ml_pipeline_pro/tracking.py",
+      "bytes": 3689,
+      "sha256": "a96a25cf21d88f24c09058f329edfc4e6e68a0ef9cf0de545a4a38d6da2e87f6"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/training.py",
+      "source": "src/ml_pipeline_pro/training.py",
+      "bytes": 8709,
+      "sha256": "35bd44a4183294d22f1538784acf7ab1bfe9e1c0e0516f823652b8c4853d5346"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/training_control.py",
+      "source": "src/ml_pipeline_pro/training_control.py",
+      "bytes": 977,
+      "sha256": "cf52c984ed355338bfcfee541b1e4454e0a37d0184f81b71167016c62b70fa91"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tuning_api.py",
+      "source": "src/ml_pipeline_pro/tuning_api.py",
+      "bytes": 4409,
+      "sha256": "d6ac589269042b0d563e4941e45a969eef92cfee24c913eb3c0feb716d967da9"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tuning_execution.py",
+      "source": "src/ml_pipeline_pro/tuning_execution.py",
+      "bytes": 15909,
+      "sha256": "25ed60e73c65e0118bfcb7ecbb0fa1c426b185d0926c47505088f7217963a47e"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tuning_sampler.py",
+      "source": "src/ml_pipeline_pro/tuning_sampler.py",
+      "bytes": 2023,
+      "sha256": "7257bcf5dfeb0f0ca8dba6be943dc1013dcd8282eb830dcf21f2a317e7902ec3"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tuning_schemas.py",
+      "source": "src/ml_pipeline_pro/tuning_schemas.py",
+      "bytes": 4698,
+      "sha256": "24671a60e988a6e1fd769a6b3d870d7a821970df3692bcfa459da0089161655f"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/tuning_store.py",
+      "source": "src/ml_pipeline_pro/tuning_store.py",
+      "bytes": 16367,
+      "sha256": "cc59adf12f5ef94a70273c0ef0216006caf00feae80976eb7363300b67750543"
+    },
+    {
+      "path": "source/src/ml_pipeline_pro/worker.py",
+      "source": "src/ml_pipeline_pro/worker.py",
+      "bytes": 2911,
+      "sha256": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9"
+    },
+    {
+      "path": "source/tests/test_laptop_timing.py",
+      "source": "tests/test_laptop_timing.py",
+      "bytes": 9828,
+      "sha256": "2f257117d550342d2a02de9522bfbb290d350b1117b2f1b0eaacd04195a7c07a"
+    },
+    {
+      "path": "source/uv.lock",
+      "source": "uv.lock",
+      "bytes": 482388,
+      "sha256": "aa1eb72cf619d8aa46b2f9443fe125488b84229ee7119b14c6fb4efbdefd091c"
+    },
+    {
+      "path": "validation/active-installation-execution.json",
+      "source": "artifacts/laptop-health-validation/active-installation-execution.json",
+      "bytes": 994,
+      "sha256": "a2888afb7bcb334fea7b12f67f4e159190602d5c7220effa925437a13830fc3e"
+    },
+    {
+      "path": "validation/active-installation.json",
+      "source": "artifacts/laptop-health-validation/active-installation.json",
+      "bytes": 21443,
+      "sha256": "d0b6cb5cbaf676d68da1d075b2700fbb09b5aa81be1aa5398c1c611cc8e78041"
+    },
+    {
+      "path": "validation/active-installation.log",
+      "source": "artifacts/laptop-health-validation/active-installation.log",
+      "bytes": 122,
+      "sha256": "9542b8d537e29f3f566bb1875d337f1057ad183abf4ede748faff77db90db50f"
+    },
+    {
+      "path": "validation/active-nginx.conf",
+      "source": "artifacts/laptop-health-validation/active-nginx.conf",
+      "bytes": 2120,
+      "sha256": "05ba768ecb226d7c749f86e0cf95fc46687280c413bb7f47506cab33542b91be"
+    },
+    {
+      "path": "validation/after-health-rollout-forward.log",
+      "source": "artifacts/laptop-health-validation/after-health-rollout-forward.log",
+      "bytes": 3841,
+      "sha256": "c13111f9e313c07f1a1c1773250bc4b2b336f4c1664aa3cf7c22e86b08bfbc10"
+    },
+    {
+      "path": "validation/after-node-restart-forward.log",
+      "source": "artifacts/laptop-health-validation/after-node-restart-forward.log",
+      "bytes": 3841,
+      "sha256": "8044991451f4f9ed79ffcfce142d2a19d6a15afff32013cbd498909cc5220c97"
+    },
+    {
+      "path": "validation/apply.log",
+      "source": "artifacts/laptop-health-validation/apply.log",
+      "bytes": 939,
+      "sha256": "5023f1b40f64aa3362849b4e9e12bed45d8ced4b14f0ed5ef4281ac94d8f8258"
+    },
+    {
+      "path": "validation/before-health-rollout-forward.log",
+      "source": "artifacts/laptop-health-validation/before-health-rollout-forward.log",
+      "bytes": 3792,
+      "sha256": "01dcd1f22d1cc64a43f2dd577ee9b549fa0332697f494d1ba5688db34d172530"
+    },
+    {
+      "path": "validation/before-node-restart-forward.log",
+      "source": "artifacts/laptop-health-validation/before-node-restart-forward.log",
+      "bytes": 3841,
+      "sha256": "435592836080973692d4ae7fb4eedcf3d43e717755755afc905d5f4da4c94143"
+    },
+    {
+      "path": "validation/build-execution.json",
+      "source": "artifacts/laptop-health-validation/build-execution.json",
+      "bytes": 1010,
+      "sha256": "dd7f3aec68482e25fb4fdf90ff0b2d3e3177b64fc063446d04c2523ae58357b4"
+    },
+    {
+      "path": "validation/build.log",
+      "source": "artifacts/laptop-health-validation/build.log",
+      "bytes": 310,
+      "sha256": "c7210c9765586841a86e6c33174d93fccd78518be098d08a96225f1649dd67ed"
+    },
+    {
+      "path": "validation/check_document_syntax.ps1",
+      "source": "artifacts/laptop-health-validation/check_document_syntax.ps1",
+      "bytes": 931,
+      "sha256": "c5d2c3761ddbaceefa613d2e906d09e35c830a602b6b39fca69103a98190adfd"
+    },
+    {
+      "path": "validation/ci-current.json",
+      "source": "artifacts/laptop-health-validation/ci-current.json",
+      "bytes": 2067,
+      "sha256": "165118d4cf6f6e67aaa62a5edb4a3d28ca5dd6ac0530f3fbc8a08ea98004e2ed"
+    },
+    {
+      "path": "validation/collect_after_failure.py",
+      "source": "artifacts/laptop-health-validation/collect_after_failure.py",
+      "bytes": 3074,
+      "sha256": "b7fd035177fa9ee75e99bfb6b557eeb10a544c867abf56593c55a47ac5fd4b8e"
+    },
+    {
+      "path": "validation/collect_power_events.ps1",
+      "source": "artifacts/laptop-health-validation/collect_power_events.ps1",
+      "bytes": 1224,
+      "sha256": "9cfce3b0db671e87099c3b0bc1e8f85cf342abe20a30ab31565178f52c8f2cba"
+    },
+    {
+      "path": "validation/demo_health.py",
+      "source": "artifacts/laptop-health-validation/demo_health.py",
+      "bytes": 10666,
+      "sha256": "e98842f68b6101791d2f521429167826606c4fbb127436d30c8368a5e8e9d440"
+    },
+    {
+      "path": "validation/dependencies-execution.json",
+      "source": "artifacts/laptop-health-validation/dependencies-execution.json",
+      "bytes": 1005,
+      "sha256": "0c94062666f4d0c6060b77a06a22e1a2f2f4c77cc678a5828e82b5103f9a7281"
+    },
+    {
+      "path": "validation/dependencies.log",
+      "source": "artifacts/laptop-health-validation/dependencies.log",
+      "bytes": 67,
+      "sha256": "1719d5f9804d655301b116af206918cf3c894aae532a78a43c7e249e921b1ea5"
+    },
+    {
+      "path": "validation/deploy_health.py",
+      "source": "artifacts/laptop-health-validation/deploy_health.py",
+      "bytes": 6972,
+      "sha256": "17bd539be3fa2bb603931d5d6439103a1a005bfec5f18a020a952949ba650b12"
+    },
+    {
+      "path": "validation/docs-check.json",
+      "source": "artifacts/laptop-health-validation/docs-check.json",
+      "bytes": 546,
+      "sha256": "ae4f65a4541831cb0e96d301faa5262bd65d7a65e14cb8d2dddef35818cbedf0"
+    },
+    {
+      "path": "validation/docs-format-execution.json",
+      "source": "artifacts/laptop-health-validation/docs-format-execution.json",
+      "bytes": 1229,
+      "sha256": "16a8f34335652fdbb8e8d29093fe5fdac99f052083ecbb8359b05e313017a9d8"
+    },
+    {
+      "path": "validation/docs-format.log",
+      "source": "artifacts/laptop-health-validation/docs-format.log",
+      "bytes": 28,
+      "sha256": "d8cc52b50ca13fedc6693fcd96fb5f6d82b81aeec14f6c97b4f905d167fdbd96"
+    },
+    {
+      "path": "validation/document-syntax.json",
+      "source": "artifacts/laptop-health-validation/document-syntax.json",
+      "bytes": 1056,
+      "sha256": "c835d1ee69a4a31a3c36d762dbe0c3afe184908c161692c77b39883d35a6ab71"
+    },
+    {
+      "path": "validation/fast-execution.json",
+      "source": "artifacts/laptop-health-validation/fast-execution.json",
+      "bytes": 1338,
+      "sha256": "c7f02d5f24de652ca98663d2ceb6f159fe1b2c81b35e80372f818a731c798b42"
+    },
+    {
+      "path": "validation/fast.log",
+      "source": "artifacts/laptop-health-validation/fast.log",
+      "bytes": 9198,
+      "sha256": "b2763b25d9ae460d60d7b712bdf31628acf1569fbde257d058ba17f1476aeb5a"
+    },
+    {
+      "path": "validation/fast.xml",
+      "source": "artifacts/laptop-health-validation/fast.xml",
+      "bytes": 187448,
+      "sha256": "b5da7f7881d36388d94ad14ed548963ec78127d5834e29dc001085be38954e45"
+    },
+    {
+      "path": "validation/focused-execution.json",
+      "source": "artifacts/laptop-health-validation/focused-execution.json",
+      "bytes": 1169,
+      "sha256": "1f05c4d2144a5e0717ab18a24cd2be3bd3a4294e5de34fbb6e13935ab7c81360"
+    },
+    {
+      "path": "validation/focused.log",
+      "source": "artifacts/laptop-health-validation/focused.log",
+      "bytes": 1312,
+      "sha256": "4fcd92be80296fb51817bc330b7d9deee3eade1ed6301addac3848319e4ef0b5"
+    },
+    {
+      "path": "validation/focused.xml",
+      "source": "artifacts/laptop-health-validation/focused.xml",
+      "bytes": 2811,
+      "sha256": "a99ee71461bcb51a0d57fc9097a63bb72bc7de3e85e90618c03ed1d118aa9bf4"
+    },
+    {
+      "path": "validation/format-execution.json",
+      "source": "artifacts/laptop-health-validation/format-execution.json",
+      "bytes": 1112,
+      "sha256": "5f307fae3677da6db8f72c10403b7033f602e18b4def5f4ebf7bfceee20a4376"
+    },
+    {
+      "path": "validation/format-initial-execution.json",
+      "source": "artifacts/laptop-health-validation/format-initial-execution.json",
+      "bytes": 1048,
+      "sha256": "bc5276632433eaf989c7b75c5fbedd5ea34c04af411a92621c06a1427227c99e"
+    },
+    {
+      "path": "validation/format-initial.log",
+      "source": "artifacts/laptop-health-validation/format-initial.log",
+      "bytes": 7017,
+      "sha256": "a9fa2b97823631dc08294778c41af4ca7295edec9fec518657dfdc6889558c91"
+    },
+    {
+      "path": "validation/format.log",
+      "source": "artifacts/laptop-health-validation/format.log",
+      "bytes": 28,
+      "sha256": "747cd5370a5a090dc134e302b1c3c7c5a8216658df14006c378c39f1f09b64b7"
+    },
+    {
+      "path": "validation/forward-gateway-18000.log",
+      "source": "artifacts/laptop-health-validation/forward-gateway-18000.log",
+      "bytes": 90994,
+      "sha256": "ea10c4bda0344939bd8afd659bcb417c1d0dbb398beac1d39690890712c80060"
+    },
+    {
+      "path": "validation/forward-mongo-27017.log",
+      "source": "artifacts/laptop-health-validation/forward-mongo-27017.log",
+      "bytes": 1371950,
+      "sha256": "4bb4d9e512b84591cf083c58a0616d0fd5f843db143934182a80c186271b8c03"
+    },
+    {
+      "path": "validation/forward-redis-6379.log",
+      "source": "artifacts/laptop-health-validation/forward-redis-6379.log",
+      "bytes": 4129,
+      "sha256": "05bae51452d1e6f886c6cb46cbc3028a99cfc563d5d9272b5146af144ff7cef5"
+    },
+    {
+      "path": "validation/gateway-6d97bdc8d9-fgpvm-current.log",
+      "source": "artifacts/laptop-health-validation/gateway-6d97bdc8d9-fgpvm-current.log",
+      "bytes": 15576,
+      "sha256": "88eb97cd6df952e7eac1f23c25b9fe59b3ff8209675e0c2890ed02e48f934bad"
+    },
+    {
+      "path": "validation/gateway-6d97bdc8d9-fgpvm-post-failure.log",
+      "source": "artifacts/laptop-health-validation/gateway-6d97bdc8d9-fgpvm-post-failure.log",
+      "bytes": 7458,
+      "sha256": "ec4635c2d01ab8ec30ad32fa678e36b1cf63a90f20bf8951ee6e4a31d7a694bf"
+    },
+    {
+      "path": "validation/gateway-6d97bdc8d9-fgpvm-previous.log",
+      "source": "artifacts/laptop-health-validation/gateway-6d97bdc8d9-fgpvm-previous.log",
+      "bytes": 115,
+      "sha256": "ff08f5a8530834d552878620de0b2ca695342b7418d768169229cebd3d0d4ef3"
+    },
+    {
+      "path": "validation/health-warmup-execution.json",
+      "source": "artifacts/laptop-health-validation/health-warmup-execution.json",
+      "bytes": 859,
+      "sha256": "af509e7f1ca67aba7338c3a41604601da08c744aaab00dd98a67387d20aab13a"
+    },
+    {
+      "path": "validation/health-warmup.log",
+      "source": "artifacts/laptop-health-validation/health-warmup.log",
+      "bytes": 165,
+      "sha256": "2b0f1c07a30de18d3b98ff5f0f7c83bda01570ef52462505e269b804f4f5b3c4"
+    },
+    {
+      "path": "validation/image-build.log",
+      "source": "artifacts/laptop-health-validation/image-build.log",
+      "bytes": 6378,
+      "sha256": "050aed1dbd43957995a27a5ce4714cda5c4553aebfff8d963135ae34341cb229"
+    },
+    {
+      "path": "validation/image-load.log",
+      "source": "artifacts/laptop-health-validation/image-load.log",
+      "bytes": 198,
+      "sha256": "e90e93054c528b8d86914ccfe3e5bbab48a1092394936ff90df33840f7832990"
+    },
+    {
+      "path": "validation/keep-awake.json",
+      "source": "artifacts/laptop-health-validation/keep-awake.json",
+      "bytes": 357,
+      "sha256": "1327ee6e452eb9fbc12ec1b8f11b613d73ca4c5c72074102405dcf268cf3bca4"
+    },
+    {
+      "path": "validation/keep_awake.py",
+      "source": "artifacts/laptop-health-validation/keep_awake.py",
+      "bytes": 1106,
+      "sha256": "40267936cef5551525771d22609e026272adb450a33a4b1097a72d3ceb1854f2"
+    },
+    {
+      "path": "validation/kubernetes-prepare-execution.json",
+      "source": "artifacts/laptop-health-validation/kubernetes-prepare-execution.json",
+      "bytes": 1011,
+      "sha256": "207cef4008899991af462912f8f2f59fdc2724816842120af127a0c4837a3fe6"
+    },
+    {
+      "path": "validation/kubernetes-prepare.log",
+      "source": "artifacts/laptop-health-validation/kubernetes-prepare.log",
+      "bytes": 1672,
+      "sha256": "876425497831c03625073dbafb7dadb0460a52d0ccb937be5cc72a84f743e428"
+    },
+    {
+      "path": "validation/kubernetes-smoke-execution.json",
+      "source": "artifacts/laptop-health-validation/kubernetes-smoke-execution.json",
+      "bytes": 1008,
+      "sha256": "57bf3f014eed67afb5eca887e423aa88a6a6029692c29127444259e4e39c57b4"
+    },
+    {
+      "path": "validation/kubernetes-smoke.log",
+      "source": "artifacts/laptop-health-validation/kubernetes-smoke.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/live-demo-execution.json",
+      "source": "artifacts/laptop-health-validation/live-demo-execution.json",
+      "bytes": 1024,
+      "sha256": "1fab22dfa61f1dc424ab3de5a5190cf1107c94401b22a35e3e3a87906ccef7a0"
+    },
+    {
+      "path": "validation/live-demo-forward.log",
+      "source": "artifacts/laptop-health-validation/live-demo-forward.log",
+      "bytes": 32900,
+      "sha256": "3b99d6957428df140ffe3b6fd1acffe2b4fff4dd8ad9f74b64a192fac882dea7"
+    },
+    {
+      "path": "validation/live-demo-summary.json",
+      "source": "artifacts/laptop-health-validation/live-demo-summary.json",
+      "bytes": 6942,
+      "sha256": "b04e6d343a812047b1dd5c598820647f65cd354fb0c4654d062266c70b1231c0"
+    },
+    {
+      "path": "validation/live-demo.log",
+      "source": "artifacts/laptop-health-validation/live-demo.log",
+      "bytes": 4655,
+      "sha256": "5f41bac2d7b5cd2b419a72ef02ac6b73512a8c14acb15472cfd646068fc06a66"
+    },
+    {
+      "path": "validation/live-final-events.json",
+      "source": "artifacts/laptop-health-validation/live-final-events.json",
+      "bytes": 209214,
+      "sha256": "5d2daf9729363bba0b65edfe52fb38cbf8b832e81802f9fd5f9c789c50a942f6"
+    },
+    {
+      "path": "validation/live-final-pods.json",
+      "source": "artifacts/laptop-health-validation/live-final-pods.json",
+      "bytes": 43267,
+      "sha256": "67adb97201b85babed7a45d64b21b51976d6977f9ab8c5c3042c2691406be827"
+    },
+    {
+      "path": "validation/live-initial-events.json",
+      "source": "artifacts/laptop-health-validation/live-initial-events.json",
+      "bytes": 191611,
+      "sha256": "dd4754fa95a2393b2fb007bfa5dcc00fc74a9164f11dd7a9632fd1f80bd4a340"
+    },
+    {
+      "path": "validation/live-initial-pods.json",
+      "source": "artifacts/laptop-health-validation/live-initial-pods.json",
+      "bytes": 43030,
+      "sha256": "0d9759e7c595eeee7a8613a560ece031630f66be85577a52644cdcfdf4286544"
+    },
+    {
+      "path": "validation/live-ollama-stderr-filtered.log",
+      "source": "artifacts/laptop-health-validation/live-ollama-stderr-filtered.log",
+      "bytes": 981,
+      "sha256": "aaa7474825290413bbd00393323c43345e0b3a8f1d945162187d2e335be9d668"
+    },
+    {
+      "path": "validation/live-ollama-stdout-filtered.log",
+      "source": "artifacts/laptop-health-validation/live-ollama-stdout-filtered.log",
+      "bytes": 92,
+      "sha256": "2f9a31a892e5b29aa5c3f3a620f6a19fc30887bbdf1a95ec404de38eb3dcf36f"
+    },
+    {
+      "path": "validation/live-public-histories.json",
+      "source": "artifacts/laptop-health-validation/live-public-histories.json",
+      "bytes": 4,
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+    },
+    {
+      "path": "validation/live-resources/host-observer.log",
+      "source": "artifacts/laptop-health-validation/live-resources/host-observer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/live-resources/host.jsonl",
+      "source": "artifacts/laptop-health-validation/live-resources/host.jsonl",
+      "bytes": 52224,
+      "sha256": "f37b18ce35c942ce0372585b82588f60a5f431283dfe703a01340d5229d7d5c6"
+    },
+    {
+      "path": "validation/live-resources/node-observer.log",
+      "source": "artifacts/laptop-health-validation/live-resources/node-observer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/live-resources/node/cgroup-map.json",
+      "source": "artifacts/laptop-health-validation/live-resources/node/cgroup-map.json",
+      "bytes": 4059,
+      "sha256": "bf062deb95fcaae3eb75bf3d9e3dcc954c7db1464b55724a49105b9934b79aa2"
+    },
+    {
+      "path": "validation/live-resources/node/samples.jsonl",
+      "source": "artifacts/laptop-health-validation/live-resources/node/samples.jsonl",
+      "bytes": 57321,
+      "sha256": "d66f32aac0ffd3f2330468d2f330247882ce7d19271eeaf55bf3921fa3f2edad"
+    },
+    {
+      "path": "validation/live-resources/phase.txt",
+      "source": "artifacts/laptop-health-validation/live-resources/phase.txt",
+      "bytes": 17,
+      "sha256": "a0e23ff8c6c786281e1d0029f9e535d3b21523361fc5c10dcfd36daf309429bd"
+    },
+    {
+      "path": "validation/live-resources/pids.json",
+      "source": "artifacts/laptop-health-validation/live-resources/pids.json",
+      "bytes": 234,
+      "sha256": "f3c946d40c3cf9fd12bbe9b1725381f721466e395f7bb6b16990c95f904b149f"
+    },
+    {
+      "path": "validation/live-resources/stop.txt",
+      "source": "artifacts/laptop-health-validation/live-resources/stop.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-5jqv5-current.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-5jqv5-current.log",
+      "bytes": 57364,
+      "sha256": "2860d7e3d7c7848682591f84b5435d90d776cf969ded38ff3b52d4d603ef11ff"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-5jqv5-post-failure.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-5jqv5-post-failure.log",
+      "bytes": 35194,
+      "sha256": "5b8c94c2980dc978f7a70b4928c238314e22e2b42ed44e2021fb006e95f5b97a"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-5jqv5-previous.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-5jqv5-previous.log",
+      "bytes": 84110,
+      "sha256": "b578f44d3ebbbf83371624d06ace2d305fcd506220fa58cd6cbb7ed53292e5ca"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-rl5wj-current.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-rl5wj-current.log",
+      "bytes": 64273,
+      "sha256": "80172a345f2477d24433f8c2979c2ef47ac8aa3a6fdc11285c208ef6cccc3219"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-rl5wj-post-failure.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-rl5wj-post-failure.log",
+      "bytes": 99789,
+      "sha256": "8e4f57e02da54e6509d67f840a5e6a4fda3b548d89a8b099e69eefb00ecdc46d"
+    },
+    {
+      "path": "validation/model-api-7fb8b9b4fb-rl5wj-previous.log",
+      "source": "artifacts/laptop-health-validation/model-api-7fb8b9b4fb-rl5wj-previous.log",
+      "bytes": 70686,
+      "sha256": "9d3a6b91cb2d71667e138243b3a71f15df36d25f4a23b02b0b1b91f43f766a3b"
+    },
+    {
+      "path": "validation/monitoring-api-658655b8b5-hj78f-current.log",
+      "source": "artifacts/laptop-health-validation/monitoring-api-658655b8b5-hj78f-current.log",
+      "bytes": 52554,
+      "sha256": "28871866c78f65feda36dcc08b0d538721dad7f840a9f50a64eaccb11278260b"
+    },
+    {
+      "path": "validation/monitoring-api-658655b8b5-hj78f-previous.log",
+      "source": "artifacts/laptop-health-validation/monitoring-api-658655b8b5-hj78f-previous.log",
+      "bytes": 54686,
+      "sha256": "ffdd1c70f9f2d951333eff01dc37d594c90b688bdef1c134ecf27b5ec951d0ce"
+    },
+    {
+      "path": "validation/nginx-final-execution.json",
+      "source": "artifacts/laptop-health-validation/nginx-final-execution.json",
+      "bytes": 1047,
+      "sha256": "bf54b04f78bb29a0a5c2f49fb75ca4dff0b980b836fc648f8b18f78ddb8efe6c"
+    },
+    {
+      "path": "validation/nginx-final.log",
+      "source": "artifacts/laptop-health-validation/nginx-final.log",
+      "bytes": 1059,
+      "sha256": "4410b769946800c961a6d9b87d862475ebba9e4ffc6870ea1fec9cad708649ec"
+    },
+    {
+      "path": "validation/nginx-final/dns-failure.log",
+      "source": "artifacts/laptop-health-validation/nginx-final/dns-failure.log",
+      "bytes": 1992,
+      "sha256": "6f179c807f6f8c11ba57c548c4a08f81c1107e8479f86d706a4ff4eb863c56f2"
+    },
+    {
+      "path": "validation/nginx-final/results.json",
+      "source": "artifacts/laptop-health-validation/nginx-final/results.json",
+      "bytes": 1059,
+      "sha256": "4410b769946800c961a6d9b87d862475ebba9e4ffc6870ea1fec9cad708649ec"
+    },
+    {
+      "path": "validation/nginx-final/tcp-failure.log",
+      "source": "artifacts/laptop-health-validation/nginx-final/tcp-failure.log",
+      "bytes": 3334,
+      "sha256": "83ea6b32a71991fb8b27dd2d49b076dd929090757e46c950399890f4c1740f94"
+    },
+    {
+      "path": "validation/nginx-negative-execution.json",
+      "source": "artifacts/laptop-health-validation/nginx-negative-execution.json",
+      "bytes": 932,
+      "sha256": "8cd180b118e4f9aebedad99c89afcebb90a3f38b2b9d6bed52dcc6e6282f7457"
+    },
+    {
+      "path": "validation/nginx-negative-v2-execution.json",
+      "source": "artifacts/laptop-health-validation/nginx-negative-v2-execution.json",
+      "bytes": 936,
+      "sha256": "ed12996fcf5d961fab04b6273c27314de96a43fa84fbd3a4ff85c07eddb6aeb1"
+    },
+    {
+      "path": "validation/nginx-negative-v2.log",
+      "source": "artifacts/laptop-health-validation/nginx-negative-v2.log",
+      "bytes": 1059,
+      "sha256": "f88185bf9db7be264fd8c2e6b61a523f6e23691355402899459cb661af80ac3c"
+    },
+    {
+      "path": "validation/nginx-negative-v2/dns-failure.log",
+      "source": "artifacts/laptop-health-validation/nginx-negative-v2/dns-failure.log",
+      "bytes": 1992,
+      "sha256": "2f68199784942633491f2d5089ecc714571c1a9a2a3e41a95808fbbdd8635874"
+    },
+    {
+      "path": "validation/nginx-negative-v2/results.json",
+      "source": "artifacts/laptop-health-validation/nginx-negative-v2/results.json",
+      "bytes": 1059,
+      "sha256": "f88185bf9db7be264fd8c2e6b61a523f6e23691355402899459cb661af80ac3c"
+    },
+    {
+      "path": "validation/nginx-negative-v2/tcp-failure.log",
+      "source": "artifacts/laptop-health-validation/nginx-negative-v2/tcp-failure.log",
+      "bytes": 3334,
+      "sha256": "cbeb92d2035b5553efaff4baf792aa8cff2d7d3a10923839ab1eb5d64e82adae"
+    },
+    {
+      "path": "validation/nginx-negative.log",
+      "source": "artifacts/laptop-health-validation/nginx-negative.log",
+      "bytes": 1427,
+      "sha256": "36c973971f559dad1147c2a11461a3fe16447fd42f12007d6c4da365ce68129e"
+    },
+    {
+      "path": "validation/nginx-negative/results.json",
+      "source": "artifacts/laptop-health-validation/nginx-negative/results.json",
+      "bytes": 413,
+      "sha256": "5616b180000069d112ea5bf0e1f2dfc24ab6db03f7fce1a34693627c51ac4899"
+    },
+    {
+      "path": "validation/node-restart-execution.json",
+      "source": "artifacts/laptop-health-validation/node-restart-execution.json",
+      "bytes": 1011,
+      "sha256": "de5ad66b995f21c2d538571f947b82ee3a169b59fa64917d785b37665a207d0a"
+    },
+    {
+      "path": "validation/node-restart.log",
+      "source": "artifacts/laptop-health-validation/node-restart.log",
+      "bytes": 96,
+      "sha256": "9621961be7a0b73e252e3b43064f83a07c519d34016b42daf310007617e54e32"
+    },
+    {
+      "path": "validation/node-start.log",
+      "source": "artifacts/laptop-health-validation/node-start.log",
+      "bytes": 38,
+      "sha256": "d4108a183bfa2c0cca43236c461c43ac7128e1a924c670993ff8ddcf106b20a9"
+    },
+    {
+      "path": "validation/node-stop.log",
+      "source": "artifacts/laptop-health-validation/node-stop.log",
+      "bytes": 93,
+      "sha256": "5ec44f5b0ba590b7fd1c1d393963ee205303e36e458de32f2c6a0fda107ebb87"
+    },
+    {
+      "path": "validation/node_observer.py",
+      "source": "artifacts/laptop-health-validation/node_observer.py",
+      "bytes": 4712,
+      "sha256": "c5c0805e77cc0b4a93334e7106fbaf5f41874ec8129ba0a6a6182c952669a9a4"
+    },
+    {
+      "path": "validation/observe_resources.ps1",
+      "source": "artifacts/laptop-health-validation/observe_resources.ps1",
+      "bytes": 9220,
+      "sha256": "2c9f23c375925c914f31fc1191bcfb8128f60b0da6472405aaff3c04ba0f7c29"
+    },
+    {
+      "path": "validation/observer-check/pids.json",
+      "source": "artifacts/laptop-health-validation/observer-check/pids.json",
+      "bytes": 293,
+      "sha256": "e1d6e7f3ae4c5c818369519b35881281081ffc33162a0d6427af0aa6c96cebbc"
+    },
+    {
+      "path": "validation/observer-check/samples.jsonl",
+      "source": "artifacts/laptop-health-validation/observer-check/samples.jsonl",
+      "bytes": 12051,
+      "sha256": "98ac13e35785e462fbdfbf6585a92ac3964379fd7b2e9a723ac458b7a7db367e"
+    },
+    {
+      "path": "validation/ordinary-execution.json",
+      "source": "artifacts/laptop-health-validation/ordinary-execution.json",
+      "bytes": 1487,
+      "sha256": "1a8d99577b18cabfb8dc0ea7f825cfa334f428bd794646a0cf4481bbf02f85f1"
+    },
+    {
+      "path": "validation/ordinary.log",
+      "source": "artifacts/laptop-health-validation/ordinary.log",
+      "bytes": 1519,
+      "sha256": "a1a061ef86b8914afb62ed08ccb51d1bc1a5cc2b55dbf8eec0d5b88d820433d4"
+    },
+    {
+      "path": "validation/ordinary.xml",
+      "source": "artifacts/laptop-health-validation/ordinary.xml",
+      "bytes": 10189,
+      "sha256": "af71c62e538e42b57f7c545176bda0b9ee5cddaea5bd5c8a551fe02bcdbd2071"
+    },
+    {
+      "path": "validation/package_health_evidence.py",
+      "source": "artifacts/laptop-health-validation/package_health_evidence.py",
+      "bytes": 10599,
+      "sha256": "eab147016b6b5d42c1e7494aabda2676bebd659a8c532bb1c4aa8eb3074f4843"
+    },
+    {
+      "path": "validation/post-failure-deadlines.json",
+      "source": "artifacts/laptop-health-validation/post-failure-deadlines.json",
+      "bytes": 513,
+      "sha256": "7a208003b5378dc64b7b769c9ee2b53c64696258841b86bae0c784a8db5c7b73"
+    },
+    {
+      "path": "validation/post-failure-events.json",
+      "source": "artifacts/laptop-health-validation/post-failure-events.json",
+      "bytes": 209214,
+      "sha256": "17057a848d97841ec8fa13250e483235243b7714f7bd1b0396140e7f370084c3"
+    },
+    {
+      "path": "validation/post-failure-histories.json",
+      "source": "artifacts/laptop-health-validation/post-failure-histories.json",
+      "bytes": 2497,
+      "sha256": "1b666d32a7da327e503a53b342253ea39fbc4c72e3eee85c77d6d174ea2b7581"
+    },
+    {
+      "path": "validation/post-failure-idle.json",
+      "source": "artifacts/laptop-health-validation/post-failure-idle.json",
+      "bytes": 317,
+      "sha256": "3ee2212ca4167c7a5b5c9623597198fa36117306fe503b8da4dc5c1ae5ba8b49"
+    },
+    {
+      "path": "validation/post-failure-ollama-stderr.log",
+      "source": "artifacts/laptop-health-validation/post-failure-ollama-stderr.log",
+      "bytes": 20978,
+      "sha256": "db2e02eaa8177cd7b2fc56a7464df6e7c53d7138986f51fba9702f973207f35b"
+    },
+    {
+      "path": "validation/post-failure-ollama-stdout.log",
+      "source": "artifacts/laptop-health-validation/post-failure-ollama-stdout.log",
+      "bytes": 829,
+      "sha256": "1df76603f6174ea066cd2e070f9f55d0096115117ce6c6286a811a37e310b6c6"
+    },
+    {
+      "path": "validation/post-failure-pods.json",
+      "source": "artifacts/laptop-health-validation/post-failure-pods.json",
+      "bytes": 43034,
+      "sha256": "708dfd914296c1ef95ea63e910068766e7262a32b084fc5da40beafa4c39f84e"
+    },
+    {
+      "path": "validation/post-failure-processes.json",
+      "source": "artifacts/laptop-health-validation/post-failure-processes.json",
+      "bytes": 750,
+      "sha256": "a2eaf13452bb7da7a39c49958174d9329f1e6f2a78ef0ecc558e5b0e46512046"
+    },
+    {
+      "path": "validation/post-failure-runtime-slices.json",
+      "source": "artifacts/laptop-health-validation/post-failure-runtime-slices.json",
+      "bytes": 713,
+      "sha256": "954affe5c2acb184ef547e624ba5e5b3b50fa0afba7961da45802482bd37c0c3"
+    },
+    {
+      "path": "validation/power-events.json",
+      "source": "artifacts/laptop-health-validation/power-events.json",
+      "bytes": 346,
+      "sha256": "f2b932eb6812d0acc5f8098260eb6ce0631bed577b1f358422f7d6d395337040"
+    },
+    {
+      "path": "validation/prepare_observer.py",
+      "source": "artifacts/laptop-health-validation/prepare_observer.py",
+      "bytes": 1344,
+      "sha256": "3a13b81b4491694b555a4bda248b46c305ae5f663afa6f9e0a8370c6b3734b34"
+    },
+    {
+      "path": "validation/preserved-after-rollout.json",
+      "source": "artifacts/laptop-health-validation/preserved-after-rollout.json",
+      "bytes": 6632,
+      "sha256": "8ed71d95efed22203f8ad464387bee4273faf2cc76afa5b0fe710d18da1792e1"
+    },
+    {
+      "path": "validation/preserved-before-rollout.json",
+      "source": "artifacts/laptop-health-validation/preserved-before-rollout.json",
+      "bytes": 6632,
+      "sha256": "8ed71d95efed22203f8ad464387bee4273faf2cc76afa5b0fe710d18da1792e1"
+    },
+    {
+      "path": "validation/read_ci_health.py",
+      "source": "artifacts/laptop-health-validation/read_ci_health.py",
+      "bytes": 1899,
+      "sha256": "d19cd35eee39ffaa846a9baf0db5e17e74d24876713660af260b058329c7812b"
+    },
+    {
+      "path": "validation/rehearsal-execution.json",
+      "source": "artifacts/laptop-health-validation/rehearsal-execution.json",
+      "bytes": 765,
+      "sha256": "743a383c91cbc03541246499b1282abc117f2ccae8e4eda65c5899ae7816aa08"
+    },
+    {
+      "path": "validation/rehearsal.log",
+      "source": "artifacts/laptop-health-validation/rehearsal.log",
+      "bytes": 224,
+      "sha256": "10de3606a86ffdcbbcdf6024c90acd55b5688d80611de57250a1b52a8d28768f"
+    },
+    {
+      "path": "validation/replicas.log",
+      "source": "artifacts/laptop-health-validation/replicas.log",
+      "bytes": 71,
+      "sha256": "f65e356e73120ecaa02f332f8c740d3d97b8600cb78715b2c374e111167ef3be"
+    },
+    {
+      "path": "validation/replicas/model-api-7fb8b9b4fb-5jqv5-forward.log",
+      "source": "artifacts/laptop-health-validation/replicas/model-api-7fb8b9b4fb-5jqv5-forward.log",
+      "bytes": 2032,
+      "sha256": "5e05aca3ddd34556b82b926d1b10a65fe710669a91967b871bd8884b71ca201e"
+    },
+    {
+      "path": "validation/replicas/model-api-7fb8b9b4fb-rl5wj-forward.log",
+      "source": "artifacts/laptop-health-validation/replicas/model-api-7fb8b9b4fb-rl5wj-forward.log",
+      "bytes": 2032,
+      "sha256": "c28fad210f1209a54db2120f4bf66b0e025aa84b7aadd0fc23bca79ba9fc6a7c"
+    },
+    {
+      "path": "validation/replicas/replicas.json",
+      "source": "artifacts/laptop-health-validation/replicas/replicas.json",
+      "bytes": 273,
+      "sha256": "b4f2351a49a89c8567f4e5940e4a2f2e60ba3743869a3878d15d63d4cbb3a28f"
+    },
+    {
+      "path": "validation/resource-summary.json",
+      "source": "artifacts/laptop-health-validation/resource-summary.json",
+      "bytes": 8102,
+      "sha256": "2bf44014c245531064f585e05b8741323636d497e30345dc0bd271bd1886a9a1"
+    },
+    {
+      "path": "validation/restart-pods-ready.log",
+      "source": "artifacts/laptop-health-validation/restart-pods-ready.log",
+      "bytes": 486,
+      "sha256": "7860e9517428518503d2958afbfaa2226dc38e59d3e50453b9ea39d962f06928"
+    },
+    {
+      "path": "validation/rollout-gateway.log",
+      "source": "artifacts/laptop-health-validation/rollout-gateway.log",
+      "bytes": 45,
+      "sha256": "eeded18263b21d062f66e5256904ffa2976f42534516908e97b328dba2cca1da"
+    },
+    {
+      "path": "validation/rollout-grafana.log",
+      "source": "artifacts/laptop-health-validation/rollout-grafana.log",
+      "bytes": 45,
+      "sha256": "2647de9b63363457581fc7256821a444163becfbc804efb6e4cb1d929359f6e4"
+    },
+    {
+      "path": "validation/rollout-model-api.log",
+      "source": "artifacts/laptop-health-validation/rollout-model-api.log",
+      "bytes": 632,
+      "sha256": "718c225b1880374550b4aabf6a7efbf1b7fd60e8ac20dca3f7e1cb042e1466e9"
+    },
+    {
+      "path": "validation/rollout-mongo.log",
+      "source": "artifacts/laptop-health-validation/rollout-mongo.log",
+      "bytes": 43,
+      "sha256": "7abae2cb27fb0b5a514fa1a924f72a130e4ec5ae0f5444a84c3829baa63aa972"
+    },
+    {
+      "path": "validation/rollout-monitoring-api.log",
+      "source": "artifacts/laptop-health-validation/rollout-monitoring-api.log",
+      "bytes": 52,
+      "sha256": "184935ed715e8e2a817ef946065a4c4e9014a22597dc8589df8b6649944ee87f"
+    },
+    {
+      "path": "validation/rollout-prometheus.log",
+      "source": "artifacts/laptop-health-validation/rollout-prometheus.log",
+      "bytes": 48,
+      "sha256": "e7e4b11137820eae92ccf29937f3c2dc42f3129a9c44cf4f0a54b9f72d6cfa2a"
+    },
+    {
+      "path": "validation/rollout-redis.log",
+      "source": "artifacts/laptop-health-validation/rollout-redis.log",
+      "bytes": 43,
+      "sha256": "ff5e3d82c73b8293419289a33df115a8d34ac3e4a3ccfa491e922a31dbb9f2b6"
+    },
+    {
+      "path": "validation/rollout-scheduler.log",
+      "source": "artifacts/laptop-health-validation/rollout-scheduler.log",
+      "bytes": 47,
+      "sha256": "6db2f097b41fdeb0af40dd05d41bab2888e061a04ca2630ee4a8a5f3614c6f55"
+    },
+    {
+      "path": "validation/rollout-tuning-api.log",
+      "source": "artifacts/laptop-health-validation/rollout-tuning-api.log",
+      "bytes": 48,
+      "sha256": "362217918f0af566870309abd0784c1ad88ecb7243fcf5538a3913e8c641785c"
+    },
+    {
+      "path": "validation/rollout-worker.log",
+      "source": "artifacts/laptop-health-validation/rollout-worker.log",
+      "bytes": 44,
+      "sha256": "d4c95e844ab623349f821af29c9ce71146ce2065c44479c1f476a649c72e4277"
+    },
+    {
+      "path": "validation/ruff-execution.json",
+      "source": "artifacts/laptop-health-validation/ruff-execution.json",
+      "bytes": 1095,
+      "sha256": "81ad158ace6d69c923dec28f5760d5081018c2f80bf9d34074a04872bd12e1ce"
+    },
+    {
+      "path": "validation/ruff.log",
+      "source": "artifacts/laptop-health-validation/ruff.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "validation/run_fast_checks.py",
+      "source": "artifacts/laptop-health-validation/run_fast_checks.py",
+      "bytes": 1203,
+      "sha256": "99b29e8ed3ef879edcc35e0a800ca2aed551f292b52873048f366cf0fc5b23de"
+    },
+    {
+      "path": "validation/smoke.json",
+      "source": "artifacts/laptop-health-validation/smoke.json",
+      "bytes": 10026,
+      "sha256": "e53ed9cf593ac8c38290fa04b76b20455e81b741070285d8fe449a9a5831c3af"
+    },
+    {
+      "path": "validation/smoke.log",
+      "source": "artifacts/laptop-health-validation/smoke.log",
+      "bytes": 70,
+      "sha256": "ea5ebdf253d4808eb28120f18ae53ecee055712947be2ba991dbf179246b003b"
+    },
+    {
+      "path": "validation/summarize_health.py",
+      "source": "artifacts/laptop-health-validation/summarize_health.py",
+      "bytes": 4388,
+      "sha256": "66191464aedfe9ffc51579c5a25a17afe5cb0284488299edfef3f71d168814ac"
+    },
+    {
+      "path": "validation/sync-execution.json",
+      "source": "artifacts/laptop-health-validation/sync-execution.json",
+      "bytes": 1059,
+      "sha256": "df0070c791d50e62ea5271c54fb7a825ddd79ba40cf15957a1f671f3de39f1ca"
+    },
+    {
+      "path": "validation/sync.log",
+      "source": "artifacts/laptop-health-validation/sync.log",
+      "bytes": 58,
+      "sha256": "bbbda149beeb827ae898f592de402beae951bb4e7164efba32007216464a4ccc"
+    },
+    {
+      "path": "validation/validate_health_docs.py",
+      "source": "artifacts/laptop-health-validation/validate_health_docs.py",
+      "bytes": 1999,
+      "sha256": "9aac71bc2d59cd0bb43f8de79bca4f7986797a622849f6a06f67f0d91ddcf401"
+    },
+    {
+      "path": "validation/verify_active.py",
+      "source": "artifacts/laptop-health-validation/verify_active.py",
+      "bytes": 2802,
+      "sha256": "231a0a445fc9ec0738d5b8a2bcc89f2e0bc8dc4b4b0fb6927dc763350f31727a"
+    }
+  ],
+  "excluded": [
+    "kubeconfig and embedded certificates/keys",
+    "credentials and environment dumps",
+    "model weights and installers",
+    "build artifacts",
+    "test caches/temp directories"
+  ]
+}

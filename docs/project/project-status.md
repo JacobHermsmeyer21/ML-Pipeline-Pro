@@ -1,5 +1,20 @@
 # Project audit and development status
 
+Latest October 19: Jacob approves the local gateway-health plan. Implementation
+`bf07213` passes 647 fast and 63 ordinary integration cases, real nginx negative
+checks, preserved-data node restart and all five implementation CI jobs. The
+[new live demo](../evidence/2026-10-19-laptop-gateway-health/README.md) still fails
+on its first AI inspection after 144.094 seconds. Local `/gateway-live` also stalls
+and Kubernetes orders a restart. The server persists a tool-transport-error reply
+after 167.506 seconds, below the original 270-second deadline. N1/N3 remain failed;
+new ten/seven reruns stop before execution under the approved fail-stop condition.
+Earlier complete standalone model passes and human acceptance remain distinct.
+Resource observations show host memory and node scheduling pressure, with missing
+worker/VM CPU attribution and large gaps; no OOM or specific resource cause is
+proved. Budgets, model/thread/resources/API probe thresholds remain unchanged.
+The [next diagnostic plan](../plans/2026-10-19-laptop-resource-diagnosis-plan.md)
+awaits approval; full laptop/course and real under-load expiry acceptance stay open.
+
 Later October 19, after Jacob reconnects AC and requests continuation: the original
 ten conversation and seven snippet scenarios all pass on the CPU laptop with the
 five-minute profile. Maximum complete replies are 184.875 and 229.219 seconds.
@@ -26,8 +41,9 @@ the ninth; that suite fails/incompletely records the ninth, the tenth is unrun,
 and snippets remain unrun. Sleep-inclusive timings are not active CPU benchmarks.
 See [the complete evidence](../evidence/2026-10-19-laptop-five-minute/README.md).
 The five-minute implementation is delivered; complete laptop and live-expiry
-acceptance remain open. A [deployment-health plan](../plans/2026-10-19-laptop-deployment-health-plan.md)
-awaits review before changing health semantics or resource settings.
+acceptance remain open. The [deployment-health plan](../plans/2026-10-19-laptop-deployment-health-plan.md)
+was subsequently approved and implemented; its later failed live acceptance is
+recorded above. Resource settings remain unchanged.
 
 October 19 five-minute profile implementation: Jacob approved the
 [existing design](../plans/2026-10-18-laptop-deployment-readiness-plan.md). The

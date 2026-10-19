@@ -6,3 +6,4 @@ docs/evidence/2026-10-18-qwen-cost-investigation/** -text whitespace=blank-at-eo
 docs/evidence/2026-10-19-laptop-cpu-trials/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-19-laptop-five-minute/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-19-laptop-awake-gates/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/evidence/2026-10-19-laptop-gateway-health/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
