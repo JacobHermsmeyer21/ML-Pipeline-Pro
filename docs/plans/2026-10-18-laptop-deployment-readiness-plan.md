@@ -1,10 +1,10 @@
 # Prepare the CPU laptop for local deployment
 
-- Status: awaiting human review; implementation pending
+- Status: approved; implementation in progress
 - Date: 2026-10-18
 - Source baseline: `91b0aef` / `person-a/conversation-foundation`
 - Request: correctness takes priority over speed; prepare the CPU laptop for the local class demo. Jacob selected a maximum five-minute wait for one complete AI reply.
-- Human reviewer/approval: pending review of this design. The deployment target and waiting tolerance are confirmed; implementation of the timing changes below is not yet approved.
+- Human reviewer/approval: Jacob approved this complete five-minute plan on October 19, 2026: "ok I approve the 5 min plan, implement it and rerun the demo test".
 - Independent review: seek separate review of deadline arithmetic, cancellation and persisted ownership boundaries before declaring the change reviewed; reviewer availability unknown.
 
 ## Proposed behavior and purpose
@@ -155,11 +155,11 @@ human review has completed on the target arrangement.
 
 ## Human review and approval
 
-Pending. Review covers the explicit five-minute laptop profile, increased allowed
+Jacob approved on October 19, 2026: "ok I approve the 5 min plan, implement it
+and rerun the demo test". Approval covers the explicit five-minute laptop profile, increased allowed
 configuration ceilings, coordinated proxy/client/evaluation budgets, diagnostic
-instrumentation and the local deployment/rehearsal above. Jacob's target/wait
-answers define the requirements; approval of this concrete implementation scope
-must be recorded before application or deployment changes begin.
+instrumentation and the local deployment/rehearsal above. Correctness assertions,
+the complete-reply ceiling, original deadlines and ownership fences remain binding.
 
 ## Implementation outcome
 
