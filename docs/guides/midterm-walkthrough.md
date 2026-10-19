@@ -4,13 +4,20 @@ Use one classification dataset/model, small Bayesian searches and one evaluated
 7B profile. The [course checklist](../project/course-requirements.md) remains the
 acceptance record; historical failures and broader production work remain visible.
 
-**Presentation-laptop status, October 19:** the implemented five-minute profile
-passes its first actual-ID inspection in 210.532 seconds. The full Kubernetes
-walkthrough fails on the next turn when a liveness-triggered gateway restart
-breaks client delivery before its reply deadline. After AC reconnection,
+**Desktop rerun, October 19:** the Ryzen 7 / RX 9070 workstation passes all ten
+dialogue and seven snippet scenarios with the original timing profile, then
+completes this workflow in 21.953 seconds. The [saved demo evidence](../evidence/2026-10-19-desktop-demo/README.md)
+includes generated outputs for review. This workstation result leaves the
+separate presentation-laptop deployment gaps below open.
+
+**Presentation-laptop status, October 19:** the five-minute profile and approved
+local gateway liveness are implemented. The [latest Kubernetes walkthrough](../evidence/2026-10-19-laptop-gateway-health/README.md)
+fails on its first AI inspection after 144.094 seconds: even local health stalls
+and Kubernetes restarts the gateway. The server saves the turn in 167.506 seconds,
+within the reply budget; broader resource attribution remains incomplete. After AC reconnection,
 [fresh standalone gates](../evidence/2026-10-19-laptop-awake-gates/README.md) pass
 all ten dialogue and seven snippet scenarios. The complete deployed walkthrough
-remains open. See [deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
+remains open. See [earlier deployment evidence](../evidence/2026-10-19-laptop-five-minute/README.md)
 and [the explicit profile](laptop-five-minute.md) before relying on this tutorial
 for the laptop demonstration. The [earlier default-profile rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
 retains its first-inspection/diagnosis/draft timeout failures separately.
