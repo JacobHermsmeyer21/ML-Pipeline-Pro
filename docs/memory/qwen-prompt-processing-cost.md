@@ -29,3 +29,21 @@ and actual laptop access. Compare CPU factors individually with uncached repeats
 and preserve prompt prefixes across read and answer when evaluating compression.
 Revisit after attributed laptop CPU observations or a reviewed prompt/runtime
 experiment. API timeout-overrun and full laptop acceptance remain separate issues.
+
+October 19: Jacob's request to run profiling/thread trials approves plan steps 2-3.
+[Actual laptop evidence](../evidence/2026-10-19-laptop-cpu-trials/README.md) records
+twelve uncached, semantically valid first-step requests. Two threads take 228.359
+seconds versus a fresh 99.328 baseline; three take 143.718 versus 97.515. Explicit
+four threads match the automatic effective setting; three new confirmation pairs
+have medians 111.281 versus 108.469 seconds (candidate 2.592% slower). No candidate
+meets the fixed 20% improvement gate; retain the unchanged automatic setting.
+
+The observer captures process CPU/working sets and PDH paging/disk/clock counters,
+but under-load gaps reach 94.133 seconds and one collection takes 92.063 seconds.
+Protected process counters are unavailable. Do not treat naive per-phase CPU
+residuals as measured competing load or infer a contention cause. On-battery charge
+falls 67% to 18%; AC status stays zero, and battery/thermal effects are not isolated.
+The required ten-service stack stays running; no duplicate candidate exists.
+Strict first-step success does not establish full-turn/ten-dialogue/seven-snippet
+acceptance or resolve application timeout enforcement. No prompt/default change
+results; a future AC comparison or lower-overhead observer needs its own scope.

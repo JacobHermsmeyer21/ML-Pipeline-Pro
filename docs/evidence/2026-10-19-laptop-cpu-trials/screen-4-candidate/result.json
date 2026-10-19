@@ -1,0 +1,62 @@
+{
+  "name": "screen-4-candidate",
+  "threads_requested": 4,
+  "eligible": true,
+  "phase": "complete",
+  "inference_requests": 1,
+  "request_sha256": "5c0a99ae67b31012eac7f598159cf08f718f94210fdefa8da21d6d1dbc5fa56d",
+  "warmup_seconds": 12.89000000001397,
+  "residency": {
+    "models": [
+      {
+        "name": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "size": 5455793356,
+        "digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-10-19T01:22:41.1830824-04:00",
+        "size_vram": 0,
+        "context_length": 8192,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "effective": {
+    "threads": 4,
+    "threads_batch": 4,
+    "batch": 1024,
+    "micro_batch": 1024
+  },
+  "wall_seconds": 103.48500000004424,
+  "timings": {
+    "total_duration_seconds": 103.4618691,
+    "load_duration_seconds": 0.0364481,
+    "prompt_eval_duration_seconds": 92.755967,
+    "eval_duration_seconds": 10.641585,
+    "prompt_eval_count": 1109,
+    "eval_count": 18
+  },
+  "validated_step": {
+    "call": {
+      "name": "get_experiment",
+      "arguments": {
+        "experiment_id": "exp-low"
+      }
+    },
+    "reply": null,
+    "snippet": null,
+    "usage": {
+      "input_tokens": 1109,
+      "output_tokens": 18
+    }
+  }
+}

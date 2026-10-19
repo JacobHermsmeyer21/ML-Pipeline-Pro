@@ -1,6 +1,6 @@
 # Attribute and reduce laptop Qwen inference cost
 
-- Status: approved for laptop resource profiling and request-local thread trials; implementation in progress
+- Status: profiling/trials executed; no candidate retained; complete CPU attribution and application acceptance outstanding
 - Date: 2026-10-18
 - Source baseline: `9e2dcaf` / `person-a/conversation-foundation` (application unchanged from `91b0aef`)
 - Request: investigate CPU contention and prompt-processing cost and make the demo faster.
@@ -166,7 +166,7 @@ ten-service repository Compose stack is running, with no duplicate stack found.
 Keep that stack running. Independent review is unavailable in this session;
 record self-review and deterministic checks without calling them independent.
 
-## Implementation outcome
+## Prior investigation outcome
 
 Only step 1 is complete. [Retained analysis, source and raw observations](../evidence/2026-10-18-qwen-cost-investigation/README.md)
 on `9e2dcaf` reproduce 1,109 tokens in all 30 offline observations. Catalog and
@@ -196,3 +196,96 @@ history. Raw analysis correctly records that execution revision; the initial
 summary's `91b0aef` label was the earlier application baseline and is corrected
 here. Review of the incoming plan aligns final acceptance with the selected
 five-minute reply target, without authorizing either pending implementation.
+
+## Approved profiling harness
+
+The new [trial harness](../../evaluations/laptop_cpu_trials.py) and
+[Windows observer](../../evaluations/laptop_resource_observer.ps1) implement
+steps 2-3. Three independent screens use a fresh automatic-thread baseline for
+each 2/3/4-thread candidate; the best relative screen receives three new paired
+repetitions. No duplicate stack exists, so that candidate is omitted. All twelve
+normal-path requests retain the original workload, strict adapter validation and
+uncached eligibility checks. Model unload/reload separates cache state; effective
+runner threads and unchanged batch/context values are checked before inference.
+AC/battery changes invalidate the comparison. No application code/settings changed.
+
+Observer smoke testing exposed Windows PowerShell's disabled script policy and
+unsupported `ulong` alias. The launcher now applies an execution policy only to
+its owned child and uses `UInt64`. One-second CIM performance queries timed out;
+native PDH reads retain raw/status/type/timestamp values and formatted rates.
+Repeated .NET process property queries consumed about two seconds per sample;
+direct Windows CPU/memory reads reduced measured collection to 0.014-0.147 seconds
+with actual gaps of 2.006-2.049 seconds in the final four-sample smoke test. The
+observer records its CPU, denied process access, phases and actual sample gaps.
+Startup is outside measured inference. These are smoke observations, not latency
+or under-load overhead claims. Raw smoke evidence remains under
+`artifacts/laptop-cpu-trials/observer-smoke-native/` for the final evidence bundle.
+
+New deterministic tests cover request isolation, effective inference settings,
+zero-cache/idle checks, actual-gap CPU normalization, PID reuse/access failures,
+power changes/partial writes, cleanup, no retries, exhausted budgets, semantic
+rejection and the exact 20% median threshold. Existing assertions are unchanged.
+Independent review is unavailable; source/FFI/deadline/arithmetic self-review is
+not independent review. Locked checks and live outcomes will be recorded in the
+retained experiment evidence; original dialogue/snippet/tutorial acceptance is
+outside this first-step experiment and remains outstanding on the laptop.
+
+Final pre-inference checks complete on October 19: locked offline sync resolves
+114 packages/checks 109 installed; Ruff lint and formatting pass (190 files),
+629 fast tests pass with 73 integration deselected and 80% rounded coverage,
+and installed dependency compatibility passes. The final test command reports
+6254.15 seconds elapsed, including a long session stall; it is not a representative
+suite-speed measurement. The earlier full run passed 628 tests in 214.28 seconds
+before the final power-change regression was added. All 31 targeted diagnostic
+checks are included in the final full pass. PowerShell syntax, eleven local
+links/anchors and whitespace checks pass. No selected skips/warnings or changes
+to existing test assertions. Ordinary/recovery gates are not selected because
+service, worker and persistence logic is unchanged. Raw logs/JUnit are retained
+under `artifacts/laptop-cpu-trials/` for the experiment evidence bundle.
+
+## October 19 live outcome
+
+[Retained evidence](../evidence/2026-10-19-laptop-cpu-trials/README.md) records twelve
+serial, uncached requests on the actual Acer laptop, all passing the original
+strict first-step semantics. Two threads take 228.359 seconds against a fresh
+99.328-second baseline; three take 143.718 against 97.515; explicit four take
+103.485 against 103.891. The best screen (four) receives all three planned new
+pairs. Baseline median is 108.469 seconds (range 104.484-111.157), candidate median
+111.281 (103.313-112.438), or 2.592% slower. No candidate meets the unchanged 20%
+criterion. Runtime/model/context/output capacity/batch settings remain pinned;
+no production configuration or prompt changes result.
+
+The experiment completes in 1693.265 seconds; warmups are separate and capped
+(12.594-77.328 seconds observed). No measured requests fail or retry. Cleanup
+unloads the model and reaps the observer normally. The single required ten-service
+Compose stack is confirmed running after execution; no duplicate-stack candidate
+exists and no service is stopped. Final approved fetch finds no incoming branch
+commits and preserves `origin/main` as an ancestor.
+
+Resource capture is partial attribution, not proof of the contention mechanism.
+There are 328 snapshots, a median inference gap of 2.022 seconds but a maximum of
+94.133 seconds, and an individual collection lasting 92.063 seconds. Protected
+process access is missing. Long, non-atomic reads make phase CPU estimates and
+their residuals unreliable as a complete accounting of competing CPU. Available
+memory/paging/disk/clocks and access failures remain in compressed raw evidence.
+Observer cumulative CPU is 11.672 seconds including startup. Battery charge falls
+67% to 18% while AC status remains zero; power/thermal effects are not isolated.
+These limits preclude a controlled AC-performance or resolved CPU-cause claim.
+
+Two pre-run publication attempts were not executed because automatic approval
+review was at capacity. The run therefore records `8829d31` plus the dirty
+harness and exact source hashes, with byte-identical archived source. Application
+code/fixtures are unchanged. Review service recovered after the run; publication
+is retried after retained-evidence checks. Independent review remains unavailable.
+The original ten/seven gates, complete-reply/tutorial acceptance and the API
+timeout-overrun cause remain outstanding; this experiment does not approve or
+implement the separate laptop deployment timing profile or prompt follow-up.
+
+Publication approval: automatic review initially rejected exporting the broad
+local telemetry bundle. On October 19 Jacob explicitly answered **"Publish the
+complete evidence bundle"** after being shown the destination
+`https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro` and payload categories:
+Windows process names/PIDs/resource counters, hardware/battery readings, package
+versions and synthetic model requests/responses. This approval authorizes the
+complete retained bundle and working-branch push; it does not change experiment
+scope, application settings or the pending deployment design.

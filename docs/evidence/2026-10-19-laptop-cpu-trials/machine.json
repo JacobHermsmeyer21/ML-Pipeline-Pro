@@ -1,0 +1,13 @@
+﻿{
+    "power_plan":  "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+    "identity_source":  "Windows hardware registry, rechecked immediately before experiment; core/memory/GPU from earlier local CIM verification",
+    "manufacturer":  "Acer",
+    "cpu":  "AMD Ryzen 3 3350U with Radeon Vega Mobile Gfx  ",
+    "logical_processors":  4,
+    "cores":  4,
+    "model":  "Aspire A515-46",
+    "gpu":  [
+                "AMD Radeon(TM) Vega 6 Graphics"
+            ],
+    "physical_memory_bytes":  19261304832
+}

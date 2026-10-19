@@ -44,3 +44,11 @@ The [same-day offline cost audit](qwen-prompt-processing-cost.md) reproduces the
 evidence to attribute contention and reports no measured inference improvement.
 Its new trial plan awaits review and actual laptop access; the current session
 is verified as the RX 9070 workstation.
+
+October 19 [laptop profiling/thread trials](../evidence/2026-10-19-laptop-cpu-trials/README.md)
+complete twelve correct uncached first steps, with no retained latency improvement.
+The observer now records per-process CPU but suffers gaps up to 94.133 seconds and
+missing protected-process access. These observations do not resolve the sampling
+delay or API timeout-overrun mechanism. This actual-laptop run supersedes the
+preceding session's workstation/access limitation only; application acceptance and
+the separate deployment timing design remain outstanding.

@@ -1,0 +1,1106 @@
+{
+  "run_status": "complete",
+  "source_revision": "8829d31eb3263a9f755ebd2321d780d0ec004696",
+  "source_was_dirty": true,
+  "elapsed_seconds": 1693.265000000014,
+  "comparison": {
+    "baseline_seconds": [
+      104.48399999999674,
+      108.46899999998277,
+      111.15700000000652
+    ],
+    "candidate_seconds": [
+      103.31299999996554,
+      111.28099999995902,
+      112.43800000002375
+    ],
+    "baseline_median_seconds": 108.46899999998277,
+    "candidate_median_seconds": 111.28099999995902,
+    "baseline_range_seconds": [
+      104.48399999999674,
+      111.15700000000652
+    ],
+    "candidate_range_seconds": [
+      103.31299999996554,
+      112.43800000002375
+    ],
+    "median_improvement_fraction": -0.025924457678937696,
+    "retain_candidate": false
+  },
+  "measurements": [
+    {
+      "name": "screen-2-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 99.32799999997951,
+      "warmup_seconds": 19.59399999998277,
+      "timings": {
+        "total_duration_seconds": 99.2185875,
+        "load_duration_seconds": 0.0463634,
+        "prompt_eval_duration_seconds": 88.12701,
+        "eval_duration_seconds": 10.921768,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "screen-2-candidate",
+      "threads_requested": 2,
+      "eligible": true,
+      "wall_seconds": 228.35899999999674,
+      "warmup_seconds": 14.672000000020489,
+      "timings": {
+        "total_duration_seconds": 228.3512497,
+        "load_duration_seconds": 0.09138,
+        "prompt_eval_duration_seconds": 214.4187,
+        "eval_duration_seconds": 13.731028,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 2,
+        "threads_batch": 2,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "screen-3-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 97.51500000001397,
+      "warmup_seconds": 13.64000000001397,
+      "timings": {
+        "total_duration_seconds": 97.3340768,
+        "load_duration_seconds": 0.0338487,
+        "prompt_eval_duration_seconds": 86.537791,
+        "eval_duration_seconds": 10.697724,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "screen-3-candidate",
+      "threads_requested": 3,
+      "eligible": true,
+      "wall_seconds": 143.71799999999348,
+      "warmup_seconds": 12.920999999972992,
+      "timings": {
+        "total_duration_seconds": 143.7066123,
+        "load_duration_seconds": 0.0366967,
+        "prompt_eval_duration_seconds": 131.681929,
+        "eval_duration_seconds": 11.949462,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 3,
+        "threads_batch": 3,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "screen-4-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 103.89100000000326,
+      "warmup_seconds": 13.202999999979511,
+      "timings": {
+        "total_duration_seconds": 103.8720783,
+        "load_duration_seconds": 0.0295595,
+        "prompt_eval_duration_seconds": 93.09968,
+        "eval_duration_seconds": 10.694395,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "screen-4-candidate",
+      "threads_requested": 4,
+      "eligible": true,
+      "wall_seconds": 103.48500000004424,
+      "warmup_seconds": 12.89000000001397,
+      "timings": {
+        "total_duration_seconds": 103.4618691,
+        "load_duration_seconds": 0.0364481,
+        "prompt_eval_duration_seconds": 92.755967,
+        "eval_duration_seconds": 10.641585,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-1-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 104.48399999999674,
+      "warmup_seconds": 12.90600000001723,
+      "timings": {
+        "total_duration_seconds": 104.470828,
+        "load_duration_seconds": 0.0380916,
+        "prompt_eval_duration_seconds": 93.815658,
+        "eval_duration_seconds": 10.584429,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-1-candidate",
+      "threads_requested": 4,
+      "eligible": true,
+      "wall_seconds": 103.31299999996554,
+      "warmup_seconds": 77.32799999997951,
+      "timings": {
+        "total_duration_seconds": 103.2052976,
+        "load_duration_seconds": 0.0354766,
+        "prompt_eval_duration_seconds": 92.130437,
+        "eval_duration_seconds": 10.98306,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-2-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 108.46899999998277,
+      "warmup_seconds": 12.59399999998277,
+      "timings": {
+        "total_duration_seconds": 108.4669466,
+        "load_duration_seconds": 0.0297243,
+        "prompt_eval_duration_seconds": 97.434371,
+        "eval_duration_seconds": 10.975298,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-2-candidate",
+      "threads_requested": 4,
+      "eligible": true,
+      "wall_seconds": 111.28099999995902,
+      "warmup_seconds": 13.375,
+      "timings": {
+        "total_duration_seconds": 111.2437002,
+        "load_duration_seconds": 0.0401251,
+        "prompt_eval_duration_seconds": 100.241938,
+        "eval_duration_seconds": 10.928367,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-3-baseline",
+      "threads_requested": null,
+      "eligible": true,
+      "wall_seconds": 111.15700000000652,
+      "warmup_seconds": 14.125,
+      "timings": {
+        "total_duration_seconds": 110.9788699,
+        "load_duration_seconds": 0.029386,
+        "prompt_eval_duration_seconds": 100.192412,
+        "eval_duration_seconds": 10.726069,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    },
+    {
+      "name": "pair-3-candidate",
+      "threads_requested": 4,
+      "eligible": true,
+      "wall_seconds": 112.43800000002375,
+      "warmup_seconds": 13.51600000000326,
+      "timings": {
+        "total_duration_seconds": 112.2613671,
+        "load_duration_seconds": 0.0282178,
+        "prompt_eval_duration_seconds": 101.429516,
+        "eval_duration_seconds": 10.736123,
+        "prompt_eval_count": 1109,
+        "eval_count": 18
+      },
+      "effective": {
+        "threads": 4,
+        "threads_batch": 4,
+        "batch": 1024,
+        "micro_batch": 1024
+      }
+    }
+  ],
+  "resource_sample_count": 328,
+  "overall_max_gap_seconds": 94.13332290000005,
+  "overall_max_sample_seconds": 92.06280290000007,
+  "inference_sample_duration_seconds": {
+    "min": 0.009195999999974447,
+    "median": 0.0643908000000124,
+    "max": 92.06280290000007
+  },
+  "inference_sample_gap_seconds": {
+    "min": 1.9959922999999833,
+    "median": 2.022130149999981,
+    "max": 94.13332290000005
+  },
+  "sample_error_count": 0,
+  "process_access_error_observations": 51810,
+  "observer_startup_and_all_phases_cpu_seconds": 11.671875,
+  "power_ac_states": [
+    0
+  ],
+  "battery_percent_first_last": [
+    67,
+    18
+  ],
+  "performance_counters_during_inference": {
+    "\\Memory\\Available Bytes": {
+      "min": 4086779904,
+      "median": 4596379648.0,
+      "max": 5235908608
+    },
+    "\\Memory\\Committed Bytes": {
+      "min": 21015212032,
+      "median": 25484189696.0,
+      "max": 25617879040
+    },
+    "\\Memory\\Commit Limit": {
+      "min": 25472995328,
+      "median": 29427052544.0,
+      "max": 29488934912
+    },
+    "\\Memory\\Pages Input/sec": {
+      "min": 0,
+      "median": 22.488008885350318,
+      "max": 9519.824487885877
+    },
+    "\\Memory\\Page Reads/sec": {
+      "min": 0,
+      "median": 4.3032658759254705,
+      "max": 819.9687672047019
+    },
+    "\\PhysicalDisk(_Total)\\Disk Bytes/sec": {
+      "min": 0,
+      "median": 225792.4165425169,
+      "max": 39221867.55599879
+    },
+    "\\PhysicalDisk(_Total)\\Disk Reads/sec": {
+      "min": 0,
+      "median": 4.530678797419647,
+      "max": 819.9687672047019
+    },
+    "\\Processor Information(_Total)\\Processor Frequency": {
+      "min": 2100,
+      "median": 2100.0,
+      "max": 2100
+    },
+    "\\Processor Information(_Total)\\% Processor Performance": {
+      "min": 106.34328834847352,
+      "median": 127.4366167606815,
+      "max": 154.38989732837544
+    }
+  },
+  "phase_cpu_diagnostics_not_complete_attribution": {
+    "screen-2-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 5,
+      "covered_seconds": 94.78603439999999,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.2627216541722944,
+      "observer_machine_cpu_fraction": 0.0007830135575331128,
+      "all_observed_process_machine_cpu_fraction": 0.26807911535541573,
+      "unattributed_busy_fraction_approximate": 0.7319208846445843,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 99.609375,
+          "machine_cpu_fraction": 0.2627216541722944
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 0.625,
+          "machine_cpu_fraction": 0.0016484495948065532
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.34375,
+          "machine_cpu_fraction": 0.0009066472771436043
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.296875,
+          "machine_cpu_fraction": 0.0007830135575331128
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.25,
+          "machine_cpu_fraction": 0.0006593798379226212
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.140625,
+          "machine_cpu_fraction": 0.0003709011588314745
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.078125,
+          "machine_cpu_fraction": 0.00020605619935081914
+        },
+        {
+          "name": "ollama",
+          "cpu_seconds": 0.046875,
+          "machine_cpu_fraction": 0.0001236337196104915
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.046875,
+          "machine_cpu_fraction": 0.0001236337196104915
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.03125,
+          "machine_cpu_fraction": 8.242247974032765e-05
+        }
+      ]
+    },
+    "screen-2-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 112,
+      "covered_seconds": 226.3663299,
+      "system_busy_fraction": 0.9133636033669231,
+      "llama_server_machine_cpu_fraction": 0.4333407271449516,
+      "observer_machine_cpu_fraction": 0.0019499642468692071,
+      "all_observed_process_machine_cpu_fraction": 0.47420369472536117,
+      "unattributed_busy_fraction_approximate": 0.43915990864156196,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 392.375,
+          "machine_cpu_fraction": 0.4333407271449516
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 12.046875,
+          "machine_cpu_fraction": 0.013304623312709369
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 9.578125,
+          "machine_cpu_fraction": 0.01057812463124623
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 5.078125,
+          "machine_cpu_fraction": 0.0056083042498450645
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 2.65625,
+          "machine_cpu_fraction": 0.002933574530688188
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 1.546875,
+          "machine_cpu_fraction": 0.0017083757561066504
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 1.1875,
+          "machine_cpu_fraction": 0.0013114803784253074
+        },
+        {
+          "name": "docker",
+          "cpu_seconds": 1.125,
+          "machine_cpu_fraction": 0.0012424550953502912
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 1.046875,
+          "machine_cpu_fraction": 0.001156173491506521
+        },
+        {
+          "name": "wsl",
+          "cpu_seconds": 0.6875,
+          "machine_cpu_fraction": 0.000759278113825178
+        }
+      ]
+    },
+    "screen-3-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 7,
+      "covered_seconds": 96.85159689999995,
+      "system_busy_fraction": 0.9999774913569356,
+      "llama_server_machine_cpu_fraction": 0.701984101720062,
+      "observer_machine_cpu_fraction": 0.0005646525380109662,
+      "all_observed_process_machine_cpu_fraction": 0.7139224696665796,
+      "unattributed_busy_fraction_approximate": 0.286055021690356,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 271.953125,
+          "machine_cpu_fraction": 0.701984101720062
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 1.703125,
+          "machine_cpu_fraction": 0.004396223331656808
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 1.171875,
+          "machine_cpu_fraction": 0.0030249243107730336
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.453125,
+          "machine_cpu_fraction": 0.0011696374001655728
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.359375,
+          "machine_cpu_fraction": 0.0009276434553037303
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.21875,
+          "machine_cpu_fraction": 0.0005646525380109662
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.140625,
+          "machine_cpu_fraction": 0.000362990917292764
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.0002823262690054831
+        },
+        {
+          "name": "git",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00024199394486184268
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00024199394486184268
+        }
+      ]
+    },
+    "screen-3-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 66,
+      "covered_seconds": 141.4004223,
+      "system_busy_fraction": 0.9709532597673162,
+      "llama_server_machine_cpu_fraction": 0.700056475361743,
+      "observer_machine_cpu_fraction": 0.002375788519833862,
+      "all_observed_process_machine_cpu_fraction": 0.7687333388536846,
+      "unattributed_busy_fraction_approximate": 0.2022199209136316,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 395.953125,
+          "machine_cpu_fraction": 0.700056475361743
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 14.03125,
+          "machine_cpu_fraction": 0.024807652218730325
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 9.609375,
+          "machine_cpu_fraction": 0.016989650461602616
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 6.71875,
+          "machine_cpu_fraction": 0.01187894259916931
+        },
+        {
+          "name": "docker",
+          "cpu_seconds": 2.0625,
+          "machine_cpu_fraction": 0.0036465591234659273
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 1.703125,
+          "machine_cpu_fraction": 0.0030111738216498946
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 1.4375,
+          "machine_cpu_fraction": 0.0025415412072641312
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 1.109375,
+          "machine_cpu_fraction": 0.0019614068012581884
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.65625,
+          "machine_cpu_fraction": 0.001160268812011886
+        },
+        {
+          "name": "wsl",
+          "cpu_seconds": 0.265625,
+          "machine_cpu_fraction": 0.0004696326143857634
+        }
+      ]
+    },
+    "screen-4-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 2,
+      "covered_seconds": 102.36147740000001,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.10387513711286077,
+      "observer_machine_cpu_fraction": 0.00022896797306288193,
+      "all_observed_process_machine_cpu_fraction": 0.11276672673346935,
+      "unattributed_busy_fraction_approximate": 0.8872332732665307,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 42.53125,
+          "machine_cpu_fraction": 0.10387513711286077
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 1.59375,
+          "machine_cpu_fraction": 0.003892455542068993
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.921875,
+          "machine_cpu_fraction": 0.0022515184017850055
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.3125,
+          "machine_cpu_fraction": 0.0007632265768762731
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.0004960972749695775
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.171875,
+          "machine_cpu_fraction": 0.0004197746172819502
+        },
+        {
+          "name": "ollama",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.00026712930190669556
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.00026712930190669556
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.00026712930190669556
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.03125,
+          "machine_cpu_fraction": 7.63226576876273e-05
+        }
+      ]
+    },
+    "screen-4-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 4,
+      "covered_seconds": 96.1203506999999,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.23521943933148823,
+      "observer_machine_cpu_fraction": 0.0004063915676079617,
+      "all_observed_process_machine_cpu_fraction": 0.24562306346225204,
+      "unattributed_busy_fraction_approximate": 0.754376936537748,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 90.4375,
+          "machine_cpu_fraction": 0.23521943933148823
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 2.53125,
+          "machine_cpu_fraction": 0.006583543395248979
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.390625,
+          "machine_cpu_fraction": 0.0010159789190199043
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.3125,
+          "machine_cpu_fraction": 0.0008127831352159234
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.0005283090378903502
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.125,
+          "machine_cpu_fraction": 0.0003251132540863694
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.125,
+          "machine_cpu_fraction": 0.0003251132540863694
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.0002844740973255732
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.0625,
+          "machine_cpu_fraction": 0.0001625566270431847
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.03125,
+          "machine_cpu_fraction": 8.127831352159234e-05
+        }
+      ]
+    },
+    "pair-1-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 4,
+      "covered_seconds": 101.32629760000009,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.5228698768719242,
+      "observer_machine_cpu_fraction": 0.00042406316048006833,
+      "all_observed_process_machine_cpu_fraction": 0.5343195822048861,
+      "unattributed_busy_fraction_approximate": 0.46568041779511393,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 211.921875,
+          "machine_cpu_fraction": 0.5228698768719242
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 2.375,
+          "machine_cpu_fraction": 0.005859781853906398
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.6875,
+          "machine_cpu_fraction": 0.0016962526419202733
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.34375,
+          "machine_cpu_fraction": 0.0008481263209601367
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.265625,
+          "machine_cpu_fraction": 0.000655370338923742
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.234375,
+          "machine_cpu_fraction": 0.0005782679461091841
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.1875,
+          "machine_cpu_fraction": 0.0004626143568873473
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.00026985837485095257
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00023130717844367364
+        },
+        {
+          "name": "git",
+          "cpu_seconds": 0.0625,
+          "machine_cpu_fraction": 0.00015420478562911576
+        }
+      ]
+    },
+    "pair-1-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 3,
+      "covered_seconds": 97.1296198,
+      "system_busy_fraction": 0.9997649102823839,
+      "llama_server_machine_cpu_fraction": 0.10094436197926927,
+      "observer_machine_cpu_fraction": 0.0001608675091303096,
+      "all_observed_process_machine_cpu_fraction": 0.10898773743578476,
+      "unattributed_busy_fraction_approximate": 0.8907771728465992,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 39.21875,
+          "machine_cpu_fraction": 0.10094436197926927
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 1.234375,
+          "machine_cpu_fraction": 0.0031771333053236144
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.3125,
+          "machine_cpu_fraction": 0.000804337545651548
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.296875,
+          "machine_cpu_fraction": 0.0007641206683689706
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.265625,
+          "machine_cpu_fraction": 0.0006836869138038158
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.0005228194046735062
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.140625,
+          "machine_cpu_fraction": 0.00036195189554319657
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.0002815181409780418
+        },
+        {
+          "name": "ollama",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.0002413012636954644
+        },
+        {
+          "name": "SearchApp",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.0002413012636954644
+        }
+      ]
+    },
+    "pair-2-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 5,
+      "covered_seconds": 100.06872350000003,
+      "system_busy_fraction": 0.9999092996824545,
+      "llama_server_machine_cpu_fraction": 0.1913528706099663,
+      "observer_machine_cpu_fraction": 0.0005074637531476055,
+      "all_observed_process_machine_cpu_fraction": 0.1968959362212709,
+      "unattributed_busy_fraction_approximate": 0.8030133634611836,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 76.59375,
+          "machine_cpu_fraction": 0.1913528706099663
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 0.8125,
+          "machine_cpu_fraction": 0.002029855012590422
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.328125,
+          "machine_cpu_fraction": 0.000819749139699978
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.3125,
+          "machine_cpu_fraction": 0.0007807134663809314
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.265625,
+          "machine_cpu_fraction": 0.0006636064464237918
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.0005074637531476055
+        },
+        {
+          "name": "ollama",
+          "cpu_seconds": 0.078125,
+          "machine_cpu_fraction": 0.00019517836659523286
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.046875,
+          "machine_cpu_fraction": 0.00011710701995713972
+        },
+        {
+          "name": "conhost",
+          "cpu_seconds": 0.03125,
+          "machine_cpu_fraction": 7.807134663809314e-05
+        },
+        {
+          "name": "copilot-runtime",
+          "cpu_seconds": 0.03125,
+          "machine_cpu_fraction": 7.807134663809314e-05
+        }
+      ]
+    },
+    "pair-2-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 6,
+      "covered_seconds": 110.16947389999996,
+      "system_busy_fraction": 0.9999681719484621,
+      "llama_server_machine_cpu_fraction": 0.5155764045996776,
+      "observer_machine_cpu_fraction": 0.0001418269457670525,
+      "all_observed_process_machine_cpu_fraction": 0.5231286894617732,
+      "unattributed_busy_fraction_approximate": 0.47683948248668895,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 227.203125,
+          "machine_cpu_fraction": 0.5155764045996776
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 1.96875,
+          "machine_cpu_fraction": 0.004467548791662153
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.359375,
+          "machine_cpu_fraction": 0.0008155049381605518
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.3125,
+          "machine_cpu_fraction": 0.0007091347288352625
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.140625,
+          "machine_cpu_fraction": 0.00031911062797586814
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00021274041865057875
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00021274041865057875
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.0625,
+          "machine_cpu_fraction": 0.0001418269457670525
+        },
+        {
+          "name": "msrdc",
+          "cpu_seconds": 0.046875,
+          "machine_cpu_fraction": 0.00010637020932528937
+        },
+        {
+          "name": "git",
+          "cpu_seconds": 0.046875,
+          "machine_cpu_fraction": 0.00010637020932528937
+        }
+      ]
+    },
+    "pair-3-baseline:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 6,
+      "covered_seconds": 109.67689180000002,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.7409192348209852,
+      "observer_machine_cpu_fraction": 0.0004630077418003561,
+      "all_observed_process_machine_cpu_fraction": 0.7532779799290409,
+      "unattributed_busy_fraction_approximate": 0.2467220200709591,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 325.046875,
+          "machine_cpu_fraction": 0.7409192348209852
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 2.5,
+          "machine_cpu_fraction": 0.005698556822158228
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.890625,
+          "machine_cpu_fraction": 0.002030110867893869
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 0.71875,
+          "machine_cpu_fraction": 0.0016383350863704907
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.40625,
+          "machine_cpu_fraction": 0.0009260154836007122
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.0004630077418003561
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.15625,
+          "machine_cpu_fraction": 0.00035615980138488926
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.140625,
+          "machine_cpu_fraction": 0.0003205438212464004
+        },
+        {
+          "name": "ollama",
+          "cpu_seconds": 0.09375,
+          "machine_cpu_fraction": 0.00021369588083093358
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.078125,
+          "machine_cpu_fraction": 0.00017807990069244463
+        }
+      ]
+    },
+    "pair-3-candidate:inference": {
+      "attribution_status": "Incomplete: non-atomic samples, long query delays and denied process access; residual is not measured competing CPU",
+      "interval_count": 4,
+      "covered_seconds": 111.73356519999993,
+      "system_busy_fraction": 1.0,
+      "llama_server_machine_cpu_fraction": 0.762940783258924,
+      "observer_machine_cpu_fraction": 0.00034960398811296524,
+      "all_observed_process_machine_cpu_fraction": 0.7788827251168752,
+      "unattributed_busy_fraction_approximate": 0.22111727488312483,
+      "top_processes_by_cpu_seconds": [
+        {
+          "name": "llama-server",
+          "cpu_seconds": 340.984375,
+          "machine_cpu_fraction": 0.762940783258924
+        },
+        {
+          "name": "Code",
+          "cpu_seconds": 2.65625,
+          "machine_cpu_fraction": 0.005943267797920409
+        },
+        {
+          "name": "codex",
+          "cpu_seconds": 1.1875,
+          "machine_cpu_fraction": 0.0026569903096585355
+        },
+        {
+          "name": "chrome",
+          "cpu_seconds": 0.90625,
+          "machine_cpu_fraction": 0.0020277031310551984
+        },
+        {
+          "name": "com.docker.backend",
+          "cpu_seconds": 0.59375,
+          "machine_cpu_fraction": 0.0013284951548292677
+        },
+        {
+          "name": "explorer",
+          "cpu_seconds": 0.359375,
+          "machine_cpu_fraction": 0.00080408917265982
+        },
+        {
+          "name": "wslsettings",
+          "cpu_seconds": 0.296875,
+          "machine_cpu_fraction": 0.0006642475774146339
+        },
+        {
+          "name": "Docker Desktop",
+          "cpu_seconds": 0.203125,
+          "machine_cpu_fraction": 0.00045448518454685476
+        },
+        {
+          "name": "powershell",
+          "cpu_seconds": 0.15625,
+          "machine_cpu_fraction": 0.00034960398811296524
+        },
+        {
+          "name": "python",
+          "cpu_seconds": 0.109375,
+          "machine_cpu_fraction": 0.00024472279167907565
+        }
+      ]
+    }
+  },
+  "cleanup": "diagnostic model unloaded; application configuration unchanged",
+  "observer_cleanup": {
+    "returncode": 0,
+    "forced_stop": false
+  },
+  "limits": "Descriptive three-pair evidence on battery; long sample/query delays and denied process access prevent complete CPU attribution or a contention-cause claim; no significance or full-turn acceptance claim"
+}

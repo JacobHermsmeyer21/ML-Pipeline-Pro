@@ -1,0 +1,26 @@
+{
+  "model": {
+    "backend": "ollama",
+    "model_tag": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+    "packages": {
+      "langchain-core": "1.6.9",
+      "langchain-ollama": "1.1.0",
+      "ollama": "0.6.3"
+    },
+    "context_tokens": 8192,
+    "max_output_tokens": 1024,
+    "tools_hash": "aad6464b733b9724e4a5eb99f8aff8a5e3cbc0eb9b925e644f043fa652733188",
+    "instructions_hash": "2b8b0b5881599b5ddb055e77ad766688f4438abbf8e844821d47ea16f72ffe05",
+    "protocol": "guided",
+    "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+    "runtime_version": "0.40.2",
+    "supported_context_tokens": 32768,
+    "license_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+    "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+  },
+  "counter": {
+    "artifact_digest": "abadc4bf8517d77dcc8db312ca98cd7cb43488243048c41f1b5746e031427779",
+    "runtime_version": "0.40.2",
+    "template_hash": "0369c7c353e38c76a97e3797fffd1a747f1d72a3e63335257207dbfbf406260a"
+  }
+}

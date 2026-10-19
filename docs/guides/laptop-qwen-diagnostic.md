@@ -3,7 +3,10 @@
 The [October 18 cost investigation](../evidence/2026-10-18-qwen-cost-investigation/README.md)
 attributes the saved prompt's tokens and explains why CPU saturation alone does
 not establish contention. Its [follow-up experiment plan](../plans/2026-10-18-qwen-cpu-prompt-cost-plan.md)
-awaits review; no inference speedup or application-default change is established.
+now has Jacob's approval for resource profiling and request-local thread trials;
+the [October 19 run](../evidence/2026-10-19-laptop-cpu-trials/README.md) completes
+twelve valid uncached first steps but retains no faster thread setting. Application
+defaults remain unchanged, and complete CPU attribution remains outstanding.
 
 This implements Jacob's [approved bounded plan](../plans/2026-10-18-laptop-qwen-diagnostic-plan.md).
 It diagnoses eventual first-step response on the Acer Ryzen 3 3350U laptop. A
@@ -70,3 +73,43 @@ request; `/api/ps` residency alone does not prove that inference stopped. Do not
 automatically retry. Preserve timeout evidence and report unknown activity as a
 verification gap. Changes to model/runtime, prompts, application deadlines or demo
 arrangement require their own reviewed scope.
+
+## Resource profiling and thread trials
+
+The approved CPU experiment keeps the same first-step workload and the required
+demo services running. First inspect `docker compose ls` and the runner log for
+active work. Do not start another inference during the experiment. No duplicate
+stack was found in the October 18 preflight; its service-stop candidate is omitted.
+Capture fresh machine metadata using the PowerShell example above, then run:
+
+```powershell
+uv run --locked --extra training python -m evaluations.laptop_cpu_trials `
+    --run-laptop-thread-trials `
+    --machine-info artifacts/laptop-qwen-diagnostic/machine.json `
+    --output artifacts/laptop-cpu-trials/run-01
+```
+
+Use a new output directory. The Windows observer runs in its own hidden process,
+targets two-second samples and saves actual gaps, sampling duration, process
+CPU/working sets, system CPU, AC status, memory/paging/disk counters and clocks.
+Access failures remain explicit. Raw Windows performance counters, status/type
+fields and timestamps are saved alongside Windows-formatted rates. Process CPU fractions use
+the actual elapsed interval and all logical processors; PID reuse and missing
+CPU access are excluded from attribution. The observer's own CPU is included.
+Changing between AC and battery during the run makes the comparison ineligible.
+
+Each 2/3/4-thread screen has a fresh automatic-thread baseline. Each request
+unloads/verifies absence, warms the pinned model separately and verifies effective
+inference threads and unchanged batch size/context. Both response and runner log
+must establish zero cached tokens. Original strict read semantics are checked
+using the existing adapter. At most one screen candidate receives three new
+baseline/candidate pairs. Retention requires at least 20% lower median wall time
+with no semantic failures; screening alone establishes no performance claim.
+
+The run reserves 660 seconds before each trial, caps inference at 480 seconds,
+warmup at 120 seconds, measured requests at 16 and total lifetime at 60 minutes.
+The normal path uses 12 requests. Errors/timeouts stop without retry. Inspect
+residual runner activity before another request after failure. Successful cleanup
+unloads the diagnostic model and stops the owned observer; services and application
+settings remain unchanged. Independent review is unavailable for this session;
+deterministic tests and self-review are recorded separately from live evidence.

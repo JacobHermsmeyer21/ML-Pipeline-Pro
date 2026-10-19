@@ -1,0 +1,6 @@
+{
+  "json_gzip_source_hashes": "passed",
+  "junit": "629 passed; no failures/errors/skips",
+  "offline_reproduction": "byte-identical",
+  "powershell_examples": 3
+}
