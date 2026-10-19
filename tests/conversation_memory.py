@@ -32,7 +32,9 @@ class MemoryConversations:
             if saved_hash != body_hash:
                 raise ApiError(409, "chat_idempotency_conflict", "Different body")
             turn = self.turns[turn_id].model_copy(deep=True)
-            return TurnClaim(turn, None, self.claims[turn_id].deadline, True)
+            return TurnClaim(
+                turn, None, self.claims[turn_id].deadline, True, self.claims[turn_id].timeout_mode
+            )
         conversation_id = request.conversation_id or str(uuid4())
         key = context.project_id, conversation_id
         if request.expected_revision != self.revisions.get(key, 0):
@@ -48,7 +50,13 @@ class MemoryConversations:
             user_message=JsonFormatter(secrets).redact(request.message),
             correlation_id=context.correlation_id,
         )
-        claim = TurnClaim(turn.model_copy(deep=True), token, deadline, False)
+        claim = TurnClaim(
+            turn.model_copy(deep=True),
+            token,
+            deadline,
+            False,
+            "diagnostic_unbounded" if deadline is None else "bounded",
+        )
         self.claims[turn_id] = claim
         self.turns[turn_id] = turn
         self.requests[identity] = body_hash, turn_id

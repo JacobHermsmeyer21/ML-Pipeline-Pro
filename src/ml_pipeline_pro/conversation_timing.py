@@ -6,25 +6,29 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from time import monotonic
 
-PROFILE_NAMES = ("default", "laptop-five-minute")
+DIAGNOSTIC_PROFILE = "laptop-unbounded-diagnostic"
+PROFILE_NAMES = ("default", "laptop-five-minute", DIAGNOSTIC_PROFILE)
 
 
 @dataclass(frozen=True)
 class TimingProfile:
     name: str
-    model_seconds: int
-    turn_seconds: int
-    client_seconds: int
-    dialogue_suite_seconds: int
-    snippet_suite_seconds: int
+    model_seconds: int | None
+    turn_seconds: int | None
+    client_seconds: int | None
+    dialogue_suite_seconds: int | None
+    snippet_suite_seconds: int | None
 
     def settings_overrides(self):
         if self.name == "default":
             return {}
-        return {
+        overrides = {
             "chat_model_timeout_seconds": self.model_seconds,
             "chat_timeout_seconds": self.turn_seconds,
         }
+        if self.name == DIAGNOSTIC_PROFILE:
+            overrides["chat_unbounded_diagnostic"] = True
+        return overrides
 
 
 def timing_profile(name: str) -> TimingProfile:
@@ -32,6 +36,8 @@ def timing_profile(name: str) -> TimingProfile:
         return TimingProfile(name, 20, 60, 90, 600, 120)
     if name == "laptop-five-minute":
         return TimingProfile(name, 240, 270, 300, 3300, 2400)
+    if name == DIAGNOSTIC_PROFILE:
+        return TimingProfile(name, None, None, None, None, None)
     raise ValueError("Unknown timing profile")
 
 

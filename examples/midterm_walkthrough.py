@@ -6,16 +6,17 @@ import os
 import subprocess
 import sys
 import time
+from contextlib import ExitStack
 from pathlib import Path
 
 import httpx
 
-from ml_pipeline_pro.conversation_timing import PROFILE_NAMES, timing_profile
+from ml_pipeline_pro.conversation_timing import DIAGNOSTIC_PROFILE, PROFILE_NAMES, timing_profile
 
 
 def timed_ai_post(client, path, *, profile, result, output, **kwargs):
     """Retain failed attempts too; a late success cannot pass the response criterion."""
-    item = {"path": path}
+    item = {"path": path, "origin": str(client.base_url)}
     result.setdefault("ai_requests", []).append(item)
     started = time.monotonic()
     try:
@@ -23,9 +24,10 @@ def timed_ai_post(client, path, *, profile, result, output, **kwargs):
         item["status_code"] = response.status_code
         item["response"] = response.json()
         response.raise_for_status()
-        assert time.monotonic() - started <= profile.client_seconds, (
-            "Complete reply exceeded timing profile"
-        )
+        if profile.client_seconds is not None:
+            assert time.monotonic() - started <= profile.client_seconds, (
+                "Complete reply exceeded timing profile"
+            )
         return response
     except Exception as exc:
         item["failure_type"] = type(exc).__name__
@@ -40,6 +42,8 @@ def main():
     parser.add_argument("--origin", default="http://127.0.0.1:8000")
     parser.add_argument("--project", default="demo")
     parser.add_argument("--timing-profile", choices=PROFILE_NAMES, default="default")
+    parser.add_argument("--diagnostic-model-api-origin")
+    parser.add_argument("--diagnostic-monitoring-api-origin")
     parser.add_argument("--output", type=Path, default=Path("artifacts/midterm-walkthrough"))
     parser.add_argument(
         "--confirm-demo-proposal",
@@ -48,6 +52,12 @@ def main():
     )
     args = parser.parse_args()
     profile = timing_profile(args.timing_profile)
+    diagnostic = profile.name == DIAGNOSTIC_PROFILE
+    origins = (args.diagnostic_model_api_origin, args.diagnostic_monitoring_api_origin)
+    if diagnostic and not all(origins):
+        parser.error("Unbounded diagnostics require both explicit direct AI API origins")
+    if not diagnostic and any(origins):
+        parser.error("Direct diagnostic origins require laptop-unbounded-diagnostic")
     args.output.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
@@ -72,10 +82,32 @@ def main():
         "dialogue": [],
         "timing_profile": profile.name,
         "complete_reply_seconds": profile.client_seconds,
+        "result_kind": "unbounded_diagnostic_observation" if diagnostic else "bounded_walkthrough",
+        "bounded_profile_acceptance": False if diagnostic else None,
     }
-    with httpx.Client(
-        base_url=args.origin, headers=headers, timeout=90, trust_env=False, follow_redirects=False
-    ) as client:
+    with ExitStack() as stack:
+        client = stack.enter_context(
+            httpx.Client(
+                base_url=args.origin,
+                headers=headers,
+                timeout=90,
+                trust_env=False,
+                follow_redirects=False,
+            )
+        )
+        ai_client = (
+            stack.enter_context(
+                httpx.Client(
+                    base_url=origins[0],
+                    headers=headers,
+                    timeout=None,
+                    trust_env=False,
+                    follow_redirects=False,
+                )
+            )
+            if diagnostic
+            else client
+        )
 
         def chat(request_id, message, previous=None):
             body = {
@@ -86,7 +118,7 @@ def main():
             if previous:
                 body["conversation_id"] = previous["conversation_id"]
             response = timed_ai_post(
-                client,
+                ai_client,
                 "/api/v1/chat",
                 json=body,
                 profile=profile,
@@ -130,7 +162,7 @@ def main():
         assert arguments["objective_metric"] == "validation_f1"
         assert any(item["status"] == "succeeded" for item in tuning["tool_results"])
         replay = timed_ai_post(
-            client,
+            ai_client,
             "/api/v1/chat",
             json=body,
             profile=profile,
@@ -171,7 +203,7 @@ def main():
         assert draft["snippet"]["status"] == "validated" and draft["snippet"]["review_required"]
         assert (
             timed_ai_post(
-                client,
+                ai_client,
                 "/api/v1/chat",
                 json=draft_body,
                 profile=profile,
@@ -200,7 +232,11 @@ def main():
         check=True,
     )
     with httpx.Client(
-        base_url=args.origin, headers=headers, timeout=90, trust_env=False, follow_redirects=False
+        base_url=origins[1] if diagnostic else args.origin,
+        headers=headers,
+        timeout=None if diagnostic else 90,
+        trust_env=False,
+        follow_redirects=False,
     ) as client:
         diagnosis = timed_ai_post(
             client,
@@ -213,7 +249,11 @@ def main():
         result["monitoring"] = diagnosis.json()
         assert "inspect_seeded_delay" in result["monitoring"]["generated_advice"]["proposed_checks"]
     (args.output / "results.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    print("Real dialogue/history/proposal/decision/draft/monitoring walkthrough passed.")
+    print(
+        "Unbounded diagnostic walkthrough completed; bounded-profile acceptance is untested."
+        if diagnostic
+        else "Real dialogue/history/proposal/decision/draft/monitoring walkthrough passed."
+    )
 
 
 if __name__ == "__main__":

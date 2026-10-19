@@ -40,9 +40,10 @@ awaits review. No further timeout/resource/model changes are made.
 
 Jacob then requests health checks stop interrupting work and one or two runs with
 no reply-time limit. The [unbounded diagnostic plan](docs/plans/2026-10-19-laptop-unbounded-diagnostic-plan.md)
-records this new experiment's approved intent; the design still needs review of
-saved-turn deadline semantics and the direct AI delivery path before implementation.
-The earlier resource-only investigation is deferred. No new measurement is claimed.
+records this experiment's scope. Jacob approved the written saved-deadline/direct-AI
+design with "go for it" on October 19; implementation and verification are in
+progress. The earlier resource-only investigation is deferred. No new measurement
+is claimed until its retained execution completes.
 
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved

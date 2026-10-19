@@ -181,6 +181,32 @@ assertions remain unchanged. The resource-only plan stays unapproved/deferred.
 Implementation and verification are now authorized; measured outcomes remain
 pending. Approval does not establish successful implementation or live acceptance.
 
+The implementation adds gated nullable settings, matching saved parent/turn modes,
+saved-claim-based admission and fenced completion, a separate rendered diagnostic
+profile and explicit direct AI origins. Default/five-minute profile settings,
+probes, canonical files and public schemas remain unchanged. Original semantic
+assertions remain; diagnostic timings cannot pass finite-profile acceptance.
+Locked sync/lint/format/dependencies and package build pass. All 661 fast cases
+pass (83 integration deselected, 151.69 seconds, 80% rounded coverage); 203 focused
+cases pass, followed by 14 diagnostic cases including actual None timer inspection.
+All 73 ordinary integration cases pass against the rebuilt Kubernetes deployment
+(95.90 seconds, both opt-in flags, no selected skips). All 10 isolated recovery
+cases pass (370.64 seconds, separate opt-in, no selected skips). Live measurements
+remain pending.
+
+Same-vendor implementation review by `timing_review` finds no concrete source
+defect. Its two verification gaps lead to actual asyncio None-timer inspection
+and real-Mongo parent-write interleavings for answers/proposals after a valid
+snapshot; both now pass. The unit fixture only propagates the new private claim
+mode; it does not substitute for transactional ownership evidence. No original
+gate assertion is weakened.
+
+The same reviewer also verifies the measurement journal is saved before warmup
+and immediately after child exit, records interruptions/capture failures, hashes
+executed helpers and defers cleanup while inference may remain active. An offline
+simulated preflight refusal verifies retained failure status without model/network
+calls. These capture checks do not establish a successful live measurement.
+
 The separate OpenAI `timing_review` agent finds no blocker to plan publication.
 Its two findings require matching parent/turn timeout modes and distinguish saved
 public `running` from external uncertainty after a crash; both are incorporated

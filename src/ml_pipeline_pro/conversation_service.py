@@ -91,7 +91,7 @@ class _ResponseSnapshot:
 
 class ConversationPersistence(Protocol):
     async def reserve(
-        self, context: ToolContext, request: ChatRequest, *, deadline: datetime
+        self, context: ToolContext, request: ChatRequest, *, deadline: datetime | None
     ) -> TurnClaim: ...
     async def finish(
         self,
@@ -179,7 +179,11 @@ class ConversationService:
         request = ChatRequest.model_validate(request.model_dump())
         if len(serialized(request.model_dump())) > REQUEST_BYTES:
             raise self._limit("Conversation request exceeds byte limit")
-        deadline = self.clock() + timedelta(seconds=self.settings.chat_timeout_seconds)
+        deadline = (
+            None
+            if self.settings.chat_unbounded_diagnostic
+            else self.clock() + timedelta(seconds=self.settings.chat_timeout_seconds)
+        )
         claim = None
         turn = None
         try:
@@ -339,7 +343,7 @@ class ConversationService:
         tool_calls = 0
 
         def admission():
-            if self.clock() >= claim.deadline:
+            if claim.expired(self.clock()):
                 raise TimeoutError
 
         async def read(call: ToolCall):
@@ -520,7 +524,7 @@ class ConversationService:
         )
         if model_calls >= self.settings.chat_max_model_calls:
             raise self._limit("Conversation model-call budget exhausted before snippet generation")
-        if self.clock() >= claim.deadline:
+        if claim.expired(self.clock()):
             raise TimeoutError
         if self.snippet_generator is None:
             raise ConversationModelError("model_unavailable", "Snippet generator is unavailable")

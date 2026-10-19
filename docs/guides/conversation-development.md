@@ -175,6 +175,18 @@ token and no permission to generate; another body returns
 one. Clock/deadline/expiry values use UTC milliseconds, matching BSON, so first
 responses and saved replays agree without extending the persisted deadline.
 
+The opt-in [unbounded laptop diagnostic](laptop-five-minute.md#unbounded-timing-diagnostic)
+adds private `timeout_mode` to new parent/turn rows. Missing markers mean legacy
+`bounded` mode and require a finite original deadline. Only matching active
+`diagnostic_unbounded` parent/turn markers with null deadlines bypass time expiry;
+the same owner token, revision and active turn ID remain mandatory. Malformed or
+mismatched active records fail closed. Reconciliation and completion use saved
+mode/deadline, including when a finite-mode reader reads diagnostic history.
+Normal expiry and all action/job deadlines stay unchanged. A crashed diagnostic
+owner retains public `running`; no automatic takeover or new public status exists.
+Rollback restores finite configuration while retaining code that can read these
+additive schema-v1 rows. Do not deploy older readers blindly over them.
+
 `finish(context, claim, public_turn, proposal=...)` writes the matching,
 unexpired conversation owner in the same transaction as completion/proposal
 persistence. Result identities, original user message and correlation cannot

@@ -3,10 +3,10 @@
 Newest user direction, October 19: Jacob requests health checks stop interrupting
 work and one or two no-limit runs to observe completion time. The
 [diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md) records
-that intent; its explicit unbounded ownership mode and direct AI request path
-await human design review. The fixed-setting resource investigation is deferred,
-never approved or executed. No timeout/probe/runtime change or new model run is
-claimed by this planning update; all measured results below retain their scope.
+that intent. Jacob approved the written unbounded-ownership/direct-AI design with
+"go for it"; implementation and verification are in progress. The fixed-setting
+resource investigation is deferred, never approved or executed. No new live model
+result is claimed until retained execution completes; earlier results keep their scope.
 
 Latest October 19: Jacob approves the local gateway-health plan. Implementation
 `bf07213` passes 647 fast and 63 ordinary integration cases, real nginx negative

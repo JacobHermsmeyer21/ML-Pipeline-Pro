@@ -3,11 +3,15 @@
 import json
 from pathlib import Path
 
-from ml_pipeline_pro.conversation_timing import timing_profile
+from ml_pipeline_pro.conversation_timing import DIAGNOSTIC_PROFILE, timing_profile
 
 
-def render_laptop_profile(root: Path, output: Path) -> Path:
-    profile = timing_profile("laptop-five-minute")
+def render_laptop_profile(
+    root: Path, output: Path, *, profile_name: str = "laptop-five-minute"
+) -> Path:
+    if profile_name not in {"laptop-five-minute", DIAGNOSTIC_PROFILE}:
+        raise ValueError("Choose an explicit laptop deployment profile")
+    profile = timing_profile(profile_name)
     gateway = (root / "deploy/gateway.conf").read_text(encoding="utf-8")
     original = "proxy_read_timeout 130s;"
     if gateway.count(original) != 1:
@@ -40,7 +44,16 @@ def render_laptop_profile(root: Path, output: Path) -> Path:
         if item["kind"] != "Deployment":
             continue
         name = item["metadata"]["name"]
-        if name == "gateway":
+        if profile_name == DIAGNOSTIC_PROFILE and name in {
+            "gateway",
+            "model-api",
+            "tuning-api",
+            "monitoring-api",
+        }:
+            for container in item["spec"]["template"]["spec"]["containers"]:
+                for probe in ("startupProbe", "readinessProbe", "livenessProbe"):
+                    container.pop(probe, None)
+        elif name == "gateway":
             container = item["spec"]["template"]["spec"]["containers"][0]
             container["livenessProbe"]["httpGet"]["path"] = "/gateway-live"
         if name not in {"model-api", "monitoring-api"}:
@@ -54,14 +67,21 @@ def render_laptop_profile(root: Path, output: Path) -> Path:
             {
                 "MLPP_CHAT_MODEL_TIMEOUT_SECONDS": {
                     "name": "MLPP_CHAT_MODEL_TIMEOUT_SECONDS",
-                    "value": str(profile.model_seconds),
+                    "value": "none"
+                    if profile.model_seconds is None
+                    else str(profile.model_seconds),
                 },
                 "MLPP_CHAT_TIMEOUT_SECONDS": {
                     "name": "MLPP_CHAT_TIMEOUT_SECONDS",
-                    "value": str(profile.turn_seconds),
+                    "value": "none" if profile.turn_seconds is None else str(profile.turn_seconds),
                 },
             }
         )
+        if profile_name == DIAGNOSTIC_PROFILE:
+            overrides["MLPP_CHAT_UNBOUNDED_DIAGNOSTIC"] = {
+                "name": "MLPP_CHAT_UNBOUNDED_DIAGNOSTIC",
+                "value": "true",
+            }
         container["env"] = [
             e for e in container.get("env", []) if e["name"] not in overrides
         ] + list(overrides.values())

@@ -121,3 +121,58 @@ DNS/refused-connection logs. Before claiming laptop readiness, rebuild/redeploy,
 verify effective probe paths/source hashes, collect lightweight host/VM/probe/DNS
 resource evidence and repeat the original complete walkthrough. Wider API stalls
 or restarts require retained failure evidence and further review.
+
+## Unbounded timing diagnostic
+
+Jacob approved the [separate diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md)
+on October 19. This experiment measures one complete walkthrough, then one more
+fresh run only if the first completes correctly and the runner is idle. It is
+separate from finite-profile acceptance and from the original ten/seven gates,
+which continue rejecting unbounded timing. No live result is established by setup.
+
+Render with `--timing-profile laptop-unbounded-diagnostic`. Only this manifest
+omits startup/readiness/liveness probes on gateway/model/tuning/monitoring. Datastore,
+worker, monitoring infrastructure, replica/resource settings and canonical files
+remain unchanged. Before inference, query actual API readiness/dependencies and
+verify installed source/settings; Kubernetes Ready alone is insufficient here.
+Rendering alone does not change running pods. Build/load the current image and
+apply the rendered manifest using the [Kubernetes deployment procedure](kubernetes-demo.md),
+preserving the existing named cluster and its volumes. Wait for rollout, then run
+the explicit HTTP preflight before starting the commands below.
+
+The profile sets `MLPP_CHAT_UNBOUNDED_DIAGNOSTIC=true` and both
+`MLPP_CHAT_TIMEOUT_SECONDS=none` / `MLPP_CHAT_MODEL_TIMEOUT_SECONDS=none`.
+These nulls are accepted together only in explicit non-production diagnostic mode.
+They disable host asyncio and Ollama/LangChain waiting timers. Keep call/token/
+byte/schema assertions and existing tool, action and training/tuning failure bounds.
+
+Forward one verified model API pod to 18001 and monitoring API pod to 18002,
+alongside the backend gateway at 18000. Supply both direct origins explicitly:
+
+```powershell
+uv run --locked --extra training python scripts/render_laptop_profile.py `
+    --timing-profile laptop-unbounded-diagnostic --output artifacts/laptop-unbounded-profile
+uv run --locked --extra training python examples/midterm_walkthrough.py `
+    --origin http://127.0.0.1:18000 --project laptop-unbounded-demo `
+    --timing-profile laptop-unbounded-diagnostic `
+    --diagnostic-model-api-origin http://127.0.0.1:18001 `
+    --diagnostic-monitoring-api-origin http://127.0.0.1:18002 `
+    --confirm-demo-proposal --output artifacts/laptop-unbounded-demo-1
+```
+
+Use fresh output/record identities. No hidden wall-time process kill or generation
+retry is part of this measurement. A semantic/transport failure ends the run and
+is retained. Generated Python is never executed. Client output records actual AI
+targets and each reply's elapsed time as observations, with bounded acceptance false.
+This direct AI delivery path does not prove unlimited reliability through nginx.
+
+Only new diagnostic reservations receive matching `diagnostic_unbounded` markers
+and null deadlines on parent/turn. Saved finite deadlines and legacy bounded rows
+keep their original expiry. Completion still fences parent ownership transactionally.
+After a crash, public history retains `running`; uncertainty is external evidence,
+not a new status or automatic takeover. Keep compatible readers for these records.
+
+After completion or an explicit user stop, retain evidence/idle state, release own
+wake request and port-forwards, then restore the normal five-minute manifest and
+verify its probes and 240/270-second server settings. Preserve PVCs, records and
+artifacts. No older application rollback over diagnostic rows is implied.

@@ -62,9 +62,11 @@ def main():
             "load",
         )
         manifest_path = Path("deploy/kubernetes/stack.json")
-        if args.timing_profile == "laptop-five-minute":
+        if args.timing_profile != "default":
             root = Path(__file__).resolve().parents[1]
-            manifest_path = render_laptop_profile(root, args.output / "laptop-profile")
+            manifest_path = render_laptop_profile(
+                root, args.output / "laptop-profile", profile_name=args.timing_profile
+            )
             command(
                 ["docker", "exec", args.name + "-control-plane", "mkdir", "-p", "/mlpp-local"],
                 "tokenizer-directory",

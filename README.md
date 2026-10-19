@@ -109,3 +109,14 @@ failure boundary with `uv run --locked --extra training python scripts/check_lap
 This uses an already installed `nginx:1.28-alpine` image in a disposable test network,
 does not pull images or invoke a model, and saves DNS/TCP failure evidence under
 `artifacts/laptop-gateway-check/`.
+
+The separately approved `laptop-unbounded-diagnostic` profile measures AI completion
+with no model/turn/client waiting cutoff. It requires
+`MLPP_CHAT_UNBOUNDED_DIAGNOSTIC=true` and both chat/model timeouts set to `none`,
+is rejected in production, and removes application probes only from its rendered
+Kubernetes manifest. Use explicit direct model/monitoring API origins for long AI
+requests; the gateway remains on the backend path. Saved diagnostic turns have
+matching private mode markers and null deadlines; a crashed owner remains running
+until investigated. Default/five-minute profiles, existing finite deadlines and
+action/job budgets retain their behavior. See the
+[diagnostic procedure](docs/guides/laptop-five-minute.md#unbounded-timing-diagnostic).

@@ -41,13 +41,19 @@ class Settings(BaseSettings):
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
     chat_model_origin: str = "http://127.0.0.1:11434"
     chat_api_origin: str = "http://127.0.0.1:8000"
-    chat_timeout_seconds: float = Field(default=60, gt=0, le=300, allow_inf_nan=False)
-    chat_model_timeout_seconds: float = Field(default=20, gt=0, le=300, allow_inf_nan=False)
+    chat_unbounded_diagnostic: bool = False
+    chat_timeout_seconds: float | None = Field(default=60, gt=0, le=300, allow_inf_nan=False)
+    chat_model_timeout_seconds: float | None = Field(default=20, gt=0, le=300, allow_inf_nan=False)
     chat_action_timeout_seconds: float = Field(default=30, gt=0, le=60, allow_inf_nan=False)
     chat_max_model_calls: int = Field(default=5, strict=True, ge=1, le=10)
     chat_max_tool_calls: int = Field(default=4, strict=True, ge=1, le=8)
     chat_max_output_tokens: int = Field(default=1024, strict=True, ge=128, le=4096)
     chat_context_tokens: int = Field(default=8192, strict=True, ge=1024, le=16384)
+
+    @field_validator("chat_timeout_seconds", "chat_model_timeout_seconds", mode="before")
+    @classmethod
+    def diagnostic_null_timeout(cls, value):
+        return None if isinstance(value, str) and value.strip().lower() == "none" else value
 
     @field_validator("chat_tokenizer_path", mode="before")
     @classmethod
@@ -137,7 +143,17 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def chat_limits(self):
-        if self.chat_model_timeout_seconds > self.chat_timeout_seconds:
+        null_timeouts = (
+            self.chat_model_timeout_seconds is None and self.chat_timeout_seconds is None
+        )
+        if self.chat_unbounded_diagnostic:
+            if self.environment == "production" or not null_timeouts:
+                raise ValueError(
+                    "Unbounded diagnostics require non-production and two null timeouts"
+                )
+        elif self.chat_model_timeout_seconds is None or self.chat_timeout_seconds is None:
+            raise ValueError("Null chat timeouts require the explicit unbounded diagnostic flag")
+        if not null_timeouts and self.chat_model_timeout_seconds > self.chat_timeout_seconds:
             raise ValueError("Model timeout cannot exceed the overall chat timeout")
         if self.chat_max_output_tokens >= self.chat_context_tokens:
             raise ValueError("Chat context must leave space for input tokens")

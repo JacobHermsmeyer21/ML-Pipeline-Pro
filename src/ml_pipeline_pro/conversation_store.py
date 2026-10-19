@@ -4,7 +4,7 @@ import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, Literal
 from uuid import uuid4
 
 from pymongo.errors import DuplicateKeyError
@@ -35,8 +35,18 @@ class TurnClaim:
 
     turn: ConversationTurn
     owner_token: str | None
-    deadline: datetime
+    deadline: datetime | None
     replayed: bool
+    timeout_mode: Literal["bounded", "diagnostic_unbounded"] = "bounded"
+
+    def __post_init__(self):
+        if self.timeout_mode not in {"bounded", "diagnostic_unbounded"} or (
+            (self.deadline is None) != (self.timeout_mode == "diagnostic_unbounded")
+        ):
+            raise ValueError("Turn claim timeout mode and deadline must agree")
+
+    def expired(self, now: datetime) -> bool:
+        return self.timeout_mode == "bounded" and now >= self.deadline
 
 
 @dataclass(frozen=True)
@@ -69,6 +79,25 @@ def _mongodb_time(value: datetime) -> datetime:
         raise ValueError("Conversation time must be timezone-aware")
     value = value.astimezone(UTC)
     return value.replace(microsecond=value.microsecond // 1000 * 1000)
+
+
+def _turn_timeout(document):
+    mode = document.get("timeout_mode", "bounded")
+    deadline = document.get("deadline")
+    if mode == "diagnostic_unbounded" and deadline is None:
+        return mode, None
+    if mode == "bounded" and isinstance(deadline, datetime):
+        return mode, deadline
+    raise _conflict()
+
+
+def _claim_filter(claim: TurnClaim, now: datetime):
+    if claim.timeout_mode == "diagnostic_unbounded":
+        return {"timeout_mode": "diagnostic_unbounded", "deadline": None}
+    return {
+        "timeout_mode": {"$in": [None, "bounded"]},
+        "deadline": {"$eq": claim.deadline, "$gt": now},
+    }
 
 
 class ConversationStore:
@@ -144,6 +173,25 @@ class ConversationStore:
     def _scope(project_id: str, conversation_id: str) -> dict[str, Any]:
         return {"project_id": project_id, "conversation_id": conversation_id}
 
+    async def _active_timeout(self, conversation, session):
+        """Validate both saved sides before expiry or completion can use an exception."""
+        saved = await self.turns.find_one(
+            {
+                "_id": conversation["active_turn_id"],
+                **self._scope(conversation["project_id"], conversation["_id"]),
+            },
+            session=session,
+        )
+        if (
+            saved is None
+            or saved.get("owner_token") != conversation["owner_token"]
+            or saved.get("public", {}).get("revision") != conversation["revision"]
+            or saved.get("public", {}).get("status") != "running"
+            or _turn_timeout(saved) != _turn_timeout(conversation)
+        ):
+            raise _conflict()
+        return _turn_timeout(conversation)
+
     async def _reconcile(self, project_id: str, conversation_id: str, session):
         query = {"_id": conversation_id, "project_id": project_id}
         conversation = await self.conversations.find_one(query, session=session)
@@ -151,7 +199,10 @@ class ConversationStore:
             raise ApiError(404, "conversation_not_found", "Conversation was not found")
         now = self._now()
         scope = self._scope(project_id, conversation_id)
-        expired_turn = conversation["owner_token"] is not None and conversation["deadline"] <= now
+        expired_turn = False
+        if conversation["owner_token"] is not None:
+            mode, deadline = await self._active_timeout(conversation, session)
+            expired_turn = mode == "bounded" and deadline <= now
         expired_actions = {
             **scope,
             "public.status": "pending_confirmation",
@@ -237,13 +288,21 @@ class ConversationStore:
         return turn
 
     async def reserve(
-        self, context: ToolContext, request: ChatRequest, *, deadline: datetime
+        self, context: ToolContext, request: ChatRequest, *, deadline: datetime | None
     ) -> TurnClaim:
         """Atomically reserve one new turn or replay its project-scoped identity."""
         request = ChatRequest.model_validate(request.model_dump())
-        deadline = _mongodb_time(deadline)
-        if deadline - self._now() > timedelta(seconds=self._settings.chat_timeout_seconds):
-            raise ValueError("Turn deadline exceeds the configured timeout")
+        if deadline is None:
+            if not self._settings.chat_unbounded_diagnostic:
+                raise ValueError("Null turn deadline requires explicit diagnostic settings")
+            mode = "diagnostic_unbounded"
+        else:
+            deadline = _mongodb_time(deadline)
+            if self._settings.chat_timeout_seconds is None or (
+                deadline - self._now() > timedelta(seconds=self._settings.chat_timeout_seconds)
+            ):
+                raise ValueError("Turn deadline exceeds the configured timeout")
+            mode = "bounded"
         conversation_id = request.conversation_id or str(uuid4())
         turn_id, token = str(uuid4()), str(uuid4())
         body_hash = fingerprint(request.model_dump())
@@ -267,6 +326,7 @@ class ConversationStore:
                 "request_hash": body_hash,
                 "owner_token": token,
                 "deadline": deadline,
+                "timeout_mode": mode,
                 "created_at": now,
                 "updated_at": now,
                 "public": public.model_dump(),
@@ -290,9 +350,13 @@ class ConversationStore:
                     {"_id": saved["_id"], "project_id": context.project_id}, session=session
                 )
                 return TurnClaim(
-                    await self._public_turn(saved, session), None, saved["deadline"], True
+                    await self._public_turn(saved, session),
+                    None,
+                    saved["deadline"],
+                    True,
+                    _turn_timeout(saved)[0],
                 )
-            if deadline <= self._now():
+            if deadline is not None and deadline <= self._now():
                 raise ApiError(504, "chat_timeout", "Turn deadline expired before reservation")
             if request.conversation_id is None:
                 if request.expected_revision != 0:
@@ -328,6 +392,7 @@ class ConversationStore:
                         "owner_token": token,
                         "active_turn_id": turn_id,
                         "deadline": deadline,
+                        "timeout_mode": mode,
                         "updated_at": self._now(),
                     },
                 },
@@ -344,7 +409,7 @@ class ConversationStore:
                 session=session,
             )
             await self.turns.insert_one(document, session=session)
-            return TurnClaim(public.model_copy(deep=True), token, deadline, False)
+            return TurnClaim(public.model_copy(deep=True), token, deadline, False, mode)
 
         try:
             return await self._transaction(commit)
@@ -404,6 +469,18 @@ class ConversationStore:
 
         async def commit(session):
             scope = self._scope(context.project_id, claim.turn.conversation_id)
+            parent = await self.conversations.find_one(
+                {"_id": claim.turn.conversation_id, "project_id": context.project_id},
+                session=session,
+            )
+            if (
+                parent is None
+                or parent.get("owner_token") != claim.owner_token
+                or parent.get("active_turn_id") != claim.turn.turn_id
+                or await self._active_timeout(parent, session)
+                != (claim.timeout_mode, claim.deadline)
+            ):
+                raise _conflict()
             owner = await self.conversations.update_one(
                 {
                     "_id": claim.turn.conversation_id,
@@ -411,7 +488,7 @@ class ConversationStore:
                     "revision": claim.turn.revision,
                     "active_turn_id": claim.turn.turn_id,
                     "owner_token": claim.owner_token,
-                    "deadline": {"$gt": self._now()},
+                    **_claim_filter(claim, self._now()),
                 },
                 {
                     "$inc": {"fence_revision": 1},
@@ -431,7 +508,7 @@ class ConversationStore:
                 "_id": claim.turn.turn_id,
                 "owner_token": claim.owner_token,
                 "public.status": "running",
-                "deadline": {"$gt": self._now()},
+                **_claim_filter(claim, self._now()),
             }
             saved = await self.turns.find_one(query, session=session)
             if saved is None or any(
@@ -450,7 +527,7 @@ class ConversationStore:
             if action_document is not None:
                 await self.actions.insert_one(action_document, session=session)
             changed = await self.turns.update_one(
-                {**query, "deadline": {"$gt": self._now()}},
+                {**query, **_claim_filter(claim, self._now())},
                 {"$set": {"public": public, "owner_token": None, "updated_at": self._now()}},
                 session=session,
             )

@@ -65,9 +65,10 @@ does not close live timeout-expiry or original-record reproduction gaps.
 Later user direction changes the experiment: Jacob requests ignoring health checks
 and "a run or two with no limit" to measure completion time. The
 [new diagnostic plan](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md)
-records that approved intent and pending design review. Removing just HTTP waits
+records that intent; Jacob then approves the written design with "go for it".
+Implementation and verification are authorized. Removing just HTTP waits
 would leave model/host timers and the durable turn-expiry fence active. A true
 unbounded diagnostic must explicitly distinguish new diagnostic ownership from
 old saved finite deadlines; it cannot establish a normal five-minute gate pass.
-The resource-only plan is deferred and unapproved. No new run or runtime change
-has occurred while preparing this design.
+The resource-only plan is deferred and unapproved. Keep implementation checks and
+future no-limit measurements separate from normal five-minute acceptance.
