@@ -1,6 +1,6 @@
 # Attribute laptop scheduling stalls before changing resources
 
-- Status: awaiting human review; no new inference or resource change authorized
+- Status: deferred by later user direction; never approved or executed
 - Date: 2026-10-19
 - Source baseline: `bf07213` on `person-a/conversation-foundation`
 - Request: next step after the approved health implementation's failed live demo
@@ -137,7 +137,11 @@ diagnostic tooling after retained evidence is checked.
 
 ## Human review and approval
 
-Pending. This follows the approved health plan's first-failure stop condition.
+Not approved. Jacob subsequently requests health checks stop interrupting the demo
+and one or two measurements with no reply-time limit. That direction defers this
+fixed-setting resource investigation in favor of the
+[unbounded diagnostic design](2026-10-19-laptop-unbounded-diagnostic-plan.md).
+This follows the approved health plan's first-failure stop condition.
 Approval would cover only this fixed-setting diagnostic and its measurement tools.
 A resource allocation, thread/probe/model change or controlled comparison would
 require an updated plan and renewed review.

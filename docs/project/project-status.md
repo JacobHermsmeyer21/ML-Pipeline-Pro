@@ -1,5 +1,13 @@
 # Project audit and development status
 
+Newest user direction, October 19: Jacob requests health checks stop interrupting
+work and one or two no-limit runs to observe completion time. The
+[diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md) records
+that intent; its explicit unbounded ownership mode and direct AI request path
+await human design review. The fixed-setting resource investigation is deferred,
+never approved or executed. No timeout/probe/runtime change or new model run is
+claimed by this planning update; all measured results below retain their scope.
+
 Latest October 19: Jacob approves the local gateway-health plan. Implementation
 `bf07213` passes 647 fast and 63 ordinary integration cases, real nginx negative
 checks, preserved-data node restart and all five implementation CI jobs. The

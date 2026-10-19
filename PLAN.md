@@ -38,6 +38,12 @@ liveness stalls and Kubernetes restarts it. The server saves the turn within
 [bounded diagnostic plan](docs/plans/2026-10-19-laptop-resource-diagnosis-plan.md)
 awaits review. No further timeout/resource/model changes are made.
 
+Jacob then requests health checks stop interrupting work and one or two runs with
+no reply-time limit. The [unbounded diagnostic plan](docs/plans/2026-10-19-laptop-unbounded-diagnostic-plan.md)
+records this new experiment's approved intent; the design still needs review of
+saved-turn deadline semantics and the direct AI delivery path before implementation.
+The earlier resource-only investigation is deferred. No new measurement is claimed.
+
 The [October 13 midterm scope](docs/project/midterm-scope.md) is the current
 target: all nine requirements in one minimal local demonstration. Jacob approved
 the [delivery plan](docs/plans/2026-10-13-midterm-delivery-plan.md); its bounded
