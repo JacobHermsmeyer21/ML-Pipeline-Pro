@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "local_links_and_anchors": 36,
+  "changed_markdown_files": 4,
+  "archive_payload_hashes": 26,
+  "python_capture_syntax": "passed",
+  "source_and_measurement_claims": "passed",
+  "original_dataset_hash_unchanged": true
+}

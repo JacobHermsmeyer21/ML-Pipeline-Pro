@@ -1,0 +1,106 @@
+{
+  "prepare.py": {
+    "sha256": "4b81d1ffff7c395d686a74b2260c0f21757bd32da44e930b0187ca4f98102aaf",
+    "size_bytes": 3835
+  },
+  "browser_demo.py": {
+    "sha256": "747b04a8da1d4e7c51a9129da62126e89ae252b945b79276d4daf70dab247965",
+    "size_bytes": 9167
+  },
+  "browser_inspection.py": {
+    "sha256": "f3c0f4200579f018b09e0a32f506fbbb411d542ee4bb08ad8fb4570154aed989",
+    "size_bytes": 4989
+  },
+  "archive.py": {
+    "sha256": "49b7b46ed934f28614f11c3a851ba3f4ef066c42ff6b98c3ed9408cd091ab477",
+    "size_bytes": 4106
+  },
+  "verify.py": {
+    "sha256": "1736e4a3fda8ffdc8304ccc66d8be52262c1989115c0bcd7d6f459021dbbad18",
+    "size_bytes": 3321
+  },
+  "preparation.json": {
+    "sha256": "c6528b3ea7d04224b77fbff9fe3eafecb34e1f318d26f8faad66af87ce1a6cc5",
+    "size_bytes": 1766
+  },
+  "browser-before.json": {
+    "sha256": "13b9ee2c88d894567795647f9e1fa0187d8f8dc597a793730ee5d92114670d0f",
+    "size_bytes": 990
+  },
+  "browser-after.json": {
+    "sha256": "1e113104eefab7dce09d0428ec3927b32bd07f073f2e162519c2beef0d790b03",
+    "size_bytes": 10187
+  },
+  "browser-inspection.json": {
+    "sha256": "1b691970cc6f29211bf911bcb2e230a533a308b122ba48356d8c35353396de04",
+    "size_bytes": 5518
+  },
+  "browser-graphs.json": {
+    "sha256": "8ebdc7a8ad150ab02df25e216ea9b7a0707b7f1196a9620b85c1649c580ef2f7",
+    "size_bytes": 2519
+  },
+  "workload.json": {
+    "sha256": "d9eb3419eae8dd279bbdceab687013726b99da26c65d44839f80d72d28871a25",
+    "size_bytes": 12786
+  },
+  "fast.log": {
+    "sha256": "c093c7ba793b509c621b1e341b4d6dfe278b08a4d2de9b85969ff56868ac2fa1",
+    "size_bytes": 19430
+  },
+  "fast.junit.xml": {
+    "sha256": "f5da1845552571217c7620f3e39c2a35012461bc33943de58e1c043e15babb04",
+    "size_bytes": 195986
+  },
+  "sync.log": {
+    "sha256": "7ca1ebb9df81cc9e815e4a22e7ba262943b9bdf653c58a7fbc6bdcc1eb424eaa",
+    "size_bytes": 832
+  },
+  "lint.log": {
+    "sha256": "af352a86840ad0af3d37ea0d9197f868363a6dac6b1c2ef5d2722f6b41d2d9af",
+    "size_bytes": 42
+  },
+  "format.log": {
+    "sha256": "bf3436ab2af36f92261d57b449983bda04eb78f3352e0ead1b0977efb2510af4",
+    "size_bytes": 60
+  },
+  "dependencies.log": {
+    "sha256": "3131a4cd4c8eccf3d6d7cadacc44b6f1df0d8bc8baf2d563927a2b1df815810c",
+    "size_bytes": 850
+  },
+  "package-build.log": {
+    "sha256": "59f0401d36777295e1a781e3fad939f9e8dc96750c72218f16a045a2eed89638",
+    "size_bytes": 1358
+  },
+  "package-verification.json": {
+    "sha256": "b575349bcad01e787a163af6ccdd4499c13035f647f38abe91e913533eec4518",
+    "size_bytes": 218
+  },
+  "image-build.log": {
+    "sha256": "3edd297cf885c4cf9ab3d21083f65050b956bd107608b9cf4e1ff206c8640f3a",
+    "size_bytes": 6642
+  },
+  "deploy.log": {
+    "sha256": "3ebbb6ebae1234c7e5eef9b3de678b65775a24dccb91c1aa6b7033b5d5bf82a5",
+    "size_bytes": 1506
+  },
+  "original-failure.png": {
+    "sha256": "7e274f31e6a2f563b791d04ed2ae63cd1f1382f2108ab48ee9ab1cc4d3b7b4cd",
+    "size_bytes": 229081
+  },
+  "inspection-failure.png": {
+    "sha256": "6c7ae3143dbc20dedce4a2eadd05d58abec216428e4b1ad7f1e6131988ec695a",
+    "size_bytes": 173672
+  },
+  "browser_control.py": {
+    "sha256": "c7ec335b4aed512023a5305ac0da2df3684c76eb01088064eb5c15672bef4ff7",
+    "size_bytes": 5505
+  },
+  "workspace.js": {
+    "sha256": "1103fb72f954911df53bb710ff4b8c5f7f3e6e9d6e5e423519cbbb19a00cb8b6",
+    "size_bytes": 25628
+  },
+  "source-baseline.txt": {
+    "sha256": "0bc25919a9ca6b2b3dfa0bfba2dcaaefb2664956d030f14782f6d723c01429d4",
+    "size_bytes": 41
+  }
+}

@@ -1,0 +1,243 @@
+{
+  "captured_at": "2026-10-19T23:55:57.743682+00:00",
+  "source_baseline": "14c62f85d991d2a5bf7c72947e3812550eece493",
+  "model_api_image": "sha256:1947f9c3658622d1a908efe9b7f5fd8db5df5c1f56cd9199074c67e6a23154d5",
+  "workspace_js_sha256": "1103fb72f954911df53bb710ff4b8c5f7f3e6e9d6e5e423519cbbb19a00cb8b6",
+  "request_reference": "c7064d87d9e7fc9253bd5cb79a212413",
+  "preparation": {
+    "source_revision": "14c62f85d991d2a5bf7c72947e3812550eece493",
+    "source_file": "Downloads/drug200.csv",
+    "source_sha256": "10caebf3b055e149ef1e7494042031e510b47ba644f3c304bbb86c428fe89b66",
+    "source_rows": 200,
+    "source_classes": {
+      "DrugY": 91,
+      "drugC": 16,
+      "drugX": 54,
+      "drugA": 23,
+      "drugB": 16
+    },
+    "prepared_file": "drug200-demo.csv",
+    "prepared_sha256": "79e503b35338bf89eb38e0f7ad07d030caff401a02f750bc2f7a2febd99f917c",
+    "feature_columns": [
+      "Age",
+      "Na_to_K",
+      "Sex_F",
+      "Sex_M",
+      "BP_HIGH",
+      "BP_LOW",
+      "BP_NORMAL",
+      "Cholesterol_HIGH",
+      "Cholesterol_NORMAL"
+    ],
+    "target_column": "Drug",
+    "split_column": "split",
+    "label_mapping": {
+      "DrugY": 0,
+      "drugA": 1,
+      "drugB": 2,
+      "drugC": 3,
+      "drugX": 4
+    },
+    "fixed_category_vocabularies": {
+      "Sex": [
+        "F",
+        "M"
+      ],
+      "BP": [
+        "HIGH",
+        "LOW",
+        "NORMAL"
+      ],
+      "Cholesterol": [
+        "HIGH",
+        "NORMAL"
+      ]
+    },
+    "seed": 42,
+    "split_method": "Per-class shuffle; floor 60% train, floor 20% validation, remainder test",
+    "row_counts": {
+      "train": 117,
+      "validation": 38,
+      "test": 45
+    },
+    "class_counts": {
+      "train": {
+        "0": 54,
+        "4": 32,
+        "3": 9,
+        "1": 13,
+        "2": 9
+      },
+      "validation": {
+        "0": 18,
+        "3": 3,
+        "4": 10,
+        "2": 3,
+        "1": 4
+      },
+      "test": {
+        "3": 4,
+        "0": 19,
+        "4": 12,
+        "2": 4,
+        "1": 6
+      }
+    },
+    "original_unchanged": true,
+    "note": "One educational classification demo. Numeric normalization is fitted by the existing trainer on training rows only. No clinical validation or treatment use."
+  },
+  "dataset": {
+    "name": "drug200_demo",
+    "version": "v1",
+    "uri": "uploads/demo/79e503b35338bf89eb38e0f7ad07d030caff401a02f750bc2f7a2febd99f917c.csv",
+    "feature_columns": [
+      "Age",
+      "Na_to_K",
+      "Sex_F",
+      "Sex_M",
+      "BP_HIGH",
+      "BP_LOW",
+      "BP_NORMAL",
+      "Cholesterol_HIGH",
+      "Cholesterol_NORMAL"
+    ],
+    "target_column": "Drug",
+    "split_column": "split",
+    "id": "667f758c-dfd2-4afd-8ee3-f51234d98bd3",
+    "project_id": "demo",
+    "schema_version": 1,
+    "created_at": "2026-10-19T23:51:50.595000Z",
+    "updated_at": "2026-10-19T23:51:50.595000Z",
+    "sha256": "79e503b35338bf89eb38e0f7ad07d030caff401a02f750bc2f7a2febd99f917c",
+    "num_classes": 5,
+    "row_counts": {
+      "train": 117,
+      "validation": 38,
+      "test": 45
+    }
+  },
+  "model": {
+    "name": "drug200_classifier_235150",
+    "framework": "pytorch",
+    "task": "classification",
+    "architecture": "mlp",
+    "id": "6d2e21f7-c0d4-42fc-b6b5-164c913a2170",
+    "project_id": "demo",
+    "schema_version": 1,
+    "created_at": "2026-10-19T23:51:50.843000Z",
+    "updated_at": "2026-10-19T23:51:50.843000Z"
+  },
+  "training": {
+    "dataset_id": "667f758c-dfd2-4afd-8ee3-f51234d98bd3",
+    "model_id": "6d2e21f7-c0d4-42fc-b6b5-164c913a2170",
+    "config": {
+      "seed": 42,
+      "epochs": 30,
+      "batch_size": 16,
+      "learning_rate": 0.01,
+      "hidden_units": 16,
+      "max_runtime_seconds": 60
+    },
+    "id": "4456f825-3710-41f7-bd74-9fae5430be46",
+    "project_id": "demo",
+    "schema_version": 1,
+    "created_at": "2026-10-19T23:51:51.013000Z",
+    "updated_at": "2026-10-19T23:51:55.153000Z",
+    "status": "succeeded",
+    "attempts": 1,
+    "heartbeat_at": "2026-10-19T23:51:51.075000Z",
+    "started_at": "2026-10-19T23:51:51.075000Z",
+    "completed_at": "2026-10-19T23:51:55.153000Z",
+    "metrics": {
+      "validation_accuracy": 1,
+      "validation_f1": 1,
+      "best_epoch": 24,
+      "test_accuracy": 0.9555555582046509,
+      "test_f1": 0.9586666666666666
+    },
+    "artifacts": [
+      {
+        "name": "model.pt",
+        "uri": "demo/4456f825-3710-41f7-bd74-9fae5430be46/992b2a00-e633-4b1a-90c9-24bfbf303cba/model.pt",
+        "sha256": "15b43cc6d50b4e026c229465d4285728fa78d28e7a0edd6742fa677ac68b92b0",
+        "size_bytes": 3925
+      },
+      {
+        "name": "manifest.json",
+        "uri": "demo/4456f825-3710-41f7-bd74-9fae5430be46/992b2a00-e633-4b1a-90c9-24bfbf303cba/manifest.json",
+        "sha256": "9dbfa6025c647a7daa619b840019f797d92ee8a7d06c4d3ab5c2bbcdb02d8cab",
+        "size_bytes": 1595
+      }
+    ],
+    "dependencies": {
+      "python": "3.11.17",
+      "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+      "torch": "2.14.1+cpu",
+      "numpy": "2.4.6",
+      "ml_pipeline_pro": "0.1.0"
+    },
+    "error_summary": null,
+    "tuning_job_id": null,
+    "tuning_trial_number": null,
+    "test_evaluated": true
+  },
+  "version": {
+    "id": "231b8e87-0e58-434d-bc54-ecf45689b62f",
+    "project_id": "demo",
+    "schema_version": 1,
+    "created_at": "2026-10-19T23:51:56.365000Z",
+    "updated_at": "2026-10-19T23:51:56.365000Z",
+    "model_id": "6d2e21f7-c0d4-42fc-b6b5-164c913a2170",
+    "version": "v1",
+    "experiment_id": "4456f825-3710-41f7-bd74-9fae5430be46",
+    "artifact": {
+      "name": "model.pt",
+      "uri": "demo/4456f825-3710-41f7-bd74-9fae5430be46/992b2a00-e633-4b1a-90c9-24bfbf303cba/model.pt",
+      "sha256": "15b43cc6d50b4e026c229465d4285728fa78d28e7a0edd6742fa677ac68b92b0",
+      "size_bytes": 3925
+    },
+    "dependencies": {
+      "python": "3.11.17",
+      "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+      "torch": "2.14.1+cpu",
+      "numpy": "2.4.6",
+      "ml_pipeline_pro": "0.1.0"
+    }
+  },
+  "baseline_browser_reproduced": "passed",
+  "corrected_browser_demo": "passed",
+  "agent_inspection": {
+    "status": "completed",
+    "conversation_id": "be3baf46-ddb3-4b12-afa6-62b7875d353b",
+    "facts": [
+      {
+        "record_id": "4456f825-3710-41f7-bd74-9fae5430be46",
+        "field": "metrics.validation_f1",
+        "value": 1
+      }
+    ],
+    "model": {}
+  },
+  "initial_graph_capture": {
+    "status": "failed",
+    "failure": {
+      "type": "AssertionError",
+      "message": "[1, 0, 0]"
+    },
+    "cause": "lazy iframes not scrolled into view"
+  },
+  "corrected_graph_capture": "passed",
+  "fast_checks": {
+    "passed": 684,
+    "integration_deselected": 85,
+    "selected_skips": 0,
+    "seconds": 52.15,
+    "coverage_rounded_percent": 81
+  },
+  "lint_format_dependencies_locked_sync": "passed",
+  "package_build": "passed",
+  "full_ordinary_and_recovery_suites": "not rerun; actual upload-to-worker demo exercised",
+  "review": "implementing-assistant self-review; no independent review",
+  "raw_archive_sha256": "0a61b2342f15e3fa6b722db7644882df8d8da6bc91c93c3d8abb23d12eabfa33",
+  "git_push": "reported in final session handoff after this capture"
+}

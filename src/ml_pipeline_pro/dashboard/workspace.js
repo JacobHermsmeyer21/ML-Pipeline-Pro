@@ -175,13 +175,24 @@ async function chooseFile() {
     $("dataset-features").value = headers.filter((item) => item !== $("dataset-target").value && item !== $("dataset-split").value && /^[a-zA-Z0-9_-]{1,80}$/.test(item)).join(", ");
   } catch (error) { report(error, "upload-result"); }
 }
+function featureColumns() {
+  return $("dataset-features").value.split(",").map((item) => item.trim()).filter(Boolean);
+}
+function excludeMappedColumns() {
+  const reserved = new Set([$("dataset-target").value, $("dataset-split").value]);
+  $("dataset-features").value = featureColumns().filter((column) => !reserved.has(column)).join(", ");
+}
 async function uploadFile(event) {
   event.preventDefault(); if (state.uploadBusy) return;
   const file = $("dataset-file").files[0]; if (!file) return;
   if (!state.config?.uploads_enabled) { notify("Dataset uploads are unavailable in this stack.", "warning", "upload-result"); return; }
   if (file.size > state.config.max_upload_bytes) { notify("File exceeds the current upload limit.", "error", "upload-result"); return; }
+  const features = featureColumns(), columns = [...features, $("dataset-target").value, $("dataset-split").value];
+  if (!features.length || new Set(columns).size !== columns.length) {
+    notify("Choose at least one feature, with no duplicates. Target and split columns must differ and cannot also be features.", "error", "upload-result"); return;
+  }
   const query = new URLSearchParams({ name: $("dataset-name").value, version: $("dataset-version").value, target_column: $("dataset-target").value, split_column: $("dataset-split").value });
-  for (const column of $("dataset-features").value.split(",").map((item) => item.trim()).filter(Boolean)) query.append("feature_columns", column);
+  for (const column of features) query.append("feature_columns", column);
   state.uploadBusy = true; $("upload-submit").disabled = true; state.mutations++;
   try {
     const dataset = await api(`/datasets/upload?${query}`, { method: "POST", body: file, headers: { "Content-Type": "text/csv" }, raw: true, timeout: 45000 });
@@ -281,6 +292,9 @@ export function initWorkspace() {
     });
   });
   $("refresh-runs").addEventListener("click", loadWorkspace); $("dataset-file").addEventListener("change", chooseFile); $("upload-form").addEventListener("submit", uploadFile);
+  for (const id of ["dataset-target", "dataset-split"]) {
+    for (const event of ["input", "change"]) $(id).addEventListener(event, excludeMappedColumns);
+  }
   $("monitor-version").addEventListener("change", () => { state.selectedVersion = $("monitor-version").value; $("diagnosis-result").replaceChildren(); updateMonitoring().catch(report); });
   $("monitor-range").addEventListener("change", () => updateMonitoring().catch(report)); $("diagnose-button").addEventListener("click", diagnose);
 }

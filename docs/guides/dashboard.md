@@ -66,6 +66,28 @@ provided. New dataset versions get immutable file references; changing content
 under the same name/version returns 409. Matching upload replay returns its saved
 record rather than creating another version.
 
+### Column mapping and an unprepared CSV
+
+Changing the target or split column removes that column from the feature list.
+Manually reintroducing an overlap, repeating a feature, or using the same target
+and split is rejected in the browser before upload. The server independently
+enforces the same distinct-column requirement.
+
+The original `drug200.csv` has unique headers, but selecting `Drug` as the target
+previously left it in the automatically populated features and produced
+`Dataset columns must be distinct`. It also contains categorical inputs and
+string labels, and lacks the required split column. Correcting the mapping alone
+does not prepare that file for this numeric classifier.
+
+The [October 19 drug200 demo](../evidence/2026-10-19-drug200-demo/README.md) records
+a separate prepared copy, fixed category/label mappings, deterministic stratified
+splits, and the completed browser upload/training run. On this desktop the copy is
+`artifacts/drug200-demo/drug200-demo.csv`; choose target `Drug`, split `split`, and
+the nine remaining columns as features. The saved dataset is `drug200_demo`,
+version `v1`, in project `demo`. The original Downloads file remains unchanged.
+This is explicit preparation for that run; the dashboard still requires prepared
+numeric CSVs.
+
 ## Monitoring data and history
 
 Training alone creates no inference observations. A newly registered version can
