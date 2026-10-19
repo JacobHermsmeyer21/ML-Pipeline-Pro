@@ -3,3 +3,4 @@
 docs/evidence/2026-10-08-conversation-actions/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-18-laptop-qwen-diagnostic/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 docs/evidence/2026-10-18-qwen-cost-investigation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/evidence/2026-10-19-laptop-cpu-trials/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

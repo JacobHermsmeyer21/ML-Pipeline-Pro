@@ -31,8 +31,8 @@ four-thread configuration; no inference setting is retained or deployed. Three
 pairs establish descriptive evidence only, with no statistical significance or
 claim about other power conditions. [Raw results](result.json) and the
 [reproducible analysis](analysis.json) retain individual observations and ranges.
-Each trial directory retains exact request/warmup/response/result JSON and filtered
-runner logs; for example [the two-thread response](screen-2-candidate/response.json).
+Each trial directory retains exact request/warmup/response/result JSON and gzip
+copies of filtered runner logs; for example [the two-thread response](screen-2-candidate/response.json).
 
 Every response uses 1,109 prompt tokens and the exact unrepaired
 `get_experiment(experiment_id="exp-low")` first step. Both runtime response and
@@ -97,6 +97,17 @@ After reviewing the payload categories and the confirmed destination
 names/PIDs/resource counters, hardware/battery readings, package versions and
 synthetic model requests/responses. No process command lines, credentials or real
 conversation bodies are included.
+
+The first published commit normalized line endings in 33 evidence files, causing
+their Git blob hashes to differ from the recorded raw-byte manifest. The scoped
+`.gitattributes` rule now preserves this bundle byte for byte, following the
+repository's existing evidence convention. Original local bytes were restored to
+the index; indexed/committed blobs are checked against the manifest. Measurements
+and source hashes are unchanged. This packaging correction adds no application
+behavior and does not require rerunning inference.
+Captured runner logs also contain intentional trailing spaces from the runtime.
+They are stored as gzip, like the raw resource observations, so their original
+bytes survive without rewriting logs to satisfy source whitespace rules.
 
 [Machine metadata](machine.json) identifies four cores/logical processors,
 19,261,304,832 bytes physical RAM and Vega 6. CPU/manufacturer/model were freshly

@@ -289,3 +289,13 @@ Windows process names/PIDs/resource counters, hardware/battery readings, package
 versions and synthetic model requests/responses. This approval authorizes the
 complete retained bundle and working-branch push; it does not change experiment
 scope, application settings or the pending deployment design.
+
+Post-push packaging check: Git's default LF normalization changed 33 evidence blobs
+relative to the raw-byte manifest. Extend the existing evidence-specific `-text`
+attribute to this bundle and restore its original local bytes. Verify every staged
+and committed blob against the refreshed manifest, alongside reproduction/link/
+syntax/whitespace checks. This mechanical preservation fix changes no application
+code, measured results or assertions; no new inference run is selected.
+Runtime log lines contain original trailing spaces. Store those logs as gzip and
+verify decompression against the original artifacts; retain source/documentation
+whitespace gates without editing captured runtime bytes.
