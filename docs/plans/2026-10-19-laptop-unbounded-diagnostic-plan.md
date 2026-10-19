@@ -1,11 +1,11 @@
 # Measure laptop completion without AI wait cutoffs
 
-- Status: requirements approved by user direction; implementation design awaiting review
+- Status: approved; implementation and verification in progress
 - Date: 2026-10-19
 - Source baseline: `98b4908` on `person-a/conversation-foundation`
 - Request: stop health checks interrupting work; measure one or two runs without a reply-time limit
 - Human direction: Jacob says "yeah, lets not worry about the health checks, lets just let it work until its finished", then "lets do a run or two with no limit and see how long it takes, then go from there"
-- Human design review: pending; those instructions approve the experiment's purpose, not the new persisted deadline semantics below
+- Human design review: Jacob approved this written design on October 19, 2026: "go for it"
 - Separate review: OpenAI `timing_review` read-only design review completed; different-vendor review unavailable
 
 ## Proposed behavior and purpose
@@ -168,16 +168,18 @@ from the measured results; no further budget or resource change is implied.
 
 ## Human review and approval
 
-Jacob approves the experiment's intent and one-or-two-run scope in the quotes
-above. This written design introduces an explicit exception to saved-turn expiry
-and a direct AI delivery path; those details still need human review before code
-or runtime configuration changes. The previous resource-diagnosis plan remains
-unapproved and deferred by this new direction. No unlimited run has been executed.
+Jacob approved the written plan on October 19, 2026: "go for it", responding to
+the published design and its explicit saved-turn-expiry/direct-AI-path scope.
+Approval covers its diagnostic settings, parent/turn ownership handling,
+probe-free application deployment, required checks, one complete measured run and
+a second fresh run only after a correct first result and observed idleness.
+Normal profiles, prior finite deadlines, action/job budgets and original semantic
+assertions remain unchanged. The resource-only plan stays unapproved/deferred.
 
 ## Implementation outcome
 
-Pending design review. Only read-only source/evidence inspection and preparation
-of this plan have occurred. No probe, timeout, model, record or deployment change.
+Implementation and verification are now authorized; measured outcomes remain
+pending. Approval does not establish successful implementation or live acceptance.
 
 The separate OpenAI `timing_review` agent finds no blocker to plan publication.
 Its two findings require matching parent/turn timeout modes and distinguish saved
