@@ -1,10 +1,10 @@
 # Attribute and reduce laptop Qwen inference cost
 
-- Status: awaiting review; source/evidence investigation complete, live trials outstanding
+- Status: approved for laptop resource profiling and request-local thread trials; implementation in progress
 - Date: 2026-10-18
 - Source baseline: `9e2dcaf` / `person-a/conversation-foundation` (application unchanged from `91b0aef`)
 - Request: investigate CPU contention and prompt-processing cost and make the demo faster.
-- Human reviewer/approval: pending for the experiments and implementation below.
+- Human reviewer/approval: Jacob, October 18, 2026: "run the laptop profiling and thread tirals test" approves steps 2-3 below.
 - Independent review: not yet obtained; seek separate review of sampling, deadlines, rate arithmetic and any inference configuration before live trials.
 
 ## Proposed behavior and purpose
@@ -153,13 +153,18 @@ hardware/latency limit and request a separately reviewed demo arrangement.
 
 ## Human review and approval
 
-Pending. The current request authorizes investigation; it does not approve a
-previously unseen inference/prompt design under [the repository method](../project/development-methodology.md#the-five-stage-loop).
-The previous [diagnostic approval](2026-10-18-laptop-qwen-diagnostic-plan.md#human-review-and-approval)
-explicitly excluded follow-up inference-setting and prompt experiments. Review
-this bounded experiment plan before implementing steps 2-3. Step 4 records future
-work requiring its own concrete review. No production change
-is authorized by an experimental speedup alone.
+Jacob approved steps 2-3 on October 18, 2026 with "run the laptop profiling and
+thread tirals test". Scope is the bounded observer and request-local 2/3/4-thread
+experiments described above, with unchanged application settings and prompts.
+Step 4 and the separate deployment timing-profile plan remain outside this
+approval. No production change is authorized by an experimental speedup alone.
+
+The new session verifies the actual Acer Aspire A515-46 / Ryzen 3 3350U, four
+cores/logical processors and 19,261,304,832 bytes RAM using local CIM. The earlier
+workstation observation above is historical. Ollama reports 0.40.2; one existing
+ten-service repository Compose stack is running, with no duplicate stack found.
+Keep that stack running. Independent review is unavailable in this session;
+record self-review and deterministic checks without calling them independent.
 
 ## Implementation outcome
 
