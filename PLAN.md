@@ -158,8 +158,9 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 
 Jacob requested a local dashboard by 11 pm ET on October 19, with CSV datasets,
 agent-guided training and attractive embedded Grafana graphs. The
-[dashboard plan](docs/plans/2026-10-19-local-dashboard-plan.md) awaits human review;
-it is not implementation approval or completion evidence. Its desktop scope is
+[dashboard plan](docs/plans/2026-10-19-local-dashboard-plan.md) is approved with
+timed checkpoints removed: advance as soon as work and checks permit. Dashboard
+implementation and verification remain outstanding. Its desktop scope is
 separate from the laptop investigation below.
 
 Jacob confirmed October 18 that the October 20 presentation will use the CPU

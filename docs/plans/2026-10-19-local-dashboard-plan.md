@@ -1,12 +1,12 @@
 # Local dashboard for tonight's demo
 
-- Status: awaiting human review; implementation has not started
+- Status: approved; implementation pending the approval-record commit
 - Date: October 19, 2026; deadline **11:00 pm America/New_York (ET)**
 - Source baseline: `98b4908` on `person-a/conversation-foundation`
 - Request: add datasets, talk to an agent and train models through a dashboard
 - Human decisions: Jacob requests relevant Grafana graphs and a dashboard that is
   "nice to look at"; confirms an 11:00 pm ET handoff
-- Human reviewer/implementation approval: Jacob; pending
+- Human reviewer/implementation approval: Jacob, October 19; approved with timed checkpoints removed
 - Independent review: seek review of upload limits/publication and browser replay
   handling; reviewer availability unknown; no independent review performed
 
@@ -30,8 +30,8 @@ Jacob explicitly requires attractive presentation, Grafana graphs and the 11 pm
 deadline. Proposed dataset scope remains the existing UTF-8 numeric CSV classifier:
 selected feature columns, integer class labels and explicit nonempty `train`,
 `validation`, `test` splits. Automatic splitting, categorical/text/image pipelines
-and LLM fine-tuning are outside tonight's scope. This dataset boundary needs
-confirmation as part of plan review; no broader format support is assumed.
+and LLM fine-tuning are outside tonight's approved scope; no broader format
+support is assumed.
 
 The source already implements training, tuning, chat/history, exact action
 decisions, verified artifacts and monitoring. It lacks browser upload and a UI.
@@ -60,7 +60,7 @@ Newly trained versions with no inference observations show an honest empty state
 | F5 | Functional | Expose validation results, saved Python drafts, artifact downloads and model-version registration. | Review required drafts are readable/copyable and never executed; only eligible completed experiments register versions. |
 | N1 | Usability | Polished, readable dashboard at 1440x900 and 1280x800; usable keyboard navigation and clear loading/empty/error states. | Browser screenshots and Jacob's visual review; no page overflow, clipped controls or unreadable graphs. A first-time user completes F1-F3 without API payload editing. |
 | N2 | Reliability | Preserve project access, correlation IDs, submission keys, action hashes and uncertainty semantics. | Boundary tests and browser refresh/double-click/disconnect exercises; uncertain submission never appears as a definitive failure or new automatic job. |
-| N3 | Delivery | Verified local handoff by 11 pm ET, with an implementation freeze at 10 pm. | Passing checks, browser walkthrough, startup instructions, retained evidence, commit and successful push; unfinished criteria remain reported outstanding. |
+| N3 | Delivery | Work as quickly as correctness permits, targeting verified local handoff by 11 pm ET. Advance as soon as each step and its relevant checks are complete. | Passing checks, browser walkthrough, startup instructions, retained evidence, commit and successful push; unfinished criteria remain reported outstanding. |
 
 ## Constraints and scope
 
@@ -194,19 +194,21 @@ these inference observations. No-data states are required, not filled with mock 
 
 ## Acceptance and verification
 
-By **6:30 pm ET approval**, the following is a planning estimate, not a measured
-delivery guarantee. If review/start occurs later, re-estimate immediately against
-the fixed 11 pm deadline; changing core acceptance requires renewed review.
+Jacob approved proceeding without timed checkpoints. The 11 pm ET handoff remains
+the target, not a reason to delay earlier completion. Start each available next
+step immediately after its dependencies and relevant checks pass. Run independent
+checks concurrently where practical; retain the required correctness gates.
 
-| Time, October 19 ET | Work and checkpoint |
-| --- | --- |
-| 6:30-7:00 pm | Packaged UI shell, visual layout and working Grafana embeds; first browser preview. |
-| 7:00-8:00 pm | Upload, validation, scoped storage, replay/conflict tests and API-to-worker shared-file proof. |
-| 8:00-8:45 pm | Model selection/creation, training, run results, artifacts/version registration. |
-| 8:45-9:30 pm | Agent history, visible context, exact approval/rejection and uncertainty handling. |
-| 9:30-10:00 pm | Graph filtering, empty/error states, keyboard/layout polish and focused fixes. |
-| 10:00-10:40 pm | Feature freeze; full checks, browser journey, live model/backend rehearsal and boundary review. |
-| 10:40-11:00 pm | Fix verified defects, rerun affected checks, retain evidence, docs, commit and push. |
+1. Package the UI shell, visual layout and working Grafana embeds; inspect a first
+   browser preview as soon as it is available.
+2. Implement upload, validation, scoped storage and replay/conflict checks; prove
+   that the API and worker can use the same uploaded file.
+3. Add model selection/creation, training, results and artifact/version actions.
+4. Connect agent history, visible context, exact decisions and uncertainty handling.
+5. Finish graph filtering, empty/error states and keyboard/layout polish.
+6. Complete full checks, the browser journey, live-model/backend rehearsal and
+   boundary review. Fix confirmed defects and rerun affected checks immediately.
+7. Retain evidence, finish startup documentation, commit and push the verified work.
 
 Protect upload, real training, agent confirmation, embedded graphs and visual
 quality. Cut optional animations, advanced filters, extra comparison charts and
@@ -256,12 +258,20 @@ model weights. Existing API/script workflows remain available.
 
 ## Human review and approval
 
-Jacob's October 19 messages approve the requirements of attractive Grafana graphs
-and an 11 pm deadline. They are not approval of this proposed upload/API/storage
-design. Approval is pending for this full scope, including the supported CSV
-boundary and deadline assumptions. [AGENTS.md](../../AGENTS.md#development-method)
-requires explicit human approval before implementation. Record the approving
-message/date and scope here; material changes require renewed review.
+Jacob approved on October 19, 2026: "looks good, except for the timed checkpoints,
+I dont want you taking longer just to hit a certian checkpoint. work as fast as you
+can without making mistakes". This approves the proposed dashboard, upload/API/
+storage, supported CSV boundary, agent decisions, Grafana integration and
+verification scope, with the timed start/checkpoints/freeze removed. Work proceeds
+immediately as dependencies and correctness checks permit, targeting handoff by
+11 pm ET or earlier. This revision records that requested exception without
+changing functional acceptance. [AGENTS.md](../../AGENTS.md#development-method)
+requires renewed review for material design deviations.
+
+Jacob then explicitly requested: "go for it, also give me a quick visual prototype
+for the design of it while you work on it". Proceed with implementation and show
+the initial browser layout while completing the working controls; label any
+prototype-only content clearly until connected to real records.
 
 ## Implementation outcome
 
