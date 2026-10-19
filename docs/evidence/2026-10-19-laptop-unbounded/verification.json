@@ -1,0 +1,19 @@
+{
+  "verified_utc": "2026-10-19T23:25:02.507055+00:00",
+  "archive_crc": "pass",
+  "payload_hashes_and_sizes": "pass",
+  "payload_count": 236,
+  "archive_bytes": 666889,
+  "archive_sha256": "0670e4dc0fa9e5b5ecb7e19ec5736cf94bf2d7d5a41404b468db9ef9bf8cf2ca",
+  "manifest_sha256": "12463a160c5b442126d6fac0193545b3600ee350ef9267f0829bc33cb10a440a",
+  "results_sha256": "4cc5b9a65c8cc696e126e681acdc3c2c9f786c6991f627e6d263787e7e1139d8",
+  "live_source_and_executed_helper_hashes_match": true,
+  "prior_evidence_unchanged": true,
+  "checks_counts": [
+    661,
+    73,
+    10
+  ],
+  "all_five_implementation_ci_jobs": "success",
+  "limits": "Archive verified locally; reviewer did not independently reproduce measurements or verify payload bytes"
+}

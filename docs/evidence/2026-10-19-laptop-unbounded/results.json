@@ -1,0 +1,305 @@
+{
+  "implementation_revision": "1152aa858eca169d49e1d5d003bab2229e4cddf9",
+  "plan": "docs/plans/2026-10-19-laptop-unbounded-diagnostic-plan.md",
+  "approval": {
+    "reviewer": "Jacob",
+    "quote": "go for it",
+    "date": "2026-10-19"
+  },
+  "checks": {
+    "fast": {
+      "tests": 661,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ordinary": {
+      "tests": 73,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovery": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "ci": {
+    "id": 39338348885,
+    "head_sha": "1152aa858eca169d49e1d5d003bab2229e4cddf9",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885",
+    "created_at": "2026-10-19T22:56:18Z",
+    "updated_at": "2026-10-19T23:02:39Z",
+    "jobs": [
+      {
+        "id": 118353390096,
+        "name": "compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T22:56:21Z",
+        "completed_at": "2026-10-19T23:02:38Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885/job/118353390096"
+      },
+      {
+        "id": 118353390289,
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T22:56:21Z",
+        "completed_at": "2026-10-19T22:57:34Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885/job/118353390289"
+      },
+      {
+        "id": 118353390463,
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T22:56:21Z",
+        "completed_at": "2026-10-19T22:57:52Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885/job/118353390463"
+      },
+      {
+        "id": 118353956425,
+        "name": "kubernetes-deploy",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T22:57:54Z",
+        "completed_at": "2026-10-19T23:02:23Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885/job/118353956425"
+      },
+      {
+        "id": 118353956498,
+        "name": "domain-compose-smoke",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-19T22:57:55Z",
+        "completed_at": "2026-10-19T23:00:34Z",
+        "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39338348885/job/118353956498"
+      }
+    ]
+  },
+  "measurement": {
+    "status": "completed",
+    "runs": [
+      {
+        "number": 1,
+        "status": "completed",
+        "exit_code": 0,
+        "walkthrough_seconds": 789.905999999959,
+        "requests": [
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 201.0470000000205,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 276.59399999998277,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 0.125,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 126.71900000004098,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 0.29699999996228144,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/monitoring/model-versions/b531d031-d365-4c39-94f7-05eb4c4ffeca/diagnosis",
+            "origin": "http://127.0.0.1:18002",
+            "elapsed_seconds": 161.76600000000326,
+            "status_code": 200
+          }
+        ],
+        "saved_proposal_replay_equal": true,
+        "draft_replay_equal": true,
+        "generated_code_execution": false,
+        "dialogue_statuses": [
+          "completed",
+          "awaiting_confirmation",
+          "completed"
+        ],
+        "runner_after": "srv  update_slots: all slots are idle"
+      },
+      {
+        "number": 2,
+        "status": "completed",
+        "exit_code": 0,
+        "walkthrough_seconds": 641.0160000000033,
+        "requests": [
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 125.67200000002049,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 273.71899999998277,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 0.15600000001722947,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 56.06299999996554,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/chat",
+            "origin": "http://127.0.0.1:18001",
+            "elapsed_seconds": 0.15700000000651926,
+            "status_code": 200
+          },
+          {
+            "path": "/api/v1/monitoring/model-versions/3e3d47d1-877f-49b8-be6f-2215d2bd91cb/diagnosis",
+            "origin": "http://127.0.0.1:18002",
+            "elapsed_seconds": 164.5,
+            "status_code": 200
+          }
+        ],
+        "saved_proposal_replay_equal": true,
+        "draft_replay_equal": true,
+        "generated_code_execution": false,
+        "dialogue_statuses": [
+          "completed",
+          "awaiting_confirmation",
+          "completed"
+        ],
+        "runner_after": "srv  update_slots: all slots are idle"
+      }
+    ],
+    "warmup": {
+      "elapsed_seconds": 17.18800000002375,
+      "reply": {
+        "model": "mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
+        "created_at": "2026-10-19T22:58:02.2659704Z",
+        "response": "",
+        "done": true,
+        "done_reason": "load"
+      },
+      "timeout": null,
+      "generated_text": false
+    },
+    "all_planned_runs_completed_correctly": true,
+    "bounded_profile_acceptance": false,
+    "full_gateway_ai_reliability": "untested: AI requests use explicitly verified direct API origins"
+  },
+  "resources": {
+    "sample_count": 34,
+    "minimum_host_available_bytes": 682897408,
+    "causal_attribution": "not established by these lightweight host counters"
+  },
+  "restoration": {
+    "started_utc": "2026-10-19T23:22:12.283971+00:00",
+    "runner_idle_before_restore": true,
+    "runner_observation": "srv  update_slots: all slots are idle",
+    "idle_observed_utc": "2026-10-19T23:22:12.283971+00:00",
+    "finite_settings_and_probes_verified": true,
+    "status": "completed",
+    "power_before": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 100
+    },
+    "source_revision": "1152aa858eca169d49e1d5d003bab2229e4cddf9",
+    "deployed_profile": "laptop-five-minute",
+    "model_seconds": 240,
+    "turn_seconds": 270,
+    "chat_unbounded_diagnostic": false,
+    "preserved_records_artifacts_replay": "unchanged",
+    "ended_utc": "2026-10-19T23:24:34.974263+00:00",
+    "power_after": {
+      "read_ok": true,
+      "ac_line_status": 1,
+      "battery_percent": 100
+    }
+  },
+  "review": {
+    "reviewer": "OpenAI timing_review agent",
+    "different_vendor_available": false,
+    "scope": [
+      "approved nullable deadline design",
+      "parent and child transaction fencing",
+      "asyncio/SDK nullable timers",
+      "real MongoDB ownership interleavings",
+      "capture journal and provenance",
+      "cleanup while model work may remain active"
+    ],
+    "method": "Separate agent read-only review; no services or inference executed by reviewer",
+    "findings_resolved": [
+      "Matching saved parent/turn diagnostic markers and deadlines required",
+      "Crashes retain public running status; external observer uncertainty is separate",
+      "Actual asyncio timer arguments inspected as None",
+      "Real MongoDB owner-loss race injected after valid snapshot for answer and proposal",
+      "Journal saved before warmup and immediately after child exit; interrupted/failure states retained",
+      "Executed helper source hashes captured before use",
+      "Cleanup deferred while inference may remain active; restoration requires observed idle or explicit operator stop"
+    ],
+    "remaining_concrete_findings": [],
+    "live_evidence_review": {
+      "scope": "Both saved results, histories/deadlines, journal, API completion logs and initial/after-run/final pod and event snapshots; read-only",
+      "observations": [
+        "Both original diagnostic workflows exit zero, all six AI HTTP requests each return 200, proposal/draft replays match",
+        "Each approved bounded tuning job succeeds; each draft validates and remains unexecuted/review-required",
+        "Each project has three marked-null turn rows and two marked-null parents with no active turn",
+        "Run 1 generated waits plus replays total 766.548 seconds; full command 789.906 seconds",
+        "Run 2 generated waits plus replays total 620.267 seconds; full command 641.016 seconds",
+        "Comparison replies 276.594 and 273.719 seconds exceed former 270-second turn but remain below 300-second client",
+        "All eleven container identities and restart counts match all four measurement snapshots; no new Killing event",
+        "MongoDB, Redis, Prometheus and Grafana still have readiness failures during run 2; no resource/stall cause is proved fixed",
+        "Monitoring interpretations about normal operation or masking issues are generated explanations, not measured findings",
+        "Initial response pending_action snapshot remains pending_confirmation; authoritative hydrated history/action shows succeeded"
+      ],
+      "recommendation": "No larger-than-300-second client budget is demonstrated necessary. Review a shared-turn budget closer to it and verify finite routing/probe policy separately; two observations do not establish an upper bound."
+    },
+    "limits": "Same-vendor read-only review of retained evidence; no independent inference reproduction or archive-byte verification"
+  },
+  "live_finite_expiry": "outstanding; not executed in this diagnostic",
+  "fresh_ten_and_seven_gates": "unrun; preceding accepted cohort retained unchanged",
+  "generated_code_execution": false,
+  "automatic_retries": 0,
+  "prior_archives_unchanged": [
+    "2026-10-19-laptop-five-minute",
+    "2026-10-19-laptop-awake-gates",
+    "2026-10-19-laptop-gateway-health"
+  ],
+  "initial_probe_free_readiness_attempt": "failed connection-refused during startup; retained separately from later successful explicit HTTP preflight",
+  "package_inspection": [
+    {
+      "name": "ml_pipeline_pro-0.1.0-py3-none-any.whl",
+      "sha256": "f693fa811701b9f4f7c742447fe392e87871eb176b7b46d2856ae86ec6ae8430",
+      "bytes": 104694,
+      "cache_entries": 0
+    },
+    {
+      "name": "ml_pipeline_pro-0.1.0.tar.gz",
+      "sha256": "38b39a06f7f182bb3ea62ebeec301163afc4a279be4651d4e9d2fe9b802a80a9",
+      "bytes": 18492430,
+      "cache_entries": 0
+    }
+  ]
+}

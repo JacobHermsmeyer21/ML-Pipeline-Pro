@@ -1,0 +1,31 @@
+{
+  "archive_entries_checked": 236,
+  "archive_crc_hashes_sizes": "pass",
+  "review_outputs": [
+    {
+      "run": 1,
+      "display": "review-run-1.md",
+      "display_sha256": "b1e3f0400d974a80232701e7cf8364868d6efa6e1d606f0aa1bca140897afce8",
+      "raw_result_entry": "demo-1/results.json",
+      "raw_result_sha256": "ab806167c3658367649f68c7bc9b0416b50ecc23cd0937d68692ed6c67b41ad9",
+      "messages_and_code": "exact saved strings",
+      "human_quality_acceptance": "pending"
+    },
+    {
+      "run": 2,
+      "display": "review-run-2.md",
+      "display_sha256": "e3f5bee789167bca72d4cda6af8d52179c7223ee940924ceb6c1cd7d1a22b792",
+      "raw_result_entry": "demo-2/results.json",
+      "raw_result_sha256": "4945cd9d018727e0fcf2ebca3848a637d7a550b19d92eb10e4c996d0444865fc",
+      "messages_and_code": "exact saved strings",
+      "human_quality_acceptance": "pending"
+    }
+  ],
+  "timing_table_checked_against_raw_results": "pass",
+  "markdown_files": 10,
+  "local_links_anchors": 175,
+  "powershell_examples_syntax_checked": 7,
+  "examples_executed": false,
+  "diff_whitespace_check": "pass",
+  "generated_code_execution": false
+}

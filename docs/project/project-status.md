@@ -4,9 +4,21 @@ Newest user direction, October 19: Jacob requests health checks stop interruptin
 work and one or two no-limit runs to observe completion time. The
 [diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md) records
 that intent. Jacob approved the written unbounded-ownership/direct-AI design with
-"go for it"; implementation and verification are in progress. The fixed-setting
-resource investigation is deferred, never approved or executed. No new live model
-result is claimed until retained execution completes; earlier results keep their scope.
+"go for it". Implementation `1152aa8` passes 661 fast, 73 ordinary integration
+and all 10 isolated recovery cases, with no selected skips, plus all five CI jobs.
+Both [complete unbounded diagnostic workflows](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass on clean `1152aa8` in 789.906 and 641.016 seconds. Their slowest replies,
+276.594/273.719 seconds, exceed the former 270-second turn but stay below the
+300-second client. Both exact proposal/draft replays and confirmed bounded tuning
+pass; generated Python remains unexecuted and new output quality awaits human
+review. Marked-null saved turns complete with parent fencing; no container restarts
+across the two runs. Background infrastructure readiness failures still occur.
+AI delivery uses verified direct API origins with application probes removed,
+so finite-profile/full gateway acceptance and live expiry remain open. Normal
+five-minute settings/probes are restored; records/artifacts remain preserved and
+the temporary wake request is released. The fixed-setting resource investigation
+is deferred, never approved or executed; these timings do not prove a resource
+cause, a latency upper bound or a need for a client ceiling above five minutes.
 
 Latest October 19: Jacob approves the local gateway-health plan. Implementation
 `bf07213` passes 647 fast and 63 ordinary integration cases, real nginx negative

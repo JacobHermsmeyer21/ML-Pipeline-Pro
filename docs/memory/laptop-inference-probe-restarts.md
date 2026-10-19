@@ -72,3 +72,22 @@ unbounded diagnostic must explicitly distinguish new diagnostic ownership from
 old saved finite deadlines; it cannot establish a normal five-minute gate pass.
 The resource-only plan is deferred and unapproved. Keep implementation checks and
 future no-limit measurements separate from normal five-minute acceptance.
+
+The approved diagnostic is implemented as `1152aa8`. All 661 fast, 73 ordinary,
+10 isolated recovery cases and five implementation CI jobs pass. Two original
+[complete workflows](../evidence/2026-10-19-laptop-unbounded/README.md) then pass
+on clean `1152aa8`, in 789.906/641.016 seconds. Comparison/proposal replies take
+276.594/273.719 seconds; server completion logs also exceed 270 seconds. Both
+remain below the old 300-second client limit. Saved parent/turn modes match with
+null deadlines, both exact replays pass, confirmed bounded tuning succeeds and
+validated Python is never executed. New outputs still require human review.
+
+No container identity/restart count changes during either run. Datastore and
+monitoring infrastructure readiness failures remain in events. This establishes
+successful probe-free/direct-AI diagnostic execution, not a resource-cause fix,
+finite-profile pass, reliable full gateway AI path or latency upper bound. Review
+the shared turn budget before proposing a larger client ceiling; verify finite
+routing/probe behavior separately. No model/resource/prompt change is tested.
+Restore the normal five-minute profile only after idle: this run verifies
+240/270-second settings, original probes and preserved records/artifacts, then
+releases the temporary wake request. Keep diagnostic-compatible readers deployed.

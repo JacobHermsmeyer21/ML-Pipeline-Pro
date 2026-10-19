@@ -6,7 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
-| [Laptop inference can outlast Kubernetes health availability](laptop-inference-probe-restarts.md) | Local gateway health implemented; live restart still breaks delivery within the reply budget; resource attribution gaps and prior passing standalone gates |
+| [Laptop inference can outlast Kubernetes health availability](laptop-inference-probe-restarts.md) | Two direct-AI/probe-free unlimited workflows pass; comparison exceeds 270-second turn; finite gateway acceptance and resource cause remain open |
 | [Source packaging admits an ignored nested example](source-package-ignore-exception.md) | Existing workspace versus clean checkout, Git/build selection discrepancy, archive inspection |
 | [CPU inference can overrun observed API timeout boundaries](cpu-inference-timeout-overrun.md) | Retained slow prompt/late 504, correct 99-second direct first step, resource sampling gaps and unresolved mechanism |
 | [Laptop Qwen prompt processing dominates the first read](qwen-prompt-processing-cost.md) | Exact token cost, slower 2/3-thread laptop screens, no retained optimization and incomplete CPU attribution despite process sampling |

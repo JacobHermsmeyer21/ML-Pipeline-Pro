@@ -176,3 +176,9 @@ After completion or an explicit user stop, retain evidence/idle state, release o
 wake request and port-forwards, then restore the normal five-minute manifest and
 verify its probes and 240/270-second server settings. Preserve PVCs, records and
 artifacts. No older application rollback over diagnostic rows is implied.
+
+The [October 19 execution evidence](../evidence/2026-10-19-laptop-unbounded/README.md)
+records two successful workflows, 789.906/641.016 seconds overall, with comparison
+replies of 276.594/273.719 seconds. Normal five-minute settings/probes are restored.
+These direct-AI/probe-free observations do not pass the normal bounded gateway
+acceptance gate; new generated outputs remain available for human review.

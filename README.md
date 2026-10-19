@@ -1,13 +1,18 @@
 # ML Pipeline Pro
 
 For the October 20 demo, see the [October 18 audit](docs/project/2026-10-18-repo-audit.md).
-The minimal course features are implemented, but AI acceptance on the chosen CPU
-laptop remains unsuccessful; the passing full AI walkthrough used the RX 9070 workstation.
+The minimal course features are implemented. Normal bounded AI acceptance on the
+chosen CPU laptop remains open; the passing full bounded walkthrough used the RX 9070 workstation.
 The [five-minute laptop rerun](docs/evidence/2026-10-19-laptop-five-minute/README.md)
 passes its first inspection, then fails during a gateway liveness restart. Full
 laptop acceptance remains open; more reply time is not the next proposed fix.
 The later [standalone laptop gates](docs/evidence/2026-10-19-laptop-awake-gates/README.md)
 pass all ten dialogue and seven snippet scenarios with the five-minute profile.
+The later [unbounded laptop diagnostic](docs/evidence/2026-10-19-laptop-unbounded/README.md)
+passes two complete workflows in 789.906 and 641.016 seconds with direct AI API
+origins and application probes removed. The slowest replies, 276.594 and 273.719
+seconds, exceed the old 270-second turn window. Normal settings are restored;
+these observations establish neither finite-profile nor full gateway acceptance.
 
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,

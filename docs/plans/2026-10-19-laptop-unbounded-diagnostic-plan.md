@@ -178,8 +178,8 @@ assertions remain unchanged. The resource-only plan stays unapproved/deferred.
 
 ## Implementation outcome
 
-Implementation and verification are now authorized; measured outcomes remain
-pending. Approval does not establish successful implementation or live acceptance.
+The approved implementation is committed/pushed as `1152aa8`. Both measured
+diagnostic workflows pass; normal finite gateway acceptance remains open.
 
 The implementation adds gated nullable settings, matching saved parent/turn modes,
 saved-claim-based admission and fenced completion, a separate rendered diagnostic
@@ -191,8 +191,26 @@ pass (83 integration deselected, 151.69 seconds, 80% rounded coverage); 203 focu
 cases pass, followed by 14 diagnostic cases including actual None timer inspection.
 All 73 ordinary integration cases pass against the rebuilt Kubernetes deployment
 (95.90 seconds, both opt-in flags, no selected skips). All 10 isolated recovery
-cases pass (370.64 seconds, separate opt-in, no selected skips). Live measurements
-remain pending.
+cases pass (370.64 seconds, separate opt-in, no selected skips). All five
+implementation CI jobs pass. The [retained execution](../evidence/2026-10-19-laptop-unbounded/README.md)
+uses clean `1152aa8`, matching installed module hashes and unchanged model/runtime.
+
+The original complete walkthrough passes twice in 789.906 and 641.016 seconds.
+First-run generated replies take 201.047/276.594/126.719/161.766 seconds; second-run
+replies take 125.672/273.719/56.063/164.500 seconds. Exact proposal/draft replays
+and confirmed bounded tuning pass. Saved marked-null turns complete, with no
+container restarts. Each run ends idle before continuation/restoration. Initial
+probe-free startup readiness fails with connection refused; later explicit HTTP
+preflight passes before any inference. Both observations are retained separately.
+
+The normal five-minute settings/probes are restored after idle, preserving records,
+artifacts and replay. Owned forwards close and the temporary wake request releases.
+New generated output quality awaits human review; Python is never executed.
+The comparison replies exceed the former 270-second turn and stay below the
+300-second client. Review the shared-turn budget before enlarging the client
+ceiling. No new finite budget, routing/probe design or resource change is implemented
+by this result. Full finite gateway acceptance, live expiry and resource attribution
+remain open; two direct-AI/probe-free runs do not establish a latency upper bound.
 
 Same-vendor implementation review by `timing_review` finds no concrete source
 defect. Its two verification gaps lead to actual asyncio None-timer inspection
