@@ -56,23 +56,27 @@ exist; migration and retention procedures do not.
 Continue using explicit request and persistence schemas. The
 [conversation plan](../plans/2026-10-06-conversation-workflows-plan.md) specifies
 project access and retained dialogue/action evidence, without inventing a user
-identity system or treating model proposals as confirmed actions. Define dataset/artifact/summary/log
-retention and deletion before shared use. Monitoring will use Prometheus for time
-series, Grafana for visualization, and MongoDB for selected aggregates and alert
-evidence. Index uniqueness is tested; representative query/latency benchmarks
-remain unmeasured.
+identity system or treating model proposals as confirmed actions. Define
+dataset/artifact/summary/log retention and deletion before shared use. Current
+monitoring uses Prometheus for time series, Grafana for visualization and MongoDB
+for immutable observations. Summaries derive from bounded reads; durable historical
+aggregates and alert lifecycle remain deferred. Index uniqueness and small-demo
+query/index evidence are recorded; larger query/latency benchmarks remain deferred.
 
 ## API contracts and remaining additions
 
 Implemented endpoints use `/api/v1`, consistent errors/correlation IDs,
 project-scoped access, and list pagination. The [endpoint inventory](api.md#endpoints)
-and generated `/docs` describe the current surface. These monitoring routes remain
-proposals; exact contracts require reviewed designs.
+and generated `/docs` describe the current surface. Monitoring routes are implemented
+in the independent monitoring service under the
+[approved design](../plans/2026-10-13-monitoring-deployment-plan.md).
 
 | Endpoint | State | Behavior |
 | --- | --- | --- |
-| `POST /monitoring/observations` | Planned | Ingest timestamped model observations |
-| `GET /monitoring/models/{version_id}/summary` | Planned | Return a bounded monitoring summary and evidence |
+| `POST /api/v1/monitoring/observations` | Implemented | Ingest/replay immutable project-scoped model observations |
+| `GET /api/v1/monitoring/model-versions/{version_id}/summary` | Implemented | Return a bounded monitoring summary and evidence |
+| `POST /api/v1/monitoring/model-versions/{version_id}/diagnosis` | Implemented | Generate cited local-model advice for human review |
+| `GET /api/v1/monitoring/metrics` | Implemented | Export project-scoped Prometheus metrics |
 
 Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, and `cancelled`; experiment records also support `cancelled` for tuning children but have no standalone cancellation endpoint. Submission retries are idempotent, leases/heartbeats are persisted, and recovery claims are bounded. Tuning child writes share a transaction with a parent ownership fence; MongoDB replica set/sharded-cluster support is required. Preserve these contracts while strengthening outage/restart coverage. A succeeded tuning job can report `final_evaluation: skipped_budget`; version registration still requires an evaluated experiment.
 

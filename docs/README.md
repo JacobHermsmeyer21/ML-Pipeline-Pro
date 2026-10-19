@@ -10,7 +10,7 @@ Start with the [project README](../README.md) to run the backend, or the
 - [Workflows](guides/workflows.md): classification, tuning, and typed conversation tools.
 - [Conversation development](guides/conversation-development.md): implemented slices, model boundaries, and open acceptance work.
 - [Generated Python drafts](guides/snippet-generation.md): supported profiles, saved validation/provenance, and the opt-in A2 evaluation.
-- [Local model setup](guides/local-model-setup.md): pinned Qwen profiles, exact token admission, and reproducing the failing live gate.
+- [Local model setup](guides/local-model-setup.md): pinned Qwen profiles, exact token admission, and opt-in model evaluation.
 - [Guided midterm demo](guides/guided-midterm-demo.md): evaluated 7B dialogue and generated-code configuration, original gates and review limits.
 - [Monitoring demo](guides/monitoring-demo.md): actual inference observations, Grafana/Prometheus and evidence-linked local-model advice.
 - [Kubernetes demo](guides/kubernetes-demo.md): isolated local deployment, replica scope and CI/CD.
@@ -27,7 +27,8 @@ Start with the [project README](../README.md) to run the backend, or the
 - [Course requirements](project/course-requirements.md): supplied instructions and acceptance checklist.
 - [Midterm scope](project/midterm-scope.md): approved minimal all-nine demo and deferred work.
 - [Project status](project/project-status.md): dated audits, capabilities, limitations, and validation records.
-- [October 13 audit and Person A handoff](project/2026-10-13-project-audit.md): current branch state, reproduced findings, course gaps and restart point.
+- [October 18 audit and demo priorities](project/2026-10-18-repo-audit.md): current coverage, delivered Person B work, laptop blocker and two-day priorities.
+- [October 13 audit and Person A handoff](project/2026-10-13-project-audit.md): historical branch state, findings and gaps before minimal delivery.
 - [Development method](project/development-methodology.md): design, human review, implementation, and verification.
 - [Measurement criteria](project/measurement.md): unverified improvement targets and how to evaluate them.
 - [Design plans](plans/): change-specific scope, approval, acceptance criteria, and outcomes; use the [template](plans/template.md).
@@ -39,5 +40,6 @@ requirements/process/status in `project/`. Keep dated designs, durable findings,
 and raw results in `plans/`, `memory/`, and `evidence/` respectively. Root
 [`AGENTS.md`](../AGENTS.md) owns standing repository rules.
 
-Required live-model, monitoring, generated-code, separate-service, and
-Kubernetes/CI/CD tutorials remain outstanding with their features.
+The minimal all-nine tutorials and implementations have retained acceptance evidence.
+Reliable AI on the CPU presentation laptop remains outstanding; see the
+[current audit](project/2026-10-18-repo-audit.md) for machine-specific limits.

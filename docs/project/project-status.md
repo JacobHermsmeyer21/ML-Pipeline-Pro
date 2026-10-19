@@ -1,5 +1,14 @@
 # Project audit and development status
 
+October 18 repository audit against `cb67bb8`: Jacob confirmed the October 20 demo
+will use the CPU laptop. Minimal Person B services/monitoring/deployment/tutorial
+work is already implemented; reliable laptop AI is the immediate blocker. Fresh
+598 fast, 63 ordinary and ten serial recovery cases pass without selected skips;
+lint/format/dependency checks and all five remote CI jobs also pass. The
+[audit and priorities](2026-10-18-repo-audit.md) and
+[new verification evidence](../evidence/2026-10-18-repo-audit/README.md)
+distinguish current checks from earlier laptop failures/workstation acceptance.
+
 October 15 evidence update, for the October 14 run on clean `add6862`: the Ryzen 7
 7800X3D / RX 9070 workstation passes all ten original dialogue scenarios, all seven
 snippet scenarios, and the complete rebuilt-service AI walkthrough in 20.35 seconds

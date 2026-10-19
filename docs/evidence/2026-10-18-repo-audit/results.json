@@ -1,0 +1,485 @@
+{
+  "audit_date": "2026-10-18",
+  "source_revision": "cb67bb8b3937dbf4dbe7fe6ae2c9247ee37849d0",
+  "working_branch": "person-a/conversation-foundation",
+  "origin_sync_at_start": {
+    "local_only": 0,
+    "upstream_only": 0,
+    "ahead_of_main": 35,
+    "main_only": 0
+  },
+  "current_machine": "Ryzen 7 7800X3D / RX 9070 workstation",
+  "presentation_target": "CPU laptop, confirmed by Jacob October 18",
+  "python": "3.11.5",
+  "uv": "uv 0.12.23 (46b84fd0b 2026-10-03 x86_64-pc-windows-msvc)",
+  "application_or_test_assertions_changed": false,
+  "checks": {
+    "locked_offline_sync": "passed",
+    "ruff_lint": "passed",
+    "ruff_format": "passed",
+    "installed_compatibility": "passed",
+    "pytest": {
+      "unit": {
+        "tests": 598.0,
+        "failures": 0.0,
+        "errors": 0.0,
+        "skipped": 0.0,
+        "time": 40.2
+      },
+      "integration": {
+        "tests": 63.0,
+        "failures": 0.0,
+        "errors": 0.0,
+        "skipped": 0.0,
+        "time": 32.548
+      },
+      "recovery": {
+        "tests": 10.0,
+        "failures": 0.0,
+        "errors": 0.0,
+        "skipped": 0.0,
+        "time": 326.888
+      }
+    }
+  },
+  "pytest_commands": {
+    "unit": "uv run --locked --extra training --offline pytest -m 'not integration' --cov --junitxml=artifacts/repo-audit-20261018/unit.xml --basetemp=artifacts/repo-audit-20261018/pytest-temp",
+    "integration": "MLPP_RUN_INTEGRATION=1 MLPP_RUN_WORKER_INTEGRATION=1 MLPP_TEST_API_BASE_URL=http://127.0.0.1:18000/api/v1 MLPP_TEST_MONGODB_URI=mongodb://127.0.0.1:37017/?directConnection=true MLPP_TEST_REDIS_URL=redis://127.0.0.1:16379/0 uv run --locked --extra training --offline pytest -m 'integration and not recovery' --junitxml=artifacts/repo-audit-20261018/integration.xml --basetemp=artifacts/repo-audit-20261018/integration-correct-origin-temp",
+    "recovery": "MLPP_RUN_RECOVERY_INTEGRATION=1 uv run --locked --extra training --offline pytest -m recovery --junitxml=artifacts/repo-audit-20261018/recovery.xml --basetemp=artifacts/repo-audit-20261018/recovery-temp"
+  },
+  "initial_integration_invocation_error": {
+    "api_base_missing_prefix": "/api/v1",
+    "result": {
+      "tests": 63.0,
+      "failures": 13.0,
+      "errors": 0.0,
+      "skipped": 0.0,
+      "time": 23.582
+    },
+    "corrected_without_test_changes": true
+  },
+  "domain_compose": {
+    "project": "mlpp-audit-20261018",
+    "rebuilt": true,
+    "services": 10,
+    "routing": "passed",
+    "actual_backend_smoke": "passed",
+    "smoke_telemetry": "synthetic",
+    "containers_removed_after_audit": true,
+    "volumes_preserved": true
+  },
+  "packages": {
+    "wheel_application_modules": 44,
+    "source_archive_members": 277,
+    "private_or_cache_entries": [
+      "ml_pipeline_pro-0.1.0/.tools/midterm-clean/.env.example"
+    ],
+    "nested_example_equals_root_example": true,
+    "source_hygiene_passed": false,
+    "packages": {
+      ".gitignore": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+      "ml_pipeline_pro-0.1.0-py3-none-any.whl": "94d4da2f22778e8dd936f7c9cbd37b566dc6721503c82ac7552d2204097d08cf",
+      "ml_pipeline_pro-0.1.0.tar.gz": "e40c5653f16f03ce59fbb3ca32c6bfd05bdb334833de97b70b4367d6fea7316a"
+    }
+  },
+  "documentation_and_inventory": {
+    "source_revision": "cb67bb8b3937dbf4dbe7fe6ae2c9247ee37849d0",
+    "documents": 68,
+    "local_links_and_anchors": 542,
+    "python_fences": 2,
+    "powershell_fences": 43,
+    "python_files_parsed": 111,
+    "application_modules": 44,
+    "api_operations": 30,
+    "domain_operations": {
+      "create_model_app": 20,
+      "create_tuning_app": 7,
+      "create_monitoring_app": 7
+    },
+    "archives": [
+      {
+        "path": "docs\\evidence\\2026-10-08-conversation-loop\\recovery-state.zip",
+        "members": 30
+      },
+      {
+        "path": "docs\\evidence\\2026-10-08-conversation-store\\recovery-state.zip",
+        "members": 30
+      },
+      {
+        "path": "docs\\evidence\\2026-10-09-qwen-counter\\raw-evidence.zip",
+        "members": 190
+      },
+      {
+        "path": "docs\\evidence\\2026-10-10-a2-snippets\\raw-evidence.zip",
+        "members": 106
+      },
+      {
+        "path": "docs\\evidence\\2026-10-10-typed-completion\\raw-evidence.zip",
+        "members": 202
+      },
+      {
+        "path": "docs\\evidence\\2026-10-13-guided-demo\\raw.zip",
+        "members": 107
+      },
+      {
+        "path": "docs\\evidence\\2026-10-13-midterm-delivery\\raw.zip",
+        "members": 937
+      },
+      {
+        "path": "docs\\evidence\\2026-10-13-midterm-services\\raw.zip",
+        "members": 96
+      },
+      {
+        "path": "docs\\evidence\\2026-10-13-project-audit\\raw-evidence.zip",
+        "members": 14
+      },
+      {
+        "path": "docs\\evidence\\2026-10-14-branch-sync\\raw.zip",
+        "members": 12
+      },
+      {
+        "path": "docs\\evidence\\2026-10-14-post-reboot-validation\\raw.zip",
+        "members": 18
+      },
+      {
+        "path": "docs\\evidence\\2026-10-14-prerequisite-setup\\raw.zip",
+        "members": 10
+      },
+      {
+        "path": "docs\\evidence\\2026-10-14-requested-inspection-facts\\raw.zip",
+        "members": 9
+      },
+      {
+        "path": "docs\\evidence\\2026-10-14-rx9070-walkthrough\\raw.zip",
+        "members": 31
+      }
+    ],
+    "kubernetes_deployments": [
+      {
+        "name": "mongo",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "mongo:8.0",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "768Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "startupProbe",
+              "readinessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "redis",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "redis:7.4-alpine",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "128Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "readinessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "model-api",
+        "replicas": 2,
+        "containers": [
+          {
+            "image": "ml-pipeline-pro:midterm",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "512Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "startupProbe",
+              "readinessProbe",
+              "livenessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "tuning-api",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "ml-pipeline-pro:midterm",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "512Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "startupProbe",
+              "readinessProbe",
+              "livenessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "monitoring-api",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "ml-pipeline-pro:midterm",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "512Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "startupProbe",
+              "readinessProbe",
+              "livenessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "worker",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "ml-pipeline-pro:midterm",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "100m"
+              },
+              "limits": {
+                "memory": "1Gi",
+                "cpu": "1"
+              }
+            },
+            "probes": []
+          }
+        ]
+      },
+      {
+        "name": "scheduler",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "ml-pipeline-pro:midterm",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "256Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": []
+          }
+        ]
+      },
+      {
+        "name": "gateway",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "nginx:1.28-alpine",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "128Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "startupProbe",
+              "readinessProbe",
+              "livenessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "prometheus",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "prom/prometheus:v3.5.0",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "512Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "readinessProbe"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "grafana",
+        "replicas": 1,
+        "containers": [
+          {
+            "image": "grafana/grafana:12.1.1",
+            "resources": {
+              "requests": {
+                "memory": "128Mi",
+                "cpu": "50m"
+              },
+              "limits": {
+                "memory": "512Mi",
+                "cpu": "500m"
+              }
+            },
+            "probes": [
+              "readinessProbe"
+            ]
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "powershell_syntax": {
+    "blocks": 43,
+    "errors": []
+  },
+  "workstation_source_match": {
+    "recorded_source_hashes": 51,
+    "mismatches": []
+  },
+  "historical_laptop_classifier_training": {
+    "source_archive": "docs\\evidence\\2026-10-14-post-reboot-validation\\raw.zip",
+    "source_archive_sha256": "b9dfb275a456f4dcbeb6a353af127d3eb7bbdce4f5a4defafbb46baffb47e870",
+    "member": "walkthrough/backend.json",
+    "source_run_date": "2026-10-14",
+    "training": {
+      "config": {
+        "seed": 42,
+        "epochs": 5,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 16,
+        "max_runtime_seconds": 20
+      },
+      "created_at": "2026-10-14T17:20:26.969000Z",
+      "started_at": "2026-10-14T17:20:27.723000Z",
+      "completed_at": "2026-10-14T17:20:28.610000Z",
+      "worker_seconds": 0.887,
+      "submission_to_completion_seconds": 1.641
+    },
+    "tuning": {
+      "max_trials": 3,
+      "created_at": "2026-10-14T17:20:29.684000Z",
+      "started_at": "2026-10-14T17:20:29.787000Z",
+      "completed_at": "2026-10-14T17:20:31.258000Z",
+      "submission_to_completion_seconds": 1.574
+    },
+    "limits": "Historical small-fixture laptop run with services already running; excludes startup; classifier training is separate from pretrained Qwen inference."
+  },
+  "remote_ci": [
+    {
+      "id": 38681567923,
+      "head_sha": "cb67bb8b3937dbf4dbe7fe6ae2c9247ee37849d0",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38681567923"
+    },
+    {
+      "id": 38665644851,
+      "head_sha": "add6862dad3e0a3e15747896126191dd13529ac5",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38665644851"
+    },
+    {
+      "id": 38607154597,
+      "head_sha": "377f64b2b13935e7b31f3a52e3fe31ef2e14dcc2",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38607154597"
+    }
+  ],
+  "limits": [
+    "No new laptop or live-model gate",
+    "No new local Kubernetes rollout; exact baseline remote CI passes",
+    "No new independent review or security-advisory scan",
+    "Classifier timings are historical, exclude service startup, and do not measure Qwen",
+    "Source-package hygiene fails on one nested public .env.example; no private .env, weights or cache contents found",
+    "Not an exhaustive security/concurrency audit"
+  ],
+  "raw_archive_sha256": "5cf4dc45d1ee9a04c9d9556a0148cb9e736f8f3385cbe8ce3c7d5506f54f1e11",
+  "raw_members_sha256": {
+    "sync.txt": "1c149fd7915945b95f6096df9a61cc28c261591c88ceb318d2a9b8d96cf0861b",
+    "lint.txt": "af352a86840ad0af3d37ea0d9197f868363a6dac6b1c2ef5d2722f6b41d2d9af",
+    "format.txt": "593a535b34fbaf7ea4b737c2b50ab01c5217938d852f8c502be09b12e9549354",
+    "dependencies.txt": "bbd076fb6eb003f086520009f8c83b22ce8d8998eeae08d8f026a29e3d1f1ab2",
+    "unit.txt": "19d893cda3da4e900fdaf82c5cd13db308542c02321a0887bfe01d97c58b1459",
+    "unit.xml": "2c0d7acd027257a921c304fa5fa847873519604d067e3f2cbafba486b00b64b5",
+    "integration.txt": "4261efcefe90e26cfb1d6d300502a63c5a81ae9f380bafb1ab68f74cbeb690bf",
+    "integration.xml": "232285c8bf7d6c49ed42803d81f903fe500ba0c088a1b5298d419516ab29f0d0",
+    "integration-wrong-origin.txt": "64133cb37c50fe9faba7aae8fe25743d9b0f576ab81367feaf01765674150408",
+    "integration-wrong-origin.xml": "9ed2c8260db87bce838e9f800ba5f2ee6ac15b353507d804bcf95d88a52333ae",
+    "recovery.txt": "92006b207ce88300050bbb6dea3df0c27bcc44650480cdf73d25410d191fef37",
+    "recovery.xml": "00a21e65728cd1b890e2e837d7c17964f0eb6898dba8113d92e7ab44e346713d",
+    "compose-up.txt": "101fad00d6884e22e2126a69964e02fb6c7d2ef42411eb8fa711a6dac795b650",
+    "compose-down.txt": "db87d790439b22f3c2fcdcc740ddca130ee8cafdd32a282e8de664dec97c77c2",
+    "compose-status.json": "fd368e9435fe00e6e073a9355fb1e8fcda9196376a3f157e7cffbad25a259d1c",
+    "routes.json": "e2904add59ad6f83f416f3e3cb1ff6b220f2f0b124efe1d3cc0d494700fef72c",
+    "smoke.json": "f42b2ddce54b9ff496941bedd1965d21f8ff3ffd7748c1acce432e69f1b564db",
+    "remote-ci.json": "624b3867316858636011e10fc1f9d4749f03909549214f2cace4505b1e089d7f",
+    "remote-ci-jobs.json": "9736cd6c84f3fee46483826250b160ebb82e6c861b71fcdd41f9a3bf97c947ee",
+    "build.txt": "bfc51d05cf7471c579f12b12599a02d8ed46fc36b8c41886267a60caf3931d74",
+    "packages.json": "34c323ffaa23076193f8abdab25952ab22465c00e71c3f549a812bc7eab37e78",
+    "inventory.json": "71ff261aa11fffe77384310d4801040ad48770f4dd092453061769b90b89a474",
+    "source-hashes.json": "43772aa49330bb7f8b0830093c545bfc6546481c2a352dd4e000d6fd0f976fb1",
+    "powershell-syntax.json": "a9da7ecb169b57591d314b14e803950f4758a1656ca476ee9cadac75fe71b7cf",
+    "workstation-source-match.json": "add9d381f971cf20973df50013c4f4a32c03ce79ae22e0d01ce0d86b4f240925",
+    "laptop-training-timings.json": "4300aa7d72c23b2acff01eeacc7897a0c27f7e7396cdcf9d595b6b01ea8814fa",
+    "audit-scripts/repo_audit_20261018.py": "3f7db5ecf51ceec12a2089c65459faf53c46b9ee6660cdb53d8e75f7e6f01c5c",
+    "audit-scripts/archive_repo_audit_20261018.py": "801a396c7001559a69b8eac37a6fc6ac3218924f550d3aba12d252ad75f3c394"
+  }
+}

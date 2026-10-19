@@ -128,6 +128,11 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 
 ## Immediate development priorities
 
+Jacob confirmed October 18 that the October 20 presentation will use the CPU
+laptop. Reliable AI on that machine is the immediate blocker; workstation success
+does not establish laptop readiness. The [current audit](docs/project/2026-10-18-repo-audit.md)
+maps delivered Person B tasks and the remaining two-day priorities.
+
 1. Preserve passing ownership, artifact, idempotency, and serial recovery gates.
 2. Retain completed deployment CI and its prior failed attempts with source identity.
 3. Reproduce the bounded class preflight before presentation; preserve resource limits.

@@ -1,5 +1,9 @@
 # ML Pipeline Pro
 
+For the October 20 demo, see the [October 18 audit](docs/project/2026-10-18-repo-audit.md).
+The minimal course features are implemented, but AI acceptance on the chosen CPU
+laptop remains unsuccessful; the passing full AI walkthrough used the RX 9070 workstation.
+
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
 MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses
