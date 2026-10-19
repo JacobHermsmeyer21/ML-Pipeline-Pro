@@ -156,6 +156,12 @@ immutable storage, retention/migrations, and metadata/artifact backup and restor
 
 ## Immediate development priorities
 
+Jacob requested a local dashboard by 11 pm ET on October 19, with CSV datasets,
+agent-guided training and attractive embedded Grafana graphs. The
+[dashboard plan](docs/plans/2026-10-19-local-dashboard-plan.md) awaits human review;
+it is not implementation approval or completion evidence. Its desktop scope is
+separate from the laptop investigation below.
+
 Jacob confirmed October 18 that the October 20 presentation will use the CPU
 laptop. Reliable AI on that machine is the immediate blocker; workstation success
 does not establish laptop readiness. The [current audit](docs/project/2026-10-18-repo-audit.md)
