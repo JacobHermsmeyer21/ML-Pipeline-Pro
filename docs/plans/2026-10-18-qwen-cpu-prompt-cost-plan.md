@@ -2,7 +2,7 @@
 
 - Status: awaiting review; source/evidence investigation complete, live trials outstanding
 - Date: 2026-10-18
-- Source baseline: `91b0aef` / `person-a/conversation-foundation`
+- Source baseline: `9e2dcaf` / `person-a/conversation-foundation` (application unchanged from `91b0aef`)
 - Request: investigate CPU contention and prompt-processing cost and make the demo faster.
 - Human reviewer/approval: pending for the experiments and implementation below.
 - Independent review: not yet obtained; seek separate review of sampling, deadlines, rate arithmetic and any inference configuration before live trials.
@@ -38,9 +38,14 @@ can look fast without helping a new conversation. Prompt specialization for just
 the first read can also destroy prefix reuse on the subsequent answer. Prefer a
 stable compact policy across both inspection steps if compression is needed.
 
-No new latency requirement is invented: the existing 20-second call / 60-second
-turn limits remain the demo acceptance boundary. The comparison threshold below
-only identifies an incremental optimization worth retaining.
+The parallel [deployment plan](2026-10-18-laptop-deployment-readiness-plan.md)
+records Jacob's selected **300-second complete-reply target**, with correctness
+taking priority. Its concrete timing-profile design still awaits review. The
+existing 20-second call / 60-second turn settings are unchanged defaults, not a
+new requirement to reject the five-minute target. This investigation complements
+that deployment work. Final demo acceptance must use its approved named timing
+profile and complete-reply criterion; the threshold below only identifies an
+incremental optimization worth retaining.
 
 ## Requirements
 
@@ -159,7 +164,7 @@ is authorized by an experimental speedup alone.
 ## Implementation outcome
 
 Only step 1 is complete. [Retained analysis, source and raw observations](../evidence/2026-10-18-qwen-cost-investigation/README.md)
-on `91b0aef` reproduce 1,109 tokens in all 30 offline observations. Catalog and
+on `9e2dcaf` reproduce 1,109 tokens in all 30 offline observations. Catalog and
 host-policy removal leaves 571 tokens; at unchanged laptop rates that projects
 56.51 seconds, not a measured speedup. The verified current machine is the
 Ryzen 7/RX 9070 workstation; no live inference or laptop CPU attribution ran.
@@ -179,3 +184,10 @@ limits and missing process attribution. This plan and evidence are committed and
 pushed together under the repository workflow; the final handoff supplies the
 commit/push result. Human approval and actual laptop access remain required for
 the live phase; none of its acceptance criteria are marked passed.
+
+Incoming-change reconciliation: `9e2dcaf` added only the separate deployment plan
+while this investigation was in progress. It is preserved in this branch's
+history. Raw analysis correctly records that execution revision; the initial
+summary's `91b0aef` label was the earlier application baseline and is corrected
+here. Review of the incoming plan aligns final acceptance with the selected
+five-minute reply target, without authorizing either pending implementation.

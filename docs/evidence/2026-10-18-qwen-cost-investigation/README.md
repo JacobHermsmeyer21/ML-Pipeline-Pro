@@ -1,10 +1,18 @@
 # October 18 Qwen CPU and prompt-cost investigation
 
-Read-only investigation from `91b0aef` on October 18, 2026 America/New_York
+Read-only investigation from `9e2dcaf` on October 18, 2026 America/New_York
 (raw timestamps are October 19 UTC). No live inference, runtime configuration,
 model, application, service or prompt behavior changed. There is **no measured
 speedup** from this investigation. The [follow-up plan](../../plans/2026-10-18-qwen-cpu-prompt-cost-plan.md)
 awaits human review and actual laptop access.
+
+`9e2dcaf` added the parallel [laptop deployment plan](../../plans/2026-10-18-laptop-deployment-readiness-plan.md)
+during investigation; application source remains unchanged from `91b0aef`. That
+plan records Jacob's five-minute complete-reply target and pending review of its
+timing profile. The 20-second calculations below describe current default-profile
+constraints; they do not replace that selected target. Final demo readiness must
+be checked under the separately approved deployment profile. Raw analysis already
+records `9e2dcaf`; this summary corrects its initial application-baseline label.
 
 ## What the evidence establishes
 
@@ -125,7 +133,7 @@ The [executed source](analyze_prompt.py) is retained beside its result.
 numbers, usernames, host names and full command lines/environments. Incidental
 workstation process samples remain only in ignored artifacts.
 
-Checks on this working-tree addition to `91b0aef` used repository-local uv with
+Checks on this working-tree addition to `9e2dcaf` used repository-local uv with
 `--cache-dir .uv-cache`; sync and runs used `--offline` with the unchanged lock:
 
 - [Locked sync](sync.log): 114 resolved, 109 installed packages checked.
