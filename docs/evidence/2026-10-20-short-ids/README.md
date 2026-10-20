@@ -3,7 +3,8 @@
 October 20, 2026, approved short-ID implementation on `main`, based on plan commit
 `2bd91ff` and including collaborator metrics commit `a44452e`. Tests ran on the
 implementation working tree; `manifest.json` records source hashes. The local
-demo upgrade is recorded separately after implementation commit/push.
+demo upgrade is [recorded separately](deployment.md) after implementation
+commit/push: five experiments, 25 conversations and 209 preserved files.
 
 Experiments now expose permanent project-scoped `eN` references and conversations
 `cN`. Canonical IDs, artifacts, request hashes and action fingerprints remain

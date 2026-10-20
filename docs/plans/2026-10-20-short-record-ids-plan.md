@@ -1,6 +1,6 @@
 # Short experiment and conversation IDs
 
-- Status: implemented; isolated acceptance verified; local demo upgrade pending
+- Status: implemented and verified; local demo upgraded with preserved data
 - Date: 2026-10-20
 - Source baseline: `d0fad5a` on `main`
 - Request: make experiment and conversation IDs easier to type.
@@ -177,5 +177,9 @@ for exact commands/results, source manifest and raw runs.
 - Implementation follows the approved scope. Existing literal-ID collisions use
   the planned canonical priority. Counter mappings double as permanent tombstones.
 - Durable finding: [short-ID identity/evidence boundaries](../memory/short-record-ids.md).
-- Implementation commit/push and local demo migration are reported in handoff;
-  coordinated rollout evidence follows separately.
+- Implementation committed as `c31898c` and pushed to `origin/main`. The
+  [local demo rollout](../evidence/2026-10-20-short-ids/deployment.md) backfills
+  five experiments/25 conversations, preserves canonical payloads and all 209
+  artifact/input files, restarts healthy services and passes live Chrome checks.
+  Deployment evidence is committed/pushed separately; human usefulness review
+  remains pending.
