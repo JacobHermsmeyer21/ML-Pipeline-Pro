@@ -104,6 +104,23 @@ removed its disposable stack/volumes after retaining snapshots. Reproduce using 
 [dashboard command](../../guides/dashboard.md#compare-algorithms) and
 [ordinary/recovery gates](../../guides/verification.md).
 
+## Subsequent demo rebuild
+
+Jacob requested "rebuild it" after implementation acceptance. The existing
+`mlpp-rx9070-walkthrough-20261014` demo was rebuilt using its actual overlays:
+base, domain services, monitoring, dashboard and OpenAI. Model API, tuning API,
+monitoring API, worker and scheduler now use the same rebuilt image; the gateway
+was recreated to refresh backend discovery. All services are healthy/running.
+
+[Deployment verification](deployment.json) records successful commands, unchanged
+public AI configuration and mounts, all existing database record IDs preserved,
+and 141 unchanged artifact/upload hashes. All 76 installed application files match
+the accepted source `dbfaae6`. The gateway returns readiness 200 and exposes the
+logistic schemas; Chrome opens and selects Logistic regression with no page errors,
+mutation requests or AI generations. The live dashboard remains at
+`http://127.0.0.1:8000/dashboard/`. Detailed private ID/file snapshots remain in
+ignored `artifacts/logistic-deployment/` rather than the published report.
+
 ## Review and remaining limits
 
 Implementing assistant self-review covers legacy serialization, architecture

@@ -1,0 +1,154 @@
+{
+  "revision": "8991e4a7b438286f34171b3e6abec9fbf94e5f3d",
+  "operations": [
+    {
+      "args": [
+        "build",
+        "model-api"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.860000000000582
+    },
+    {
+      "args": [
+        "up",
+        "--no-build",
+        "--wait",
+        "--wait-timeout",
+        "300",
+        "model-api",
+        "tuning-api",
+        "monitoring-api",
+        "worker",
+        "scheduler"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 17.139999999999418
+    },
+    {
+      "args": [
+        "up",
+        "--no-build",
+        "--no-deps",
+        "--force-recreate",
+        "--wait",
+        "--wait-timeout",
+        "120",
+        "api"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.421999999991385
+    }
+  ],
+  "services": [
+    {
+      "service": "model-api",
+      "image": "sha256:fe84fb45c82523b2f225d6b80038f1ccf5cea47daaff9a429a7486f79d74c811",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "worker",
+      "image": "sha256:fe84fb45c82523b2f225d6b80038f1ccf5cea47daaff9a429a7486f79d74c811",
+      "health": "running",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "scheduler",
+      "image": "sha256:fe84fb45c82523b2f225d6b80038f1ccf5cea47daaff9a429a7486f79d74c811",
+      "health": "running",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "tuning-api",
+      "image": "sha256:fe84fb45c82523b2f225d6b80038f1ccf5cea47daaff9a429a7486f79d74c811",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "monitoring-api",
+      "image": "sha256:fe84fb45c82523b2f225d6b80038f1ccf5cea47daaff9a429a7486f79d74c811",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "api",
+      "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "mongo",
+      "image": "sha256:d0d926f94df099bff534b7ee5b5986458131a22489dfff8664509af0c1e2ca9c",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "redis",
+      "image": "sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499",
+      "health": "healthy",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "grafana",
+      "image": "sha256:a1701c2180249361737a99a01bc770db39381640e4d631825d38ff4535efa47d",
+      "health": "running",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    },
+    {
+      "service": "prometheus",
+      "image": "sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996",
+      "health": "running",
+      "mounts_preserved": true,
+      "public_configuration_preserved": true
+    }
+  ],
+  "record_ids_preserved": true,
+  "collections": {
+    "deletions": 34,
+    "datasets": 1,
+    "monitoring_observations": 0,
+    "experiments": 1,
+    "tuning_jobs": 0,
+    "conversation_actions": 7,
+    "models": 2,
+    "conversation_turns": 40,
+    "conversations": 25,
+    "deleted_submissions": 51,
+    "trials": 0,
+    "model_versions": 1,
+    "foundation_test_records": 0,
+    "deletion_items": 0,
+    "project_lifecycle": 23
+  },
+  "files_preserved": 141,
+  "active_jobs": {
+    "experiments": 0,
+    "tuning_jobs": 0
+  },
+  "http_ready_status": 200,
+  "openapi_logistic_schema": true,
+  "chrome_model_selector": true,
+  "browser_page_errors": [],
+  "browser_post_requests": [],
+  "installed_files_matching_verified_application": 76,
+  "verified_application_revision": "dbfaae6c6132f5d6011e2e0c99795f9b137b076d",
+  "compose_project": "mlpp-rx9070-walkthrough-20261014",
+  "overlays": [
+    "compose.yaml",
+    "compose.services.yaml",
+    "compose.monitoring.yaml",
+    "compose.dashboard.yaml",
+    "compose.openai.yaml"
+  ],
+  "origin": "http://127.0.0.1:8000"
+}

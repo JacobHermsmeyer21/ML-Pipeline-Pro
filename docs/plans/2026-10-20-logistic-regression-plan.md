@@ -202,5 +202,7 @@ test justification and self-review. A source-confirmed integer/float default
 normalization issue was fixed within the approved contract; no logistic tuning,
 AI mutation, alternative backend or concurrency change was introduced. No course
 requirement is closed by this linear baseline. Independent review was unavailable;
-human usefulness review remains outstanding. The existing demo deployment was not
-updated; compatible API/worker/dashboard versions must be rebuilt together.
+human usefulness review remains outstanding. Jacob subsequently requested the demo
+rebuild. Matching API/worker/dashboard code is now deployed with all existing IDs,
+mounts/configuration and 141 artifact/upload hashes preserved; see the
+[deployment verification](../evidence/2026-10-20-logistic-regression/deployment.json).

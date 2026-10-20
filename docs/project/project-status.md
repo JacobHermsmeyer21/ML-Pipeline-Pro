@@ -14,8 +14,10 @@ tools, artifacts and version registration support both algorithms.
 three browser/worker runs, independent checkpoint/scaling/metric checks and package
 validation. Human usefulness review and independent review remain open. No live-AI
 logistic acceptance, superiority result or new course completion is claimed. The
-existing demo deployment remains on its earlier image until rebuilt with matching
-API/worker/dashboard code; test projects and volumes were isolated.
+isolated acceptance used separate test projects and volumes. Jacob then requested
+the demo rebuild: matching application services are now healthy on the existing
+Compose project, all record IDs and 141 file hashes are preserved, and Chrome
+verifies the live selector. See the [deployment record](../evidence/2026-10-20-logistic-regression/deployment.json).
 
 ## Agent reply validation: October 20, 2026
 
