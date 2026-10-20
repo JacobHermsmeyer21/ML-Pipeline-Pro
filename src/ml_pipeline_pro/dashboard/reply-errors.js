@@ -17,6 +17,7 @@ const reasons = new Map([
 ]);
 
 export function validationExplanation(error) {
+  if (error?.code === "unsupported_model_algorithm") return "AI training and tuning support MLP only. Use the manual training form for logistic regression.";
   const details = error?.details;
   if (error?.code !== "model_invalid_response" ||
       typeof details?.validation_stage !== "string" ||

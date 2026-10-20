@@ -132,6 +132,42 @@ def test_queued_training_artifact_download_and_model_version_registration(archit
                     else {"epochs": 10}
                 ),
             }
+            if architecture == "logistic_regression":
+                mismatch = client.post(
+                    "/experiments",
+                    json={**body, "config": {}},
+                    headers={"Idempotency-Key": "mismatch"},
+                )
+                assert mismatch.status_code == 409
+                assert mismatch.json()["error"]["code"] == "model_config_mismatch"
+                foreign = client.post(
+                    "/experiments",
+                    json=body,
+                    headers={"X-Project-ID": project_id + "_foreign", "Idempotency-Key": "foreign"},
+                )
+                assert foreign.status_code == 404
+                assert foreign.json()["error"]["code"] == "dataset_not_found"
+                foreign_model = client.post(
+                    "/models",
+                    json={"name": "foreign", "architecture": architecture},
+                    headers={"X-Project-ID": project_id + "_foreign"},
+                )
+                assert foreign_model.status_code == 201
+                missing_model = client.post(
+                    "/experiments",
+                    json={**body, "model_id": foreign_model.json()["id"]},
+                    headers={"Idempotency-Key": "foreign-model"},
+                )
+                assert missing_model.status_code == 404
+                assert missing_model.json()["error"]["code"] == "model_not_found"
+                tuning = client.post(
+                    "/tuning-jobs",
+                    json={**body, "config": {}},
+                    headers={"Idempotency-Key": "unsupported-tuning"},
+                )
+                assert tuning.status_code == 409
+                assert tuning.json()["error"]["code"] == "unsupported_model_algorithm"
+                assert client.get("/experiments").json()["items"] == []
             response = client.post(
                 "/experiments", json=body, headers={"Idempotency-Key": "integration-job"}
             )
@@ -165,3 +201,4 @@ def test_queued_training_artifact_download_and_model_version_registration(archit
             assert registered.status_code == 201, registered.text
     finally:
         cleanup(project_id)
+        cleanup(project_id + "_foreign")

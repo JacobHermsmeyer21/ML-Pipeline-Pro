@@ -28,7 +28,14 @@ def main():
     report = {
         "project": project,
         "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
-        "working_tree": True,
+        "working_tree": bool(
+            subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()
+        ),
+        "source_sha256": {
+            str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(Path("src/ml_pipeline_pro").rglob("*"))
+            if path.is_file() and "__pycache__" not in path.parts
+        },
         "torch": str(torch.__version__),
         "runs": [],
         "checks": [],
@@ -66,6 +73,11 @@ def main():
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.goto(args.origin + "/dashboard/")
+            explanation = page.evaluate("""async () => {
+                const module = await import('/dashboard/reply-errors.js');
+                return module.validationExplanation({code: 'unsupported_model_algorithm'});
+            }""")
+            assert "manual training form for logistic regression" in explanation
             page.evaluate(
                 "project => sessionStorage.setItem('mlpp:last-project', project)", project
             )

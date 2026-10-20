@@ -31,6 +31,7 @@ from ml_pipeline_pro.schemas import (
     ModelVersionCreate,
     ModelVersionRecord,
     Page,
+    config_algorithm,
 )
 from ml_pipeline_pro.storage_control import dataset_registration
 from ml_pipeline_pro.tracking import TrackingStore, get_store
@@ -129,8 +130,6 @@ async def create_experiment(
         model = await store.models.get(project, body.model_id)
         if model is None:
             raise ApiError(404, "model_not_found", "Model was not found in this project")
-        from ml_pipeline_pro.schemas import config_algorithm
-
         if model.architecture != config_algorithm(body.config):
             raise ApiError(409, "model_config_mismatch", "Config algorithm must match the model")
         record = ExperimentRecord(

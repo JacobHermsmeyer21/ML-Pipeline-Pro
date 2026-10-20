@@ -108,7 +108,7 @@ class LogisticRegressionConfig(RequestModel):
     batch_size: int = Field(default=16, ge=1, le=4096)
     learning_rate: float = Field(default=0.01, gt=0, le=1, allow_inf_nan=False)
     max_runtime_seconds: int = Field(default=60, ge=1, le=600)
-    l2_strength: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
+    l2_strength: float = Field(default=0.0, ge=0, le=1, allow_inf_nan=False)
 
 
 def config_algorithm(config: TrainingConfig | LogisticRegressionConfig) -> str:

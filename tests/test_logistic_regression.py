@@ -63,6 +63,16 @@ def test_legacy_config_serialization_and_hash_are_unchanged():
     assert isinstance(ExperimentCreate.model_validate(expected).config, TrainingConfig)
 
 
+def test_logistic_defaults_have_the_same_fingerprint_when_explicit():
+    minimal = ExperimentCreate(
+        dataset_id="dataset", model_id="model", config={"algorithm": "logistic_regression"}
+    )
+    explicit = ExperimentCreate.model_validate(minimal.model_dump())
+    assert json.dumps(minimal.model_dump(), sort_keys=True) == json.dumps(
+        explicit.model_dump(), sort_keys=True
+    )
+
+
 @pytest.mark.parametrize(
     "extra",
     [

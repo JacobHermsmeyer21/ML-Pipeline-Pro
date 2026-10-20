@@ -80,6 +80,8 @@ function renderAction(snapshot) {
   }
   controls.append(button("Check saved state", "text-button", () => refreshAction(snapshot).catch(report))); card.append(controls);
   if (shown.outcome?.data?.id) card.append(el("p", "hash-text", `Saved outcome record: ${shown.outcome.data.id}`));
+  const explanation = validationExplanation(shown.outcome?.error);
+  if (explanation) card.append(el("p", "error-text", explanation));
   if (shown.status === "unknown") card.append(el("p", "error-text", "Submission is uncertain. Only an explicit retry of this same action can resolve it. A new job is not generated automatically."));
   if (!action && !state.actionReads.has(snapshot.action_id)) refreshAction(snapshot).catch(report);
   return card;
