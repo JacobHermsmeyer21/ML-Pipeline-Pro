@@ -1,0 +1,83 @@
+{
+  "source_revision": "e3004122ad11c23ba162e6e4b347551cd616829c",
+  "run_id": 39362498397,
+  "run_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39362498397",
+  "jobs": [
+    {
+      "id": 118431640020,
+      "name": "compose-smoke",
+      "conclusion": "success",
+      "kernel": "6.8.0-1064-azure"
+    },
+    {
+      "id": 118431640022,
+      "name": "checks (3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 118431640190,
+      "name": "checks (3.13)",
+      "conclusion": "success"
+    },
+    {
+      "id": 118432214792,
+      "name": "domain-compose-smoke",
+      "conclusion": "success",
+      "kernel": "6.8.0-1070-azure"
+    },
+    {
+      "id": 118432214805,
+      "name": "kubernetes-deploy",
+      "conclusion": "failure",
+      "kernel": "6.8.0-1064-azure"
+    }
+  ],
+  "junit": [
+    {
+      "archive": "domain-service-validation.zip",
+      "member": "integration.xml",
+      "xml_sha256": "ff48d54e534667961d8b3506644782ae909edcd5e82726401ccc197f99bc6553",
+      "tests": 104,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "ordinary-integration-validation.zip",
+      "member": "integration.xml",
+      "xml_sha256": "aac6ff120791cd1a331fe7230ccebbe43de9a143f3c5021553ec667f7b4517f6",
+      "tests": 104,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "recovery-validation.zip",
+      "member": "junit.xml",
+      "xml_sha256": "91f41ec1222e608f8868b5dd3410ba8cb134d7235b5089b331cfa4ae44451664",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "unit-python-3.11.zip",
+      "member": "unit.xml",
+      "xml_sha256": "f90b8a125290360f4d6a91388d2e4b792e2a08b3f5b2fd87c583df689e12f1b4",
+      "tests": 740,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "unit-python-3.13.zip",
+      "member": "unit.xml",
+      "xml_sha256": "c264bbd404713db19b62d96e632a0539ed22b8891d587163477badf4983c1e86",
+      "tests": 740,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "full_ci_acceptance": "pending: Kubernetes first dataset POST returned storage 503"
+}

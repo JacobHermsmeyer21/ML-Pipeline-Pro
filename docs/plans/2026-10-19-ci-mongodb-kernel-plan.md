@@ -1,6 +1,6 @@
 # Restore MongoDB startup on hosted CI runners
 
-- Status: approved; implemented locally, hosted acceptance pending
+- Status: implemented; hosted Compose acceptance passed, full CI acceptance pending
 - Date: 2026-10-19 (America/New_York)
 - Source baseline: `96c652c` / `main`
 - Request: repair the GitHub Actions `compose-smoke` startup failure
@@ -105,9 +105,9 @@ read-only GitHub credential approval continues to cover CI status/log inspection
 
 ## Implementation outcome
 
-The approved runner pins and kernel diagnostics are implemented. Hosted acceptance
-and the implementation commit/push are pending; no repaired CI run is claimed yet.
-No application code, test assertions, database images or gates change.
+The approved runner pins and kernel diagnostics are implemented in `e300412`,
+successfully pushed to `origin/main`. No application code, test assertions,
+database images or gates change.
 The plan/evidence/memory links were checked (36 local links/anchors), external
 kernel/issue/retirement facts were checked against their primary sources, and
 `git diff --check` passed before the documentation commit.
@@ -120,5 +120,22 @@ comparison against `2f8d732` confirms that removing only the three new kernel
 steps and reverting their runner labels exactly restores the prior workflow.
 All 51 local documentation links/anchors pass. Local JUnit and configuration
 evidence is under `artifacts/ci-compose-diagnosis/approved-unit.xml` and
-`implementation-config-checks.json`. Hosted service/recovery acceptance remains
-pending the pushed run; no local run substitutes for that gate.
+`implementation-config-checks.json`.
+
+The [implementation run](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39362498397)
+passes `compose-smoke` on measured kernel `6.8.0-1064-azure`: MongoDB becomes
+healthy, readiness passes, 104 ordinary and ten serial recovery tests pass. Both
+Python matrices pass 740 tests each; domain Compose passes its deployment smoke
+and 104 integration tests on `6.8.0-1070-azure`. Downloaded JUnit reports have zero
+failures, errors or skips. [Retained run evidence](../evidence/2026-10-19-ci-mongodb-kernel/README.md)
+includes kernels, exact test counts and XML hashes.
+
+F1 and N1/N2 pass. F2's complete five-job criterion remains pending: Kubernetes
+on `6.8.0-1064-azure` passes rollout/readiness, but its first dataset POST returns
+storage 503. The diagnostic omits the underlying MongoDB exception; no kernel
+rejection, pod restart or confirmed resource cause explains that later failure.
+Five disposable fresh-database admission probes pass locally, which does not
+establish its hosted mechanism. The failure is retained; a clean CI run from the
+evidence-only follow-up will check recurrence without changing assertions or
+adding retries. A recurring application failure needs its own diagnosed/reviewed
+scope rather than weakening this plan's criteria.

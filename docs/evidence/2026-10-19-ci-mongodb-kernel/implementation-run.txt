@@ -1,0 +1,45 @@
+Job 118431640020
+2026-10-20T03:06:07.3924692Z Image: ubuntu-22.04
+2026-10-20T03:06:08.7057661Z 6.8.0-1064-azure
+2026-10-20T03:07:24.7896921Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:07:24.7931328Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:07:24.7932686Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:07:25.7166997Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:08:38.6312115Z ===================== 104 passed, 750 deselected in 57.26s =====================
+2026-10-20T03:14:29.9056610Z ================ 10 passed, 844 deselected in 347.92s (0:05:47) ================
+
+Job 118432214792
+2026-10-20T03:08:06.5949062Z Image: ubuntu-22.04
+2026-10-20T03:08:07.6249696Z 6.8.0-1070-azure
+2026-10-20T03:10:08.7989418Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:08.7990465Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:08.7991298Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:08.7992099Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:08.7993013Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:22.5347009Z  Container ml-pipeline-pro-mongo-1  Healthy
+2026-10-20T03:10:38.7617650Z Three-domain training/tuning/version/monitoring/replay smoke passed.
+2026-10-20T03:11:33.8453021Z ===================== 104 passed, 750 deselected in 51.82s =====================
+
+Job 118432214805
+2026-10-20T03:08:07.3145816Z Image: ubuntu-22.04
+2026-10-20T03:08:08.4926011Z 6.8.0-1064-azure
+
+Kubernetes smoke.log
+Traceback (most recent call last):
+  File "/home/runner/work/ML-Pipeline-Pro/ML-Pipeline-Pro/scripts/deployment_smoke.py", line 137, in <module>
+    result = run(args.origin, args.project)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/ML-Pipeline-Pro/ML-Pipeline-Pro/scripts/deployment_smoke.py", line 35, in run
+    dataset = request(
+              ^^^^^^^^
+  File "/home/runner/work/ML-Pipeline-Pro/ML-Pipeline-Pro/scripts/deployment_smoke.py", line 25, in request
+    response.raise_for_status()
+  File "/home/runner/work/ML-Pipeline-Pro/ML-Pipeline-Pro/.venv/lib/python3.11/site-packages/httpx/_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Server error '503 Service Unavailable' for url 'http://127.0.0.1:18000/api/v1/datasets'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503
+
+
+Kubernetes model API diagnostic
+{"timestamp": "2026-10-20T03:12:30.397793+00:00", "level": "WARNING", "logger": "ml_pipeline_pro.errors", "message": "Storage operation failed", "correlation_id": "deployment-smoke"}
+{"timestamp": "2026-10-20T03:12:30.398395+00:00", "level": "INFO", "logger": "ml_pipeline_pro.main", "message": "Request completed", "correlation_id": "deployment-smoke", "method": "POST", "path": "/api/v1/datasets", "status_code": 503, "duration_ms": 36.73}
