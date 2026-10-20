@@ -9,6 +9,7 @@ from pymongo.read_concern import ReadConcern
 from pymongo.write_concern import WriteConcern
 
 from ml_pipeline_pro.errors import ApiError
+from ml_pipeline_pro.short_ids import ShortIds
 
 registration_generation = ContextVar("registration_generation", default=None)
 GATED_COLLECTIONS = {
@@ -101,6 +102,9 @@ class Lifecycle:
     async def insert(self, collection, record, references=()):
         project = record.project_id
         await self.ensure(project)
+        aliases = ShortIds(self.database)
+        if collection == "experiments":
+            await aliases.prepare(project, collection)
         expected = registration_generation.get()
         generation = expected[1] if expected and expected[0] == project else None
         document = record.model_dump()
@@ -126,7 +130,14 @@ class Lifecycle:
                     raise ApiError(
                         404, f"{kind}_not_found", f"{kind.replace('_', ' ')} was not found"
                     )
-            await self.database[collection].insert_one(document, session=session)
+            saved = dict(document)
+            if collection == "experiments":
+                saved["short_id"] = await aliases.assign(
+                    project, collection, record.id, session=session
+                )
+            await self.database[collection].insert_one(saved, session=session)
+            if collection == "experiments":
+                return record.model_copy(update={"short_id": saved["short_id"]})
             return record
 
         return await self.transaction(commit)

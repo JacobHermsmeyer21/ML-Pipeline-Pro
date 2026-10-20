@@ -112,13 +112,32 @@ class MemoryDatasets(MemoryRepository):
 
 
 class MemoryExperiments(MemoryRepository):
+    def __init__(self, unique_fields=()):
+        super().__init__(unique_fields)
+        self.aliases = {}
+        self.counters = {}
+
+    async def get(self, project_id, record_id):
+        exact = self.records.get(record_id)
+        if exact is None or exact.project_id != project_id:
+            record_id = self.aliases.get((project_id, record_id), record_id)
+        return await super().get(project_id, record_id)
+
     async def insert(self, record):
         job_id = getattr(record, "tuning_job_id", None)
         if job_id is not None and not self._owns_tuning(
             record.project_id, job_id, record.worker_token
         ):
             raise OwnershipLost()
-        return await super().insert(record)
+        saved = await super().insert(record)
+        if "short_id" not in type(saved).model_fields:
+            return saved
+        number = self.counters.get(record.project_id, 0) + 1
+        self.counters[record.project_id] = number
+        saved.short_id = f"e{number}"
+        self.records[saved.id].short_id = saved.short_id
+        self.aliases[(saved.project_id, saved.short_id)] = saved.id
+        return saved
 
     async def by_submission(self, project_id, submission_key):
         return next(

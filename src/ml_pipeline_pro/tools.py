@@ -15,6 +15,7 @@ from ml_pipeline_pro.schemas import (
     ModelRecord,
     Page,
 )
+from ml_pipeline_pro.short_ids import is_short_id
 from ml_pipeline_pro.tool_schemas import (
     CompareArguments,
     CreateExperimentArguments,
@@ -320,6 +321,45 @@ class ToolDispatcher:
     def __init__(self, transport: ToolTransport):
         self._transport = transport
 
+    async def _resolve_experiments(self, arguments, context):
+        """Resolve aliases through the same authenticated API before identity assertions."""
+        values = arguments.model_dump()
+        identities = values.get("experiment_ids", [values.get("experiment_id")])
+        resolved = []
+        for identity in identities:
+            if identity is None or not is_short_id("experiments", identity):
+                resolved.append(identity)
+                continue
+            response = await self._transport.request(
+                "GET", f"/api/v1/experiments/{identity}", context=context, query=[], body=None
+            )
+            if response.status_code >= 400:
+                error = ErrorResponse.model_validate(response.payload).error
+                if error.correlation_id != response.correlation_id:
+                    raise ValueError("Error correlation mismatch")
+                return _failure(
+                    context,
+                    None,
+                    error.code,
+                    error.message,
+                    details=error.details,
+                    http_status=response.status_code,
+                    correlation_id=response.correlation_id,
+                )
+            record = _parse_output(_BY_NAME["get_experiment"], response.payload)
+            if (
+                response.status_code != 200
+                or record.project_id != context.project_id
+                or (record.id != identity and record.short_id != identity)
+            ):
+                raise ValueError("Alias resolution identity mismatch")
+            resolved.append(record.id)
+        if "experiment_ids" in values:
+            values["experiment_ids"] = resolved
+        elif "experiment_id" in values:
+            values["experiment_id"] = resolved[0]
+        return type(arguments).model_validate(values)
+
     async def mutation_preflight(self, call: ToolCall, context: ToolContext) -> ToolFailure | None:
         if call.name not in {"create_experiment", "create_tuning_job"}:
             return None
@@ -379,6 +419,21 @@ class ToolDispatcher:
             failure = await self.mutation_preflight(call, context)
             if failure is not None:
                 return failure
+        if name in {"get_experiment", "compare_experiments"}:
+            try:
+                normalized = await self._resolve_experiments(arguments, context)
+                if isinstance(normalized, ToolFailure):
+                    return normalized.model_copy(update={"tool_name": name})
+                arguments = normalized
+            except ToolTransportError as exc:
+                return _failure(context, name, exc.code, str(exc), http_status=exc.status_code)
+            except (ValidationError, ValueError, AttributeError):
+                return _failure(
+                    context,
+                    name,
+                    "tool_validation_error",
+                    "Experiment references could not be resolved to distinct scoped records",
+                )
         values = arguments.model_dump(mode="json", exclude_none=True)
         path = spec.path
         if spec.path_key is not None:

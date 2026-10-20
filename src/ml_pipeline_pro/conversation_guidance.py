@@ -6,6 +6,7 @@ from copy import deepcopy
 
 from ml_pipeline_pro.conversation_model import native_conversation_tools
 from ml_pipeline_pro.conversation_schemas import ModelReply
+from ml_pipeline_pro.short_ids import is_short_id
 
 GUIDED_NAMES = frozenset(
     {
@@ -121,10 +122,20 @@ def requested_facts(messages: list[dict]) -> list[dict[str, str]]:
             continue
         result = json.loads(message["content"])
         data = result.get("data", {})
-        if result.get("status") != "succeeded" or data.get("id") != target[2]:
+        alias_match = (
+            target[0] == "get_experiment"
+            and is_short_id("experiments", target[2])
+            and data.get("short_id") == target[2]
+        )
+        record_id = data.get("id")
+        if (
+            result.get("status") != "succeeded"
+            or (record_id != target[2] and not alias_match)
+            or not isinstance(record_id, str)
+        ):
             continue
         if not any(
-            item.get("record_id") == target[2]
+            item.get("record_id") == record_id
             and item.get("role") == "record"
             and item.get("kind") == target[0].removeprefix("get_")
             and item.get("project_id") == data.get("project_id")
@@ -138,7 +149,7 @@ def requested_facts(messages: list[dict]) -> list[dict[str, str]]:
             for key in field.split("."):
                 value = value.get(key) if isinstance(value, dict) else None
             if type(value) in {str, int, float, bool}:
-                facts.append({"record_id": target[2], "field": field})
+                facts.append({"record_id": record_id, "field": field})
         return facts
     return []
 

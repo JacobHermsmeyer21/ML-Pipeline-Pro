@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Short references preserve canonical evidence and request fingerprints](short-record-ids.md) | Transactional eN/cN allocation, paused-writer migration, replay and canonical fact constraints |
 | [Algorithm variants preserve historical MLP serialization](classifier-algorithms.md) | Explicit logistic configs, unchanged submission hashes, linear checkpoint dispatch and deferred AI/tuning boundaries |
 | [Model-visible fact choices must match the host ledger](agent-reply-validation.md) | Reproduced unsupported-fact rejection, safe failure reasons, shared reference guidance and capped hosted correction |
 | [OpenAI SDK headers and observer metadata need explicit isolation](openai-provider-boundary.md) | Hosted Responses admission, ambient credentials, safe timing/usage evidence and estimated test reservations |

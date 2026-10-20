@@ -1,15 +1,24 @@
 import { $, state, terminalTurns, el, button, api, stored, store, notify, report, describe,
-  setPending, date, download, selectedDataset, selectedModel, showView } from "./core.js";
+  setPending, date, download, selectedDataset, selectedModel, showView, recordLabel } from "./core.js";
 import { validationExplanation } from "./reply-errors.js";
 
 const welcome = $("chat-messages").firstElementChild.cloneNode(true);
-function rememberConversation(id) {
+function rememberConversation(id, shortId = null) {
+  if (shortId) store("conversation-labels", { ...stored("conversation-labels", {}), [id]: shortId });
   const ids = stored("conversations", []).filter((item) => typeof item === "string" && item !== id);
   store("conversations", [id, ...ids].slice(0, 20)); store("conversation", id); renderConversationSelect();
 }
 export function renderConversationSelect() {
   const select = $("conversation-select"); select.replaceChildren(new Option("New conversation", ""));
-  for (const id of stored("conversations", []).slice(0, 20)) if (typeof id === "string") select.append(new Option(`Conversation ${id.slice(0, 8)}`, id));
+  for (const id of stored("conversations", []).slice(0, 20)) if (typeof id === "string") {
+    const option = new Option(`Conversation ${recordLabel(id)}`, id); select.append(option);
+    if (!stored("conversation-labels", {})[id]) api(`/conversations/${encodeURIComponent(id)}?limit=1`).then((history) => {
+      if (history.short_id) {
+        store("conversation-labels", { ...stored("conversation-labels", {}), [id]: history.short_id });
+        option.textContent = `Conversation ${history.short_id}`;
+      }
+    }).catch(() => {});
+  }
   select.value = state.conversation;
 }
 function renderRecovery() {
@@ -30,7 +39,12 @@ export function renderChat() {
     const assistant = el("div", "chat-message assistant"); assistant.append(el("span", "message-label", "Pipeline agent"), el("p", "", turn.message || (turn.status === "running" ? "Working with your saved records…" : turn.error?.message || "No message was saved.")));
     if (turn.required_inputs?.length) assistant.append(el("p", "muted-note", "Needed: " + turn.required_inputs.join(", ")));
     if (turn.facts?.length) { const facts = el("div", "facts-list");
-      for (const fact of turn.facts) facts.append(el("div", "fact", `${fact.field}: ${typeof fact.value === "object" ? JSON.stringify(fact.value) : fact.value} · ${fact.record_id}`));
+      for (const fact of turn.facts) {
+        const snapshots = (turn.tool_results || []).flatMap((result) => result.data?.items || result.data?.experiments || [result.data]);
+        const reference = snapshots.find((record) => record?.id === fact.record_id)?.short_id || recordLabel(fact.record_id);
+        const node = el("div", "fact", `${fact.field}: ${typeof fact.value === "object" ? JSON.stringify(fact.value) : fact.value} · ${reference}`);
+        node.title = fact.record_id; facts.append(node);
+      }
       assistant.append(facts);
     }
     if (turn.error) {
@@ -79,7 +93,7 @@ function renderAction(snapshot) {
     if (expired) card.append(el("p", "muted-note", "This proposal has expired. Check its saved state."));
   }
   controls.append(button("Check saved state", "text-button", () => refreshAction(snapshot).catch(report))); card.append(controls);
-  if (shown.outcome?.data?.id) card.append(el("p", "hash-text", `Saved outcome record: ${shown.outcome.data.id}`));
+  if (shown.outcome?.data?.id) card.append(el("p", "hash-text", `Saved outcome record: ${shown.outcome.data.short_id || recordLabel(shown.outcome.data.id)}`));
   const explanation = validationExplanation(shown.outcome?.error);
   if (explanation) card.append(el("p", "error-text", explanation));
   if (shown.status === "unknown") card.append(el("p", "error-text", "Submission is uncertain. Only an explicit retry of this same action can resolve it. A new job is not generated automatically."));
@@ -114,13 +128,14 @@ export async function loadHistory() {
   let history = await api(`/conversations/${encodeURIComponent(conversation)}?limit=50`);
   if (history.revision > 50) history = await api(`/conversations/${encodeURIComponent(conversation)}?limit=50&offset=${history.revision - 50}`);
   if (conversation !== state.conversation) return;
+  if (history.short_id) rememberConversation(history.conversation_id, history.short_id);
   state.revision = history.revision; state.turns = history.turns;
   const pending = state.pendingChat;
   if (pending && history.turns.some((turn) => turn.request_id === pending.body.request_id && terminalTurns.has(turn.status))) setPending("chat", null);
   renderChat(); renderRecovery();
 }
 function adoptTurn(turn) {
-  state.conversation = turn.conversation_id; state.revision = Math.max(state.revision, turn.revision); rememberConversation(turn.conversation_id);
+  state.conversation = turn.conversation_id; state.revision = Math.max(state.revision, turn.revision); rememberConversation(turn.conversation_id, turn.short_id);
   const index = state.turns.findIndex((item) => item.turn_id === turn.turn_id);
   if (index < 0) state.turns.push(turn); else state.turns[index] = turn;
   if (terminalTurns.has(turn.status)) setPending("chat", null); renderChat(); renderRecovery();

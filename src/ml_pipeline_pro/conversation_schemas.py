@@ -136,6 +136,7 @@ class ConversationAction(RequestModel):
 
 class ConversationTurn(RequestModel):
     conversation_id: ResourceId
+    short_id: str | None = Field(default=None, pattern=r"^c[1-9][0-9]*$", max_length=20)
     turn_id: ResourceId
     request_id: ResourceId
     revision: int = Field(strict=True, ge=1)
@@ -156,6 +157,7 @@ class ConversationTurn(RequestModel):
 
 class ConversationHistory(RequestModel):
     conversation_id: ResourceId
+    short_id: str | None = Field(default=None, pattern=r"^c[1-9][0-9]*$", max_length=20)
     revision: int = Field(strict=True, ge=0)
     turns: list[ConversationTurn]
     limit: int = Field(strict=True, ge=1, le=100)

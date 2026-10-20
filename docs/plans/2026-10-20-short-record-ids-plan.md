@@ -1,14 +1,14 @@
 # Short experiment and conversation IDs
 
-- Status: awaiting review
+- Status: implemented; isolated acceptance verified; local demo upgrade pending
 - Date: 2026-10-20
 - Source baseline: `d0fad5a` on `main`
 - Request: make experiment and conversation IDs easier to type.
 - Human decisions: Jacob selected dashboard, agent chat and API support, then
   requested experiment IDs beginning with `e` and conversation IDs with `c`.
-- Human reviewer/implementation approval: pending review of this written plan.
-- Independent review: needed for allocation, migration and replay boundaries;
-  availability unknown. Disclose unavailable review; self-review is not independent.
+- Human reviewer/implementation approval: Jacob, October 20, 2026, "approved" in chat.
+- Independent review: local Qwen 2.5 14B, Ollama 0.40.2; submitted scope,
+  findings, limits and resolutions retained in the evidence record.
 
 ## Proposed behavior and purpose
 
@@ -153,10 +153,29 @@ reuse numbers, and do not run mixed writers against an incomplete migration.
 
 Jacob confirmed the three-interface scope and prefix preference in this chat on
 October 20. Those decisions precede this written plan and are not recorded as
-approval of its allocation/migration design. Implementation approval is pending.
+approval of its allocation/migration design. Jacob subsequently replied "approved"
+after the plan handoff, authorizing the complete written scope on October 20.
 
 ## Implementation outcome
 
-Planning only. Application changes, migration, tests and deployment are pending
-human review. Documentation verification and plan commit/push are reported in the
-handoff; no application acceptance is claimed.
+Implementation based on `2bd91ff`, with collaborator metrics changes through
+`a44452e` preserved. See [retained evidence](../evidence/2026-10-20-short-ids/README.md)
+for exact commands/results, source manifest and raw runs.
+
+- Added transactional registry/counters, short-ID metadata and scoped resolution
+  for experiment and conversation inputs; immutable canonical IDs/fingerprints.
+- Added bounded resumable migration, canonical tool/evidence normalization,
+  alias-aware requested-fact constraints, dashboard labels and upgrade guidance.
+- Verification: 837 fast, 111 ordinary, six focused real-store and 12 serial
+  recovery passes; no selected skips. Browser/two real training runs and pinned
+  local Qwen e1 inspection/e1/e2 comparison pass. Package and dependency checks pass.
+- Independent local-model review is retained with resolutions; human usefulness
+  review remains separate. No new hosted-provider spend or broad load claim.
+- New tests cover alias grammar, bad tool resolution, project isolation, duplicate
+  canonical inputs, transaction retry/rollback, overflow, migration/replay,
+  erasure nonreuse and tuning fencing. Existing assertions/skips are unchanged.
+- Implementation follows the approved scope. Existing literal-ID collisions use
+  the planned canonical priority. Counter mappings double as permanent tombstones.
+- Durable finding: [short-ID identity/evidence boundaries](../memory/short-record-ids.md).
+- Implementation commit/push and local demo migration are reported in handoff;
+  coordinated rollout evidence follows separately.

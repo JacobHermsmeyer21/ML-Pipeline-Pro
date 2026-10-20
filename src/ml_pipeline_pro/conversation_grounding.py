@@ -11,6 +11,7 @@ from ml_pipeline_pro.tool_schemas import EvidenceReference, ToolSuccess
 
 _FIELDS = {
     "id",
+    "short_id",
     "project_id",
     "schema_version",
     "created_at",

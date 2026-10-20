@@ -1,5 +1,11 @@
 # Local ML workspace
 
+Experiments display permanent references such as `e1`, `e2`, `e3`; conversations
+use `c1`, `c2`, `c3`. You can type experiment references directly in agent messages.
+Full experiment IDs remain in details. References are saved per project and do
+not change when you refresh or delete another record. Existing installations need
+the [short-ID upgrade](short-record-ids.md#upgrade-existing-data).
+
 The dashboard runs on the existing model API at
 `http://127.0.0.1:8000/dashboard/`. It supports raw tabular CSV classification,
 training/results/artifacts, local-agent conversations and real Grafana panels.

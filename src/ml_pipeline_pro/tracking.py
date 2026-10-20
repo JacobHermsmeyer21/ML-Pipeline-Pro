@@ -9,6 +9,7 @@ from ml_pipeline_pro.jobs import ExperimentRepository
 from ml_pipeline_pro.lifecycle import Lifecycle
 from ml_pipeline_pro.repositories import MongoRepository
 from ml_pipeline_pro.schemas import DatasetRecord, ExperimentRecord, ModelRecord, ModelVersionRecord
+from ml_pipeline_pro.short_ids import ShortIds
 
 
 class TrackingStore:
@@ -25,6 +26,7 @@ class TrackingStore:
         async with self._index_lock:
             if self._indexed:
                 return
+            await ShortIds(self.experiments.database).ensure_indexes()
             await self.datasets.collection.create_index(
                 [("project_id", ASCENDING), ("name", ASCENDING), ("version", ASCENDING)],
                 unique=True,

@@ -204,6 +204,8 @@ async def compare_experiments(
                 "All experiments must have succeeded with the requested metric",
             )
         records.append(record)
+    if len({record.id for record in records}) != len(records):
+        raise ApiError(422, "invalid_comparison", "Comparison requires distinct experiment IDs")
     if len({record.dataset_id for record in records}) != 1:
         raise ApiError(
             409, "dataset_mismatch", "Compare experiments using the same dataset version"

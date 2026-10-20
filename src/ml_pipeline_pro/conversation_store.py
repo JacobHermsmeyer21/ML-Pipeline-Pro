@@ -25,6 +25,7 @@ from ml_pipeline_pro.conversation_schemas import (
 )
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+from ml_pipeline_pro.short_ids import ShortIds
 from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext, ToolResult
 from ml_pipeline_pro.tools import validated_proposal
 
@@ -117,6 +118,7 @@ class ConversationStore:
         self.conversations = database.get_collection("conversations")
         self.turns = database.get_collection("conversation_turns")
         self.actions = database.get_collection("conversation_actions")
+        self.aliases = ShortIds(database)
         self._settings = settings.model_copy(deep=True)
         self._secrets = configured_secrets(settings)
         self._clock = clock or (lambda: datetime.now(UTC))
@@ -130,6 +132,7 @@ class ConversationStore:
         async with self._index_lock:
             if self._indexed:
                 return
+            await self.aliases.ensure_indexes()
             await self.conversations.create_index(
                 [("project_id", 1), ("updated_at", -1)], name="conversation_project_updated"
             )
@@ -279,6 +282,9 @@ class ConversationStore:
 
     async def _public_turn(self, document, session) -> ConversationTurn:
         turn = ConversationTurn.model_validate(document["public"])
+        turn.short_id = await self.aliases.label(
+            document["project_id"], "conversations", turn.conversation_id, session=session
+        )
         action = await self.actions.find_one(
             {**self._scope(document["project_id"], turn.conversation_id), "turn_id": turn.turn_id},
             session=session,
@@ -303,7 +309,11 @@ class ConversationStore:
             ):
                 raise ValueError("Turn deadline exceeds the configured timeout")
             mode = "bounded"
-        conversation_id = request.conversation_id or str(uuid4())
+        conversation_id = (
+            await self.aliases.resolve(context.project_id, "conversations", request.conversation_id)
+            if request.conversation_id
+            else str(uuid4())
+        )
         turn_id, token = str(uuid4()), str(uuid4())
         body_hash = fingerprint(request.model_dump())
         public = ConversationTurn(
@@ -334,6 +344,7 @@ class ConversationStore:
         )
         # Unique replay/sequence indexes must exist before the first reservation.
         await self.ensure_indexes()
+        await self.aliases.prepare(context.project_id, "conversations")
 
         async def commit(session):
             saved = await self.turns.find_one(
@@ -361,9 +372,13 @@ class ConversationStore:
             if request.conversation_id is None:
                 if request.expected_revision != 0:
                     raise _conflict()
+                short_id = await self.aliases.assign(
+                    context.project_id, "conversations", conversation_id, session=session
+                )
                 await self.conversations.insert_one(
                     {
                         "_id": conversation_id,
+                        "short_id": short_id,
                         "project_id": context.project_id,
                         "schema_version": 1,
                         "revision": 0,
@@ -409,7 +424,9 @@ class ConversationStore:
                 session=session,
             )
             await self.turns.insert_one(document, session=session)
-            return TurnClaim(public.model_copy(deep=True), token, deadline, False, mode)
+            return TurnClaim(
+                await self._public_turn(document, session), token, deadline, False, mode
+            )
 
         try:
             return await self._transaction(commit)
@@ -552,6 +569,10 @@ class ConversationStore:
         if deadline - self._now() > timedelta(seconds=self._settings.chat_action_timeout_seconds):
             raise ValueError("Action deadline exceeds configured timeout")
         token = str(uuid4())
+
+        conversation_id = await self.aliases.resolve(
+            context.project_id, "conversations", conversation_id
+        )
 
         async def commit(session):
             parent = await self._reconcile(context.project_id, conversation_id, session)
@@ -712,6 +733,7 @@ class ConversationStore:
     ) -> ConversationHistory:
         if type(limit) is not int or not 1 <= limit <= 100 or type(offset) is not int or offset < 0:
             raise ValueError("Invalid conversation pagination")
+        conversation_id = await self.aliases.resolve(project_id, "conversations", conversation_id)
 
         async def read(session):
             conversation = await self._reconcile(project_id, conversation_id, session)
@@ -719,6 +741,7 @@ class ConversationStore:
             documents = await cursor.sort("sequence", 1).skip(offset).limit(limit).to_list()
             return ConversationHistory(
                 conversation_id=conversation_id,
+                short_id=conversation.get("short_id"),
                 revision=conversation["revision"],
                 turns=[await self._public_turn(item, session) for item in documents],
                 limit=limit,
@@ -730,6 +753,8 @@ class ConversationStore:
     async def action(
         self, project_id: str, conversation_id: str, action_id: str
     ) -> ConversationAction:
+        conversation_id = await self.aliases.resolve(project_id, "conversations", conversation_id)
+
         async def read(session):
             await self._reconcile(project_id, conversation_id, session)
             saved = await self.actions.find_one(

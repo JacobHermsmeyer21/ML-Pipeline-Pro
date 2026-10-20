@@ -132,6 +132,7 @@ ExperimentStatus = Literal["queued", "running", "succeeded", "failed", "cancelle
 
 
 class ExperimentResult(Record, ExperimentCreate):
+    short_id: str | None = Field(default=None, pattern=r"^e[1-9][0-9]*$", max_length=20)
     status: ExperimentStatus = "queued"
     attempts: int = 0
     heartbeat_at: AwareDatetime | None = None

@@ -33,7 +33,7 @@ export function renderWorkspace() {
   $("runs-body").replaceChildren();
   for (const run of state.experiments) {
     const row = el("tr"), identity = el("td"), status = el("td"), actions = el("td");
-    identity.append(el("strong", "", modelName(run.model_id)), el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`));
+    identity.append(el("strong", "", modelName(run.model_id)), el("small", "", `${datasetName(run.dataset_id)} · ${run.short_id || run.id}`));
     status.append(badge(run.status));
     actions.append(button("View →", "text-button", () => showRun(run.id).catch(report)));
     row.append(identity, status);
@@ -131,7 +131,8 @@ async function showRun(id) {
 function renderRunDetail(run) {
   const signature = JSON.stringify(run); if (state.detailSignature === signature) return;
   state.detailSignature = signature; const panel = $("run-detail"); panel.hidden = false; panel.replaceChildren();
-  const heading = el("div", "panel-title"), text = el("div"); text.append(el("h2", "", modelName(run.model_id)), el("p", "", `Experiment ${run.id}`));
+  const heading = el("div", "panel-title"), text = el("div"); text.append(el("h2", "", modelName(run.model_id)), el("p", "", `Experiment ${run.short_id || run.id}`));
+  if (run.short_id) text.append(el("p", "hash-text", `Full ID: ${run.id}`));
   text.append(el("p", "muted-note", algorithmLabel(run.config.algorithm || "mlp")));
   heading.append(text, badge(run.status)); panel.append(heading);
   panel.append(el("p", "muted-note", "Scores range from 0 to 1. F1, precision and recall are macro averages across all classes. Missing scores appear as —; train a new run to record them."));
@@ -148,7 +149,7 @@ function renderRunDetail(run) {
   panel.append(el("p", "muted-note", `${datasetName(run.dataset_id)} · ${run.attempts} attempt(s) · Started ${date(run.started_at)}`));
   if (run.error_summary) panel.append(el("p", "error-text", run.error_summary));
   const actions = el("div", "record-actions"); actions.append(button("Ask agent about this run", "secondary", () => {
-    $("chat-input").value = `Inspect experiment ${run.id}. Return a verified metrics.validation_f1 fact and guide my next pipeline step in one sentence.`; $("chat-input").focus();
+    $("chat-input").value = `Inspect experiment ${run.short_id || run.id}. Return a verified metrics.validation_f1 fact and guide my next pipeline step in one sentence.`; $("chat-input").focus();
   }));
   for (const artifact of run.artifacts) actions.append(button(`Download ${artifact.name}`, "quiet-button", async () => {
     try {
@@ -162,7 +163,8 @@ function renderRunDetail(run) {
   const other = state.experiments.filter((item) => item.id !== run.id && item.dataset_id === run.dataset_id && item.status === "succeeded" && Number.isFinite(item.metrics.validation_f1)).sort((a, b) => b.metrics.validation_f1 - a.metrics.validation_f1)[0];
   if (run.status === "succeeded" && other) actions.append(button("Compare validation results", "quiet-button", async () => {
     try { const comparison = await api(`/experiments/compare?experiment_id=${encodeURIComponent(run.id)}&experiment_id=${encodeURIComponent(other.id)}&metric=validation_f1`);
-      openReview("Validation comparison", comparison.experiments.map((item) => [item.id, number(item.metrics.validation_f1)]).concat([["Best validation record", comparison.best_experiment_id]]), null);
+      const winner = comparison.experiments.find((item) => item.id === comparison.best_experiment_id);
+      openReview("Validation comparison", comparison.experiments.map((item) => [item.short_id || item.id, number(item.metrics.validation_f1)]).concat([["Best validation record", winner?.short_id || comparison.best_experiment_id]]), null);
     } catch (error) { report(error); }
   })); panel.append(actions);
   if (run.status === "succeeded" && run.test_evaluated) {

@@ -1,5 +1,18 @@
 # API reference
 
+## Short record IDs
+
+Experiments expose additive `short_id` metadata such as `e1`; conversation turns
+and history expose `c1`. Existing canonical `id`/`conversation_id` fields remain
+unchanged. Experiment read/artifact/compare paths and model-version `experiment_id`
+inputs accept aliases. Conversation history/action/decision paths and chat
+`conversation_id` inputs accept conversation aliases. References are permanent,
+project-scoped and never reused after deletion. Unknown aliases keep existing
+missing-record errors; duplicate comparisons reject two forms of one identity.
+Request retries must preserve the original body, including its chosen ID form.
+Existing records require the coordinated
+[short-ID migration](../guides/short-record-ids.md#upgrade-existing-data).
+
 ## Classifier algorithms
 
 `POST /api/v1/models` accepts immutable `architecture: mlp | logistic_regression`;

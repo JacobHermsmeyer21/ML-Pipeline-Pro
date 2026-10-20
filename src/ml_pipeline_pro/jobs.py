@@ -8,21 +8,31 @@ from pymongo import ReturnDocument
 from ml_pipeline_pro.ownership import tuning_write
 from ml_pipeline_pro.repositories import MongoRepository
 from ml_pipeline_pro.schemas import ExperimentRecord
+from ml_pipeline_pro.short_ids import ShortIds
 from ml_pipeline_pro.training_control import OwnershipLost
 
 
 class ExperimentRepository(MongoRepository[ExperimentRecord]):
+    async def get(self, project_id: str, record_id: str):
+        identity = await ShortIds(self.database).resolve(project_id, "experiments", record_id)
+        return await super().get(project_id, identity)
+
     async def insert(self, record: ExperimentRecord) -> ExperimentRecord:
         if record.tuning_job_id is None:
             return await super().insert(record)
         if record.worker_token is None:
             raise OwnershipLost()
+        aliases = ShortIds(self.database)
+        await aliases.prepare(record.project_id, "experiments")
 
         async def write(session):
             document = record.model_dump()
             document["_id"] = document.pop("id")
+            document["short_id"] = await aliases.assign(
+                record.project_id, "experiments", record.id, session=session
+            )
             await self.collection.insert_one(document, session=session)
-            return record
+            return record.model_copy(update={"short_id": document["short_id"]})
 
         result = await tuning_write(
             self.database, record.project_id, record.tuning_job_id, record.worker_token, write

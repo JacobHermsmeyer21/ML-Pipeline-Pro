@@ -1,5 +1,9 @@
 # ML Pipeline Pro
 
+Experiments and conversations support easy-to-type references such as `e1` and
+`c1` in the dashboard, agent chat and API. Full IDs keep working. See
+[short IDs and the existing-data upgrade](docs/guides/short-record-ids.md).
+
 Models support `mlp` (the default) and `logistic_regression`. Create a linear model
 with `POST /api/v1/models` and
 `{"name":"linear_baseline","architecture":"logistic_regression"}`. Submit
