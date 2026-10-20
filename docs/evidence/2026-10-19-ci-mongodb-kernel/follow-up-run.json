@@ -1,0 +1,66 @@
+{
+  "source_revision": "cb44d2978fc977309bcc1e13e974e39237f85cf6",
+  "workflow_application_unchanged_from": "e300412",
+  "run_id": 39363463858,
+  "run_url": "https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39363463858",
+  "jobs": [
+    {
+      "id": 118434742136,
+      "name": "checks (3.11)",
+      "conclusion": "success"
+    },
+    {
+      "id": 118434742339,
+      "name": "compose-smoke",
+      "conclusion": "success",
+      "kernel": "6.8.0-1064-azure"
+    },
+    {
+      "id": 118434742362,
+      "name": "checks (3.13)",
+      "conclusion": "success"
+    },
+    {
+      "id": 118435096112,
+      "name": "domain-compose-smoke",
+      "conclusion": "success",
+      "kernel": "6.8.0-1070-azure"
+    },
+    {
+      "id": 118435096228,
+      "name": "kubernetes-deploy",
+      "conclusion": "failure",
+      "kernel": "6.8.0-1070-azure"
+    }
+  ],
+  "junit": [
+    {
+      "archive": "follow-up-ordinary.zip",
+      "member": "integration.xml",
+      "xml_sha256": "c9327254ff79b32bb2ed784446044ae0057243da9d638cc82cbb8ed541756ff2",
+      "tests": 104,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "follow-up-recovery.zip",
+      "member": "junit.xml",
+      "xml_sha256": "2567c2176df22b257bd4d55346814cdc0c08c33aaa6a8b618713a9bdc84db933",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "archive": "follow-up-domain.zip",
+      "member": "integration.xml",
+      "xml_sha256": "7f663212b75e777378e46a62344db991e2ea9b28e721946c61830368df9f4641",
+      "tests": 104,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "full_ci_acceptance": "not met: Kubernetes first dataset POST again returned 503; underlying cause unavailable"
+}

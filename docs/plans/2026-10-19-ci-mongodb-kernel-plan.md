@@ -135,7 +135,18 @@ on `6.8.0-1064-azure` passes rollout/readiness, but its first dataset POST retur
 storage 503. The diagnostic omits the underlying MongoDB exception; no kernel
 rejection, pod restart or confirmed resource cause explains that later failure.
 Five disposable fresh-database admission probes pass locally, which does not
-establish its hosted mechanism. The failure is retained; a clean CI run from the
-evidence-only follow-up will check recurrence without changing assertions or
-adding retries. A recurring application failure needs its own diagnosed/reviewed
-scope rather than weakening this plan's criteria.
+establish its hosted mechanism. The failure is retained.
+
+Evidence-only `cb44d29` was successfully pushed; its
+[completed follow-up run](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39363463858)
+again passes both Python matrices, Compose's 104 ordinary/ten recovery cases,
+and domain smoke's 104 integration cases, with no service-test failures/skips.
+Kubernetes again returns 503 on its first dataset POST after successful rollout.
+Five more local admissions on a newly started isolated MongoDB replica set pass;
+its diagnostic container/network are removed. F2 remains unmet, with the same
+criteria and no added retries. The recurring Kubernetes storage failure requires
+its own confirmed mechanism and reviewed application/persistence scope; the
+approved runner change is implemented and the original Compose failure is verified
+resolved in both hosted runs. Logs, report hashes and the separate remaining gap
+are retained in the linked evidence. No independent review is claimed or required
+for this configuration-only implementation.

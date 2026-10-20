@@ -20,9 +20,13 @@ kernel logging. Fix `e300412` was pushed; [its run](https://github.com/JacobHerm
 passes Compose startup, 104 ordinary and ten serial recovery tests on measured
 kernel `6.8.0-1064-azure`. Domain smoke and 104 integration tests pass on
 `6.8.0-1070-azure`. A later Kubernetes dataset POST returns storage 503 after
-rollout/readiness; the underlying exception is unavailable, so full five-job
-acceptance and attribution of that later failure remain pending. Keep that
-failure separate from the confirmed kernel rejection.
+rollout/readiness; the underlying exception is unavailable. The evidence-only
+[follow-up run](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39363463858)
+repeats all those Compose/domain passes and the Kubernetes first-dataset 503.
+Full five-job acceptance and attribution of that later failure remain open.
+Warm-server and newly started local MongoDB admission probes pass without
+reproducing it. Keep that failure separate from the confirmed kernel rejection;
+another retry alone does not diagnose or repair the storage boundary.
 
 Revisit when MongoDB/kernel compatibility is demonstrated on a newer supported
 runner, and before Ubuntu 22.04's April 2027 runner retirement. The healthy local

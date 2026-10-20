@@ -78,5 +78,32 @@ Five sequential, uniquely named disposable databases on the local validation Mon
 pass first dataset admission and are then removed. Their raw result is
 `artifacts/ci-compose-diagnosis/fresh-database-probe.json`. These probes do not
 reproduce the Kubernetes cause. No application fix, added retry or relaxed gate
-is justified by this evidence. A clean CI run after this evidence-only commit
-will check recurrence, retaining the failed run regardless of its outcome.
+is justified by this evidence. A clean CI run after the evidence-only commit
+checks recurrence as recorded below; the failed run remains retained.
+
+## Follow-up run and remaining gap
+
+Evidence-only `cb44d2978fc977309bcc1e13e974e39237f85cf6` leaves application code
+and the workflow unchanged from `e300412`. [Its completed run](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39363463858)
+again passes both Python check jobs, Compose smoke (104 ordinary and ten serial
+recovery tests), and domain smoke (104 integration tests). Downloaded ordinary,
+recovery and domain JUnit reports have zero failures, errors or skips.
+[Structured results and report hashes](follow-up-run.json) and
+[raw log excerpts](follow-up-run.txt) retain those results and the measured kernels.
+
+[Kubernetes again fails](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/39363463858/job/118435096228)
+at its first `POST /api/v1/datasets` with HTTP 503 after rollout/readiness succeeds.
+The second failure artifact also reports all eleven pods ready and zero restarts;
+its model API diagnostic selects the other replica and does not capture the failing
+request. The original kernel startup failure is resolved in two hosted Compose
+runs, but full five-job CI acceptance remains unmet. The repeated storage failure
+needs its own confirmed mechanism and reviewed scope before an application or
+persistence fix; this change does not claim to repair it.
+
+An additional isolated local probe starts a brand-new MongoDB 8.0 replica set,
+mounts the current application source read-only, and successfully admits the first
+dataset in five fresh databases. Only its uniquely named diagnostic container and
+network are then removed. Raw results are retained in
+`artifacts/ci-compose-diagnosis/fresh-server-probe.json`. Together with the earlier
+warm-server probes, this rules out those tested local sequences, not the hosted
+Kubernetes failure. No public errors, assertions or retry behavior changed.
