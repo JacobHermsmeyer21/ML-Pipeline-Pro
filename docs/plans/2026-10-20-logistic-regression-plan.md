@@ -1,10 +1,10 @@
 # Add logistic regression experiments
 
-- Status: awaiting human review; implementation not authorized
+- Status: approved; implementation in progress
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `37904ac` / `main`; fetched `origin/main` matches
 - Request: a plan for logistic regression only, following the one-night scope discussion
-- Human reviewer/approval: Jacob; pending
+- Human reviewer/approval: Jacob; approved October 20, 2026 in chat
 - Independent review: availability unknown; seek review if implementation changes concurrency or resource arithmetic
 
 ## Proposed behavior and purpose
@@ -180,8 +180,8 @@ rewrite logistic records as MLP or delete records/artifacts as an implicit rollb
 ## Human review and approval
 
 - Reviewer: Jacob.
-- Decision/date/reference: pending; requesting a plan is not implementation approval.
-- Proposed approval scope: this logistic-only PyTorch implementation, including
+- Decision/date/reference: approved October 20, 2026; chat request: "i approve the logistic regression plan, implement it".
+- Approved scope: this logistic-only PyTorch implementation, including
   compatibility, dashboard, rejection guards, docs and required verification.
 - Material changes, including a scikit-learn backend or logistic tuning/AI mutation
   support, require an updated plan and renewed review.
