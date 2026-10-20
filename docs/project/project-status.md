@@ -1,5 +1,22 @@
 # Project audit and development status
 
+## Agent reply validation: October 20, 2026
+
+The [approved correction](../plans/2026-10-20-agent-reply-validation-plan.md)
+adds safe saved rejection categories, shared admissible fact guidance, bounded
+model-facing completion choices and readable dashboard errors. Two instrumented
+baseline requests reproduce unsupported fact references. The stronger correction
+completes the original inspection/F1 request with 13 actual facts and exact replay;
+one later request is refused by the test cap. Additional conservative reservations
+total $0.212239 under a separate $0.25 authorization. Three-success hosted
+acceptance and human usefulness review remain open. The original failed field
+cannot be recovered from its generic saved error.
+
+[Retained evidence](../evidence/2026-10-20-agent-reply-validation/README.md)
+records 805 fast and 105 ordinary integration passes, package/browser checks,
+preserved legacy records and separate same-vendor boundary review. No ownership
+or recovery mechanism changed. Earlier local-model/Kubernetes gaps remain separate.
+
 ## OpenAI provider: October 20, 2026
 
 The approved OpenAI extension makes hosted LangChain inference the default backend

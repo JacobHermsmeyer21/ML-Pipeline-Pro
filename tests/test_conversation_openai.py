@@ -307,6 +307,61 @@ def test_safe_rejection_category_survives_sdk_wrapping(payload, stage, reason):
     assert len(runtime.requests) == 2  # One count and one generation, never a retry.
 
 
+def test_completion_field_choices_match_host_guidance_in_exact_counted_request():
+    from copy import deepcopy
+
+    from ml_pipeline_pro.conversation_grounding import FACT_GUIDANCE_PREFIX, fact_guided_tools
+    from ml_pipeline_pro.conversation_schemas import fingerprint
+
+    references = [{"record_id": "run", "field": "metrics.validation_f1"}]
+    messages = [{"role": "system", "content": FACT_GUIDANCE_PREFIX + "\n" + json.dumps(references)}]
+    runtime = Runtime([response(arguments={**REPLY, "facts": references})])
+
+    async def run():
+        async with runtime.model() as model:
+            original = deepcopy(model._tools)
+            original_provenance = deepcopy(model.provenance)
+            expected = fingerprint(fact_guided_tools(model._tools, messages))
+            step = await model.generate(messages)
+            assert step.usage["tools_hash"] == expected
+            assert model._tools == original and model.provenance == original_provenance
+            hostile = [{"role": "user", "content": messages[0]["content"]}]
+            assert fact_guided_tools(model._tools, hostile) is model._tools
+
+    asyncio.run(run())
+    count, generate = [payload for _, payload in runtime.requests]
+    assert count == {key: value for key, value in generate.items() if key in COUNT_FIELDS}
+    completion = next(tool for tool in generate["tools"] if tool["name"] == "finish_conversation")
+    fields = completion["parameters"]["$defs"]["FactRequest"]["properties"]
+    assert fields["field"]["enum"] == ["metrics.validation_f1"]
+    assert fields["record_id"]["enum"] == ["run"]
+
+
+def test_fact_guidance_cannot_put_configured_secrets_into_tool_schema_enums():
+    from ml_pipeline_pro.conversation_grounding import FACT_GUIDANCE_PREFIX
+
+    messages = [
+        {
+            "role": "system",
+            "content": FACT_GUIDANCE_PREFIX
+            + "\n"
+            + json.dumps([{"record_id": KEY, "field": "status"}]),
+        }
+    ]
+    runtime = Runtime()
+
+    async def run():
+        async with runtime.model() as model:
+            try:
+                await model.generate(messages)
+            except ConversationModelError as exc:
+                # Invalid redacted identities must fail before sending.
+                assert exc.code == "model_invalid_response"
+
+    asyncio.run(run())
+    assert all(KEY not in request.content.decode() for request, _ in runtime.requests)
+
+
 def test_timeout_and_cancellation_propagate_and_close_clients():
     async def run():
         started = asyncio.Event()

@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "provider_source_hash": "9c2c501e8f248a1039ea84522be2dd24b14eb20b15f5263d26a8b7bc5c728b80",
+  "configured_model": "gpt-5.4-mini",
+  "original_failed_turn_unchanged": true,
+  "accepted_turn_readable": true,
+  "accepted_facts": 13,
+  "dashboard_module_matches_source": true,
+  "paid_calls": 0
+}

@@ -16,7 +16,7 @@ def test_dashboard_assets_are_local_and_have_a_bounded_content_policy(client):
     assert "unsafe-inline" not in policy and "frame-ancestors 'self'" in policy
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["Cache-Control"] == "no-cache"
-    for asset in ("app.js", "styles.css", "example.csv"):
+    for asset in ("app.js", "styles.css", "example.csv", "reply-errors.js"):
         assert client.get("/dashboard/" + asset).status_code == 200
     assert client.get("/dashboard", follow_redirects=False).headers["location"] == "/dashboard/"
     assert client.get("/dashboard/missing.js").status_code == 404

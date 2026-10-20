@@ -1,6 +1,6 @@
 # Diagnose and correct rejected agent replies
 
-- Status: approved; implementation in progress
+- Status: implemented; three-success hosted acceptance and human usefulness review outstanding
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `a75da54` / `main`; fetched upstream and `origin/main` match
 - Request: plan a fix for conversation `7d497f4b` failing after an experiment read
@@ -213,7 +213,42 @@ while preparing the plan; implementation now proceeds within this scope.
 
 ## Implementation outcome
 
-Pending approval and execution. Record source revisions, commands/environment,
-test results/skips, raw and retained evidence locations, confirmed mechanism and
-remaining uncertainty, requirement-based test changes, reviewer/findings,
-deviations, durable memory, final reservations, and commit/push results here.
+- Approval: `df10153`; diagnostics/budget/baseline slice: `950c00d`, pushed to
+  `origin/main`. Correction slice follows that commit; final publication is
+  recorded in Git history and the delivery response.
+- [Retained evidence](../evidence/2026-10-20-agent-reply-validation/README.md)
+  includes source hashes, failed baseline and correction attempts, successful
+  output, exact zero-inference replay, reservation ledger and browser checks.
+  Two original-instruction reproductions identify unsupported fact references;
+  the precise lost original field remains unknown.
+- Implementation refinement within the approved guidance scope: a reference
+  list alone failed in a hosted attempt, so the completion schema also advertises
+  available field/record-ID enum choices and unsupported metrics are omitted
+  from model context. Public schemas, host acceptance policy and full saved tool
+  snapshots remain intact. Dynamic schemas use redacted context and request-local
+  hashes; no shared tool/provenance mutation or automatic inference retry.
+- Final gates: Windows/Python 3.11.5, locked training dependencies; 805 fast
+  passes, 105 ordinary integration passes without selected skips; Ruff lint/format,
+  dependency checks and package builds pass. Both ordinary integration flags were
+  set. Recovery mechanisms were unchanged, so no separate recovery rerun.
+- Tests add category propagation, negative evidence boundaries, shared reference
+  consistency, actual SDK count/send schemas, redacted enum generation, real
+  persistence/replay and dashboard fallback/rendering evidence. The memory-store
+  substitute now returns the real store's scoped 404; the existing assertion
+  remains. An unchanged timing test failed once, then passed in isolation and
+  the serial full suite; no assertion, timeout or skip was weakened.
+- [Separate review](../evidence/2026-10-20-agent-reply-validation/review.md):
+  Codex/OpenAI, same vendor; different-vendor review unavailable. Two runner
+  resume findings were resolved with controlled interleaving/aggregate-result
+  regressions before the final hosted attempt. Final security source review
+  confirms enum generation uses redacted context.
+- Hosted result: the stronger correction completes the original request with 13
+  actual facts and qualified suggestions; a later request is refused before send.
+  Total additional reservations: **$0.212239**, below the $0.23 stop/$0.25 cap.
+  Three-success acceptance F4 and human usefulness review remain outstanding;
+  no extra spending or relaxed success threshold was used. Final secret-redaction
+  hardening has offline coverage, not a further paid rerun.
+- Local dashboard/model API rebuilt with existing data preserved. Old turn
+  `7d497f4b` remains failed/generic. No substantive design deviation or new
+  approval request; paid authorization and failure policy remain unchanged.
+- Durable finding: [fact guidance and validation](../memory/agent-reply-validation.md).

@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "model": "gpt-5.4-mini",
+  "pricing_date": "2026-10-20",
+  "pricing_source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+  "input_per_million_usd": "0.75",
+  "output_per_million_usd": "4.50",
+  "authorization_usd": "0.25",
+  "reservation_limit_usd": "0.23",
+  "reservations": [
+    {
+      "kind": "count",
+      "input": 23928,
+      "output": 0,
+      "usd": "0.017946"
+    },
+    {
+      "kind": "generation",
+      "input": 3476,
+      "output": 1024,
+      "usd": "0.007215"
+    },
+    {
+      "kind": "count",
+      "input": 25164,
+      "output": 0,
+      "usd": "0.018873"
+    },
+    {
+      "kind": "generation",
+      "input": 3866,
+      "output": 1024,
+      "usd": "0.007508"
+    },
+    {
+      "kind": "count",
+      "input": 23928,
+      "output": 0,
+      "usd": "0.017946"
+    },
+    {
+      "kind": "generation",
+      "input": 3476,
+      "output": 1024,
+      "usd": "0.007215"
+    },
+    {
+      "kind": "count",
+      "input": 25164,
+      "output": 0,
+      "usd": "0.018873"
+    },
+    {
+      "kind": "generation",
+      "input": 3866,
+      "output": 1024,
+      "usd": "0.007508"
+    },
+    {
+      "kind": "count",
+      "input": 24448,
+      "output": 0,
+      "usd": "0.018336"
+    },
+    {
+      "kind": "generation",
+      "input": 3566,
+      "output": 1024,
+      "usd": "0.007283"
+    },
+    {
+      "kind": "count",
+      "input": 27651,
+      "output": 0,
+      "usd": "0.020739"
+    },
+    {
+      "kind": "generation",
+      "input": 4569,
+      "output": 1024,
+      "usd": "0.008035"
+    },
+    {
+      "kind": "count",
+      "input": 24448,
+      "output": 0,
+      "usd": "0.018336"
+    },
+    {
+      "kind": "generation",
+      "input": 3566,
+      "output": 1024,
+      "usd": "0.007283"
+    },
+    {
+      "kind": "count",
+      "input": 28069,
+      "output": 0,
+      "usd": "0.021052"
+    },
+    {
+      "kind": "generation",
+      "input": 4643,
+      "output": 1024,
+      "usd": "0.008091"
+    }
+  ]
+}

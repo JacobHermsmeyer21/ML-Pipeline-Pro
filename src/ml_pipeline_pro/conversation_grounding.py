@@ -1,10 +1,11 @@
 """Facts from current successful public tool snapshots, never model values."""
 
+import json
 from copy import deepcopy
 from typing import Any
 
 from ml_pipeline_pro.conversation_diagnostics import safe_validation_details
-from ml_pipeline_pro.conversation_schemas import ModelReply, VerifiedFact
+from ml_pipeline_pro.conversation_schemas import FactRequest, ModelReply, VerifiedFact
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.tool_schemas import EvidenceReference, ToolSuccess
 
@@ -68,6 +69,34 @@ for _prefix in ("config", "best_config"):
     )
 _FIELDS.update({"limits.max_trials", "limits.max_runtime_seconds", "limits.concurrency"})
 
+FACT_GUIDANCE_PREFIX = "Current-turn admissible fact references follow as JSON data. "
+
+
+def fact_guided_tools(tools, messages):
+    """Narrow model-facing field choices; public schemas and host policy stay intact."""
+    for message in messages:
+        if message.get("role") != "system" or not message.get("content", "").startswith(
+            FACT_GUIDANCE_PREFIX
+        ):
+            continue
+        references = [
+            FactRequest.model_validate(ref)
+            for ref in json.loads(message["content"].split("\n", 1)[1])
+        ]
+        if not references:
+            return tools
+        if any(ref.field not in _FIELDS for ref in references):
+            raise ValueError("Invalid host fact guidance")
+        guided = deepcopy(tools)
+        for tool in guided:
+            function = tool["function"]
+            if function["name"] == "finish_conversation":
+                properties = function["parameters"]["$defs"]["FactRequest"]["properties"]
+                properties["field"]["enum"] = sorted({ref.field for ref in references})
+                properties["record_id"]["enum"] = sorted({ref.record_id for ref in references})
+        return guided
+    return tools
+
 
 def invalid_evidence(reason="invalid_evidence") -> ApiError:
     return ApiError(
@@ -98,7 +127,15 @@ def context_data(value: Any) -> Any:
     }
     if isinstance(value, dict):
         return {
-            key: context_data(item)
+            key: (
+                {
+                    name: context_data(metric)
+                    for name, metric in item.items()
+                    if f"metrics.{name}" in _FIELDS
+                }
+                if key == "metrics" and isinstance(item, dict)
+                else context_data(item)
+            )
             for key, item in value.items()
             if key not in blocked and not key.startswith("test_")
         }
@@ -167,31 +204,47 @@ class EvidenceLedger:
     def evidence(self) -> list[EvidenceReference]:
         return list(self.references.values())
 
+    def _fact_value(self, request: FactRequest):
+        matches = [
+            record
+            for (_, record_id), record in self.records.items()
+            if record_id == request.record_id
+        ]
+        if request.field not in _FIELDS:
+            raise invalid_evidence("unsupported_fact_field")
+        if len(matches) != 1:
+            raise invalid_evidence("ambiguous_record")
+        value: Any = matches[0]
+        for part in request.field.split("."):
+            if not isinstance(value, dict) or part not in value:
+                raise invalid_evidence("missing_fact_field")
+            value = value[part]
+        if isinstance(value, (dict, list)):
+            raise invalid_evidence("nonscalar_fact")
+        return value
+
+    def available_facts(self) -> list[FactRequest]:
+        """Use the resolver's exact rules, without publishing any fact values."""
+        references = []
+        for record_id in sorted({identity for _, identity in self.records}):
+            for field in sorted(_FIELDS):
+                request = FactRequest(record_id=record_id, field=field)
+                try:
+                    self._fact_value(request)
+                except ApiError:
+                    continue
+                references.append(request)
+        return references
+
     def resolve(self, reply: ModelReply) -> list[VerifiedFact]:
         ids = {ref.record_id for ref in self.references.values()}
         if any(record_id not in ids for record_id in reply.citations):
             raise invalid_evidence("unknown_citation")
-        facts = []
-        for request in reply.facts:
-            matches = [
-                record
-                for (_, record_id), record in self.records.items()
-                if record_id == request.record_id
-            ]
-            if request.field not in _FIELDS:
-                raise invalid_evidence("unsupported_fact_field")
-            if len(matches) != 1:
-                raise invalid_evidence("ambiguous_record")
-            value: Any = matches[0]
-            for part in request.field.split("."):
-                if not isinstance(value, dict) or part not in value:
-                    raise invalid_evidence("missing_fact_field")
-                value = value[part]
-            if isinstance(value, (dict, list)):
-                raise invalid_evidence("nonscalar_fact")
-            facts.append(
-                VerifiedFact(
-                    record_id=request.record_id, field=request.field, value=deepcopy(value)
-                )
+        return [
+            VerifiedFact(
+                record_id=request.record_id,
+                field=request.field,
+                value=deepcopy(self._fact_value(request)),
             )
-        return facts
+            for request in reply.facts
+        ]

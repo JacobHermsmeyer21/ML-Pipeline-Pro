@@ -1,5 +1,6 @@
 import { $, state, terminalTurns, el, button, api, stored, store, notify, report, describe,
   setPending, date, download, selectedDataset, selectedModel, showView } from "./core.js";
+import { validationExplanation } from "./reply-errors.js";
 
 const welcome = $("chat-messages").firstElementChild.cloneNode(true);
 function rememberConversation(id) {
@@ -32,7 +33,12 @@ export function renderChat() {
       for (const fact of turn.facts) facts.append(el("div", "fact", `${fact.field}: ${typeof fact.value === "object" ? JSON.stringify(fact.value) : fact.value} · ${fact.record_id}`));
       assistant.append(facts);
     }
-    if (turn.error) assistant.append(el("p", "error-text", `${turn.error.code || turn.status}: ${turn.error.message || "The saved turn did not complete."}`));
+    if (turn.error) {
+      assistant.append(el("p", "error-text", `${turn.error.code || turn.status}: ${turn.error.message || "The saved turn did not complete."}`));
+      const explanation = validationExplanation(turn.error);
+      if (explanation) assistant.append(el("p", "error-text", explanation));
+      if (turn.correlation_id) assistant.append(el("p", "muted-note", `Reference: ${turn.correlation_id}`));
+    }
     if (turn.snippet) {
       const draft = el("div", "snippet-card"); draft.append(el("h4", "", "Generated Python draft"), el("p", "", `${turn.snippet.status} · Review before use. Never executed here.`));
       if (turn.snippet.code) {

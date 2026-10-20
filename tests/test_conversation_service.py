@@ -163,6 +163,37 @@ def test_unknown_validation_details_cannot_forward_exception_payloads():
     assert KEY not in json.dumps(result.error)
 
 
+def test_each_model_call_receives_current_supported_fact_references_without_values():
+    model = ScriptedModel(
+        call("get_experiment", experiment_id="experiment"),
+        reply(record_id="experiment", field="metrics.validation_f1"),
+    )
+    result, _, _ = run(
+        model,
+        RecordsTransport(
+            {
+                "/api/v1/experiments/experiment": experiment(
+                    metrics={"validation_f1": 0, "best_epoch": 99}
+                )
+            }
+        ),
+    )
+    assert result.status == "completed" and result.facts[0].value == 0
+    lists = []
+    for messages in model.messages:
+        guidance = next(
+            m["content"] for m in messages if m["content"].startswith("Current-turn admissible")
+        )
+        lists.append(json.loads(guidance.split("\n", 1)[1]))
+    assert lists[0] == []
+    assert {"record_id": "experiment", "field": "metrics.validation_f1"} in lists[1]
+    assert {"record_id": "experiment", "field": "config.learning_rate"} in lists[1]
+    assert not any(ref["field"] == "metrics.best_epoch" for ref in lists[1])
+    assert all(set(ref) == {"record_id", "field"} for ref in lists[1])
+    assert "best_epoch" not in json.dumps(model.messages)
+    assert result.tool_results[0].data["metrics"]["best_epoch"] == 99
+
+
 def test_read_loop_renders_actual_status_and_keeps_generated_interpretation_separate():
     model = ScriptedModel(
         call("get_experiment", experiment_id="experiment"),

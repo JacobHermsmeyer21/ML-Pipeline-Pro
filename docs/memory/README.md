@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Model-visible fact choices must match the host ledger](agent-reply-validation.md) | Reproduced unsupported-fact rejection, safe failure reasons, shared reference guidance and capped hosted correction |
 | [OpenAI SDK headers and observer metadata need explicit isolation](openai-provider-boundary.md) | Hosted Responses admission, ambient credentials, safe timing/usage evidence and estimated test reservations |
 | [Hosted runner kernels can prevent MongoDB startup](ci-mongodb-kernel.md) | Runner fix passes hosted Compose/domain and recovery gates; later Kubernetes storage 503 remains separate |
 | [Permanent erasure needs metadata fencing and live-writer exclusion](permanent-deletion-storage.md) | Scoped cascade, resumable cleanup, generation-bound publication, native attempt locks, erased submission receipts and project restoration |

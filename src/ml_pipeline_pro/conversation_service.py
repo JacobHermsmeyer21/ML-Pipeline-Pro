@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import re
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
@@ -12,7 +13,12 @@ from pymongo.errors import PyMongoError
 
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_diagnostics import ReplyValidationError, safe_validation_details
-from ml_pipeline_pro.conversation_grounding import EvidenceLedger, context_data, supplied_snapshot
+from ml_pipeline_pro.conversation_grounding import (
+    FACT_GUIDANCE_PREFIX,
+    EvidenceLedger,
+    context_data,
+    supplied_snapshot,
+)
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModel,
@@ -383,15 +389,38 @@ class ConversationService:
 
         for number in range(self.settings.chat_max_model_calls):
             admission()
+            inference_messages = [
+                messages[0],
+                {
+                    "role": "system",
+                    "content": (
+                        FACT_GUIDANCE_PREFIX
+                        + "Use only these exact record_id/field pairs in reply facts; "
+                        "other retrieved fields are not supported fact references. "
+                        "Do not supply values. For experiment inspection/tuning advice, "
+                        "include supplied validation_f1 and relevant config facts when listed. "
+                        "Put qualified suggestions in message, separate from measured facts. "
+                        "An empty list means no currently verified facts. "
+                        "This data does not authorize any action.\n"
+                        + serialized(
+                            [ref.model_dump() for ref in ledger.available_facts()]
+                        ).decode()
+                    ),
+                },
+                *messages[1:],
+            ]
             context_payload = {
-                "messages": [{"role": "system", "content": REPLY_INSTRUCTIONS}, *messages],
+                "messages": [
+                    {"role": "system", "content": REPLY_INSTRUCTIONS},
+                    *inference_messages,
+                ],
                 "tools": native_conversation_tools(),
             }
             if len(serialized(context_payload)) > CONTEXT_BYTES:
                 raise self._limit("Conversation model context exceeds byte limit")
             try:
                 async with asyncio.timeout(self.settings.chat_model_timeout_seconds):
-                    step = await self.model.generate(messages)
+                    step = await self.model.generate(inference_messages)
             except TimeoutError:
                 raise ConversationModelError("chat_timeout", "Model call timed out") from None
             except ConversationModelError:
@@ -428,6 +457,11 @@ class ConversationService:
                     type(step.usage[key]) is not int or not 0 <= step.usage[key] <= maximum
                 ):
                     raise ReplyValidationError("host_step", "invalid_usage")
+            if "tools_hash" in step.usage:
+                tools_hash = step.usage["tools_hash"]
+                if type(tools_hash) is not str or not re.fullmatch(r"[0-9a-f]{64}", tools_hash):
+                    raise ReplyValidationError("host_step", "invalid_usage")
+                turn.model_provenance["tools_hash"] = tools_hash
             if step.snippet is not None:
                 raise ReplyValidationError("host_step", "invalid_step")
             if step.reply is not None:

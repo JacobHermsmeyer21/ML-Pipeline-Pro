@@ -79,3 +79,73 @@ def test_latest_successful_snapshot_wins_without_aliasing_the_saved_tool_result(
     )
     assert facts[0].value == "new"
     assert first.data["name"] == "old"
+
+
+def test_available_references_use_the_resolver_and_exclude_unsupported_and_missing_values():
+    from ml_pipeline_pro.schemas import ExperimentResult
+
+    record = ExperimentResult(
+        id="run",
+        project_id="demo",
+        dataset_id="dataset",
+        model_id="model",
+        metrics={"validation_f1": 0, "test_f1": 0.9, "best_epoch": 99},
+    )
+    result = success(record, "experiment")
+    result.data["config"]["seed"] = {"untrusted": "not a scalar"}
+    result.data["config"].pop("batch_size")
+    ledger = EvidenceLedger("demo")
+    assert ledger.available_facts() == []
+    ledger.add(result)
+    references = ledger.available_facts()
+    fields = {ref.field for ref in references}
+    assert "metrics.validation_f1" in fields
+    assert not fields & {
+        "metrics.test_f1",
+        "metrics.best_epoch",
+        "config.seed",
+        "config.batch_size",
+    }
+    assert references == sorted(references, key=lambda ref: (ref.record_id, ref.field))
+    facts = ledger.resolve(ModelReply(message="", facts=references))
+    assert len(facts) == len(references)
+    assert next(f.value for f in facts if f.field == "metrics.validation_f1") == 0
+    assert all(set(ref.model_dump()) == {"record_id", "field"} for ref in references)
+
+
+@pytest.mark.parametrize(
+    ("reply", "reason"),
+    [
+        (ModelReply(message="", citations=["unknown"]), "unknown_citation"),
+        (
+            ModelReply(message="", facts=[FactRequest(record_id="model", field="name")]),
+            "nonscalar_fact",
+        ),
+        (
+            ModelReply(message="", facts=[FactRequest(record_id="missing", field="name")]),
+            "ambiguous_record",
+        ),
+    ],
+)
+def test_evidence_reason_codes_identify_the_actual_rejection(reply, reason):
+    result = success(ModelRecord(id="model", project_id="demo", name="model"), "model")
+    result.data["name"] = {"hostile": "value"}
+    ledger = EvidenceLedger("demo")
+    ledger.add(result)
+    with pytest.raises(ApiError) as caught:
+        ledger.resolve(reply)
+    assert caught.value.details == {
+        "validation_stage": "evidence_resolution",
+        "validation_reason": reason,
+    }
+
+
+def test_ambiguous_records_and_unfetched_related_records_have_no_available_facts():
+    record = ModelRecord(id="same", project_id="demo", name="model")
+    ledger = EvidenceLedger("demo")
+    related = EvidenceReference(kind="model", record_id="parent", project_id="demo", role="parent")
+    ledger.add(success(record, "model", related=[related]))
+    assert all(ref.record_id == "same" for ref in ledger.available_facts())
+    ledger.add(success(record, "dataset"))
+    assert ledger.available_facts() == []
+    assert ledger.resolve(ModelReply(message="", citations=["parent"])) == []

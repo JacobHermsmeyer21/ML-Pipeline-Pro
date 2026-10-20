@@ -133,3 +133,17 @@ existing demo experiment, creates fresh conversations, and submits no training o
 tuning work. It saves each phase once and keeps a separate ledger under
 `artifacts/agent-reply-validation/`; preserve reports and reservations on failure.
 The earlier $2 ledger and authorization remain unchanged.
+
+The host now supplies currently admissible fact references and guides the OpenAI
+completion schema with those field/record-ID choices. Unsupported metrics are
+omitted from model context; the original experiment and full saved tool evidence
+remain intact. New failures show a fixed readable category and correlation
+reference in the dashboard. Refresh the dashboard to load the updated assets.
+Existing failed turns remain unchanged; use a new conversation for a new attempt.
+
+For explicitly reviewed continuation of an interrupted test phase, `--resume`
+appends to the existing report under the ledger lock, retaining prior failures
+and source provenance. It cannot reset the cap or the phase's attempt limit.
+The [correction evidence](../evidence/2026-10-20-agent-reply-validation/README.md)
+retains one successful stronger correction and the budget refusal; three-success
+hosted acceptance and human usefulness review remain outstanding.

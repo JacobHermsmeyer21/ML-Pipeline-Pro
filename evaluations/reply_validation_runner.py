@@ -28,6 +28,12 @@ PROMPT = (
 AUTHORIZATION = TestAuthorization(Decimal("0.25"), Decimal("0.23"))
 
 
+def phase_passed(phase, attempts):
+    return phase == "baseline" or (
+        len(attempts) == 3 and all(item.get("acceptance_passed") is True for item in attempts)
+    )
+
+
 def save(path, report):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".tmp")
@@ -66,7 +72,7 @@ async def run(args, report, budget):
         async with httpx.AsyncClient(
             transport=httpx.ASGITransport(app=app), base_url="http://agent", headers=headers
         ) as client:
-            for number in range(2 if args.phase == "baseline" else 3):
+            for number in range(len(report["attempts"]), 2 if args.phase == "baseline" else 3):
                 correlation = "reply-validation-" + uuid4().hex
                 body = {"request_id": str(uuid4()), "message": PROMPT, "expected_revision": 0}
                 report["attempts"].append({"number": number + 1, "correlation_id": correlation})
@@ -114,21 +120,23 @@ async def run(args, report, budget):
                         for part in field.split("."):
                             actual = actual[part]
                         assert value == actual
+                    item["acceptance_passed"] = True
                 report["estimated_reserved_usd"] = str(budget.reserved)
                 save(args.output, report)
-    report["passed"] = True
+    report["passed"] = phase_passed(args.phase, report["attempts"])
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--phase", required=True, choices=("baseline", "acceptance"))
     parser.add_argument("--origin", default="http://127.0.0.1:8000")
+    parser.add_argument(
+        "--resume", action="store_true", help="Preserve and append reviewed phase attempts"
+    )
     args = parser.parse_args()
     if os.getenv("MLPP_RUN_OPENAI_EVAL") != "1":
         parser.error("Set MLPP_RUN_OPENAI_EVAL=1 to authorize the already approved paid test")
     args.output = ROOT / (args.phase + ".json")
-    if args.output.exists():
-        parser.error("Phase report already exists; preserve attempts and review before rerunning")
     report = {
         "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "source_hashes": {
@@ -143,6 +151,24 @@ def main():
         "provider_requests": [],
     }
     with OpenAITestBudget(LEDGER, authorization=AUTHORIZATION) as budget:
+        # Report admission and reload share the ledger's exclusive process lock.
+        if args.output.exists() and not args.resume:
+            parser.error(
+                "Phase report already exists; preserve attempts and review before rerunning"
+            )
+        if args.resume:
+            if not args.output.exists():
+                parser.error("No existing phase to resume")
+            previous = json.loads(args.output.read_text(encoding="utf-8"))
+            limit = 2 if args.phase == "baseline" else 3
+            if previous.get("phase") != args.phase or len(previous["attempts"]) >= limit:
+                parser.error("Phase mismatch or attempt limit already reached")
+            # Keep each revision's provenance, all failures and the same ledger.
+            previous.setdefault("resumes", []).append(
+                {key: report[key] for key in ("source_revision", "source_hashes", "started_utc")}
+            )
+            previous["passed"] = False
+            report = previous
         save(args.output, report)
         try:
             asyncio.run(run(args, report, budget))

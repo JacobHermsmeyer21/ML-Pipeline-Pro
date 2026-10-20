@@ -14,6 +14,7 @@ from pydantic import ValidationError
 
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_diagnostics import ReplyValidationError
+from ml_pipeline_pro.conversation_grounding import fact_guided_tools
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModelError,
@@ -345,6 +346,7 @@ class OpenAIConversationModel:
             else (snippet_instructions(messages) if snippet else OPENAI_REPLY_INSTRUCTIONS)
         )
         context = [{"role": "system", "content": instructions}, *self._safe(messages)]
+        request_tools_hash = None
         try:
             if snippet or monitoring:
                 schema = (MonitoringAdvice if monitoring else SnippetCandidate).model_json_schema()
@@ -360,7 +362,10 @@ class OpenAIConversationModel:
                     },
                 )
             else:
-                bound = self._model.bind_tools(self._tools, strict=False, parallel_tool_calls=False)
+                tools = fact_guided_tools(self._tools, context)
+                if tools is not self._tools:
+                    request_tools_hash = fingerprint(tools)
+                bound = self._model.bind_tools(tools, strict=False, parallel_tool_calls=False)
             with timed_boundary("model_inference"), tracing_context(enabled=False):
                 async with asyncio.timeout(self._settings.chat_model_timeout_seconds):
                     result = await bound.ainvoke(context, config={"callbacks": []})
@@ -369,6 +374,8 @@ class OpenAIConversationModel:
             usage = {key: result.usage_metadata[key] for key in ("input_tokens", "output_tokens")}
             response_model = self._safe(result.response_metadata.get("model_name"))
             generation_usage = {**usage, "response_model": response_model}
+            if request_tools_hash:
+                generation_usage["tools_hash"] = request_tools_hash
             content = result.content
             if isinstance(content, list):
                 content = "".join(i.get("text", "") for i in content if i.get("type") == "text")

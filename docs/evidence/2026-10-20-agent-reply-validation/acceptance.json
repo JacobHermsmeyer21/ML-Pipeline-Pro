@@ -1,0 +1,296 @@
+{
+  "source_revision": "950c00df60fd777b21dced610a30b93a91a16866",
+  "source_hashes": {
+    "src\\ml_pipeline_pro\\conversation_actions.py": "b922440f1315096496497eb0a0bcdea090f1ca2c47375eaadf093d17ee566d3c",
+    "src\\ml_pipeline_pro\\conversation_api.py": "3e9959d9e78b1869c768b3bcab25ac0d849c3167e5f567d01ac2b8eaf9bf8975",
+    "src\\ml_pipeline_pro\\conversation_diagnostics.py": "8c8a92a80ec96a433eff6461fffa4bb4f456f52da2196e43d38cffc7c248e49a",
+    "src\\ml_pipeline_pro\\conversation_grounding.py": "afb9ec596ef73da59ed8a36d8a838f8f2a9d9dea42955117f8318a70f4f7f39a",
+    "src\\ml_pipeline_pro\\conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+    "src\\ml_pipeline_pro\\conversation_model.py": "c083fefe692990c11088c4f8d7d0b6afe55222c8060aeed73a170852aca490c3",
+    "src\\ml_pipeline_pro\\conversation_ollama.py": "c7453a3f0bcd2ec8f5182da57053dd3ac1ac926d6d2be709831b3ff2ccd530ea",
+    "src\\ml_pipeline_pro\\conversation_openai.py": "e98ddb340ad144d4d608d4bed3aed0a5d23e9dfbdcb77bce322b57cc706da484",
+    "src\\ml_pipeline_pro\\conversation_qwen_counter.py": "b7111c90421ade0d33533e5785280de02f29dbd1b9529dd8c52cf5a32c622ca3",
+    "src\\ml_pipeline_pro\\conversation_schemas.py": "2a19fd41248b326ce0673a9ce163ae3744869a3e76ae947820600f79f85bab1e",
+    "src\\ml_pipeline_pro\\conversation_service.py": "b55309d421b342049d681058334ded6028933576f46d79bf3a5dd570af75a5cd",
+    "src\\ml_pipeline_pro\\conversation_store.py": "6f338da65cc11fe60d694a11ab910d898b00e637519d9db3b79b3f75f3cf4a22",
+    "src\\ml_pipeline_pro\\conversation_timing.py": "8ff772843e065b2d8c58ff788dd649c83ec18436ee79e7157fbe3497932d8f4b",
+    "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\evaluations\\reply_validation_runner.py": "59e4ebf2a14c60b73839e4af113036b2a989b1bce21dc605a265c434f71cc297"
+  },
+  "started_utc": "2026-10-20T21:22:59.453899+00:00",
+  "phase": "acceptance",
+  "transport": "ASGI HTTP routes, real MongoDB/Redis, domain HTTP read",
+  "passed": false,
+  "attempts": [
+    {
+      "number": 1,
+      "correlation_id": "reply-validation-602c0d655bca4cfb983cadb61a64c3f8",
+      "conversation_id": "ebd6ba48-6981-4212-ae5b-3581779b456b",
+      "request_id": "a89cf1c3-a0ca-4876-8eae-4f360249b638",
+      "turn_id": "73819383-12e9-4dbb-86ae-bd80ecc168e7",
+      "status": "failed",
+      "error": {
+        "code": "model_invalid_response",
+        "http_status": 422,
+        "message": "Conversation request failed safely",
+        "details": {
+          "validation_stage": "evidence_resolution",
+          "validation_reason": "unsupported_fact_field"
+        }
+      },
+      "facts": [],
+      "evidence": [
+        {
+          "kind": "experiment",
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "project_id": "demo",
+          "role": "record"
+        }
+      ],
+      "model_provenance": {
+        "backend": "openai",
+        "model_tag": "gpt-5.4-mini",
+        "protocol": "native",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-openai": "1.7.0",
+          "openai": "2.54.0"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "02cde143821f447f99471afc466b0cd5bf2b2766f410b493b018f204834cce20",
+        "instructions_hash": "cc84b4be65209c594ca411dfc84b8ce9c59ac3931f046d6574a83def5a5efc42"
+      },
+      "has_action": false,
+      "replay_equal_without_inference": true
+    },
+    {
+      "number": 2,
+      "correlation_id": "reply-validation-fc9b5831abaa49c2b9695cb1afd78bba",
+      "conversation_id": "3a92c251-1403-42aa-b332-b143c3c4eec0",
+      "request_id": "b1179a67-33e7-4480-88f6-77ec968d1414",
+      "turn_id": "f4eaf177-1c0f-4408-a686-5e7f01cb04f9",
+      "status": "completed",
+      "error": null,
+      "facts": [
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "status",
+          "value": "succeeded"
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "attempts",
+          "value": 1
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "completed_at",
+          "value": "2026-10-20T21:04:11.550000Z"
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.batch_size",
+          "value": 16
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.epochs",
+          "value": 135
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.hidden_units",
+          "value": 16
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.learning_rate",
+          "value": 0.01
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.max_runtime_seconds",
+          "value": 60
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "config.seed",
+          "value": 42
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "dataset_id",
+          "value": "2c4fab1a-633c-4e86-902c-39a78ca56e23"
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "model_id",
+          "value": "1ba6b128-48bd-4e9d-b7a6-b7ed0368030a"
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "metrics.validation_accuracy",
+          "value": 0.9826666712760925
+        },
+        {
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "field": "metrics.validation_f1",
+          "value": 0.8443759876139247
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "experiment",
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "project_id": "demo",
+          "role": "record"
+        }
+      ],
+      "message": "This run succeeded and appears to have completed in a single attempt. It used dataset 2c4fab1a-633c-4e86-902c-39a78ca56e23 and model 1ba6b128-48bd-4e9d-b7a6-b7ed0368030a, with config values batch_size=16, epochs=135, hidden_units=16, learning_rate=0.01, max_runtime_seconds=60, seed=42. Reported validation metrics are accuracy 0.9826666712760925 and F1 0.8443759876139247. If you want to improve F1, the main knobs to tune are learning_rate, hidden_units, batch_size, and epochs; a bounded tuning job would be the safest way to search these using validation F1 as the objective. I can also inspect or compare additional experiments if you want a stronger recommendation.",
+      "model_provenance": {
+        "backend": "openai",
+        "model_tag": "gpt-5.4-mini",
+        "protocol": "native",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-openai": "1.7.0",
+          "openai": "2.54.0"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "f025091232927d44cb6f7a5899845a3dcfa0c29dbc44ec39a9f4b4bbe70720e9",
+        "instructions_hash": "cc84b4be65209c594ca411dfc84b8ce9c59ac3931f046d6574a83def5a5efc42"
+      },
+      "has_action": false,
+      "replay_equal_without_inference": true,
+      "acceptance_passed": true
+    },
+    {
+      "number": 3,
+      "correlation_id": "reply-validation-a4e5d78a827d488f846da399d04c13f5",
+      "conversation_id": "9d7ea716-40bd-4d0f-8494-edef10a17bf6",
+      "request_id": "3b85aa28-3758-4118-8080-b2cac416ea58",
+      "turn_id": "214519d9-7179-49e4-b49d-f7a2e37a8d76",
+      "status": "failed",
+      "error": {
+        "code": "chat_limit_exceeded",
+        "http_status": 422,
+        "message": "Conversation request failed safely"
+      },
+      "facts": [],
+      "evidence": [],
+      "model_provenance": {
+        "backend": "openai",
+        "model_tag": "gpt-5.4-mini",
+        "protocol": "native",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-openai": "1.7.0",
+          "openai": "2.54.0"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "02cde143821f447f99471afc466b0cd5bf2b2766f410b493b018f204834cce20",
+        "instructions_hash": "cc84b4be65209c594ca411dfc84b8ce9c59ac3931f046d6574a83def5a5efc42"
+      },
+      "has_action": false,
+      "replay_equal_without_inference": true
+    }
+  ],
+  "provider_requests": [
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.48400000000401633,
+      "input_tokens": 3566,
+      "payload_hash": "c03c5a8e75d52269e953daff806e7056b427d6ae082c09b2c7311ed24aa8639d"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 0.9069999999992433,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3566,
+        "output_tokens": 36,
+        "total_tokens": 3602
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.25,
+      "input_tokens": 4569,
+      "payload_hash": "74c5cbb308d488816b6ec502840cc4099de82c69b36b382dc36b8d5f426c4ae8"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 4.530999999995402,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 4569,
+        "output_tokens": 723,
+        "total_tokens": 5292
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.5469999999986612,
+      "input_tokens": 3566,
+      "payload_hash": "c03c5a8e75d52269e953daff806e7056b427d6ae082c09b2c7311ed24aa8639d"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 1.0780000000013388,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3566,
+        "output_tokens": 36,
+        "total_tokens": 3602
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.31300000000192085,
+      "input_tokens": 4643,
+      "payload_hash": "7c1890b8b0d613d6a3284441b662b8ed96a9471988196d42a031acb89d1532b2"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 3.311999999998079,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 4643,
+        "output_tokens": 575,
+        "total_tokens": 5218
+      }
+    }
+  ],
+  "experiment_id": "508815fb-1652-475e-aba9-c68281270704",
+  "validation_f1": 0.8443759876139247,
+  "failure": "runner_or_acceptance_failed",
+  "estimated_reserved_usd": "0.212239",
+  "resumes": [
+    {
+      "source_revision": "950c00df60fd777b21dced610a30b93a91a16866",
+      "source_hashes": {
+        "src\\ml_pipeline_pro\\conversation_actions.py": "b922440f1315096496497eb0a0bcdea090f1ca2c47375eaadf093d17ee566d3c",
+        "src\\ml_pipeline_pro\\conversation_api.py": "3e9959d9e78b1869c768b3bcab25ac0d849c3167e5f567d01ac2b8eaf9bf8975",
+        "src\\ml_pipeline_pro\\conversation_diagnostics.py": "8c8a92a80ec96a433eff6461fffa4bb4f456f52da2196e43d38cffc7c248e49a",
+        "src\\ml_pipeline_pro\\conversation_grounding.py": "3948cf9bb485f970a1eff8e364bbe205a3b0834da6db78948ea8f08735de9ced",
+        "src\\ml_pipeline_pro\\conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+        "src\\ml_pipeline_pro\\conversation_model.py": "c083fefe692990c11088c4f8d7d0b6afe55222c8060aeed73a170852aca490c3",
+        "src\\ml_pipeline_pro\\conversation_ollama.py": "c7453a3f0bcd2ec8f5182da57053dd3ac1ac926d6d2be709831b3ff2ccd530ea",
+        "src\\ml_pipeline_pro\\conversation_openai.py": "a36d390ed991705d90d2fb935f2dfe87efb152482cee13ec3d70ef191be0ddc5",
+        "src\\ml_pipeline_pro\\conversation_qwen_counter.py": "b7111c90421ade0d33533e5785280de02f29dbd1b9529dd8c52cf5a32c622ca3",
+        "src\\ml_pipeline_pro\\conversation_schemas.py": "2a19fd41248b326ce0673a9ce163ae3744869a3e76ae947820600f79f85bab1e",
+        "src\\ml_pipeline_pro\\conversation_service.py": "03d9f67fb84f45a7226bbfec0a6673f7359253776ec3d4baea27c42c4a7d19d3",
+        "src\\ml_pipeline_pro\\conversation_store.py": "6f338da65cc11fe60d694a11ab910d898b00e637519d9db3b79b3f75f3cf4a22",
+        "src\\ml_pipeline_pro\\conversation_timing.py": "8ff772843e065b2d8c58ff788dd649c83ec18436ee79e7157fbe3497932d8f4b",
+        "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\evaluations\\reply_validation_runner.py": "708e9e53d6ba0d30150f46994a15ac5f3d023d50f794a3512544e88e2806c94d"
+      },
+      "started_utc": "2026-10-20T21:29:03.791198+00:00"
+    }
+  ]
+}

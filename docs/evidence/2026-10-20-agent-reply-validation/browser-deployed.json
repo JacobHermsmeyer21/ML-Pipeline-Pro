@@ -1,0 +1,16 @@
+{
+  "source_assets": false,
+  "paid_calls": 0,
+  "checks": [
+    "fixed readable category and correlation reference",
+    "legacy generic error has no invented detail",
+    "unrecognized metadata ignored; hostile correlation rendered as text",
+    "invalid stage/reason pair falls back"
+  ],
+  "browser": "155.0.8059.82",
+  "source_hashes": {
+    "agent.js": "2f8d6d32e4e8af4f1d19e8cd552c3714517065797e26369f654e945cf4f9475c",
+    "reply-errors.js": "157f6fccbf2de87f09cf567cd1004078e8dc870d6cbcf3e204e2b1d4cd485e2b"
+  },
+  "status": "passed"
+}
