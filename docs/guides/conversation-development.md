@@ -83,46 +83,6 @@ automatically. Existing finite turns, action dispatch and training/tuning budget
 retain their bounds. Direct AI origins and removal of application probes belong
 only to that diagnostic procedure.
 
-## Claude backend
-
-The default chat backend is the local Ollama model. To use Claude through the
-Anthropic API instead, set these in `.env` (gitignored) or the environment:
-
-```bash
-MLPP_CHAT_ENABLED=true
-MLPP_CHAT_BACKEND=anthropic
-MLPP_ANTHROPIC_API_KEY=<your key>
-MLPP_CHAT_MODEL_TIMEOUT_SECONDS=90
-MLPP_CHAT_TIMEOUT_SECONDS=120
-MLPP_CHAT_CONTEXT_TOKENS=16384
-MLPP_CHAT_MAX_OUTPUT_TOKENS=4096
-```
-
-`MLPP_CHAT_MODEL` defaults to `claude-opus-5-5`; `MLPP_CHAT_EFFORT` (`low`, `medium`,
-`high`) defaults to `medium`. The Claude backend uses the native tool protocol only.
-
-How it differs from the local path:
-
-- `conversation_anthropic.py` calls the official `anthropic` SDK. The local path uses
-  LangChain.
-- Thinking is adaptive. The request also sets `fallbacks: "default"` (beta
-  `server-side-fallback-2026-07-01`), so a policy decline can continue on Anthropic's
-  default fallback model. A request that is still declined becomes `model_unavailable`.
-- Within a turn, each tool call is sent back with the exact blocks Claude produced,
-  including its thinking, as the API requires.
-- Snippets and monitoring use structured outputs. The host still validates everything
-  with the same Pydantic schemas, and drafts are never executed.
-- Admission counts the full request with `messages.count_tokens` against
-  `MLPP_CHAT_CONTEXT_TOKENS`. `max_tokens` is exactly `MLPP_CHAT_MAX_OUTPUT_TOKENS`,
-  which covers thinking and the reply together. A response that hits it fails
-  closed as invalid output; raise the cap, up to 4096, or lower the effort.
-- API errors become fixed `ConversationModelError` codes. The key is redacted from
-  logs and is never part of provenance or `/dashboard/config.json`.
-
-This sends conversation text and tool results (dataset names, metrics, record IDs) to
-Anthropic, and each turn is billed. The course target remains the locally served
-model; record whether the instructor accepts this backend before relying on it.
-
 ## Model and action boundaries
 
 The model interface describes calls; the host binds trusted project/key,

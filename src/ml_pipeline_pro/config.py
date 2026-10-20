@@ -9,8 +9,6 @@ from urllib.parse import urlsplit
 from pydantic import Field, SecretStr, ValidationInfo, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_CLAUDE_MODEL = "claude-opus-5-5"
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -38,9 +36,7 @@ class Settings(BaseSettings):
     worker_lease_seconds: int = Field(default=30, ge=10, le=300)
     worker_max_attempts: int = Field(default=3, ge=1, le=10)
     chat_enabled: bool = False
-    chat_backend: Literal["ollama", "anthropic"] = "ollama"
-    anthropic_api_key: SecretStr | None = None
-    chat_effort: Literal["low", "medium", "high"] = "medium"
+    chat_backend: Literal["ollama"] = "ollama"
     chat_protocol: Literal["native", "guided"] = "native"
     chat_tokenizer_path: Path | None = None
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
@@ -82,11 +78,7 @@ class Settings(BaseSettings):
 
     @field_validator("chat_model")
     @classmethod
-    def local_model_tag(cls, value: str | None, info: ValidationInfo) -> str | None:
-        if info.data.get("chat_backend") == "anthropic":
-            if value is not None and not re.fullmatch(r"claude-[a-z0-9]+(?:-[a-z0-9]+)*", value):
-                raise ValueError("Chat model must be a Claude model ID such as claude-opus-5-5")
-            return value
+    def local_model_tag(cls, value: str | None) -> str | None:
         if value is not None and (
             not re.fullmatch(r"[a-zA-Z0-9_][a-zA-Z0-9_./-]*:[a-zA-Z0-9_][a-zA-Z0-9_.-]*", value)
             or "cloud" in value.lower()
@@ -166,11 +158,6 @@ class Settings(BaseSettings):
             raise ValueError("Model timeout cannot exceed the overall chat timeout")
         if self.chat_max_output_tokens >= self.chat_context_tokens:
             raise ValueError("Chat context must leave space for input tokens")
-        if self.chat_backend == "anthropic":
-            if self.chat_protocol != "native":
-                raise ValueError("The Claude backend uses the native tool protocol")
-            if self.chat_model is None:
-                self.chat_model = DEFAULT_CLAUDE_MODEL
         # Missing model configuration must leave the direct API able to start.
         return self
 

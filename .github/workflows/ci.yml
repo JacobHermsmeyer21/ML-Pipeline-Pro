@@ -41,42 +41,6 @@ jobs:
           uv run --locked --extra training python -c 'from importlib.metadata import version; from pathlib import Path; Path("/tmp/torch-audit.txt").write_text("torch==" + version("torch").split("+")[0] + "\n")'
           uv run --locked --extra training pip-audit -r /tmp/torch-audit.txt --no-deps --disable-pip
 
-  dashboard-build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend/dashboard
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: frontend/dashboard/.nvmrc
-          cache: npm
-          cache-dependency-path: frontend/dashboard/package-lock.json
-      - uses: astral-sh/setup-uv@v7
-        with:
-          version: "0.12.23"
-          python-version: "3.11"
-          enable-cache: true
-      - run: uv sync --locked
-        working-directory: .
-      - run: npm ci
-      - run: npm run check
-      - run: npm run build
-      # The committed package output must match a fresh build of the source.
-      - run: git diff --exit-code -- ../../src/ml_pipeline_pro/dashboard
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-        env:
-          CI: "true"
-      - if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: dashboard-playwright
-          path: frontend/dashboard/test-results/
-
   domain-compose-smoke:
     runs-on: ubuntu-22.04
     needs: checks

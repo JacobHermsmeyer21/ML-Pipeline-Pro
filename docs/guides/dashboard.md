@@ -15,10 +15,6 @@ the visual direction; independent boundary review and human usefulness review
 of the completed dataset controls remain open. These desktop/browser results
 do not close the bounded CPU-laptop AI deployment gap.
 
-The [October 19 redesign](../plans/2026-10-19-dashboard-redesign-plan.md) rebuilt
-the page with Astro and React islands in a light theme. Workflows, requests and
-stored data are unchanged; see [Develop the dashboard](#develop-the-dashboard).
-
 ## Start on this desktop
 
 Start Docker Desktop and the installed Ollama runtime as described in
@@ -126,8 +122,8 @@ or high-cardinality inputs that would otherwise prevent encoding. Target and
 selected existing-split columns are protected. Keep at least one input.
 
 For a saved dataset, choose **Edit columns**, enter a new version such as `v2`,
-and uncheck inputs. **Preview changes** shows what will be dropped, the
-remaining feature count and unchanged split counts. Choose **Review and save**,
+and uncheck inputs. **Preview column changes** shows what will be dropped, the
+remaining feature count and unchanged split counts. Choose **Review & save**,
 then **Save as new version**. Cancel leaves the original dataset unchanged.
 For categorical inputs, original names represent complete encoded groups:
 dropping `BP` removes all its one-hot features. Retained values, fitted mappings,
@@ -190,7 +186,7 @@ prevents late responses from populating the next project.
 
 ## Delete a dataset or model
 
-Open **Datasets → Delete dataset**, or **Overview → Manage models → Delete model**.
+Open **Datasets → Delete dataset**, or **Runs → Manage models → Delete model**.
 Review the named item and exact counts, then choose **Permanently delete**.
 **Back** leaves the item unchanged. Related queued/running/cancelling jobs must
 finish first; deletion does not cancel them. Refresh and review again if the
@@ -230,28 +226,3 @@ otherwise those records cannot train. Rejected/interrupted staging files are
 removed. Published files are retained after uncertain metadata writes; automated
 orphan cleanup is deferred. Existing named dataset/artifact volumes and models
 are preserved.
-
-## Develop the dashboard
-
-The source lives in [`frontend/dashboard`](../../frontend/dashboard/). `npm run build`
-writes the committed output to `src/ml_pipeline_pro/dashboard/`, so Docker, `uv build`
-and the Python tests do not need Node. Use Node 24 (see `.nvmrc`):
-
-```bash
-cd frontend/dashboard
-npm ci
-npm run dev        # Astro dev server; /api is proxied to http://127.0.0.1:8000
-npm run check      # astro check (types for components, islands and tests)
-npm run build      # writes the package files and csp-hashes.json
-npm run test:e2e   # Playwright against FastAPI with a mocked /api/v1
-```
-
-Run `npm run build` and commit the output with any source change; CI fails when
-the committed build differs from a fresh one. Behavior stays in the plain modules
-under `src/lib/`, which look up elements by ID. Keep those IDs when editing
-components. React islands only add presentation and never own those nodes.
-
-Astro inlines a small island loader. The build hashes every inline `<script>`
-and `<style>` into `csp-hashes.json`, and FastAPI adds exactly those hashes to
-the page's `Content-Security-Policy`. Inline `style="…"` attributes are rejected
-by the build.

@@ -6,8 +6,6 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
-| [A direct connection opened before replica initialization can reject later sessions](mongodb-preinit-sessions.md) | Reproduced Kubernetes dataset 503, PyMongo connection handshake capabilities and replica-discovery candidate |
-| [Astro islands need hashed inline code under the dashboard CSP](dashboard-astro-csp.md) | Build output, hash-based CSP, island DOM ownership and dialog display |
 | [Hosted runner kernels can prevent MongoDB startup](ci-mongodb-kernel.md) | Runner fix passes hosted Compose/domain and recovery gates; later Kubernetes storage 503 remains separate |
 | [Permanent erasure needs metadata fencing and live-writer exclusion](permanent-deletion-storage.md) | Scoped cascade, resumable cleanup, generation-bound publication, native attempt locks, erased submission receipts and project restoration |
 | [Dropping columns must preserve saved transforms and row membership](dataset-column-projection.md) | Immutable projection, whole categorical groups, v2 recipes and replay after parent deletion |

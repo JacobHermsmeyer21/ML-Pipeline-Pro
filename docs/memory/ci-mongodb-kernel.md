@@ -28,12 +28,6 @@ Warm-server and newly started local MongoDB admission probes pass without
 reproducing it. Keep that failure separate from the confirmed kernel rejection;
 another retry alone does not diagnose or repair the storage boundary.
 
-Later October 19, [isolated startup diagnosis](mongodb-preinit-sessions.md)
-identifies that storage failure as a direct connection opened before replica-set
-initialization retaining unsupported-session handshake state. The new finding
-supersedes the unavailable-attribution status above; its separate configuration
-repair still requires review and hosted acceptance.
-
 Revisit when MongoDB/kernel compatibility is demonstrated on a newer supported
 runner, and before Ubuntu 22.04's April 2027 runner retirement. The healthy local
 WSL kernel is a separate environment.

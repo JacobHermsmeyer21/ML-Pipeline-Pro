@@ -9,7 +9,6 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 from ml_pipeline_pro.access import project_access
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_actions import ConversationActions
-from ml_pipeline_pro.conversation_anthropic import AnthropicConversationModel
 from ml_pipeline_pro.conversation_model import ConversationModel
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
 from ml_pipeline_pro.conversation_qwen_counter import QwenConversationModel
@@ -71,21 +70,16 @@ async def conversation_clients(
                     max_response_bytes=TOOL_BYTES,
                 )
             )
-            if model_factory is not None:
-                model = model_factory(settings)
-            elif settings.chat_backend == "anthropic":
-                # A missing key leaves chat unavailable without breaking startup.
-                if settings.anthropic_api_key is not None:
-                    model = AnthropicConversationModel(settings)
-            elif settings.chat_model is not None:
+            if model_factory is not None or settings.chat_model is not None:
                 model = (
-                    QwenConversationModel(settings, settings.chat_tokenizer_path)
+                    model_factory(settings)
+                    if model_factory is not None
+                    else QwenConversationModel(settings, settings.chat_tokenizer_path)
                     if settings.chat_tokenizer_path is not None
                     else OllamaConversationModel(settings)
                 )
-            if isinstance(model, OllamaConversationModel):
-                model = _LazyOllama(model)
-            if model is not None:
+                if isinstance(model, OllamaConversationModel):
+                    model = _LazyOllama(model)
                 stack.push_async_callback(model.close)
         yield model, transport
 

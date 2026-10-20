@@ -1,9 +1,0 @@
----
-import CloseButton from "./CloseButton.astro";
----
-<dialog id="model-dialog" aria-labelledby="model-title"><form id="model-form">
-  <div class="dialog-heading"><h2 id="model-title">New model</h2><CloseButton /></div>
-  <p class="muted-note">A small PyTorch MLP for numeric classification.</p>
-  <label>Model name<input id="model-name" placeholder="my_classifier" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label>
-  <div class="dialog-actions"><button class="primary" type="submit">Create model</button></div>
-</form></dialog>
