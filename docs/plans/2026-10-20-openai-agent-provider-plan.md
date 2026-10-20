@@ -1,11 +1,11 @@
 # Make OpenAI the default agent provider
 
-- Status: awaiting human review; implementation has not started
+- Status: approved; implementation in progress
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `e7c8e76` / `main`; fetched `origin/main` matches this revision
 - Request: use OpenAI API calls for the application agent and create a written plan
-- Human reviewer/approval: Jacob; default-provider and $2 test-budget decisions
-  confirmed in this session; approval of this written design remains pending
+- Human reviewer/approval: Jacob approved this written plan at `81fd761` on
+  October 20, 2026, replying "ok go ahead" in this session
 - Independent review: seek a separate reviewer for token/cost arithmetic and
   request lifecycle isolation before claiming acceptance; availability unknown
 
@@ -251,10 +251,11 @@ never replay a completed turn by generating again or recreate an unknown action.
 
 ## Human review and approval
 
-Jacob confirmed the default-provider change and $2 total test ceiling on October
-20 in this session. This is approval of those requirements only. Written-plan
-approval, reviewer/date/reference and approved scope remain pending; no application
-implementation or paid execution is authorized by creating this document alone.
+Jacob approved this written design at `81fd761` on October 20, 2026, replying
+"ok go ahead" in this session. Approval covers the OpenAI default, proposed
+`gpt-5.4-mini` model, LangChain adapter and admission boundaries, existing local
+compatibility, deployment/documentation, and verification within the shared $2
+live-testing ceiling. Material deviations require renewed review.
 
 ## Implementation outcome
 
