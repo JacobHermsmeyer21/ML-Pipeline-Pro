@@ -79,5 +79,6 @@
     "src\\ml_pipeline_pro\\tuning_store.py": "cc59adf12f5ef94a70273c0ef0216006caf00feae80976eb7363300b67750543",
     "src\\ml_pipeline_pro\\worker.py": "8f0d2179145dcd3946729ddc808a574069d69c26cc25e98f3ddb0d92039f9ce9"
   },
-  "raw_zip_sha256": "beed60bd9748146219c567d66505d0185ff935a8a8a380ec2a1623e4406677b0"
+  "raw_zip_sha256": "beed60bd9748146219c567d66505d0185ff935a8a8a380ec2a1623e4406677b0",
+  "deployment_zip_sha256": "8eacf2115973b1ecec4d31c91a01e777ce60e40a3fb6c7319d0dd95b52064e38"
 }

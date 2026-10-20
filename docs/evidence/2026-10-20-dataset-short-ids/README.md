@@ -38,6 +38,8 @@ all skip gates remain intact.
 `manifest.json` records application source hashes and evidence archive hashes.
 `raw.zip` retains fast/ordinary/recovery logs/XML, failed and successful live-model
 reports, exact independent-review inputs/output/provenance and package-build log.
-`datasets.png` shows the successful isolated browser view. Live demo rollout
-results are recorded before the completion handoff. No broader
+`datasets.png` shows the successful isolated browser view. The
+[live demo rollout](deployment.md) backfills its current dataset as d1, preserves
+existing eN/cN mappings and all 205 current files, and passes gateway/Chrome checks.
+No broader
 model-reliability, load/scaling, hosted-provider or course-acceptance claim is made.

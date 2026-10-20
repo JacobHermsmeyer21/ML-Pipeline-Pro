@@ -1,6 +1,6 @@
 # Dataset short IDs
 
-- Status: implemented; verification and coordinated demo rollout recorded below
+- Status: implemented, verified and deployed locally with preserved data
 - Date/baseline: October 20, 2026, `e7e6bb2` on `main`
 - Human authorization: Jacob requested the same short-ID behavior for datasets,
   explicitly instructed "dont make me aprove a plan, just implemnt it", then
@@ -81,3 +81,7 @@ separate plan approval was intentionally omitted per his instruction.
 - The [short-ID memory](../memory/short-record-ids.md) records dataset fingerprint,
   deletion receipt and column replay boundaries. Implementation commit/push and
   preserved-data local demo upgrade are reported in the completion handoff.
+- Implementation `5f91135` reached `origin/main`. The
+  [local rollout](../evidence/2026-10-20-dataset-short-ids/deployment.md) assigns d1
+  to the current dataset, preserves existing eN/cN mappings and all 205 current
+  files, and passes gateway/Chrome checks. All 12 serial recovery cases pass.
