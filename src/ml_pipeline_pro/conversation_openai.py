@@ -10,8 +10,10 @@ from langchain_core.messages import AIMessage
 from langchain_openai import ChatOpenAI
 from langsmith import tracing_context
 from openai import APITimeoutError, AsyncOpenAI, OpenAI
+from pydantic import ValidationError
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_diagnostics import ReplyValidationError
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
     ConversationModelError,
@@ -56,8 +58,15 @@ COUNT_FIELDS = frozenset(
 )
 
 
-def _invalid() -> ConversationModelError:
-    return ConversationModelError("model_invalid_response", "OpenAI returned invalid output")
+def _invalid(stage="provider_response", reason="invalid_envelope") -> ReplyValidationError:
+    return ReplyValidationError(stage, reason)
+
+
+def _reply_json(text, stage="reply_schema"):
+    try:
+        return _json_object(text)
+    except (ValueError, TypeError):
+        raise _invalid(stage, "invalid_json") from None
 
 
 class OpenAIConversationModel:
@@ -273,7 +282,7 @@ class OpenAIConversationModel:
             if type(count) is not int or count < 0:
                 raise ConversationModelError("chat_limit_exceeded", "Invalid input token count")
             return
-        data = _json_object(response.content.decode())
+        data = _reply_json(response.content.decode(), "provider_response")
         if data.get("status") != "completed" or data.get("error") or data.get("incomplete_details"):
             raise _invalid()
         model = data.get("model")
@@ -291,7 +300,7 @@ class OpenAIConversationModel:
             ("output_tokens", self._settings.chat_max_output_tokens),
         ):
             if type(usage.get(key)) is not int or not 0 <= usage[key] <= maximum:
-                raise _invalid()
+                raise _invalid("provider_response", "invalid_usage")
         output = data.get("output")
         if not isinstance(output, list) or len(output) != 1:
             raise _invalid()
@@ -301,7 +310,7 @@ class OpenAIConversationModel:
         if item.get("type") == "function_call":
             if item.get("name") not in {t["function"]["name"] for t in self._tools}:
                 raise _invalid()
-            _json_object(item["arguments"])
+            _reply_json(item["arguments"], "provider_response")
         elif item.get("type") == "message":
             content = item.get("content")
             if (
@@ -312,7 +321,7 @@ class OpenAIConversationModel:
                 raise _invalid()
             if content[0].get("type") != "output_text":
                 raise _invalid()
-            _json_object(content[0]["text"])
+            _reply_json(content[0]["text"], "provider_response")
         else:
             raise _invalid()
 
@@ -356,7 +365,7 @@ class OpenAIConversationModel:
                 async with asyncio.timeout(self._settings.chat_model_timeout_seconds):
                     result = await bound.ainvoke(context, config={"callbacks": []})
             if not isinstance(result, AIMessage) or result.invalid_tool_calls:
-                raise _invalid()
+                raise _invalid("reply_schema", "invalid_tool_call")
             usage = {key: result.usage_metadata[key] for key in ("input_tokens", "output_tokens")}
             response_model = self._safe(result.response_metadata.get("model_name"))
             generation_usage = {**usage, "response_model": response_model}
@@ -366,7 +375,7 @@ class OpenAIConversationModel:
             if snippet or monitoring:
                 if result.tool_calls:
                     raise _invalid()
-                data = _json_object(content)
+                data = _reply_json(content)
                 if snippet:
                     return ModelStep(
                         snippet=SnippetCandidate.model_validate(data), usage=generation_usage
@@ -388,7 +397,7 @@ class OpenAIConversationModel:
                 )
             if result.tool_calls:
                 if len(result.tool_calls) != 1 or content:
-                    raise _invalid()
+                    raise _invalid("reply_schema", "invalid_tool_call")
                 call = result.tool_calls[0]
                 if call["name"] == "finish_conversation":
                     return ModelStep(
@@ -400,20 +409,26 @@ class OpenAIConversationModel:
                     usage=generation_usage,
                 )
             return ModelStep(
-                reply=ModelReply.model_validate(self._safe(_json_object(content))),
+                reply=ModelReply.model_validate(self._safe(_reply_json(content))),
                 usage=generation_usage,
             )
         except ConversationModelError:
             raise
         except (TimeoutError, httpx.TimeoutException, APITimeoutError):
             raise ConversationModelError("chat_timeout", "OpenAI inference timed out") from None
+        except ValidationError:
+            raise _invalid("reply_schema", "invalid_reply_schema") from None
         except (ValueError, TypeError, KeyError):
-            raise _invalid() from None
+            raise _invalid("reply_schema", "invalid_reply_schema") from None
         except Exception as exc:
             # Both LangChain and OpenAI wrap HTTP hook errors. Inspect types only;
             # never forward SDK messages, prompts or credential-bearing bodies.
             cause = exc
             for _ in range(8):
+                if isinstance(cause, ReplyValidationError):
+                    raise ReplyValidationError(
+                        cause.details["validation_stage"], cause.details["validation_reason"]
+                    ) from None
                 if isinstance(cause, ConversationModelError):
                     raise ConversationModelError(cause.code, str(cause)) from None
                 if isinstance(cause, (TimeoutError, httpx.TimeoutException, APITimeoutError)):

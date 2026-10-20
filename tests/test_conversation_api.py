@@ -11,6 +11,40 @@ from ml_pipeline_pro.main import create_app
 from tests.test_conversation_actions import fixture
 
 
+def test_safe_validation_details_survive_http_history_and_offline_replay(fake_connections):
+    from ml_pipeline_pro.conversation_diagnostics import ReplyValidationError
+    from tests.conversation_memory import MemoryConversations
+    from tests.test_conversation_service import ScriptedModel
+
+    model = ScriptedModel(ReplyValidationError("reply_schema", "invalid_reply_schema"))
+    app = create_app(
+        Settings(_env_file=None, chat_enabled=True), chat_model_factory=lambda _: model
+    )
+    store = MemoryConversations()
+    app.dependency_overrides[get_conversation_store] = lambda: store
+    body = {"request_id": "first", "expected_revision": 0, "message": "inspect"}
+    headers = {"X-Project-ID": "demo", "X-Correlation-ID": "saved-rejection"}
+    with TestClient(app) as client:
+        response = client.post("/api/v1/chat", headers=headers, json=body)
+        assert response.status_code == 200  # Persisted turn failure, not a transport error.
+        first = response.json()
+        assert first["status"] == "failed" and first["error"]["http_status"] == 422
+        assert first["error"]["details"] == {
+            "validation_stage": "reply_schema",
+            "validation_reason": "invalid_reply_schema",
+        }
+        assert first["correlation_id"] == "saved-rejection"
+        path = "/api/v1/conversations/" + first["conversation_id"]
+        assert client.get(path, headers=headers).json()["turns"][0] == first
+        assert client.post("/api/v1/chat", headers=headers, json=body).json() == first
+        assert len(model.messages) == 1
+        assert client.get(path, headers={"X-Project-ID": "foreign"}).status_code == 404
+        # Historical generic errors keep their original public representation.
+        legacy = ConversationTurn.model_validate(first)
+        legacy.error.pop("details")
+        assert "details" not in ConversationTurn.model_validate(legacy.model_dump()).error
+
+
 def test_explicit_tokenizer_factory_stays_offline_and_closes(fake_connections, tmp_path):
     app = create_app(
         Settings(

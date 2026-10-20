@@ -97,6 +97,38 @@ def test_real_scoped_read_grounding_persistence_and_replay_need_no_second_model_
     exercise(run)
 
 
+def test_real_rejected_fact_persists_diagnostic_and_replays_after_restart():
+    async def run(settings, connections, database, store, context, client, transport):
+        created = await client.post("/models", json={"name": "diagnostic_model"})
+        assert created.status_code == 201, created.text
+        identity = created.json()["id"]
+        model = ScriptedModel(
+            call("get_model", model_id=identity),
+            reply(record_id=identity, field="metrics.best_epoch"),
+        )
+        service = ConversationService(settings, store, model, transport)
+        body = ChatRequest(request_id="diagnostic", message="inspect", expected_revision=0)
+        first = await service.chat(context, body)
+        assert first.status == "failed" and first.facts == []
+        assert first.error["details"] == {
+            "validation_stage": "evidence_resolution",
+            "validation_reason": "unsupported_fact_field",
+        }
+        assert first.tool_results[0].status == "succeeded" and len(model.messages) == 2
+        restarted_store = ConversationStore(database, settings)
+        restarted = ConversationService(settings, restarted_store, None, transport)
+        assert await restarted.chat(context, body) == first
+        history = await restarted_store.history(context.project_id, first.conversation_id)
+        assert history.turns == [first]
+        assert len(model.messages) == 2
+        assert await database.conversation_actions.count_documents({}) == 0
+        with pytest.raises(ApiError) as caught:
+            await restarted_store.history("foreign", first.conversation_id)
+        assert caught.value.code == "conversation_not_found"
+
+    exercise(run)
+
+
 @pytest.mark.parametrize("invalid_fact", [False, True])
 def test_native_completion_uses_real_evidence_and_persists_without_creating_actions(invalid_fact):
     async def run(settings, connections, database, store, context, client, transport):

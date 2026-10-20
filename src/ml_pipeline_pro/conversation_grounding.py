@@ -3,6 +3,7 @@
 from copy import deepcopy
 from typing import Any
 
+from ml_pipeline_pro.conversation_diagnostics import safe_validation_details
 from ml_pipeline_pro.conversation_schemas import ModelReply, VerifiedFact
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.tool_schemas import EvidenceReference, ToolSuccess
@@ -68,9 +69,14 @@ for _prefix in ("config", "best_config"):
 _FIELDS.update({"limits.max_trials", "limits.max_runtime_seconds", "limits.concurrency"})
 
 
-def invalid_evidence() -> ApiError:
+def invalid_evidence(reason="invalid_evidence") -> ApiError:
     return ApiError(
-        422, "model_invalid_response", "Reply references unsupported or absent tool evidence"
+        422,
+        "model_invalid_response",
+        "Reply references unsupported or absent tool evidence",
+        safe_validation_details(
+            {"validation_stage": "evidence_resolution", "validation_reason": reason}
+        ),
     )
 
 
@@ -164,7 +170,7 @@ class EvidenceLedger:
     def resolve(self, reply: ModelReply) -> list[VerifiedFact]:
         ids = {ref.record_id for ref in self.references.values()}
         if any(record_id not in ids for record_id in reply.citations):
-            raise invalid_evidence()
+            raise invalid_evidence("unknown_citation")
         facts = []
         for request in reply.facts:
             matches = [
@@ -172,15 +178,17 @@ class EvidenceLedger:
                 for (_, record_id), record in self.records.items()
                 if record_id == request.record_id
             ]
-            if request.field not in _FIELDS or len(matches) != 1:
-                raise invalid_evidence()
+            if request.field not in _FIELDS:
+                raise invalid_evidence("unsupported_fact_field")
+            if len(matches) != 1:
+                raise invalid_evidence("ambiguous_record")
             value: Any = matches[0]
             for part in request.field.split("."):
                 if not isinstance(value, dict) or part not in value:
-                    raise invalid_evidence()
+                    raise invalid_evidence("missing_fact_field")
                 value = value[part]
             if isinstance(value, (dict, list)):
-                raise invalid_evidence()
+                raise invalid_evidence("nonscalar_fact")
             facts.append(
                 VerifiedFact(
                     record_id=request.record_id, field=request.field, value=deepcopy(value)

@@ -112,3 +112,24 @@ with normal/partial monitoring and a real-ID HTTP/worker walkthrough including
 empty-data rejection and offline replay. All live attempts together reserve an
 estimated $1.686037. See [raw evidence and review limits](../evidence/2026-10-20-openai-provider/README.md).
 Human usefulness review of the new hosted outputs remains pending.
+
+## Rejected conversation replies
+
+A saved turn with `status: failed` can be returned by `/api/v1/chat` with HTTP 200:
+the turn was saved successfully, but its `error.http_status` records the internal
+failure (for example, 422 for `model_invalid_response`). Inspect the turn's
+`correlation_id` and `error.details.validation_stage` / `validation_reason`.
+New validation failures use fixed categories for provider envelopes, reply schema,
+host steps/usage and evidence resolution. Reasons distinguish unsupported fact
+fields, absent fields, ambiguous records, unknown citations and nonscalar facts.
+They contain no raw model output or rejected field names. Legacy failures retain
+their generic message; unavailable details cannot be recovered retroactively.
+
+The [reply-validation plan](../plans/2026-10-20-agent-reply-validation-plan.md)
+has its own additional $0.25 authorization and $0.23 conservative reservation
+stop. Its opt-in runner is `python -m evaluations.reply_validation_runner --phase
+baseline` or `--phase acceptance`, with `MLPP_RUN_OPENAI_EVAL=1`. It uses the
+existing demo experiment, creates fresh conversations, and submits no training or
+tuning work. It saves each phase once and keeps a separate ledger under
+`artifacts/agent-reply-validation/`; preserve reports and reservations on failure.
+The earlier $2 ledger and authorization remain unchanged.

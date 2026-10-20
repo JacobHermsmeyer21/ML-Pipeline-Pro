@@ -120,6 +120,49 @@ def experiment(**changes):
     ).model_dump(mode="json")
 
 
+@pytest.mark.parametrize(
+    ("field", "reason"),
+    [
+        ("metrics.best_epoch", "unsupported_fact_field"),
+        ("metrics.validation_f1", "missing_fact_field"),
+        ("hostile_untrusted_field", "unsupported_fact_field"),
+    ],
+)
+def test_grounding_failures_save_safe_categories_and_correlated_logs(field, reason, caplog):
+    result, _, _ = run(
+        ScriptedModel(
+            call("get_experiment", experiment_id="experiment"),
+            reply(record_id="experiment", field=field),
+        ),
+        RecordsTransport(
+            {"/api/v1/experiments/experiment": experiment(metrics={"best_epoch": 99})}
+        ),
+    )
+    assert result.status == "failed" and result.facts == []
+    assert result.error == {
+        "code": "model_invalid_response",
+        "http_status": 422,
+        "message": "Conversation request failed safely",
+        "details": {"validation_stage": "evidence_resolution", "validation_reason": reason},
+    }
+    assert len(result.tool_results) == 1 and result.tool_results[0].status == "succeeded"
+    log = next(r for r in caplog.records if r.message.startswith("Reply validation failed"))
+    assert log.correlation_id == result.correlation_id
+    assert KEY not in log.message + json.dumps(result.error)
+    assert field not in log.message + json.dumps(result.error)
+
+
+def test_unknown_validation_details_cannot_forward_exception_payloads():
+    error = ConversationModelError("model_invalid_response", KEY)
+    error.details = {"validation_stage": KEY, "validation_reason": [KEY], "input": KEY}
+    result, _, _ = run(ScriptedModel(error))
+    assert result.error["details"] == {
+        "validation_stage": "unknown",
+        "validation_reason": "unknown_validation",
+    }
+    assert KEY not in json.dumps(result.error)
+
+
 def test_read_loop_renders_actual_status_and_keeps_generated_interpretation_separate():
     model = ScriptedModel(
         call("get_experiment", experiment_id="experiment"),

@@ -273,6 +273,40 @@ def test_missing_credentials_and_closed_model_fail_without_network():
     assert not runtime.requests
 
 
+@pytest.mark.parametrize(
+    ("payload", "stage", "reason"),
+    [
+        (response(status="incomplete"), "provider_response", "invalid_envelope"),
+        (response(text='{"message":'), "provider_response", "invalid_json"),
+        (
+            response(
+                arguments={
+                    **REPLY,
+                    "facts": [{"record_id": "run", "field": "status", "value": KEY}],
+                }
+            ),
+            "reply_schema",
+            "invalid_reply_schema",
+        ),
+    ],
+)
+def test_safe_rejection_category_survives_sdk_wrapping(payload, stage, reason):
+    runtime = Runtime([payload])
+
+    async def run():
+        async with runtime.model() as model:
+            with pytest.raises(ConversationModelError) as caught:
+                await model.generate([{"role": "user", "content": "inspect"}])
+            assert caught.value.details == {
+                "validation_stage": stage,
+                "validation_reason": reason,
+            }
+            assert KEY not in str(caught.value) + json.dumps(caught.value.details)
+
+    asyncio.run(run())
+    assert len(runtime.requests) == 2  # One count and one generation, never a retry.
+
+
 def test_timeout_and_cancellation_propagate_and_close_clients():
     async def run():
         started = asyncio.Event()

@@ -1,4 +1,4 @@
-"""Persistent, conservative reservations for the single authorized $2 test run.
+"""Persistent, conservative reservations for separately authorized test runs.
 
 This is a testing control, not an account-wide application spending limit.
 Uncertain or completed requests keep their entire reservation; no refunds are
@@ -7,6 +7,7 @@ needed to stay within the authorization. One process holds the runner lock.
 
 import json
 import os
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from decimal import ROUND_CEILING, Decimal
 from pathlib import Path
@@ -27,10 +28,26 @@ def _stop():
     return ConversationModelError("chat_limit_exceeded", "Live testing budget admission refused")
 
 
+@dataclass(frozen=True)
+class TestAuthorization:
+    authorization_usd: Decimal = Decimal("2.00")
+    reservation_limit_usd: Decimal = RESERVATION_LIMIT
+
+    def __post_init__(self):
+        values = (self.authorization_usd, self.reservation_limit_usd)
+        if any(type(v) is not Decimal or not v.is_finite() or v <= 0 for v in values):
+            raise _stop()
+        if self.reservation_limit_usd > self.authorization_usd:
+            raise _stop()
+
+
 class OpenAITestBudget:
     """Durably reserve before sending; refuse simultaneous runners and stale pricing."""
 
-    def __init__(self, path: Path, *, model=MODEL, today=None):
+    def __init__(self, path: Path, *, model=MODEL, today=None, authorization=None):
+        self._authorization = authorization if authorization is not None else TestAuthorization()
+        if type(self._authorization) is not TestAuthorization:
+            raise _stop()
         if model != MODEL or (today or datetime.now(UTC).date()) != date.fromisoformat(
             PRICING_DATE
         ):
@@ -65,7 +82,7 @@ class OpenAITestBudget:
                         or self._cost(item["input"], item["output"]) != Decimal(item["usd"])
                         for item in entries
                     )
-                    or self.reserved > RESERVATION_LIMIT
+                    or self.reserved > self._authorization.reservation_limit_usd
                 ):
                     raise _stop()
             else:
@@ -81,8 +98,7 @@ class OpenAITestBudget:
             self._held = False
             self.lock.release()
 
-    @staticmethod
-    def _empty():
+    def _empty(self):
         return {
             "version": 1,
             "model": MODEL,
@@ -90,8 +106,8 @@ class OpenAITestBudget:
             "pricing_source": PRICING_URL,
             "input_per_million_usd": "0.75",
             "output_per_million_usd": "4.50",
-            "authorization_usd": "2.00",
-            "reservation_limit_usd": "1.90",
+            "authorization_usd": str(self._authorization.authorization_usd),
+            "reservation_limit_usd": str(self._authorization.reservation_limit_usd),
             "reservations": [],
         }
 
@@ -120,7 +136,7 @@ class OpenAITestBudget:
         if not self._held:
             raise _stop()
         cost = self._cost(input_tokens, output_tokens)
-        if self.reserved + cost > RESERVATION_LIMIT:
+        if self.reserved + cost > self._authorization.reservation_limit_usd:
             raise _stop()
         self.state["reservations"].append(
             {"kind": kind, "input": input_tokens, "output": output_tokens, "usd": str(cost)}

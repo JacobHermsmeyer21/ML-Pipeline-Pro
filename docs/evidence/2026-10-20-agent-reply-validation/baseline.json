@@ -1,0 +1,182 @@
+{
+  "source_revision": "df10153a94380f38ebe272d41934329d1ae32a16",
+  "source_hashes": {
+    "src\\ml_pipeline_pro\\conversation_actions.py": "b922440f1315096496497eb0a0bcdea090f1ca2c47375eaadf093d17ee566d3c",
+    "src\\ml_pipeline_pro\\conversation_api.py": "3e9959d9e78b1869c768b3bcab25ac0d849c3167e5f567d01ac2b8eaf9bf8975",
+    "src\\ml_pipeline_pro\\conversation_diagnostics.py": "8c8a92a80ec96a433eff6461fffa4bb4f456f52da2196e43d38cffc7c248e49a",
+    "src\\ml_pipeline_pro\\conversation_grounding.py": "7f3ec1ad2a18e7a0acd381d891a362fa1d90997a5ca421d43b0cc06bb0067288",
+    "src\\ml_pipeline_pro\\conversation_guidance.py": "2b3b55b94c00cd729c4df3039d16a79873faebabfe5493e3567f2925e846e9aa",
+    "src\\ml_pipeline_pro\\conversation_model.py": "c083fefe692990c11088c4f8d7d0b6afe55222c8060aeed73a170852aca490c3",
+    "src\\ml_pipeline_pro\\conversation_ollama.py": "c7453a3f0bcd2ec8f5182da57053dd3ac1ac926d6d2be709831b3ff2ccd530ea",
+    "src\\ml_pipeline_pro\\conversation_openai.py": "e98ddb340ad144d4d608d4bed3aed0a5d23e9dfbdcb77bce322b57cc706da484",
+    "src\\ml_pipeline_pro\\conversation_qwen_counter.py": "b7111c90421ade0d33533e5785280de02f29dbd1b9529dd8c52cf5a32c622ca3",
+    "src\\ml_pipeline_pro\\conversation_schemas.py": "2a19fd41248b326ce0673a9ce163ae3744869a3e76ae947820600f79f85bab1e",
+    "src\\ml_pipeline_pro\\conversation_service.py": "8f87b850ef8a8f280e304c2fb692660ca9952103c794659d3baa823663ecf900",
+    "src\\ml_pipeline_pro\\conversation_store.py": "6f338da65cc11fe60d694a11ab910d898b00e637519d9db3b79b3f75f3cf4a22",
+    "src\\ml_pipeline_pro\\conversation_timing.py": "8ff772843e065b2d8c58ff788dd649c83ec18436ee79e7157fbe3497932d8f4b",
+    "C:\\Users\\jacob\\Desktop\\ML-Pipeline-Pro\\evaluations\\reply_validation_runner.py": "59e4ebf2a14c60b73839e4af113036b2a989b1bce21dc605a265c434f71cc297"
+  },
+  "started_utc": "2026-10-20T21:18:08.037069+00:00",
+  "phase": "baseline",
+  "transport": "ASGI HTTP routes, real MongoDB/Redis, domain HTTP read",
+  "passed": true,
+  "attempts": [
+    {
+      "number": 1,
+      "correlation_id": "reply-validation-20da4a6d68e14d99a72204f2fac3d7ba",
+      "conversation_id": "4b2ac5fa-185e-4782-838f-4775b578e012",
+      "request_id": "01329e82-1d36-4c57-bbeb-9b8ef6684425",
+      "turn_id": "55e194a5-3cfa-4cab-8599-fd9a6b249720",
+      "status": "failed",
+      "error": {
+        "code": "model_invalid_response",
+        "http_status": 422,
+        "message": "Conversation request failed safely",
+        "details": {
+          "validation_stage": "evidence_resolution",
+          "validation_reason": "unsupported_fact_field"
+        }
+      },
+      "facts": [],
+      "evidence": [
+        {
+          "kind": "experiment",
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "project_id": "demo",
+          "role": "record"
+        }
+      ],
+      "model_provenance": {
+        "backend": "openai",
+        "model_tag": "gpt-5.4-mini",
+        "protocol": "native",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-openai": "1.7.0",
+          "openai": "2.54.0"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "02cde143821f447f99471afc466b0cd5bf2b2766f410b493b018f204834cce20",
+        "instructions_hash": "cc84b4be65209c594ca411dfc84b8ce9c59ac3931f046d6574a83def5a5efc42"
+      },
+      "has_action": false,
+      "replay_equal_without_inference": true
+    },
+    {
+      "number": 2,
+      "correlation_id": "reply-validation-808a045171964d8db7e11ef42d9c4f9b",
+      "conversation_id": "a4d87d4c-6ccb-47a4-943d-08a90782af07",
+      "request_id": "b75adc89-e78b-4102-94ed-93d3d5f11e40",
+      "turn_id": "c6d4fdfd-7cce-4f3c-8a03-f35525db5fdc",
+      "status": "failed",
+      "error": {
+        "code": "model_invalid_response",
+        "http_status": 422,
+        "message": "Conversation request failed safely",
+        "details": {
+          "validation_stage": "evidence_resolution",
+          "validation_reason": "unsupported_fact_field"
+        }
+      },
+      "facts": [],
+      "evidence": [
+        {
+          "kind": "experiment",
+          "record_id": "508815fb-1652-475e-aba9-c68281270704",
+          "project_id": "demo",
+          "role": "record"
+        }
+      ],
+      "model_provenance": {
+        "backend": "openai",
+        "model_tag": "gpt-5.4-mini",
+        "protocol": "native",
+        "packages": {
+          "langchain-core": "1.6.9",
+          "langchain-openai": "1.7.0",
+          "openai": "2.54.0"
+        },
+        "context_tokens": 8192,
+        "max_output_tokens": 1024,
+        "tools_hash": "02cde143821f447f99471afc466b0cd5bf2b2766f410b493b018f204834cce20",
+        "instructions_hash": "cc84b4be65209c594ca411dfc84b8ce9c59ac3931f046d6574a83def5a5efc42"
+      },
+      "has_action": false,
+      "replay_equal_without_inference": true
+    }
+  ],
+  "provider_requests": [
+    {
+      "kind": "count",
+      "elapsed_seconds": 1.0,
+      "input_tokens": 3476,
+      "payload_hash": "1dbb3ecff4cecef9ba81530a0eb04a2ba342d746b127fad9a586d2a15a1b205d"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 1.2030000000013388,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3476,
+        "output_tokens": 36,
+        "total_tokens": 3512
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.3279999999940628,
+      "input_tokens": 3866,
+      "payload_hash": "b8b0293ae6af2446db4f75f7d799470c0a670f57328f8f4f62e082dc9b10c14c"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 3.9840000000040163,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3866,
+        "output_tokens": 627,
+        "total_tokens": 4493
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.2969999999986612,
+      "input_tokens": 3476,
+      "payload_hash": "1dbb3ecff4cecef9ba81530a0eb04a2ba342d746b127fad9a586d2a15a1b205d"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 1.0939999999973224,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3476,
+        "output_tokens": 36,
+        "total_tokens": 3512
+      }
+    },
+    {
+      "kind": "count",
+      "elapsed_seconds": 0.28100000000267755,
+      "input_tokens": 3866,
+      "payload_hash": "b8b0293ae6af2446db4f75f7d799470c0a670f57328f8f4f62e082dc9b10c14c"
+    },
+    {
+      "kind": "generation",
+      "elapsed_seconds": 3.688000000001921,
+      "http_status": 200,
+      "response_model": "gpt-5.4-mini-2026-03-17",
+      "usage": {
+        "input_tokens": 3866,
+        "output_tokens": 507,
+        "total_tokens": 4373
+      }
+    }
+  ],
+  "experiment_id": "508815fb-1652-475e-aba9-c68281270704",
+  "validation_f1": 0.8443759876139247,
+  "estimated_reserved_usd": "0.103084"
+}

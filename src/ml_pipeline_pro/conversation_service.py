@@ -1,6 +1,7 @@
 """Bounded host read loop; mutations become saved proposals, never executions."""
 
 import asyncio
+import logging
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
@@ -10,6 +11,7 @@ from pydantic import ValidationError
 from pymongo.errors import PyMongoError
 
 from ml_pipeline_pro.config import Settings
+from ml_pipeline_pro.conversation_diagnostics import ReplyValidationError, safe_validation_details
 from ml_pipeline_pro.conversation_grounding import EvidenceLedger, context_data, supplied_snapshot
 from ml_pipeline_pro.conversation_model import (
     REPLY_INSTRUCTIONS,
@@ -254,6 +256,15 @@ class ConversationService:
                 "http_status": status,
                 "message": "Conversation request failed safely",
             }
+            if code == "model_invalid_response":
+                details = safe_validation_details(getattr(exc, "details", None))
+                turn.error["details"] = details
+                logging.getLogger(__name__).warning(
+                    "Reply validation failed stage=%s reason=%s",
+                    details["validation_stage"],
+                    details["validation_reason"],
+                    extra={"correlation_id": turn.correlation_id},
+                )
             if len(serialized(turn.model_dump())) > RECORD_BYTES:
                 # Reject the whole oversized snapshot; never publish truncated evidence.
                 turn = self._minimal_failure(claim, turn)
@@ -400,9 +411,12 @@ class ConversationService:
                         context,
                     )
                 )
-            step = ModelStep.model_validate(
-                self._safe(step.model_dump() if isinstance(step, ModelStep) else step, context)
-            )
+            try:
+                step = ModelStep.model_validate(
+                    self._safe(step.model_dump() if isinstance(step, ModelStep) else step, context)
+                )
+            except (ValidationError, ValueError, TypeError):
+                raise ReplyValidationError("host_step", "invalid_step") from None
             for key, maximum in (
                 (
                     "input_tokens",
@@ -413,9 +427,9 @@ class ConversationService:
                 if key in step.usage and (
                     type(step.usage[key]) is not int or not 0 <= step.usage[key] <= maximum
                 ):
-                    raise ValueError("Invalid reported model token usage")
+                    raise ReplyValidationError("host_step", "invalid_usage")
             if step.snippet is not None:
-                raise ValueError("Snippet output requires a host generation request")
+                raise ReplyValidationError("host_step", "invalid_step")
             if step.reply is not None:
                 turn.facts = ledger.resolve(step.reply)
                 turn.message = step.reply.message

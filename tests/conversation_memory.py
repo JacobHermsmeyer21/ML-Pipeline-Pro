@@ -82,6 +82,8 @@ class MemoryConversations:
         return saved.model_copy(deep=True)
 
     async def history(self, project_id, conversation_id, *, limit=50, offset=0):
+        if (project_id, conversation_id) not in self.revisions:
+            raise ApiError(404, "conversation_not_found", "Conversation was not found")
         turns = sorted(
             [
                 item.model_copy(deep=True)
