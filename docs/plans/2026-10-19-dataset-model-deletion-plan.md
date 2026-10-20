@@ -1,10 +1,13 @@
 # Delete datasets and classifier models from the workspace
 
-- Status: awaiting review; implementation pending
+- Status: superseded before implementation by the
+  [permanent-deletion plan](2026-10-19-permanent-deletion-plan.md).
 - Date: 2026-10-19
 - Source baseline: `9b862d8` on `person-a/conversation-foundation`
 - Request: Jacob asks for a way to delete datasets and models.
-- Human reviewer/approval: pending
+- Human reviewer/approval: Jacob rejects history preservation on October 19,
+  selecting permanent erasure of the item and related history/files. The original
+  proposed behavior below is retained as history, not current approval.
 - Independent review: seek a separate reviewer for deletion/submission ordering;
   reviewer availability is unknown, and no independent review has occurred.
 
