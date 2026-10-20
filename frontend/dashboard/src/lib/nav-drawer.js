@@ -4,8 +4,11 @@ const drawer = window.matchMedia("(max-width: 899px)");
 export function initNavDrawer() {
   const toggle = document.getElementById("nav-toggle"), sidebar = document.getElementById("sidebar");
   const scrim = document.getElementById("nav-scrim"), close = document.getElementById("nav-close");
+  const page = document.querySelector(".page"), workspace = document.getElementById("workspace");
   const setOpen = (open, restoreFocus = false) => {
     sidebar.classList.toggle("open", open); scrim.hidden = !open;
+    // While open, the page behind the scrim is inert so Tab stays inside the drawer.
+    page.inert = open && drawer.matches;
     toggle.setAttribute("aria-expanded", String(open));
     if (open) sidebar.querySelector(".nav-item.active, .nav-item")?.focus();
     else if (restoreFocus) toggle.focus();
@@ -16,7 +19,10 @@ export function initNavDrawer() {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && sidebar.classList.contains("open")) setOpen(false, true);
   });
-  sidebar.querySelectorAll("[data-view]").forEach((node) => node.addEventListener("click", () => { if (drawer.matches) setOpen(false); }));
+  sidebar.querySelectorAll("[data-view]").forEach((node) => node.addEventListener("click", () => {
+    if (!drawer.matches) return;
+    setOpen(false); workspace.focus({ preventScroll: true });
+  }));
   drawer.addEventListener("change", () => setOpen(false));
 }
 

@@ -45,6 +45,7 @@ nav { display: grid; gap: 2px; }
 .crumb-sep { color: var(--border-strong); }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-4); }
 .host-label { color: var(--text-faint); font-size: 13px; }
+main:focus { box-shadow: none; }
 main { width: 100%; max-width: 1440px; padding: var(--space-7) var(--space-8) var(--space-8); }
 .page-intro { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
 .workspace-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: var(--space-5); align-items: start; margin-top: var(--space-5); }

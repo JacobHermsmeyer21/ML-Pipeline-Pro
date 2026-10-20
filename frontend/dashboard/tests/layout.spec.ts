@@ -111,3 +111,26 @@ test("closed dialogs and drawer controls stay hidden on desktop", async ({ page 
   await expect(page.locator("#nav-close")).toBeHidden();
   await expect(page.locator(".sidebar")).toBeInViewport();
 });
+
+test("truncated names expose their full text as a title", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await mockApi(page, { datasets: [dataset({ name: longName })], models: [model({ name: longName })] });
+  await open(page);
+  const cell = page.locator("#runs-body tr").first();
+  await expect(cell.locator("td strong")).toHaveAttribute("title", longName);
+  await expect(cell.locator("td small")).toHaveAttribute("title", new RegExp(`^${longName} · v1`));
+  await expect(page.locator("#chat-context")).toHaveAttribute("title", `${longName} / ${longName}`);
+  await expect(page.locator("#project-label")).toHaveAttribute("title", "demo");
+});
+
+test("drawer keeps keyboard focus inside and lands on the workspace after a choice", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await mockApi(page);
+  await open(page);
+  await page.locator("#nav-toggle").click();
+  await expect(page.locator(".page")).toHaveAttribute("inert", "");
+  await page.locator('[data-view="datasets"]').focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".page")).not.toHaveAttribute("inert", "");
+  await expect(page.locator("#workspace")).toBeFocused();
+});

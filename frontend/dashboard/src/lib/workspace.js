@@ -6,6 +6,7 @@ import { reviewDeletion } from "./deletion.js";
 function updateContext() {
   const dataset = selectedDataset(), model = selectedModel();
   $("chat-context").textContent = dataset ? `${dataset.name}${model ? ` / ${model.name}` : ""}` : "Choose a dataset to get started";
+  $("chat-context").title = $("chat-context").textContent;
   store("selection", { dataset: state.selectedDataset, model: state.selectedModel });
 }
 export function renderWorkspace() {
@@ -20,7 +21,8 @@ export function renderWorkspace() {
   $("runs-body").replaceChildren();
   for (const run of state.experiments) {
     const row = el("tr"), identity = el("td"), status = el("td"), actions = el("td");
-    identity.append(el("strong", "", modelName(run.model_id)), el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`));
+    const name = el("strong", "", modelName(run.model_id)), detail = el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`);
+    name.title = name.textContent; detail.title = detail.textContent; identity.append(name, detail);
     status.append(badge(run.status));
     actions.append(button("View", "text-button", () => showRun(run.id).catch(report)));
     row.append(identity, status, el("td", "teal-text", number(run.metrics.validation_f1)), el("td", "", date(run.created_at)), actions); $("runs-body").append(row);

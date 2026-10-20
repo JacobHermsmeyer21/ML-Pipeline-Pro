@@ -115,7 +115,7 @@ export function restoreSession() {
   state.selectedDataset = selection.dataset || ""; state.selectedModel = selection.model || "";
   state.conversation = stored("conversation", ""); state.pendingChat = stored("pendingChat"); state.pendingTraining = stored("pendingTraining");
   state.pendingDeletion = stored("pendingDeletion"); state.renderDeletionRecovery?.();
-  $("project-label").textContent = state.project; $("sidebar-project").textContent = state.project;
+  $("project-label").textContent = state.project; $("project-label").title = state.project; $("sidebar-project").textContent = state.project;
 }
 export function restoreProject() {
   try {
