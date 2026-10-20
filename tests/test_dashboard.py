@@ -1,4 +1,8 @@
+import base64
+import hashlib
 import io
+import json
+import re
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -16,8 +20,7 @@ def test_dashboard_assets_are_local_and_have_a_bounded_content_policy(client):
     assert "unsafe-inline" not in policy and "frame-ancestors 'self'" in policy
     assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert response.headers["Cache-Control"] == "no-cache"
-    for asset in ("app.js", "styles.css", "example.csv"):
-        assert client.get("/dashboard/" + asset).status_code == 200
+    assert client.get("/dashboard/example.csv").status_code == 200
     assert client.get("/dashboard", follow_redirects=False).headers["location"] == "/dashboard/"
     assert client.get("/dashboard/missing.js").status_code == 404
 
@@ -53,3 +56,23 @@ def test_packaged_example_is_the_validated_workflow_fixture():
     # Keep the user-downloadable input identical to the supported demo fixture.
     assert packaged == source
     assert len(io.StringIO(packaged.decode()).readlines()) == 121
+
+
+def test_dashboard_references_only_served_local_assets(client):
+    html = client.get("/dashboard/").text
+    refs = re.findall(r'(?:src|href)="(/dashboard/[^"#]+)"', html)
+    assert any(ref.endswith(".js") for ref in refs) and any(ref.endswith(".css") for ref in refs)
+    for ref in refs:
+        assert client.get(ref).status_code == 200, ref
+    # Inline style attributes would need 'unsafe-hashes'; the policy forbids them.
+    assert "style=" not in html
+
+
+def test_dashboard_has_no_unhashed_inline_code():
+    root = Path("src/ml_pipeline_pro/dashboard")
+    html = (root / "index.html").read_text()
+    hashes = json.loads((root / "csp-hashes.json").read_text())
+    for tag, directive in (("script", "script-src"), ("style", "style-src")):
+        for body in re.findall(rf"<{tag}(?![^>]*\bsrc=)[^>]*>(.*?)</{tag}>", html, re.S):
+            digest = base64.b64encode(hashlib.sha256(body.encode()).digest()).decode()
+            assert f"'sha256-{digest}'" in hashes[directive]

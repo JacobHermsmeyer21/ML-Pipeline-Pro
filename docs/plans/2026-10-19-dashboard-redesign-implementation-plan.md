@@ -69,6 +69,7 @@ def test_dashboard_references_only_served_local_assets(client):
         assert client.get(ref).status_code == 200, ref
     assert "style=" not in html
 
+
 def test_dashboard_has_no_unhashed_inline_code():
     root = Path("src/ml_pipeline_pro/dashboard")
     html = (root / "index.html").read_text()
