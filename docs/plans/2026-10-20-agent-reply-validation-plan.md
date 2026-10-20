@@ -1,11 +1,12 @@
 # Diagnose and correct rejected agent replies
 
-- Status: awaiting review; implementation has not started
+- Status: approved; implementation in progress
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `a75da54` / `main`; fetched upstream and `origin/main` match
 - Request: plan a fix for conversation `7d497f4b` failing after an experiment read
-- Human reviewer/approval: implementation approval pending; Jacob separately
-  approved up to **$0.25 additional OpenAI testing** in this session
+- Human reviewer/approval: Jacob approved the plan at `8c4f985` on October 20,
+  2026 with "i appove, implement it"; the separately approved additional test cap
+  is **$0.25**
 - Independent review: seek a separate reviewer for test-budget arithmetic and
   persistence/replay compatibility; record availability and findings
 
@@ -204,8 +205,11 @@ budget ledgers and all uncertain reservations during rollback.
 
 Jacob approved up to **$0.25 additional OpenAI testing** on October 20, 2026 in
 response to the explicit budget question. That approves the cap, not this written
-implementation design. Design approval and approved scope remain **pending**.
-No implementation or paid test is performed while preparing this plan.
+implementation design. Jacob subsequently approved this written plan at `8c4f985`
+with "i appove, implement it" on October 20, 2026. Approval covers the diagnostic
+metadata, shared fact guidance, narrow reproduced corrections, dashboard copy,
+budget guard and capped verification described above. No paid test was performed
+while preparing the plan; implementation now proceeds within this scope.
 
 ## Implementation outcome
 
