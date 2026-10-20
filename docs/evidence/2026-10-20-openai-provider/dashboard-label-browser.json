@@ -1,0 +1,19 @@
+{
+  "paid_inference_calls": 0,
+  "checks": [
+    "running OpenAI model label and neutral inference copy",
+    "qwen-fixture:7b",
+    "Agent is not enabled in this stack",
+    "Configured AI model"
+  ],
+  "browser": "155.0.8059.82",
+  "status": "passed",
+  "source_revision": "a9e474b31a0103059590e30ccaa52f346c662d1e",
+  "working_tree": true,
+  "origin": "http://127.0.0.1:8000",
+  "source_sha256": {
+    "src/ml_pipeline_pro/dashboard/index.html": "727f90ef10fba53294ad2da3834fd941505e73928dc0f1d69303868188834bac",
+    "src/ml_pipeline_pro/dashboard/app.js": "9d5602447d9499dd9d594bac01f76d7f845e85d60770b0c8fcab102a360873bc",
+    "src/ml_pipeline_pro/dashboard/workspace.js": "c7f82d18f675e96e2b6d9bdececfa04f570df59f14490866b4767e5efb539b87"
+  }
+}

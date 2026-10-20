@@ -249,7 +249,7 @@ async function refreshMonitoringSummary() {
 async function diagnose() {
   if (state.diagnosing || !state.selectedVersion) return;
   const version = state.selectedVersion; state.diagnosing = true; $("diagnose-button").disabled = true; state.mutations++;
-  $("diagnosis-result").replaceChildren(el("p", "loading-text", "The local model is reading the measured window…"));
+  $("diagnosis-result").replaceChildren(el("p", "loading-text", "The agent is reading the measured window…"));
   try {
     const result = await api(`/monitoring/model-versions/${encodeURIComponent(version)}/diagnosis`, { method: "POST", timeout: 90000 });
     if (version !== state.selectedVersion) return;

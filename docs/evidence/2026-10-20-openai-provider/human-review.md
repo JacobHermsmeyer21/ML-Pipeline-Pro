@@ -25,6 +25,9 @@ The following explanation is model-generated:
 
 ## Validated generated Python draft
 
+The display below is formatted for readability. The original generated text is
+retained unchanged in the raw evidence archive.
+
 The host accepted this draft's restricted syntax/API shape. It still needs human
 review of usefulness and intended settings before use. Its environment variables
 are placeholders for the engineer's execution environment; no credentials are embedded.
@@ -32,8 +35,18 @@ are placeholders for the engineer's execution environment; no credentials are em
 ```python
 import os
 import httpx
-with httpx.Client(base_url=os.environ['MLPP_API_ORIGIN'], headers={'X-Project-ID':os.environ['MLPP_PROJECT_ID'],'X-API-Key':os.environ['MLPP_API_KEY']}, timeout=10, follow_redirects=False, trust_env=False) as client:
-    response = client.get('/api/v1/experiments', params={'limit':50,'offset':0})
+
+with httpx.Client(
+    base_url=os.environ["MLPP_API_ORIGIN"],
+    headers={
+        "X-Project-ID": os.environ["MLPP_PROJECT_ID"],
+        "X-API-Key": os.environ["MLPP_API_KEY"],
+    },
+    timeout=10,
+    follow_redirects=False,
+    trust_env=False,
+) as client:
+    response = client.get("/api/v1/experiments", params={"limit": 50, "offset": 0})
     response.raise_for_status()
     data = response.json()
 ```
