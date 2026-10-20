@@ -27,3 +27,11 @@ skips. An old Windows pytest temp directory denies access in the initial run;
 use a fresh `--basetemp` under workspace artifacts rather than changing tests or
 broadly changing filesystem permissions. The complete AI walkthrough remains
 unsuccessful; see [observed timeout overrun](cpu-inference-timeout-overrun.md).
+
+October 19 follow-up: the reboot/installation boundary is resolved. Later
+[five-minute standalone gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass ten/seven on AC with human acceptance; these supersede the earlier partial
+gate status for that profile only. The bounded deployed walkthrough still fails,
+while two [unbounded direct-AI diagnostics](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass with application probes removed. Keep explicit warmup, AC/awake prerequisites
+and machine/profile provenance; these results do not diagnose the earlier overrun.

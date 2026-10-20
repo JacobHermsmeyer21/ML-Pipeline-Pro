@@ -12,7 +12,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | [Changing a CSV target must also update inferred features](dashboard-column-mapping.md) | Confirmed drug200 metadata overlap, numeric-only preparation and browser-to-worker demo |
 | [Uploaded CSV publication must survive uncertain metadata writes](dataset-upload-publication.md) | Atomic publication, scoped replay, cancellation and shared read-only worker files |
 | [Laptop inference can outlast Kubernetes health availability](laptop-inference-probe-restarts.md) | Two direct-AI/probe-free unlimited workflows pass; comparison exceeds 270-second turn; finite gateway acceptance and resource cause remain open |
-| [Source packaging admits an ignored nested example](source-package-ignore-exception.md) | Existing workspace versus clean checkout, Git/build selection discrepancy, archive inspection |
+| [Explicit source exclusions remove an ignored nested example](source-package-ignore-exception.md) | Historical Git/build selection discrepancy, corrected descendant exclusions and required archive inspection |
 | [CPU inference can overrun observed API timeout boundaries](cpu-inference-timeout-overrun.md) | Retained slow prompt/late 504, correct 99-second direct first step, resource sampling gaps and unresolved mechanism |
 | [Laptop Qwen prompt processing dominates the first read](qwen-prompt-processing-cost.md) | Exact token cost, slower 2/3-thread laptop screens, no retained optimization and incomplete CPU attribution despite process sampling |
 | [Laptop prerequisites and reboot boundary](laptop-test-prerequisites.md) | Installed Docker/WSL/Ollama locations, restart requirement and CPU gate failures |

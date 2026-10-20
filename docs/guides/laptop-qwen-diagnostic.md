@@ -8,6 +8,12 @@ the [October 19 run](../evidence/2026-10-19-laptop-cpu-trials/README.md) complet
 twelve valid uncached first steps but retains no faster thread setting. Application
 defaults remain unchanged, and complete CPU attribution remains outstanding.
 
+This first-step diagnostic predates the implemented
+[five-minute laptop profile](laptop-five-minute.md). Later standalone ten/seven
+gates pass, and two unbounded direct-AI workflows complete with application probes
+removed; the bounded deployed walkthrough still fails. Those later results do
+not establish a resource cause or replace this diagnostic's workload/provenance.
+
 This implements Jacob's [approved bounded plan](../plans/2026-10-18-laptop-qwen-diagnostic-plan.md).
 It diagnoses eventual first-step response on the Acer Ryzen 3 3350U laptop. A
 successful result does not pass the original ten dialogue/seven snippet cases or

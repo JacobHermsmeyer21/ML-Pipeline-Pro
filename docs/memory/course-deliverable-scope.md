@@ -38,6 +38,14 @@ services/shared code-image-database, guided AI, small monitoring and local Kuber
 CI/CD. Large A4 workloads/advanced drift/production scope are deferred. Existing
 failed gates remain failures until complete new gates pass.
 
+October 19 reconciliation: the minimal three-domain/local-LangChain/monitoring/
+generated-code/Kubernetes scope has retained acceptance, superseding the early
+missing-dependency/tokenizer findings above. A separately approved dashboard now
+adds immutable managed preparation/column versions and permanent erasure.
+Desktop bounded AI and laptop standalone ten/seven gates pass; bounded deployed
+laptop acceptance and newer independent/human control reviews remain open. See
+the [current course checklist](../project/course-requirements.md) for exact evidence.
+
 Revisit if the user supplies a revised course instruction or approves a different
 deployment/model scope. Do not make microservices or Kubernetes conditional on
 commercial scale, count templates as AI generation, or infer implementation

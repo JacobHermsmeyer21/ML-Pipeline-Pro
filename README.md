@@ -1,23 +1,28 @@
 # ML Pipeline Pro
 
-For the October 20 demo, see the [October 18 audit](docs/project/2026-10-18-repo-audit.md).
-The minimal course features are implemented. Normal bounded AI acceptance on the
-chosen CPU laptop remains open; the passing full bounded walkthrough used the RX 9070 workstation.
-The [five-minute laptop rerun](docs/evidence/2026-10-19-laptop-five-minute/README.md)
-passes its first inspection, then fails during a gateway liveness restart. Full
-laptop acceptance remains open; more reply time is not the next proposed fix.
-The later [standalone laptop gates](docs/evidence/2026-10-19-laptop-awake-gates/README.md)
-pass all ten dialogue and seven snippet scenarios with the five-minute profile.
-The later [unbounded laptop diagnostic](docs/evidence/2026-10-19-laptop-unbounded/README.md)
-passes two complete workflows in 789.906 and 641.016 seconds with direct AI API
-origins and application probes removed. The slowest replies, 276.594 and 273.719
-seconds, exceed the old 270-second turn window. Normal settings are restored;
-these observations establish neither finite-profile nor full gateway acceptance.
-
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
 MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses
 LangChain with a locally served pre-trained model.
+
+Current as of October 19, 2026: the local dashboard supports original CSV import,
+reviewed categorical encoding/splits, immutable column-subset versions and
+permanent dataset/classifier deletion. Independent model, tuning and monitoring
+APIs, generated Python drafts, Prometheus/Grafana and Docker/Kubernetes delivery
+have retained minimal-course evidence. See [current status](docs/project/project-status.md)
+and the [course checklist](docs/project/course-requirements.md) for verification and
+remaining review/deployment gaps. Plans and dated audits retain their original scope.
+
+The [October 19 RX 9070 desktop demo](docs/evidence/2026-10-19-desktop-demo/README.md)
+passes the full bounded AI walkthrough. On the CPU laptop,
+[standalone gates](docs/evidence/2026-10-19-laptop-awake-gates/README.md) pass all ten
+dialogue and seven snippet scenarios with the five-minute profile, while the
+[bounded Kubernetes walkthrough](docs/evidence/2026-10-19-laptop-gateway-health/README.md)
+still fails during a gateway restart. Two later
+[unbounded diagnostics](docs/evidence/2026-10-19-laptop-unbounded/README.md) pass
+complete workflows in 789.906/641.016 seconds using direct AI origins with
+application probes removed. Those diagnostics do not establish finite-profile or
+full gateway acceptance; normal settings and probes were restored.
 
 You can register datasets and models, queue training or tuning, compare validation
 results, download verified artifacts, and register model versions. Training runs

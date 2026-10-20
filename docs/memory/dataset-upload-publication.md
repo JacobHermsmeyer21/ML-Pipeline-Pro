@@ -27,3 +27,10 @@ Evidence: [publication helpers](../../src/ml_pipeline_pro/dataset_files.py),
 [dashboard run](../evidence/2026-10-19-dashboard/README.md).
 Revisit before adding file deletion, retention, mutable uploads, network storage,
 or additional worker concurrency.
+
+Later October 19 [permanent deletion](permanent-deletion-storage.md) adds a shared
+native project publication lock and transactional lifecycle-generation fence to
+registration/upload/preparation/column saves. Uncertain published files still
+survive; deletion removes managed files only after durable intent and excludes
+references needed by surviving versions. Use those current lifecycle contracts
+when revisiting cleanup rather than the original upload-only boundary.

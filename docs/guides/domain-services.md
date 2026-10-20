@@ -25,12 +25,23 @@ The proxy never retries mutations; domain HTTP errors pass through unchanged.
 Model docs: `http://127.0.0.1:8000/docs`. Tuning docs:
 `http://127.0.0.1:8000/tuning/docs`. Each describes only its owned operations.
 
+The model API also owns `/dashboard/`, dataset upload/preparation/column routes,
+dataset/model deletion previews and DELETE routes, and `/api/v1/deletions/{id}`.
+Add `compose.dashboard.yaml` after the domain/monitoring/AI overlays for shared
+managed uploads and embedded Grafana. See the [dashboard guide](dashboard.md).
+Deletion routes use project access and reviewed idempotent requests independently
+of the upload opt-in flag.
+
 Gateway readiness currently reflects the model API's MongoDB/Redis check, not
 all-domain readiness or worker progress. Compose waits on both domain healthchecks
 at startup. The gateway uses Docker DNS refresh for independent container
 replacement; its DNS configuration is specific to Compose.
 
-Use the same project-key map/database/artifact paths on both domains. Chat remains
+Use the same project-key map/database/artifact paths on all domains. Lifecycle
+admission fences new records against deletion in a MongoDB transaction; native
+publication/worker-attempt locks use the shared artifact volume. Upgrade matching
+domain APIs, worker and scheduler together after active work drains, retaining
+artifact and upload volumes and the read-only worker uploads mount. Chat remains
 opt-in and needs the verified local-model factory/counter. The separate host Qwen
 API on 8001 can keep using gateway 8000 for tools. Images contain no model weights
 or tokenizer. Stop with the same two `-f` options and `down`; volumes remain intact.

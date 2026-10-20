@@ -72,3 +72,12 @@ breaks the next turn before its reply window expires. Its wider probe/DNS delays
 have no confirmed resource cause. The direct dialogue gate is separately interrupted
 by a recorded laptop sleep after eight passing cases. Neither event resolves the
 earlier active-load API timeout-overrun mechanism.
+
+Later October 19, [standalone five-minute gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass ten/seven with accepted examples. The
+[unbounded diagnostic](../evidence/2026-10-19-laptop-unbounded/README.md) completes
+two workflows through direct AI APIs with application probes removed; normal
+settings/probes are restored. The five-minute design is implemented, superseding
+the earlier pending-design status. Bounded deployed acceptance and timely live
+under-load expiry remain open; neither later pass confirms the original timeout
+overrun's resource/blocking mechanism.

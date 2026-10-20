@@ -1,5 +1,67 @@
 # Project audit and development status
 
+## Current snapshot: October 19, 2026
+
+Documentation reconciled against application revision `28c22fb` on `main`.
+This refresh changes documentation only; test counts below come from retained
+executions, not a new application test run. The
+[course checklist](course-requirements.md) distinguishes minimal delivery from
+machine-specific acceptance, independent review and production/research work.
+
+The local browser workspace now supports raw CSV preparation with editable
+training-fitted encoding/classes and stratified splits, saved column-subset
+versions, serial classification/tuning, verified artifacts/model versions,
+conversations/confirmed actions/drafts, embedded Grafana and permanent
+dataset/classifier deletion. Model-management, tuning and monitoring are separate
+REST services sharing MongoDB transactions, Redis and storage. Deletion preserves
+shared inputs and conversation/draft history; column editing preserves retained
+cells, row order, splits and transforms in a new immutable version.
+
+The latest combined feature verification records **740 fast, 104 ordinary and ten
+isolated recovery cases passing**, plus five real browser-driven worker runs,
+artifact checks and uncertain-save/parent-deletion recovery. See
+[column evidence](../evidence/2026-10-19-dataset-columns/README.md). Separately,
+[deletion evidence](../evidence/2026-10-19-permanent-deletion/README.md) covers
+21 transaction/process cases, a 125-run cascade, four process-death boundaries
+and actual shared-volume native-lock exclusion. Independent review of these
+boundaries and human usefulness review of the completed dataset controls remain
+outstanding. The subsequent `28c22fb` change is dashboard markup cleanup; the
+retained application counts belong to the preceding implementation tree.
+
+AI acceptance remains machine/profile-specific. The
+[October 19 RX 9070 desktop run](../evidence/2026-10-19-desktop-demo/README.md)
+passes original ten/seven gates and the bounded walkthrough in 21.953 seconds,
+excluding startup/warmup. The
+[CPU-laptop standalone gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass ten/seven with the five-minute profile and Jacob's acceptance of examples.
+Its [bounded Kubernetes walkthrough](../evidence/2026-10-19-laptop-gateway-health/README.md)
+still fails during gateway health loss/restart. Two later
+[unbounded direct-AI diagnostics](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass complete workflows in 789.906/641.016 seconds with application probes removed;
+the slowest replies exceed the finite 270-second turn window. Normal settings
+and probes were restored. Finite-profile/full gateway acceptance, real under-load
+expiry and resource-cause attribution remain open.
+
+## Where development stands
+
+| Milestone | Current delivered scope | Remaining scope |
+| --- | --- | --- |
+| 1. Development foundation | Locked Python/uv environment, FastAPI, MongoDB replica set, Redis/Celery and checks | Wider platform/runtime compatibility and operational hardening |
+| 2. Reproducible experiment tracking | Serial CPU classification, training-fitted preparation, immutable managed datasets/column versions, artifacts, evaluated versions and permanent erasure | Standalone cancellation, scheduled retention, migrations/restore and broader adapters; direct operator files must remain unchanged |
+| 3. Bounded tuning | Serial Bayesian TPE, validation selection, reserved identities/deadlines, transactional parent ownership and controlled recovery | Concurrent-load/partition evidence and any later parallel dispatch |
+| 4. Conversational workflows | Local LangChain/Qwen, grounded reads/history, guided gates, exact confirmed actions and saved replay | Bounded deployed laptop acceptance, remaining independent boundary review and wider intent/runtime reliability |
+| 5. Monitoring and diagnosis | Separate API, actual observations, bounded summaries, 15-second Prometheus/Grafana and evidence-cited local-model advice | General drift, durable aggregates/alert lifecycle and automatic remediation |
+| 6. Reviewable code generation | Four model-generated Python profiles, AST/API validation, saved provenance/replay and reviewed examples | Review every new draft; generated-code execution remains outside delivered scope |
+| 7. Deployment and onboarding | Three domain APIs, Docker/Compose, kind/Kubernetes smoke/replica replay, CI/CD, tutorials and local browser workspace | Complete bounded laptop AI workflow, final dataset-control reviews and shared-production controls |
+
+These are delivered capabilities with stated limits, not a percentage estimate or
+production-readiness certification. [Plans](../../PLAN.md#implementation-milestones)
+retain their reviewed design/milestone scope. Dated records below preserve the
+earlier missing features and failures; the snapshot above supersedes their
+present-tense status claims where later evidence exists.
+
+## Dated implementation and audit history
+
 October 19 column editing: the approved dashboard/API change adds input selection
 before encoding and **Edit columns** for saved numeric/raw-prepared datasets.
 Edits create new versions with unchanged retained cells, labels, split membership
@@ -30,7 +92,7 @@ the visual direction. Independent boundary review and a separately executed full
 usability checklist remain outstanding. [Evidence and limits](../evidence/2026-10-19-dashboard/README.md)
 are separate from the laptop runs below; no broader course completion is claimed.
 
-Newest user direction, October 19: Jacob requests health checks stop interrupting
+October 19 diagnostic direction: Jacob requests health checks stop interrupting
 work and one or two no-limit runs to observe completion time. The
 [diagnostic design](../plans/2026-10-19-laptop-unbounded-diagnostic-plan.md) records
 that intent. Jacob approved the written unbounded-ownership/direct-AI design with
@@ -50,7 +112,7 @@ the temporary wake request is released. The fixed-setting resource investigation
 is deferred, never approved or executed; these timings do not prove a resource
 cause, a latency upper bound or a need for a client ceiling above five minutes.
 
-Latest October 19: Jacob approves the local gateway-health plan. Implementation
+October 19 health follow-up: Jacob approves the local gateway-health plan. Implementation
 `bf07213` passes 647 fast and 63 ordinary integration cases, real nginx negative
 checks, preserved-data node restart and all five implementation CI jobs. The
 [new live demo](../evidence/2026-10-19-laptop-gateway-health/README.md) still fails
@@ -150,7 +212,8 @@ retain host fact references before the SDK drops tool-message names, while still
 checking the exact transmitted schema. See the [reconciliation record](../evidence/2026-10-14-branch-sync/README.md)
 for new checks, merge decisions and the current handoff.
 
-Current delivery assessment: the bounded backend, three services, monitoring,
+October 14 delivery assessment (superseded by the later records above): the
+bounded backend, three services, monitoring,
 generated-code pipeline and deployment path are implemented, with retained
 October 13 acceptance and later passing service/CI evidence. Reliable AI operation
 on the CPU laptop remains outstanding: the latest full gates pass only 2/10
@@ -244,20 +307,6 @@ This correction changes documentation only. Existing validation below retains
 its original dates/revisions; it is not a new application run or proof of course
 completion. Feature implementation still requires explicit review of its plan.
 
-## Where development stands
-
-| Milestone | Current state | Remaining scope |
-| --- | --- | --- |
-| 1. Development foundation | Initial scope complete | Broader supported-platform verification and operational hardening |
-| 2. Reproducible experiment tracking | Initial CPU classification scope complete | Standalone cancellation, immutable dataset storage, retention, broader adapters |
-| 3. Bounded tuning | Initial serial TPE scope, transactional ownership fixes, and controlled recovery gate complete | Concurrent load/network partitions, later parallel dispatch |
-| 4. Conversational workflows | Tools, local adapter, durable grounded conversations, authenticated routes, confirmed actions and typed completion implemented; installed-profile token admission verified | Successful real-model dialogue/suggestions (latest selected 7B run passes three of ten), independent review, human quality review and clean-checkout onboarding |
-| 5. Monitoring and diagnosis | Not started | Separate REST service, live observations/visualization, defined update interval, LangChain summaries and evidence-linked proposed fixes |
-| 6. Reviewable code generation | Not started | LangChain/local-model Python generation, validation/provenance, human review; execution optional |
-| 7. Deployment and onboarding | Existing local Docker/Compose and CI checks delivered | Required independent domain services and Kubernetes/deployment CI/CD/tutorials; additional shared-production controls and restore |
-
-These states describe delivered scope, not a percentage estimate or a production-readiness certification. Detailed acceptance criteria are in [PLAN.md](../../PLAN.md#implementation-milestones).
-
 Person A's October 8 [conversation foundation](../guides/conversation-development.md) adds
 strict request/public-action/model-reply schemas, canonical finite-JSON
 fingerprints, the injected model interface/native tool descriptions, approved
@@ -274,6 +323,9 @@ Validation for these slices is recorded in the
 the earlier counts below remain historical.
 
 ## Implemented behavior and limits
+
+Historical October 6 backend inventory follows; current delivered capabilities
+are summarized above and in the [architecture reference](../reference/architecture.md).
 
 | Area | Verified implementation | Current boundary |
 | --- | --- | --- |
@@ -296,7 +348,10 @@ Training and tuning share the `training` queue. Beat schedules recovery every 15
 
 ## Architecture and durable records
 
-The current deployment is modular rather than separate domain services:
+The October 6 deployment was modular rather than separate domain services. This
+inventory describes that baseline; the current three-service topology and added
+dataset/lifecycle/conversation/monitoring records are in the
+[architecture reference](../reference/architecture.md).
 
 - [Tracking API](../../src/ml_pipeline_pro/api.py) and [tracking store](../../src/ml_pipeline_pro/tracking.py) own datasets, models, experiments, and model versions.
 - [Tuning API](../../src/ml_pipeline_pro/tuning_api.py), [store](../../src/ml_pipeline_pro/tuning_store.py), and [execution](../../src/ml_pipeline_pro/tuning_execution.py) own tuning jobs/trials and call tracking repositories for training results.
@@ -314,14 +369,24 @@ The six domain collections all include project IDs, UTC timestamps, and a schema
 | `tuning_jobs` | Objective/space/budgets, claims/deadlines, reservation/progress, selected result, final evaluation/stop reason | Unique project/submission key; project/status/created time; recovery; project/created time/ID |
 | `trials` | Job ID, zero-based `number`, fixed parameters/config/experiment ID, status/metrics/objective/duration/error | Unique project/job/number |
 
-Indexes are created lazily for the APIs and explicitly in worker tasks. There are no application schema migration or retention procedures yet. Conversations, action audit records, monitoring summaries, and alerts are planned collections, not existing persistence features.
+At that baseline, indexes were created lazily for APIs and explicitly in workers;
+there were no migration/retention procedures. Conversation/action storage and
+monitoring were still planned. They are now implemented; monitoring summaries
+derive on read, while general durable aggregates/alert lifecycle remain deferred.
 
 ## Open audit findings
 
+This section retains the October 6 audit mechanisms and follow-up evidence.
+Ownership and controlled recovery were subsequently fixed/verified; managed
+immutable uploads and explicit deletion now address part of the original storage
+gap. Direct operator-file references, scheduled retention/restore and arbitrary
+partition/concurrent-load behavior remain limited. See the current snapshot above.
+
 Findings 1 and 2 retain the original audit diagnosis and their delivered follow-up.
 They are resolved within the serial, controlled recovery scope described below.
-The source CSV and deployment gaps remain open; arbitrary partitions and
-concurrent-load safety remain unverified.
+The operator-source-file and shared-production gaps remain open; arbitrary
+partitions and concurrent-load safety remain unverified. Managed uploads and
+local Kubernetes delivery are covered by later evidence above.
 
 ### 1. High priority: parent ownership does not fence every tuning child write
 
@@ -352,25 +417,35 @@ Dataset registration stores a content hash and local relative URI, not an immuta
 
 **Required follow-up:** Define immutable dataset/version storage and dataset/artifact retention before shared use. Coordinate metadata and artifact backups, and verify restore resolves every retained reference. Keep original files available in the meantime.
 
+October 19 follow-up: managed upload/preparation and column-version publication
+now retain immutable files, and reviewed permanent deletion handles explicit
+cascades. This original finding still applies to externally registered operator
+files; scheduled retention and coordinated backup/restore remain open.
+
 ### 4. Documentation drift corrected by this update
 
 The previous README described implemented tuning/model tracking as proposed, showed future assistant/monitoring infrastructure as the architecture, and still listed a tuning guide as future work. The plan mixed actual and proposed record/API fields. One integration quickstart omitted the training extra and worker flag, which could skip queued tests or fail direct tuning recovery. Walkthroughs also assumed a preconfigured Windows workspace and did not stop artifact/version commands after unsuccessful polling. These have been updated; historical validation evidence remains tied to its original commit.
 
 ### Deployment and operational gaps
 
-These are unfinished delivery requirements, not newly reproduced failures:
+Current shared-deployment gaps, reconciled October 19; these are separate from
+the demonstrated local course deployment:
 
 - Compose pins the environment to development, uses unauthenticated local MongoDB/Redis defaults, and has no TLS or user/role authorization. A static project key map is the only implemented API access control.
 - Readiness probes MongoDB/Redis only. Worker and scheduler services have no configured healthchecks; a ready API can have no progressing worker.
 - Worker CPU/memory/task limits and a non-root container are implemented. Generated-code execution, network restrictions, and a dedicated sandbox are not.
 - Training deadlines are per attempt; tuning's overall deadline survives recovery and starts on the first claim. Checks are cooperative, with Celery soft/hard task limits of 620/630 seconds. Queue wait is not bounded by these budgets.
-- Object storage, backup/restore, retention/deletion, schema migrations, Kubernetes manifests, production rollout procedures, and concurrent-load/capacity benchmarks are absent.
+- Object storage, coordinated backup/restore, scheduled retention, general schema migrations, production rollout procedures and concurrent-load/capacity benchmarks remain outstanding. Kubernetes manifests/test-cluster CI/CD and explicit dataset/model erasure are delivered. Managed uploads are immutable; directly registered operator files are still external dependencies.
 - Python 3.11-3.14 is allowed by the manifest; CI verifies 3.11/3.13 on Linux and this audit uses Windows 3.11. Python 3.12/3.14 and macOS have no recorded CI matrix checks.
 - The current suite emits a Starlette deprecation warning for its HTTPX TestClient adapter. It is non-failing and should be addressed in a tested dependency/test-client update.
 
 ## Validation evidence
 
-The audit ran against the source baseline above and the existing local Compose stack; it did not rebuild the stack. The baseline's successful Compose CI job separately verifies a rebuilt image.
+Historical October 6 validation follows. Latest combined feature counts and
+machine/profile-specific AI evidence are linked in the current snapshot above.
+The original audit ran against the source baseline above and the existing local
+Compose stack; it did not rebuild the stack. The baseline's successful Compose
+CI job separately verifies a rebuilt image.
 
 | Check | Audit result |
 | --- | --- |
@@ -393,22 +468,16 @@ Both current suites emit the existing TestClient deprecation warning. No live mo
 
 ## Next work, in order
 
-The [approved conversation tool slice](../plans/2026-10-06-conversation-tools-plan.md)
-is delivered. Retain its schema, access, budget, retry, and evidence checks.
+1. **Close bounded deployed CPU-laptop acceptance.** Preserve successful standalone and unbounded results separately from the failed gateway workflow. Diagnose resource/availability and live expiry at the failing boundary; the fixed-setting resource plan is deferred, not approved. Any changed budgets, defaults or ownership need renewed reviewed scope.
+2. **Finish dataset-control review.** Obtain human usefulness review of completed preparation/column/deletion controls and independent review of the new lifecycle/publication/cleanup boundaries. Retain the passing browser, transaction/process and recovery evidence without calling self-review independent.
+3. **Rehearse the selected demo machine/profile.** Verify current images/storage, actual-ID history/tuning/draft/monitoring behavior and new generated outputs. The bounded workstation walkthrough is the retained complete bounded result; model gates alone do not prove the laptop deployment.
+4. **Complete shared-production controls before shared use.** Identity/roles/TLS, authenticated infrastructure, scheduled retention, migrations, coordinated restore, operational probes and public deployment procedures remain open. Explicit deletion and immutable managed uploads do not close all storage lifecycle needs.
+5. **Run reviewed research measurements before claiming improvements.** Larger retrieval/query benchmarks and proposed speedup/quality percentages remain unverified; they are separate from course acceptance.
 
-1. **Implement the [approved local conversation plan](../plans/2026-10-06-conversation-workflows-plan.md) within its approved scope.** Use LangChain/local pre-trained inference, guided dialogue/history, bounded tuning suggestions, missing-input handling, evidence, and separately confirmed actions. The deterministically tested adapter is implemented; select the local artifact, verify its tokenizer/template counter, and complete dialogue/actions/routes and acceptance runs. Implementation was approved October 7, 2026.
-2. **Review required domain-service extraction.** Deliver independently deployable model-management, tuning, and monitoring REST APIs; preserve `/api/v1`, project access, and the shared MongoDB ownership fence. Separate services are a course requirement, independent of training concurrency or commercial scale.
-3. **Implement milestone 5 monitoring.** Demonstrate running observations and dashboard/alert updates within a reviewed interval, then LangChain summaries and proposed fixes grounded in metric/log evidence.
-4. **Implement milestone 6 AI code generation.** Generate Python integration snippets from conversation using LangChain/local inference, validate/provide provenance, and retain review boundaries. Templates alone are insufficient; execution remains optional.
-5. **Finish course deployment and documentation.** Containerize the required services; exercise GitHub Actions CI/CD rollout/smoke tests in a Kubernetes test cluster. Complete clean-checkout onboarding and advanced optimization tutorials, then verify every row of the course checklist.
-6. **Complete additional shared-production work before shared use.** Identity/roles/TLS, authenticated services, immutable storage, retention/deletion, restore tests, operational probes, and public deployment procedures remain open.
-7. **Run the measurement plan.** Establish reproducible baselines before using proposed improvement percentages. These claims do not replace course acceptance evidence.
-
-Keep transaction ownership and controlled recovery gates passing in CI. The next
-feature is the reviewed local conversation slice. Preserve serial CPU training
-until concurrent-load and partition behavior are measured, including during
-service extraction. Course completion and additional production scope remain
-distinct in [PLAN.md](../../PLAN.md#completion-criteria).
+Keep transaction ownership, submission replay and controlled recovery gates passing.
+Preserve serial CPU training until concurrent-load/partition evidence supports a
+reviewed change. The [course checklist](course-requirements.md) records demonstrated
+minimal scope and remaining acceptance limits; roadmap/design plans remain unchanged.
 
 ## Ownership fix validation
 
@@ -677,3 +746,21 @@ The first live run lacks rejected raw code; later runs and the diagnostic retain
 redacted model steps. Independent review and human usefulness review remain
 outstanding, along with full A2/C7 acceptance and clean-checkout onboarding.
 A3/A4 remain awaiting approval. Self-review is not independent review.
+
+## Documentation refresh: October 19, 2026
+
+Reconciled the README/index, guides, API/architecture references, current course
+coverage and relevant memory against `28c22fb` and retained execution evidence.
+Plans and the supplied course instructions are unchanged. `.env.example` edits
+only explain existing capabilities; configuration values and application code
+are unchanged. Historical audit/model failures retain their original provenance.
+
+Documentation validation checks all 78 non-plan Markdown documents: 778 local
+links, including 103 anchor references, resolve; 61 PowerShell, seven JSON and
+seven Python examples parse. The endpoint inventory covers all 41 unique
+OpenAPI method/path operations across compatibility/model/tuning/monitoring
+factories. Configuration defaults/ceilings and the retained 740/104/10 test
+results, 21 deletion cases and five browser worker runs were checked against
+source/raw reports. Compose examples render and `git diff --check` passes.
+No application, live-service or model suite was rerun for this documentation-only
+change; earlier results remain scoped to their saved revisions and environments.

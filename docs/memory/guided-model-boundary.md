@@ -17,4 +17,9 @@ the model produces Python and the original AST/API validator decides acceptance.
 
 Base schema/instruction hashes do not identify dynamic transmitted schema/prompt.
 Retain actual request hashes and runtime counts; snippets record rendered guidance
-identity separately. Human quality and clean-checkout review remain outstanding.
+identity separately. At that slice, human quality and clean-checkout review were
+still outstanding. The later
+[delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md) records both;
+October 19 [laptop gates and human acceptance](../evidence/2026-10-19-laptop-awake-gates/README.md)
+add machine/profile-specific passes. Review new outputs separately and retain the
+bounded deployed laptop gap in [current status](../project/project-status.md).

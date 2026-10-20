@@ -39,15 +39,17 @@ and approved the [minimal delivery scope](midterm-scope.md) and
 [plan](../plans/2026-10-13-midterm-delivery-plan.md). Target one local classification
 demo, guided AI, one monitoring dashboard/seeded issue and Kubernetes test-cluster
 deployment. Broader drift, large benchmarks and production hardening are deferred.
-Existing model failures remain open; scope approval does not establish delivery.
+The dated failures remain retained; later guided acceptance is recorded below.
+Scope approval alone does not establish delivery.
 
 - Use Python/uv with its `.venv`, PyTorch, PyMongo, FastAPI, Optuna Bayesian tuning,
   and GitHub Actions. These choose among the stated alternatives; TensorFlow,
   Flask, reinforcement learning, conda, and Jenkins are not additional obligations.
 - Use LangChain with a locally served pre-trained language model for dialogue,
   suggestions, monitoring explanations, and AI-generated Python snippets. The
-  local integration proposed in the [conversation plan](../plans/2026-10-06-conversation-workflows-plan.md)
-  uses `ChatOllama`; its model artifact and runtime must be selected and evaluated.
+  implemented integration from the [conversation plan](../plans/2026-10-06-conversation-workflows-plan.md)
+  uses `ChatOllama` with an explicitly selected/evaluated Qwen artifact and pinned
+  runtime. Other model/runtime combinations require their own evaluation.
   No paid external model API, provider key, custom language-model training, or
   fine-tuning is required for this course scope. Local inference still uses
   compute and memory. The existing classifier is a separate managed ML workload.
@@ -55,7 +57,7 @@ Existing model failures remain open; scope approval does not establish delivery.
   services. Sharing a repository, image, or MongoDB deployment is compatible with
   that target; modules in one API process do not satisfy the service separation.
   Preserve [transactional tuning ownership](../memory/tuning-parent-fence.md) and
-  current `/api/v1` contracts during a separately reviewed extraction.
+  current `/api/v1` contracts in the delivered domain topology and any later extraction.
 - Monitoring needs observations/metrics, a defined refresh interval, visualization,
   and LangChain summaries with evidence-linked proposed fixes. Logs and health
   endpoints alone do not satisfy instruction 6. Establish observable update/alert
@@ -74,8 +76,51 @@ Existing model failures remain open; scope approval does not establish delivery.
 
 ## Requirement coverage and acceptance evidence
 
-The table records the latest minimal delivery; preceding dated progress notes
-retain their historical revisions and are superseded where evidence below says so.
+Current documentation source: `28c22fb`, October 19, 2026. Minimal all-nine
+implementation has retained acceptance at the stated machines/revisions. Later
+dataset controls do not close independent/human review gaps or establish bounded
+deployed CPU-laptop acceptance. This documentation refresh runs no application or
+model gates; execution counts retain their original provenance.
+
+October 19 adds a local dashboard, reviewed raw CSV preparation, immutable column
+versions and permanent dataset/model erasure. [Latest combined feature evidence](../evidence/2026-10-19-dataset-columns/README.md)
+records 740 fast, 104 ordinary and ten serial recovery passes plus real browser
+training. [Deletion evidence](../evidence/2026-10-19-permanent-deletion/README.md)
+retains transaction/process/native-lock checks; independent boundary and completed
+controls' human usefulness reviews remain outstanding.
+
+On the CPU laptop, [standalone ten/seven gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass with the five-minute profile and accepted examples. The bounded Kubernetes
+walkthrough still fails during gateway health loss. Two later
+[unbounded direct-AI workflows](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass with application probes removed; normal settings/probes were restored.
+Those results do not establish finite-profile/full gateway acceptance, live
+under-load expiry or a confirmed resource cause. The
+[October 19 desktop](../evidence/2026-10-19-desktop-demo/README.md) retains a full
+bounded walkthrough pass.
+
+| ID | Requirement | Current demonstrated minimal scope | Retained evidence / limits |
+| --- | --- | --- | --- |
+| C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |
+| C2 | Separate model-management, tuning, monitoring services | Demonstrated: three independent FastAPI processes, shared image/storage and gateway in Compose/Kubernetes. | [Domain guide](../guides/domain-services.md), [monitoring](../guides/monitoring-demo.md), [Kubernetes](../guides/kubernetes-demo.md); contracts/ownership preserved. |
+| C3 | LangChain, pre-trained model, dialogue/history | Demonstrated: final original ten-case guided 7B gate and actual-ID/history tutorial pass. | [Guided gate](../guides/guided-midterm-demo.md); October 19 desktop and five-minute laptop ten-case gates pass; bounded deployed laptop walkthrough remains open. |
+| C4 | MongoDB parameters, versions, results/metrics, indexes | Demonstrated for one classification workload: saved configurations/versions/trials/metrics and scoped index/query evidence. | [Delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md); later managed preparation/column provenance and deletion are implemented, with separate review gaps. No 10,000-record speedup claim. |
+| C5 | Automated optimization with LangChain and history | Demonstrated: three-trial Bayesian search includes a TPE posterior suggestion; real model proposes a bounded follow-up from refreshed history. | [Complete walkthrough](../guides/midterm-walkthrough.md); bounded desktop and unbounded direct-AI laptop workflows pass; finite deployed laptop acceptance remains open. Selection/confirmation/recovery preserved. |
+| C6 | Monitoring, visualization, LangChain summaries/fixes | Demonstrated: 20 actual inferences, five declared delays, 15-second scraping/refresh, dashboard/rule and evidence-cited advice. | [Monitoring guide](../guides/monitoring-demo.md); visibility observed at 4.1 seconds, unknown/partial states explicit, human quality reviewed, no automatic fix. |
+| C7 | AI-generated Python through LangChain | Demonstrated: original seven-case gate passes; four draft profiles validated, saved/replayed and human examples reviewed. | [Snippet guide](../guides/snippet-generation.md); October 19 desktop/laptop seven-case gates pass, laptop examples accepted. Generated code never executed; review every new draft. |
+| C8 | Tests, Docker, Kubernetes, CI/CD | Demonstrated: fast/ordinary/recovery gates, Docker, actual Kubernetes rollout/smoke and successful GitHub Actions deployment. | [Latest feature evidence](../evidence/2026-10-19-dataset-columns/README.md): 740 fast, 104 ordinary, ten serial recovery. [Kubernetes](../guides/kubernetes-demo.md) and [earlier deployment CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) have retained acceptance; no new full AI gate is claimed for the latest dataset changes. |
+| C9 | Documentation/tutorials/use cases/optimization | Demonstrated: combined fresh-checkout tutorial completes classification, Bayesian tuning, history, drafts and measured diagnosis; Kubernetes AI tutorial also exercised. | [Combined guide](../guides/midterm-walkthrough.md), [dashboard guide](../guides/dashboard.md); retained workstation/clean-checkout evidence and later browser acceptance. Complete bounded CPU-laptop reproduction remains outstanding; production/research extras deferred. |
+
+Close a row only with its specified evidence and reviewed scope. Keep failures,
+selected-case skips, unavailable models/services and hardware limits visible.
+The full course deliverable requires all nine rows; broader production/research
+work remains separate.
+
+### Dated coverage updates
+
+The notes below retain their original revisions and interim missing-feature
+status. The current table above supersedes those status claims where later
+evidence exists.
 
 Status is source-grounded at `ba6334f` / October 6, 2026. Existing test results
 retain the revisions and limits in the linked records; no new application tests
@@ -142,27 +187,11 @@ resource attribution remains incomplete; full laptop C3/C5/C7/C9 reproduction an
 real under-load expiry remain outstanding. Fresh ten/seven gates are unrun after
 the first generation failure; preceding standalone passes remain separately valid.
 
-| ID | Requirement | October 13 demonstrated coverage | Retained evidence / limits |
-| --- | --- | --- | --- |
-| C1 | Python environment and required libraries | Demonstrated: clean committed checkout, fresh locked venv, LangChain/PyTorch/PyMongo and verified external runtime/tokenizer. | [Clean setup evidence](../evidence/2026-10-13-midterm-delivery/README.md); reused explicitly installed external model, no automatic pull. |
-| C2 | Separate model-management, tuning, monitoring services | Demonstrated: three independent FastAPI processes, shared image/storage and gateway in Compose/Kubernetes. | [Domain guide](../guides/domain-services.md), [monitoring](../guides/monitoring-demo.md), [Kubernetes](../guides/kubernetes-demo.md); contracts/ownership preserved. |
-| C3 | LangChain, pre-trained model, dialogue/history | Demonstrated: final original ten-case guided 7B gate and actual-ID/history tutorial pass. | [Guided gate](../guides/guided-midterm-demo.md); missing-input/evidence checks, human examples, earlier native/timing failures retained. |
-| C4 | MongoDB parameters, versions, results/metrics, indexes | Demonstrated for one classification workload: saved configurations/versions/trials/metrics and scoped index/query evidence. | [Delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md); small measured demo scale, no 10,000-record speedup claim. |
-| C5 | Automated optimization with LangChain and history | Demonstrated: three-trial Bayesian search includes a TPE posterior suggestion; real model proposes a bounded follow-up from refreshed history. | [Complete walkthrough](../guides/midterm-walkthrough.md); validation selection, explicit exact decision, persisted trials and original recovery gates. |
-| C6 | Monitoring, visualization, LangChain summaries/fixes | Demonstrated: 20 actual inferences, five declared delays, 15-second scraping/refresh, dashboard/rule and evidence-cited advice. | [Monitoring guide](../guides/monitoring-demo.md); visibility observed at 4.1 seconds, unknown/partial states explicit, human quality reviewed, no automatic fix. |
-| C7 | AI-generated Python through LangChain | Demonstrated: original seven-case gate passes; four draft profiles validated, saved/replayed and human examples reviewed. | [Snippet guide](../guides/snippet-generation.md), [guided results](../guides/guided-midterm-demo.md); generated code never executed, older timeout/rejection runs retained. |
-| C8 | Tests, Docker, Kubernetes, CI/CD | Demonstrated: fast/ordinary/recovery gates, Docker, actual Kubernetes rollout/smoke and successful GitHub Actions deployment. | [Deployment guide](../guides/kubernetes-demo.md); 570 fast, 63 ordinary, ten serial recovery; actual two-pod replay/startup fault evidence; [remote CI passes](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) after measured CPU correction; prior failures retained. |
-| C9 | Documentation/tutorials/use cases/optimization | Demonstrated: combined fresh-checkout tutorial completes classification, Bayesian tuning, history, drafts and measured diagnosis; Kubernetes AI tutorial also exercised. | [Combined guide](../guides/midterm-walkthrough.md), [evidence](../evidence/2026-10-13-midterm-delivery/README.md); external runtime/model reused explicitly, production/research extras deferred. |
-
-Close a row only with its specified evidence and reviewed scope. Keep failures,
-selected-case skips, unavailable models/services, and hardware limits visible.
-The full course deliverable requires all nine rows; the earlier milestones 1-3
-completion is limited to their initial backend scope.
 
 October 13 guided update: the original ten conversation and seven snippet cases
 now pass on the opt-in pinned 7B protocol; real-model HTTP draft/replay and nine
-affected store cases pass. This supersedes the table's model-gate failure status
-for guided mode, while preserving native/older runs as historical evidence.
+affected store cases pass. This superseded the preceding slices' model-gate
+failure status for guided mode, preserving native/older runs as historical evidence.
 This earlier slice preceded the now-retained human quality/combined onboarding evidence. See the
 [guided results](../guides/guided-midterm-demo.md).
 

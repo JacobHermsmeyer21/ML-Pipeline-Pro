@@ -30,16 +30,27 @@ exercised CI/CD. Preserve public `/api/v1` and transaction/recovery guarantees.
 ## Deferred work
 
 Broader model/data adapters, general runtime compatibility, concurrent training,
-advanced drift, automatic remediation, generated-code execution, custom frontend,
-public/cloud hosting, large retrieval benchmarks and research measurements are
-deferred. Production identity/roles/TLS, immutable datasets, retention/migrations
-and coordinated backup/restore remain outstanding before shared/public use.
+advanced drift, automatic remediation, generated-code execution, public/cloud
+hosting, large retrieval benchmarks and research measurements remain deferred.
+The October 13 scope deferred a custom frontend; separately approved October 19
+work subsequently delivered the [local dashboard](../guides/dashboard.md), managed
+immutable uploads/preparation, column-subset versions and permanent dataset/model
+erasure. Directly registered operator files still depend on preserving their bytes.
+Production identity/roles/TLS, scheduled retention, general migrations and
+coordinated backup/restore remain outstanding before shared/public use.
 Preserve existing checks. Unapproved A3/A4 plans retain their wider criteria;
 they are not retrospectively passed. Earlier A1 3/10 and A2 6/7 failures remain
 historical evidence. The opt-in guided 7B protocol now passes the original ten/seven
 gates; [human review and clean onboarding](../guides/guided-midterm-demo.md) are now
 recorded. See [current delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md)
 for final runtime, deployment and scope limits.
+
+Current machine limits: October 19 desktop bounded AI acceptance and CPU-laptop
+standalone ten/seven gates pass. The bounded deployed laptop walkthrough remains
+open; its two passing unbounded diagnostic workflows use different direct-origin
+and probe settings. See [current status](project-status.md) for those results and
+remaining human/independent review gaps. Later features do not retrospectively
+approve wider A3/A4 scope or establish production/research claims.
 
 ## Delivery order and completion
 

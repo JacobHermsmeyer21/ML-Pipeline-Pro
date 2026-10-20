@@ -7,6 +7,17 @@ original ten/seven gates on 7B. Human examples and clean-checkout onboarding are
 recorded in [delivery evidence](../evidence/2026-10-13-midterm-delivery/README.md). The
 application and tests never download models.
 
+Latest October 19 reproduction: the
+[RX 9070 desktop](../evidence/2026-10-19-desktop-demo/README.md) passes ten/seven
+guided gates and the full bounded walkthrough. The
+[CPU laptop](../evidence/2026-10-19-laptop-awake-gates/README.md) passes the same
+semantic gates with the explicit [five-minute profile](laptop-five-minute.md),
+but its bounded deployed walkthrough still fails during gateway health loss.
+The later [unbounded diagnostics](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass two full workflows with direct AI origins/probes removed; their timings
+do not establish normal deployment acceptance. Preserve these machine/profile
+distinctions when choosing demo commands.
+
 ## Verified setup profile
 
 The retained runs use Windows 10, Python 3.11.5, Ollama 0.40.2, the locked

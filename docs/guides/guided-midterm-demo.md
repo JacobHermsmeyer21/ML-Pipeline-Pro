@@ -38,6 +38,14 @@ The approved [laptop profile](laptop-five-minute.md) adds the explicit
 call/turn/suite budgets and records them separately; every semantic assertion and
 scenario remains required. Omitting the option preserves the original budgets.
 
+October 19 [fresh laptop gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+pass all ten/seven scenarios on AC with human acceptance of saved examples and
+drafts. The [desktop rerun](../evidence/2026-10-19-desktop-demo/README.md) also
+passes with original timings. The bounded Kubernetes laptop walkthrough remains
+failed; later [unbounded diagnostic passes](../evidence/2026-10-19-laptop-unbounded/README.md)
+use direct AI origins and remove application probes. Model-gate success and
+complete deployment acceptance remain separate results.
+
 The original ten/seven scenarios and budgets remain intact. Synthetic records in
 these gates are not measured ML results. Neither gate executes generated Python.
 

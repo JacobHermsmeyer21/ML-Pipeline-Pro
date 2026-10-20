@@ -34,3 +34,10 @@ failure inspection. Record that evidence limitation rather than infer missing
 outputs. Keep the A2 suite separate from the still-failing original A1 gate.
 Revisit after reviewed model/runtime/protocol changes; independent review,
 human usefulness review and clean-checkout onboarding remain outstanding.
+
+Later guided-protocol evidence supersedes the early A2/C7 failure status above:
+[delivery](../evidence/2026-10-13-midterm-delivery/README.md) records seven-case
+acceptance, reviewed examples and clean onboarding; October 19
+[laptop gates](../evidence/2026-10-19-laptop-awake-gates/README.md) pass with accepted
+drafts. Native failures stay failures, new drafts require review and newer
+dataset/deletion independent-review gaps remain separate. No generated code is executed.

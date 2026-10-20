@@ -5,6 +5,17 @@ isolated worker recovery, and repeating the historical validation workload.
 Run from the repository root. Missing services and selected-case skips are gaps.
 Current commands do not turn historical results into new verification evidence.
 
+Latest retained combined dataset-feature run: [740 fast, 104 ordinary and ten
+serial recovery cases pass](../evidence/2026-10-19-dataset-columns/README.md), plus
+five browser-driven worker runs and shared-volume parent/child survival checks.
+[Deletion evidence](../evidence/2026-10-19-permanent-deletion/README.md) separately
+retains 21 transaction/process cases, native cross-container locks and browser
+cascade/retry checks. These are prior execution results, not counts established
+by reading this guide. Independent boundary/human usefulness reviews remain open.
+Use [guided model gates](guided-midterm-demo.md#reproduce-acceptance) and
+[laptop profile evidence](laptop-five-minute.md) for AI acceptance; ordinary CI
+does not invoke the real model.
+
 ## Fast checks
 
 ```powershell
@@ -77,6 +88,38 @@ and its `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
 `MLPP_TEST_REDIS_URL` overrides. The [CI workflow](../../.github/workflows/ci.yml)
 defines the automated checks; [project status](../project/project-status.md#validation-evidence)
 retains results by source revision.
+
+## Deletion browser and storage acceptance
+
+Use the isolated, unauthenticated validation stack, preserving its generated
+records until both scripts finish. It uses ports 18000/37017/16379 and its own
+named volumes, separate from the user's demo stack:
+
+```powershell
+docker compose --project-name mlpp-deletion-validation-20261019 `
+    -f compose.yaml -f tests/integration/compose.validation.yaml `
+    up --build --wait --wait-timeout 300
+if ($LASTEXITCODE -ne 0) { throw 'Isolated deletion stack failed to start.' }
+uv run --locked --extra training --with playwright==1.64.0 python `
+    scripts/verify_deletion_dashboard.py --origin http://127.0.0.1:18000 `
+    --output artifacts/deletion-validation/browser
+if ($LASTEXITCODE -ne 0) { throw 'Deletion browser acceptance failed.' }
+uv run --locked --extra training python scripts/verify_deletion_storage.py `
+    --compose-project mlpp-deletion-validation-20261019 `
+    --browser-result artifacts/deletion-validation/browser/result.json `
+    --output artifacts/deletion-validation/native-volume.json
+if ($LASTEXITCODE -ne 0) { throw 'Native deletion storage acceptance failed.' }
+```
+
+The browser uses disposable `deletion_browser_*` projects and real serial jobs.
+It checks active-work blocking, reviewed cascades, shared inputs, double clicks,
+lost-response/reload/same-key recovery, name reuse and project switching. The
+storage script requires that successful browser report and the matching isolated
+Compose project. It kills its own native-lock holder and delivers an erased job
+to the real worker, checking exclusion/release and absence of recreated files.
+Do not point these mutation/failure exercises at saved demo data. They complement
+the real-MongoDB lifecycle/process tests in ordinary integration and the separate
+ten-case worker/dependency recovery suite; they do not establish independent review.
 
 ## Worker and dependency recovery validation
 

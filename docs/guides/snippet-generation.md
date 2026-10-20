@@ -4,6 +4,14 @@ For the midterm use the evaluated [guided 7B configuration](guided-midterm-demo.
 Its original seven-case gate passes; Jacob reviewed the retained examples as
 clear/useful. Every new draft still requires review before use.
 
+October 19 also retains a seven-scenario pass on the
+[RX 9070 desktop](../evidence/2026-10-19-desktop-demo/README.md) and a
+[five-minute CPU-laptop pass with human acceptance](../evidence/2026-10-19-laptop-awake-gates/README.md).
+Standalone generation passes do not close the laptop's bounded deployed
+walkthrough gap. Dashboard code controls show/copy/download saved drafts without
+executing them. Permanent dataset/model deletion preserves conversations/drafts;
+their embedded IDs and copied facts may refer to erased records.
+
 With [local model setup](local-model-setup.md) complete and chat enabled, ask
 `POST /api/v1/chat` for a Python integration snippet. The supported profiles are
 `list_experiments`, `compare_experiments`, `create_experiment`, and
@@ -92,7 +100,11 @@ record cap. Ordinary CI uses scripted generation and requires no model download.
 
 ## Verify with an installed model
 
-The A2 evaluation is separate from A1's original ten conversation scenarios:
+The A2 evaluation is separate from A1's original ten conversation scenarios.
+
+The command below keeps the original timing budgets. On the presentation laptop,
+add `--timing-profile laptop-five-minute` as documented in the
+[profile guide](laptop-five-minute.md); keep every semantic assertion.
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'

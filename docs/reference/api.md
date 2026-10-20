@@ -225,10 +225,13 @@ in prior versions/raw-source files; feature removal is not data erasure.
 
 ## Access and submissions
 
-Metadata, experiment, tuning, and conversation operations require `X-Project-ID`
-and, when project keys are configured, `X-API-Key`. Referenced records must belong
+Metadata, experiment, tuning, monitoring, deletion and conversation operations
+require `X-Project-ID` and, when project keys are configured, `X-API-Key`.
+Referenced records must belong
 to the selected project. Training and tuning submissions require an
-`Idempotency-Key`; retries reuse the original key and body.
+`Idempotency-Key`; deletion also requires one with the reviewed preview hash.
+Retries reuse the original URL, key and body. Upload/preparation/column saves
+instead replay through dataset identity and their content/recipe/request digests.
 
 ## Endpoints
 
@@ -236,13 +239,20 @@ to the selected project. Training and tuning submissions require an
 | --- | --- |
 | `GET /api/v1/health/live` | Process is running; does not contact dependencies |
 | `GET /api/v1/health/ready` | MongoDB and Redis both respond within the configured timeout |
+| `GET /dashboard/` and `GET /dashboard/config.json` | Packaged browser workspace and nonsecret capabilities/limits |
 | `POST /api/v1/datasets` | Validate a local CSV and register its content hash and split metadata |
+| `POST /api/v1/datasets/upload` | Publish/register an already prepared numeric CSV; opt-in |
+| `POST /api/v1/datasets/preview` | Preview raw CSV encoding/classes/splits without registering; opt-in |
+| `POST /api/v1/datasets/prepare` | Publish the exact reviewed raw CSV recipe and canonical dataset; opt-in |
 | `GET /api/v1/datasets` and `GET /api/v1/datasets/{id}` | List or retrieve datasets within a project |
 | `GET /api/v1/datasets/{id}/columns` | Inspect verified editable input columns |
 | `POST /api/v1/datasets/{id}/columns/preview` | Preview dropping columns under a new dataset version |
 | `POST /api/v1/datasets/{id}/columns` | Publish the reviewed column subset; replay the same saved version |
 | `POST /api/v1/models` | Register a PyTorch classification model |
 | `GET /api/v1/models` and `GET /api/v1/models/{id}` | List or retrieve models within a project |
+| `GET /api/v1/datasets/{id}/deletion-preview` and `GET /api/v1/models/{id}/deletion-preview` | Preview scoped erasure counts, retained files and active-job blockers |
+| `DELETE /api/v1/datasets/{id}` and `DELETE /api/v1/models/{id}` | Erase/resume the reviewed cascade using an idempotency key |
+| `GET /api/v1/deletions/{operation_id}` | Read saved cleanup progress/completion receipt |
 | `POST /api/v1/experiments` | Queue a bounded training job; requires `Idempotency-Key` |
 | `GET /api/v1/experiments` and `GET /api/v1/experiments/{id}` | Filter experiments or retrieve status, metrics, and artifacts |
 | `GET /api/v1/experiments/compare` | Compare completed experiments using validation metrics |

@@ -5,6 +5,16 @@ The dashboard runs on the existing model API at
 training/results/artifacts, local-agent conversations and real Grafana panels.
 The dataset and trained classifier are separate from the pre-trained local agent.
 
+October 19 delivered raw CSV preparation, saved column-subset versions and
+permanent dataset/classifier deletion. The latest
+[column browser/service run](../evidence/2026-10-19-dataset-columns/README.md)
+records 740 fast, 104 ordinary and ten recovery passes plus five real worker runs;
+[deletion evidence](../evidence/2026-10-19-permanent-deletion/README.md) covers
+reviewed cascades, native locks and uncertain cleanup recovery. Jacob accepted
+the visual direction; independent boundary review and human usefulness review
+of the completed dataset controls remain open. These desktop/browser results
+do not close the bounded CPU-laptop AI deployment gap.
+
 ## Start on this desktop
 
 Start Docker Desktop and the installed Ollama runtime as described in
@@ -69,6 +79,8 @@ LLM fine-tuning remain outside this classifier. New versions get immutable sourc
 prepared CSV and recipe references; changing content or preparation settings
 under the same name/version returns 409. Matching upload replay returns its saved
 record rather than creating another version.
+
+<a id="column-mapping-and-an-unprepared-csv"></a>
 
 ### Review and change encoding
 

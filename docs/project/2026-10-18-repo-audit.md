@@ -1,5 +1,12 @@
 # Repository audit and October 20 demo priorities
 
+Historical October 18 audit: branch/main relationships, missing frontend/storage
+work and laptop gate failures below describe that revision. October 19 delivered
+the dashboard, preparation/column versions and permanent deletion; standalone
+laptop gates and two unbounded diagnostics subsequently pass, while bounded
+deployed laptop acceptance stays open. Use [current status](project-status.md)
+for the reconciled state; the original findings/evidence remain unchanged below.
+
 Audited October 18, 2026, against `cb67bb8b3937dbf4dbe7fe6ae2c9247ee37849d0`
 on `person-a/conversation-foundation`. Jacob confirmed the presentation will use
 the **CPU laptop**. This audit runs on the Ryzen 7 7800X3D / RX 9070 workstation;

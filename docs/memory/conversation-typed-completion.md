@@ -31,3 +31,9 @@ admission separate from model-quality acceptance.
 Independent review, human model-quality review and complete clean-checkout
 onboarding remain outstanding. Revisit after another reviewed prompt/protocol,
 runtime or model change; preserve the original semantic acceptance checks.
+
+Later [guided acceptance](../guides/guided-midterm-demo.md) supplies passing
+ten/seven gates, human examples and clean onboarding for that separate protocol.
+It does not establish native completion reliability or retrospectively pass this
+three-of-ten run. See [current status](../project/project-status.md) for remaining
+review and bounded CPU-laptop deployment limits.

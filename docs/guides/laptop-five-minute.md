@@ -9,9 +9,14 @@ still fails at its first AI inspection after 144.094 seconds. Local nginx health
 also stalls; Kubernetes restarts the gateway while the server finishes within
 167.506 seconds. The [approved health change](../plans/2026-10-19-laptop-deployment-health-plan.md)
 passes implementation checks but fails live acceptance. Resource attribution is
-incomplete; a [bounded diagnosis](../plans/2026-10-19-laptop-resource-diagnosis-plan.md)
-awaits review. Do not increase reply time or claim deployed readiness from the
-standalone gate passes.
+incomplete; the [fixed-setting resource diagnosis](../plans/2026-10-19-laptop-resource-diagnosis-plan.md)
+remains deferred and was not approved/executed. The later
+[unbounded diagnostic](../evidence/2026-10-19-laptop-unbounded/README.md) passes two
+complete workflows in 789.906/641.016 seconds with direct AI origins and application
+probes removed. Its slowest replies, 276.594/273.719 seconds, exceed the finite
+270-second turn. Normal settings/probes were restored; finite-profile/full
+gateway acceptance and live deadline expiry remain open. Do not claim deployed
+readiness from standalone gates or those diagnostic runs.
 Keep AC connected and the laptop awake throughout live gates.
 
 Jacob approved the [deployment plan](../plans/2026-10-18-laptop-deployment-readiness-plan.md)

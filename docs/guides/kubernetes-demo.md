@@ -55,12 +55,26 @@ uses single-node local storage; multi-node shared storage, public hosting and
 concurrent training remain deferred. Empty project-key Secret is local demo
 configuration; actual credentials must be supplied privately, including scraping.
 
+The packaged `/dashboard/` is served by the model API, but this canonical
+Kubernetes manifest keeps uploads disabled and does not provide the dashboard's
+managed-upload volume/embedding configuration. The verified raw import, column
+editing and deletion browser workflow uses the
+[dashboard Compose overlay](dashboard.md); its browser results do not establish
+that storage workflow on Kubernetes. Keep matching lifecycle/recipe readers in
+all APIs, worker and scheduler when upgrading the image.
+
 ## Optional evaluated local AI
 
 For the CPU presentation laptop, use the approved
 [five-minute profile](laptop-five-minute.md#kubernetes), which renders the canonical
 stack and AI patch with matching gateway/API budgets. Default deployment below
 keeps its original timing settings.
+
+The latest bounded laptop walkthrough still fails during gateway health loss,
+despite passing standalone model gates. Two later unbounded direct-AI workflows
+pass with application probes removed; normal settings were restored. See
+[current laptop evidence](laptop-five-minute.md) before treating rollout/backend
+smoke as full deployed AI acceptance.
 
 The default Kubernetes smoke needs no weights or external model credentials.
 To enable the already installed Windows/Docker Desktop runtime, mount/copy the

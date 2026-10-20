@@ -22,6 +22,19 @@ and [the explicit profile](laptop-five-minute.md) before relying on this tutoria
 for the laptop demonstration. The [earlier default-profile rehearsal](../evidence/2026-10-19-laptop-rehearsal/README.md)
 retains its first-inspection/diagnosis/draft timeout failures separately.
 
+**Later laptop diagnostic, October 19:** two
+[complete unbounded workflows](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass in 789.906 and 641.016 seconds with direct model/monitoring AI origins and
+application probes removed. Their slowest replies are 276.594/273.719 seconds,
+above the finite profile's 270-second turn window. Normal settings/probes were
+restored. Finite-profile/full gateway acceptance and resource attribution remain
+open; these runs are diagnostic evidence rather than a replacement demo gate.
+
+For the new browser path, follow the [dashboard guide](dashboard.md). It adds raw
+CSV encoding/split review, column-subset versions and permanent deletion to the
+same classification backend. The command below still uses the checked-in numeric
+fixture; dashboard browser evidence is separate from this walkthrough's AI gates.
+
 The original ten dialogue and seven code-generation gates pass on the retained
 final 7B run. Earlier attempts timed out under slower local inference; no deadline,
 assertion or generated output was relaxed/repaired. Run the [acceptance preflight](guided-midterm-demo.md#reproduce-acceptance)

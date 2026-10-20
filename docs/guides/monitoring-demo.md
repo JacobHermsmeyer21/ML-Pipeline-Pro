@@ -16,6 +16,14 @@ use `http_headers.X-API-Key.files` and a separately mounted credential file per 
 Keep credential files outside Git. The checked-in demo is unkeyed; wrong configured
 keys fail access checks and the scrape shows `up=0`.
 
+The [local dashboard](dashboard.md#monitoring-data-and-history) embeds these same
+Grafana panels when `compose.dashboard.yaml` enables iframe embedding. Training
+alone produces no inference observations. For uploaded datasets, run the producer
+inside the worker with its shared read-only uploads mount, using the dashboard
+guide's command. Permanent dataset/model deletion removes associated MongoDB
+observations; previously scraped Prometheus history remains visible in older
+graph ranges. This demo Viewer configuration is not multi-user authorization.
+
 ## Measured workload and meaning
 
 Create a completed, test-evaluated model version using the

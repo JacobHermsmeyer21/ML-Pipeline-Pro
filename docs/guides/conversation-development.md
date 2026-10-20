@@ -2,7 +2,11 @@
 
 For the current class demo use [guided 7B](guided-midterm-demo.md) and the
 [complete walkthrough](midterm-walkthrough.md). Their original ten/seven gates,
-human examples and clean onboarding now pass. The native development history
+human examples and clean onboarding have retained workstation acceptance. October
+19 [CPU-laptop standalone gates](../evidence/2026-10-19-laptop-awake-gates/README.md)
+also pass with reviewed examples; its bounded deployed walkthrough remains open.
+Two [unbounded diagnostic workflows](../evidence/2026-10-19-laptop-unbounded/README.md)
+pass under different probe/direct-origin settings. The native development history
 below preserves earlier failures and scope-specific review gaps.
 
 Person A starts with A1 in the [two-person allocation](../plans/2026-10-08-two-person-course-completion-plan.md).
@@ -46,13 +50,16 @@ the selected artifact's verified counter is supplied.
 
 | Setting | Default and validation |
 | --- | --- |
-| `MLPP_CHAT_ENABLED` | `false`; conversation functionality remains under development. |
+| `MLPP_CHAT_ENABLED` | `false`; opt in to generation and confirmed decisions; history/action reads remain available. |
 | `MLPP_CHAT_BACKEND` | `ollama`; no external provider backend. |
+| `MLPP_CHAT_PROTOCOL` | `native`; use explicit `guided` for the evaluated schema-constrained demo. |
+| `MLPP_CHAT_TOKENIZER_PATH` | Unset; a configured verified Qwen tokenizer selects the artifact-specific factory used by the AI overlay. |
 | `MLPP_CHAT_MODEL` | Unset. Use an explicit installed artifact tag; cloud tags are rejected. No automatic download. |
 | `MLPP_CHAT_MODEL_ORIGIN` | `http://127.0.0.1:11434`. HTTP(S), no credentials/path/query/fragment, port 1-65535 when specified. Host must be loopback, RFC1918 IPv4, IPv6 ULA, `localhost`, `ollama`, `host.docker.internal`, or `service.namespace.svc.cluster.local`. DNS names are trusted operator configuration; this is not a DNS rebinding guard. |
 | `MLPP_CHAT_API_ORIGIN` | `http://127.0.0.1:8000`. Operator-configured HTTP(S) origin, matching the existing tool transport's host policy; no credentials/path/query/fragment. |
-| `MLPP_CHAT_TIMEOUT_SECONDS` | 60; positive finite, at most 120. |
-| `MLPP_CHAT_MODEL_TIMEOUT_SECONDS` | 20; positive finite, at most 60, no greater than overall timeout. |
+| `MLPP_CHAT_TIMEOUT_SECONDS` | 60; positive finite, at most 300. The opt-in five-minute profile uses 270. |
+| `MLPP_CHAT_MODEL_TIMEOUT_SECONDS` | 20; positive finite, at most 300, no greater than overall timeout. The five-minute profile uses 240. |
+| `MLPP_CHAT_UNBOUNDED_DIAGNOSTIC` | `false`; explicit non-production diagnostic only, requiring both model/turn timeouts set to `none`. |
 | `MLPP_CHAT_ACTION_TIMEOUT_SECONDS` | 30; positive finite, at most 60. |
 | `MLPP_CHAT_MAX_MODEL_CALLS` | 5; integer 1-10. |
 | `MLPP_CHAT_MAX_TOOL_CALLS` | 4; integer 1-8. |
@@ -67,6 +74,14 @@ and context, 128 KiB tool response, 256 KiB saved-record, and ten-turn history
 caps belong to the approved service design. The adapter enforces 64 KiB serialized
 context including instructions/tools; the store enforces saved-record limits.
 The API and host loop enforce request, tool-response, and model-history boundaries.
+
+Use the matching deployment/client settings from the
+[laptop profile](laptop-five-minute.md). A longer client wait cannot extend a
+server deadline. In the separately approved unbounded diagnostic, turns carry
+matching private mode markers and null deadlines; a crashed owner does not expire
+automatically. Existing finite turns, action dispatch and training/tuning budgets
+retain their bounds. Direct AI origins and removal of application probes belong
+only to that diagnostic procedure.
 
 ## Model and action boundaries
 
@@ -90,9 +105,10 @@ The adapter uses the [official LangChain ChatOllama integration](https://docs.la
 and native `bind_tools` protocol. Run the separately installed Ollama server with
 `OLLAMA_NO_CLOUD=1` in **its** environment, per [Ollama's local-only setup](https://docs.ollama.com/faq#how-do-i-disable-ollama-cloud-features).
 The [local setup guide](local-model-setup.md) describes the installed profiles,
-pinned tokenizer, runtime/template checks and failed ten-scenario evaluations.
-Successful live acceptance, independent review and clean-checkout onboarding
-remain outstanding. No model download or inference belongs in the ordinary test gate.
+pinned tokenizer, runtime/template checks and historical native failures. Later
+guided acceptance and onboarding evidence are linked above; separate boundary
+review and bounded deployed CPU-laptop acceptance remain open. No model download
+or inference belongs in the ordinary test gate.
 
 ## Adapter lifecycle and admission
 
@@ -117,8 +133,9 @@ Strict legacy JSON replies remain supported. Completion spends one model call
 and no HTTP tool call; it cannot create or confirm a proposal. The public domain
 catalog, routes and persisted schemas remain unchanged. Host byte admission
 includes all 14 full schemas; token admission counts their exact SDK projection.
-The selected 7B profile passed only three of ten original scenarios in the new
-run, so successful model acceptance remains outstanding.
+The selected 7B profile passed only three of ten original scenarios in that
+October 10 native run. Later guided-protocol passes do not convert that native
+run into a pass.
 
 The `counter` receives the exact SDK-normalized Ollama request at the HTTP request
 hook, including messages and tools. It must use the selected artifact's tokenizer
@@ -142,8 +159,8 @@ the host's typed validation/missing-input guidance. No tool is dispatched here,
 and citation support still requires the host's evidence check.
 
 Known configured keys/passwords and recognized credential patterns are redacted
-from submitted context and returned replies/arguments. The future service must
-also redact stored dialogue and public evidence. Redaction does not detect every
+from submitted context and returned replies/arguments. The host/store also redact
+dialogue and public evidence. Redaction does not detect every
 free-text secret. Clients disable proxy inheritance, redirects, automatic
 transport retries, cache, thinking output, and LangSmith tracing; inherited
 `OLLAMA_API_KEY` headers are removed from both SDK clients. `langsmith` is declared
@@ -396,7 +413,8 @@ must match `artifact_digest`, `runtime_version` and `template_hash`. The gate
 records the counter source hash and checks its counts against actual prompt usage.
 No generic token estimate or default counter is provided. The explicit
 `evaluations.qwen_counter:create_counter` supplies the verified selected-profile
-counter. Passing real-model execution remains required A1 work.
+counter. Use [guided acceptance](guided-midterm-demo.md#reproduce-acceptance) for
+the demonstrated protocol and retained passes; native failures remain separate.
 
 The gate admits at most 50 generation calls, reserving the configured full context
 allowance before each (default 409,600 total reserved tokens), with 512 output

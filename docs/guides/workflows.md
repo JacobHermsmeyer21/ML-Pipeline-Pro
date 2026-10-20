@@ -8,6 +8,8 @@ and [combined walkthrough](midterm-walkthrough.md) include real-model/history ev
 - [Classification experiments](#classification-experiment-walkthrough): register inputs, train, compare, download, and register versions.
 - [Bounded tuning](#bounded-classification-tuning): run a search, inspect trials, cancel, and register the evaluated winner.
 - [Conversation tools](#conversation-tool-layer): call the typed Python tools over the existing API.
+- [Browser dataset workflow](dashboard.md#browser-walkthrough): import original CSVs, review encodings/splits, edit columns into new versions and train.
+- [Permanent deletion](dashboard.md#delete-a-dataset-or-model): preview and erase a dataset/classifier cascade, or resume an uncertain cleanup.
 
 Run checks using [verification](verification.md). Recorded results and remaining
 limitations belong in [project status](../project/project-status.md), and course acceptance
@@ -20,9 +22,11 @@ Docker Compose 2.24 or later is required. Open `http://127.0.0.1:8000/docs` to
 inspect the API. All metadata, experiment, and tuning endpoints require an
 `X-Project-ID` header and an `X-API-Key` when project keys are configured.
 
-This walkthrough covers the implemented CPU classification workflow. The
-[project audit](../project/project-status.md) describes current limits, development status,
-and remaining recovery/deployment work.
+This walkthrough uses direct registration of an already prepared numeric CSV.
+For raw categorical CSVs, use the [dashboard preparation review](dashboard.md#review-and-change-encoding)
+or [preview/prepare API](../reference/api.md#raw-csv-preparation). Both paths feed
+the same CPU classification worker. [Current status](../project/project-status.md)
+records verification and remaining limits.
 
 The checked-in `examples/data/classification.csv` is synthetic. Its 120 rows are
 explicitly split into 80 training, 20 validation, and 20 test examples. Each row
@@ -68,6 +72,14 @@ Dataset versions are unique within a project by `(name, version)`. Models are
 unique within a project by name. Repeating registration returns `409`; retrieve
 existing records with `GET /datasets` or `GET /models`, or use a new version/name.
 Lists accept `limit` (1–100) and `offset` (nonnegative).
+
+Managed upload/preparation routes instead publish files and replay matching saved
+versions. To remove inputs from a saved dataset, use
+[column editing](../reference/api.md#dataset-column-editing); it preserves the
+original version, retained values and split membership. To erase a dataset/model
+and its related history, review the separate
+[permanent-deletion contract](../reference/api.md#permanent-dataset-and-model-deletion).
+An erased training/tuning submission key returns 410 rather than recreating work.
 
 ### Project access
 

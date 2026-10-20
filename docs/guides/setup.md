@@ -17,9 +17,42 @@ see the [endpoint reference](../reference/api.md).
 
 Compose runs the API, a training worker, a recovery scheduler, MongoDB, and Redis. It publishes ports 8000, 27017, and 6379 on localhost and retains metadata, Redis data, and artifacts in named volumes. The worker has one CPU, 1 GiB of memory, and one concurrent job. Compose explicitly sets `MLPP_ENVIRONMENT=development` and container connection/storage paths; an `.env` environment value does not override these settings. Metadata endpoints require `X-Project-ID` and enforce `X-API-Key` when project keys are configured. Shared deployment still needs the controls listed in the [audit](../project/project-status.md#deployment-and-operational-gaps). Stop the stack with `docker compose down`; its named volumes remain available for the next startup.
 
-Tuning requires MongoDB transactions. Compose initializes a single-node `mlpp` replica set and waits for a writable primary. When upgrading an existing local stack, run `docker compose up --build --wait --wait-timeout 300`; the existing MongoDB volume is retained. Host connections to this container must use `mongodb://127.0.0.1:27017/?directConnection=true`, including an existing `.env`, because the replica set advertises its container hostname. External MongoDB deployments must support transactions through a replica set or sharded cluster; standalone MongoDB can still serve ordinary experiments but cannot execute tuning.
+Project lifecycle admission, permanent deletion, conversations and tuning use
+MongoDB transactions. Compose initializes a single-node `mlpp` replica set and
+waits for a writable primary. When upgrading an existing local stack, run
+`docker compose up --build --wait --wait-timeout 300`; the MongoDB volume is retained.
+Host connections must use `mongodb://127.0.0.1:27017/?directConnection=true`,
+including an existing `.env`, because the replica set advertises its container
+hostname. External deployments need a replica set or sharded cluster; standalone
+MongoDB does not support the current transactional mutation workflow.
 
-The checked-in CSV is included in the image. Custom data must be mounted at the same relative path under the dataset root for the API and worker. Registration records a hash and reference; it does not upload or copy the source file.
+The checked-in CSV is included in the image. Direct `POST /api/v1/datasets`
+registration records a hash and reference without copying the source. Custom
+files registered this way must be mounted at the same relative path under the
+dataset root for the API and worker and remain unchanged.
+
+## Browser workspace and managed uploads
+
+The packaged dashboard is available at `http://127.0.0.1:8000/dashboard/` on the
+compatibility API and model API. The base stack disables uploads and chat and
+does not start Grafana. Follow the [dashboard startup](dashboard.md#start-on-this-desktop)
+for the domain, monitoring, local-AI and dashboard overlays; chat also needs the
+explicit installed model/tokenizer from [local model setup](local-model-setup.md).
+
+`compose.dashboard.yaml` enables `MLPP_DATASET_UPLOAD_ENABLED` in the model API
+and shares a durable uploads volume with a read-only worker mount. The setting
+gates numeric upload, raw CSV preview/preparation and saved-column editing. Raw
+import saves the original CSV, canonical numeric CSV and reviewed training-fitted
+recipe. Column edits project a new immutable version without changing existing
+rows/splits/transforms. See the [dataset API contracts](../reference/api.md#raw-csv-preparation).
+
+Upgrade all domain APIs, worker and scheduler together after active work drains.
+Their shared artifact root holds stable native publication/attempt locks used by
+permanent deletion; the worker's uploads mount stays read-only. Preserve both
+artifact and uploads volumes when stopping or upgrading. Explicit
+[permanent deletion](dashboard.md#delete-a-dataset-or-model) removes only its
+reviewed cascade and exclusively owned managed files; shared source files,
+operator originals, conversations/drafts and historical Prometheus samples remain.
 
 ## Develop the API on your host
 
