@@ -29,3 +29,11 @@ Twelve concurrent allocations establish that tested workload, not an arbitrary
 load/scaling claim. Existing-data migration requires paused writers, and older
 applications require canonical IDs. Revisit when adding record namespaces,
 cross-project references, new canonical-ID producers or online migration.
+
+The October 20 [dataset extension](../plans/2026-10-20-dataset-short-ids-plan.md)
+adds dN in the same registry. Resolve training/tuning dataset inputs into stored
+canonical relationships only after hashing the original body; resolve deletion
+targets only after checking receipts and hashing the original path. Column saves
+resolve through the registry without requiring a surviving parent, preserving
+child replay after parent deletion. Dataset proposals keep dN in the saved action
+and exact dispatch, while verified facts still cite canonical dataset IDs.

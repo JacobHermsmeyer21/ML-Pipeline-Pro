@@ -9,7 +9,7 @@ from pymongo.errors import DuplicateKeyError
 
 from ml_pipeline_pro.errors import ApiError
 
-KINDS = {"experiments": "e", "conversations": "c"}
+KINDS = {"experiments": "e", "conversations": "c", "datasets": "d"}
 MAX_NUMBER = 2**63 - 1
 
 

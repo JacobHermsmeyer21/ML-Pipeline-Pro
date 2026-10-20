@@ -85,6 +85,29 @@ class MemoryVersions(MemoryRepository):
 
 
 class MemoryDatasets(MemoryRepository):
+    def __init__(self, unique_fields=()):
+        super().__init__(unique_fields)
+        self.aliases = {}
+        self.counters = {}
+
+    async def resolve(self, project_id, record_id):
+        exact = self.records.get(record_id)
+        if exact is not None and exact.project_id == project_id:
+            return record_id
+        return self.aliases.get((project_id, record_id), record_id)
+
+    async def get(self, project_id, record_id):
+        return await super().get(project_id, await self.resolve(project_id, record_id))
+
+    async def insert(self, record):
+        saved = await super().insert(record)
+        number = self.counters.get(record.project_id, 0) + 1
+        self.counters[record.project_id] = number
+        saved.short_id = f"d{number}"
+        self.records[saved.id].short_id = saved.short_id
+        self.aliases[(saved.project_id, saved.short_id)] = saved.id
+        return saved
+
     async def by_selection(self, project_id, parent_id, version):
         return next(
             (

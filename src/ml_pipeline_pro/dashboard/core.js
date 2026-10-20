@@ -77,10 +77,11 @@ export const selectedDataset = () => state.datasets.find((item) => item.id === s
 export const selectedModel = () => state.models.find((item) => item.id === state.selectedModel);
 export const modelName = (id) => state.models.find((item) => item.id === id)?.name || id.slice(0, 10);
 export const recordLabel = (id) => state.experiments.find((item) => item.id === id)?.short_id
+  || state.datasets.find((item) => item.id === id)?.short_id
   || stored("conversation-labels", {})[id] || id;
 export function datasetName(id) {
   const dataset = state.datasets.find((item) => item.id === id);
-  return dataset ? `${dataset.name} · ${dataset.version}` : id.slice(0, 10);
+  return dataset ? `${dataset.short_id ? dataset.short_id + " · " : ""}${dataset.name} · ${dataset.version}` : id.slice(0, 10);
 }
 export function fillSelect(node, items, selected, placeholder, label) {
   node.replaceChildren(new Option(placeholder, ""));

@@ -103,7 +103,7 @@ class Lifecycle:
         project = record.project_id
         await self.ensure(project)
         aliases = ShortIds(self.database)
-        if collection == "experiments":
+        if collection in {"experiments", "datasets"}:
             await aliases.prepare(project, collection)
         expected = registration_generation.get()
         generation = expected[1] if expected and expected[0] == project else None
@@ -131,12 +131,12 @@ class Lifecycle:
                         404, f"{kind}_not_found", f"{kind.replace('_', ' ')} was not found"
                     )
             saved = dict(document)
-            if collection == "experiments":
+            if collection in {"experiments", "datasets"}:
                 saved["short_id"] = await aliases.assign(
                     project, collection, record.id, session=session
                 )
             await self.database[collection].insert_one(saved, session=session)
-            if collection == "experiments":
+            if collection in {"experiments", "datasets"}:
                 return record.model_copy(update={"short_id": saved["short_id"]})
             return record
 

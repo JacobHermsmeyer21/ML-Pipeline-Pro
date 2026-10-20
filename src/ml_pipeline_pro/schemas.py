@@ -74,6 +74,7 @@ class DatasetSelection(RequestModel):
 
 
 class DatasetRecord(Record, DatasetDefinition):
+    short_id: str | None = Field(default=None, pattern=r"^d[1-9][0-9]*$", max_length=20)
     sha256: Sha256
     num_classes: int = Field(ge=2, le=64)
     row_counts: dict[Literal["train", "validation", "test"], int]

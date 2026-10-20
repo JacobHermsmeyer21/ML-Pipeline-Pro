@@ -101,6 +101,12 @@ class ModelVersionRepository(MongoRepository[ModelVersionRecord]):
 
 
 class DatasetRepository(MongoRepository[DatasetRecord]):
+    async def resolve(self, project_id: str, record_id: str):
+        return await ShortIds(self.database).resolve(project_id, "datasets", record_id)
+
+    async def get(self, project_id: str, record_id: str):
+        return await super().get(project_id, await self.resolve(project_id, record_id))
+
     async def by_selection(self, project_id: str, parent_id: str, version: str):
         document = await self.collection.find_one(
             {"project_id": project_id, "selection.parent_id": parent_id, "version": version}

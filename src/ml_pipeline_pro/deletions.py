@@ -15,6 +15,7 @@ from ml_pipeline_pro.deletion_files import plan_files, remove_entry, storage_ide
 from ml_pipeline_pro.deletion_schemas import DeletionCounts, DeletionPreview, DeletionResult
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.lifecycle import Lifecycle, busy, key_digest
+from ml_pipeline_pro.short_ids import ShortIds
 from ml_pipeline_pro.storage_control import (
     attempt_directory,
     finish_owned,
@@ -167,6 +168,8 @@ class DeletionStore:
             ) from None
 
     async def _preview(self, project, kind, identity):
+        if kind == "datasets":
+            identity = await ShortIds(self.database).resolve(project, kind, identity)
         await self.lifecycle.generation(project)
         async with publication_lock(self.settings, project):
 
@@ -206,6 +209,8 @@ class DeletionStore:
                         await self.lock_attempts(locks, project, saved["operation_id"])
                         return await self.clean(project, saved)
 
+                if kind == "datasets":
+                    identity = await ShortIds(self.database).resolve(project, kind, identity)
                 await self.lifecycle.generation(project)
 
                 async def read(session):

@@ -125,7 +125,8 @@ async def create_experiment(
     existing = await store.experiments.by_submission(project, key)
     if existing is None:
         await store.lifecycle.check_submission(project, "experiments", key, fingerprint)
-        if await store.datasets.get(project, body.dataset_id) is None:
+        dataset = await store.datasets.get(project, body.dataset_id)
+        if dataset is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
         model = await store.models.get(project, body.model_id)
         if model is None:
@@ -133,11 +134,14 @@ async def create_experiment(
         if model.architecture != config_algorithm(body.config):
             raise ApiError(409, "model_config_mismatch", "Config algorithm must match the model")
         record = ExperimentRecord(
-            **body.model_dump(), project_id=project, submission_key=key, request_hash=fingerprint
+            **{**body.model_dump(), "dataset_id": dataset.id},
+            project_id=project,
+            submission_key=key,
+            request_hash=fingerprint,
         )
         try:
             existing = await store.experiments.admit(
-                record, [("datasets", body.dataset_id), ("models", body.model_id)]
+                record, [("datasets", dataset.id), ("models", body.model_id)]
             )
         except DuplicateKeyError:
             existing = await store.experiments.by_submission(project, key)

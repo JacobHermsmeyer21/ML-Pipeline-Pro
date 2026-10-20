@@ -167,9 +167,9 @@ function bindStarters(parent) {
     const dataset = selectedDataset(), model = selectedModel(); let prompt;
     if (node.dataset.prompt === "python") prompt = "Generate Python listing experiments, limit 50, offset 0. Do not execute.";
     else if (!dataset) { notify("Choose or upload a dataset first.", "warning"); showView("datasets"); return; }
-    else if (node.dataset.prompt === "inspect") prompt = `Inspect dataset ${dataset.id}. Return verified row_counts.train and row_counts.validation facts and guide my next pipeline step.`;
+    else if (node.dataset.prompt === "inspect") prompt = `Inspect dataset ${dataset.short_id || dataset.id}. Return verified row_counts.train and row_counts.validation facts and guide my next pipeline step.`;
     else if (!model) { notify("Select or create a model before planning training.", "warning"); showView("runs"); return; }
-    else prompt = `Train dataset ${dataset.id} with model ${model.id}. Per-trial runtime is 10 seconds. Do not submit it.`;
+    else prompt = `Train dataset ${dataset.short_id || dataset.id} with model ${model.id}. Per-trial runtime is 10 seconds. Do not submit it.`;
     $("chat-input").value = prompt; $("chat-input").focus();
   }));
 }

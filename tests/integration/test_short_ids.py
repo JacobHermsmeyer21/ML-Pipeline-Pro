@@ -147,8 +147,8 @@ def test_resumable_migration_preserves_history_and_literal_id_collisions(monkeyp
         first = await database.experiments.find_one({"_id": "old-first"})
         assert first["short_id"] == "e2"  # e1 is a literal historical identity.
         resumed = ShortIds(database)
-        assert await resumed.migrate() == {"experiments": 2, "conversations": 1}
-        assert await resumed.migrate() == {"experiments": 0, "conversations": 0}
+        assert await resumed.migrate() == {"experiments": 2, "conversations": 1, "datasets": 0}
+        assert await resumed.migrate() == {"experiments": 0, "conversations": 0, "datasets": 0}
         assert (await database.experiments.find_one({"_id": "old-first"}))["short_id"] == "e2"
         assert await resumed.resolve("demo", "experiments", "e1") == "e1"
         assert await resumed.resolve("demo", "experiments", "e2") == "old-first"
@@ -235,7 +235,11 @@ def test_migrated_conversation_projects_alias_without_rewriting_saved_turn_or_ha
         await database.record_aliases.delete_many({})
         await database.record_alias_counters.delete_many({})
         before = await database.conversation_turns.find_one({"_id": claim.turn.turn_id})
-        assert await ShortIds(database).migrate() == {"experiments": 0, "conversations": 1}
+        assert await ShortIds(database).migrate() == {
+            "experiments": 0,
+            "conversations": 1,
+            "datasets": 0,
+        }
         restarted = ConversationStore(database, settings)
         replay = await restarted.reserve(
             context, body, deadline=datetime.now(UTC) + timedelta(seconds=30)

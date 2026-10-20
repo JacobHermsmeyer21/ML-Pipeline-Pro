@@ -26,7 +26,7 @@ export function renderWorkspace() {
   const completed = state.experiments.filter((item) => item.status === "succeeded" && Number.isFinite(item.metrics.validation_f1));
   $("stat-f1").textContent = completed.length ? number(Math.max(...completed.map((item) => item.metrics.validation_f1))) : "—";
   $("stat-active").textContent = state.experiments.filter((item) => activeRuns.has(item.status)).length;
-  fillSelect($("training-dataset"), state.datasets, state.selectedDataset, "Choose a dataset", (item) => `${item.name} · ${item.version}`);
+  fillSelect($("training-dataset"), state.datasets, state.selectedDataset, "Choose a dataset", (item) => datasetName(item.id));
   fillSelect($("training-model"), state.models, state.selectedModel, "Choose a model", (item) => `${item.name} · ${algorithmLabel(item.architecture)}`);
   updateTrainingSettings();
   $("run-count").textContent = state.experiments.length; $("runs-empty").hidden = state.experiments.length > 0;
@@ -43,7 +43,8 @@ export function renderWorkspace() {
   $("datasets-list").replaceChildren();
   if (!state.datasets.length) $("datasets-list").append(el("div", "empty-state", "Your first dataset will appear here."));
   for (const dataset of state.datasets) {
-    const card = el("article", "record-card"); card.append(el("h3", "", `${dataset.name} / ${dataset.version}`));
+    const card = el("article", "record-card"); card.append(el("h3", "", `${dataset.short_id ? dataset.short_id + " · " : ""}${dataset.name} / ${dataset.version}`));
+    if (dataset.short_id) card.append(el("p", "hash-text", `Full ID: ${dataset.id}`));
     card.append(el("p", "record-meta", `${dataset.feature_columns.length} features · ${dataset.num_classes} classes · ${dataset.row_counts.train} train / ${dataset.row_counts.validation} validation / ${dataset.row_counts.test} test`), el("div", "hash-text", `SHA-256 ${dataset.sha256}`));
     const actions = el("div", "record-actions"); actions.append(button("Use for training →", "text-button", () => {
       state.selectedDataset = dataset.id; renderWorkspace(); showView("runs"); $("training-model").focus();

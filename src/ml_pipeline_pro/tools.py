@@ -321,17 +321,21 @@ class ToolDispatcher:
     def __init__(self, transport: ToolTransport):
         self._transport = transport
 
-    async def _resolve_experiments(self, arguments, context):
+    async def _resolve_references(self, arguments, context):
         """Resolve aliases through the same authenticated API before identity assertions."""
         values = arguments.model_dump()
-        identities = values.get("experiment_ids", [values.get("experiment_id")])
+        dataset = "dataset_id" in values
+        kind = "datasets" if dataset else "experiments"
+        field = "dataset_id" if dataset else "experiment_id"
+        lookup = "get_dataset" if dataset else "get_experiment"
+        identities = values.get("experiment_ids", [values.get(field)])
         resolved = []
         for identity in identities:
-            if identity is None or not is_short_id("experiments", identity):
+            if identity is None or not is_short_id(kind, identity):
                 resolved.append(identity)
                 continue
             response = await self._transport.request(
-                "GET", f"/api/v1/experiments/{identity}", context=context, query=[], body=None
+                "GET", f"/api/v1/{kind}/{identity}", context=context, query=[], body=None
             )
             if response.status_code >= 400:
                 error = ErrorResponse.model_validate(response.payload).error
@@ -346,7 +350,7 @@ class ToolDispatcher:
                     http_status=response.status_code,
                     correlation_id=response.correlation_id,
                 )
-            record = _parse_output(_BY_NAME["get_experiment"], response.payload)
+            record = _parse_output(_BY_NAME[lookup], response.payload)
             if (
                 response.status_code != 200
                 or record.project_id != context.project_id
@@ -356,8 +360,8 @@ class ToolDispatcher:
             resolved.append(record.id)
         if "experiment_ids" in values:
             values["experiment_ids"] = resolved
-        elif "experiment_id" in values:
-            values["experiment_id"] = resolved[0]
+        elif field in values:
+            values[field] = resolved[0]
         return type(arguments).model_validate(values)
 
     async def mutation_preflight(self, call: ToolCall, context: ToolContext) -> ToolFailure | None:
@@ -419,9 +423,9 @@ class ToolDispatcher:
             failure = await self.mutation_preflight(call, context)
             if failure is not None:
                 return failure
-        if name in {"get_experiment", "compare_experiments"}:
+        if name in {"get_experiment", "compare_experiments", "get_dataset"}:
             try:
-                normalized = await self._resolve_experiments(arguments, context)
+                normalized = await self._resolve_references(arguments, context)
                 if isinstance(normalized, ToolFailure):
                     return normalized.model_copy(update={"tool_name": name})
                 arguments = normalized
@@ -432,7 +436,7 @@ class ToolDispatcher:
                     context,
                     name,
                     "tool_validation_error",
-                    "Experiment references could not be resolved to distinct scoped records",
+                    "References could not be resolved to distinct scoped records",
                 )
         values = arguments.model_dump(mode="json", exclude_none=True)
         path = spec.path

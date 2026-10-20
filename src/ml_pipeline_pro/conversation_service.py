@@ -71,6 +71,8 @@ PUBLIC_MODEL_PROVENANCE = {
 }
 
 HOST_INSTRUCTIONS = (
+    "Datasets have permanent project-scoped short IDs such as d1 and d2. Use them in "
+    "get_dataset or dataset_id arguments for training/tuning proposals when supplied by the user. "
     "Experiments have permanent project-scoped short IDs such as e1 and e2; use those in "
     "get_experiment and compare_experiments when supplied by the user. API records retain "
     "canonical id and optional short_id. Cite facts using the canonical record_id from current "

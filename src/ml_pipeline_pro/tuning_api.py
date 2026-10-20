@@ -39,7 +39,8 @@ async def create_tuning_job(
     record = await tuning.jobs.by_submission(project, key)
     if record is None:
         await store.lifecycle.check_submission(project, "tuning_jobs", key, fingerprint)
-        if await store.datasets.get(project, body.dataset_id) is None:
+        dataset = await store.datasets.get(project, body.dataset_id)
+        if dataset is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
         model = await store.models.get(project, body.model_id)
         if model is None:
@@ -49,12 +50,12 @@ async def create_tuning_job(
         try:
             record = await tuning.jobs.admit(
                 TuningRecord(
-                    **body.model_dump(),
+                    **{**body.model_dump(), "dataset_id": dataset.id},
                     project_id=project,
                     submission_key=key,
                     request_hash=fingerprint,
                 ),
-                [("datasets", body.dataset_id), ("models", body.model_id)],
+                [("datasets", dataset.id), ("models", body.model_id)],
             )
         except DuplicateKeyError:
             record = await tuning.jobs.by_submission(project, key)

@@ -57,6 +57,7 @@ async def preview_columns(
 
 
 async def matching_selection(store, project, dataset_id, body, settings):
+    dataset_id = await store.datasets.resolve(project, dataset_id)
     saved = await store.datasets.by_selection(project, dataset_id, body.version)
     if saved is None:
         return None

@@ -3,12 +3,16 @@
 ## Short record IDs
 
 Experiments expose additive `short_id` metadata such as `e1`; conversation turns
-and history expose `c1`. Existing canonical `id`/`conversation_id` fields remain
-unchanged. Experiment read/artifact/compare paths and model-version `experiment_id`
+and history expose `c1`; datasets expose `d1`. Existing canonical `id` and
+`conversation_id` fields remain unchanged. Experiment read/artifact/compare paths and model-version `experiment_id`
 inputs accept aliases. Conversation history/action/decision paths and chat
 `conversation_id` inputs accept conversation aliases. References are permanent,
 project-scoped and never reused after deletion. Unknown aliases keep existing
 missing-record errors; duplicate comparisons reject two forms of one identity.
+Dataset reads, column read/preview/save and deletion preview/delete paths accept
+`dN`, as do experiment/tuning `dataset_id` inputs. Dataset relationships, recipes
+and returned ID fields remain canonical. Agent inspection and saved proposals can
+use dN; confirmation dispatch preserves the approved arguments exactly.
 Request retries must preserve the original body, including its chosen ID form.
 Existing records require the coordinated
 [short-ID migration](../guides/short-record-ids.md#upgrade-existing-data).

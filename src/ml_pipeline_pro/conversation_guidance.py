@@ -123,8 +123,10 @@ def requested_facts(messages: list[dict]) -> list[dict[str, str]]:
         result = json.loads(message["content"])
         data = result.get("data", {})
         alias_match = (
-            target[0] == "get_experiment"
-            and is_short_id("experiments", target[2])
+            target[0] in {"get_experiment", "get_dataset"}
+            and is_short_id(
+                "experiments" if target[0] == "get_experiment" else "datasets", target[2]
+            )
             and data.get("short_id") == target[2]
         )
         record_id = data.get("id")
