@@ -30,8 +30,6 @@ from ml_pipeline_pro.snippet_generation import snippet_instructions
 from ml_pipeline_pro.snippet_schemas import SnippetCandidate
 from ml_pipeline_pro.tool_schemas import ToolCall
 
-# Room for adaptive thinking; the reply schema still bounds the visible answer.
-MAX_TOKENS = 16000
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 # In-turn tool calls replayed with their original thinking blocks, bounded per process.
 REPLAY_ENTRIES = 256
@@ -274,7 +272,8 @@ class AnthropicConversationModel:
                 )
             response = await self._client.beta.messages.create(
                 **request,
-                max_tokens=MAX_TOKENS,
+                # Thinking and the reply share the admitted output budget.
+                max_tokens=self._settings.chat_max_output_tokens,
                 thinking={"type": "adaptive"},
                 output_config=output_config,
                 betas=[FALLBACK_BETA],

@@ -301,3 +301,12 @@ async def test_clients_build_claude_only_when_a_key_is_configured():
         )
     async with conversation_clients(settings(anthropic_api_key=None)) as (model, _):
         assert model is None
+
+
+@sync
+async def test_generation_never_exceeds_the_admitted_output_budget():
+    client = FakeClient([message([CALL], "tool_use")])
+    model = AnthropicConversationModel(settings(chat_max_output_tokens=4096), client=client)
+    await model.generate(CONTEXT)
+    # The admission check reserves chat_max_output_tokens; the request must not allow more.
+    assert client.beta.messages.created[0]["max_tokens"] == 4096

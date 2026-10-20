@@ -178,8 +178,11 @@ are unaffected.
 - Deviations:
   - Domain tools are sent without `strict: true`. Their schemas carry constraints the
     strict compiler does not accept. The host validates arguments, as on the Ollama path.
-  - `max_tokens` is a fixed 16000, so adaptive thinking has room. The visible reply
-    stays bounded by `ModelReply`.
+  - `max_tokens` was first a fixed 16000. An automated security review flagged that
+    this bypassed the admitted `chat_max_output_tokens` budget. It is now exactly that
+    setting, which covers thinking and the reply together; the test
+    `test_generation_never_exceeds_the_admitted_output_budget` went RED to GREEN.
+    The Claude profile documents 4096.
   - Provenance records the model, effort and hashes, but not per-request IDs.
 - Review: the planned same-vendor review has not run yet; this is a remaining gap.
 - Not verified: the real-service integration gates (no Docker here) and live Claude

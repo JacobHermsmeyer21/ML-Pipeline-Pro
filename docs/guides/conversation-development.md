@@ -95,6 +95,7 @@ MLPP_ANTHROPIC_API_KEY=<your key>
 MLPP_CHAT_MODEL_TIMEOUT_SECONDS=90
 MLPP_CHAT_TIMEOUT_SECONDS=120
 MLPP_CHAT_CONTEXT_TOKENS=16384
+MLPP_CHAT_MAX_OUTPUT_TOKENS=4096
 ```
 
 `MLPP_CHAT_MODEL` defaults to `claude-opus-5-5`; `MLPP_CHAT_EFFORT` (`low`, `medium`,
@@ -112,7 +113,9 @@ How it differs from the local path:
 - Snippets and monitoring use structured outputs. The host still validates everything
   with the same Pydantic schemas, and drafts are never executed.
 - Admission counts the full request with `messages.count_tokens` against
-  `MLPP_CHAT_CONTEXT_TOKENS`.
+  `MLPP_CHAT_CONTEXT_TOKENS`. `max_tokens` is exactly `MLPP_CHAT_MAX_OUTPUT_TOKENS`,
+  which covers thinking and the reply together. A response that hits it fails
+  closed as invalid output; raise the cap, up to 4096, or lower the effort.
 - API errors become fixed `ConversationModelError` codes. The key is redacted from
   logs and is never part of provenance or `/dashboard/config.json`.
 
