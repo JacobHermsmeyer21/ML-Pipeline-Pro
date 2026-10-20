@@ -3,7 +3,7 @@
   "createdOnFiles": { "v": 1, "at": "2026-10-20T15:00:00Z" },
   "lists": "css",
   "title": "ML Pipeline Pro — Progress Review",
-  "order": ["cover", "goal", "system", "flow", "progress", "momentum", "checkpoints", "demo", "risks", "deploy", "roadmap", "close"],
+  "order": ["cover", "goal", "system", "flow", "progress", "momentum", "checkpoints", "demo", "risks", "deploy", "deploysteps", "roadmap", "close"],
   "sections": {
     "s1": { "description": "The goal: a CSV-to-monitored-model platform that runs on our own machines.", "start": "cover" },
     "s2": { "description": "How the system is built and how one training run moves through it.", "start": "system" },

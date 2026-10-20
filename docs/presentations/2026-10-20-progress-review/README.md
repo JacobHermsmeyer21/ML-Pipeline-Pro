@@ -1,6 +1,6 @@
 # Progress review, Team MJN (October 20, 2026)
 
-- `ML-Pipeline-Pro-Progress-Review-Team-MJN.pdf`: the 12-slide deck as presented.
+- `ML-Pipeline-Pro-Progress-Review-Team-MJN.pdf`: the 13-slide deck as presented.
 - `slides/` and `deck.json`: slide sources (one HTML section per slide, with speaker
   notes in `<aside>`). The editable deck lives as a private Claude artifact.
 
