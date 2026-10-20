@@ -1,0 +1,15 @@
+{
+  "project": "deletion_browser_7b99a23bb5b4",
+  "origin": "http://127.0.0.1:18000",
+  "source_sha256": "50f854ef5c535326ccadd33b049c5a591cf2f26442de4e860c86c1746854fe45",
+  "checks": [
+    "two real serial training jobs and hash-verified artifacts",
+    "cancel leaves data unchanged",
+    "dataset cascade, double click, shared input and unrelated run survive"
+  ],
+  "runs": [
+    "d7b523f2-aba9-4026-8ba3-8380c1f15afe",
+    "8da9633c-0582-42b2-ab36-b561a4bcffa6"
+  ],
+  "status": "failed"
+}

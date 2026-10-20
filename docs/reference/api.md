@@ -30,6 +30,61 @@ uploads volume while registered datasets reference it.
 public capability/limit information without credentials. See the
 [dashboard guide](../guides/dashboard.md) for local startup and browser workflows.
 
+## Permanent dataset and model deletion
+
+The model service owns these routes, using the usual project/key headers:
+
+| Method | Route | Result |
+| --- | --- | --- |
+| GET | `/api/v1/datasets/{dataset_id}/deletion-preview` | Exact dependent-record/file counts, active-job blockers and `preview_sha256`. |
+| GET | `/api/v1/models/{model_id}/deletion-preview` | Equivalent preview for the entire classifier model. |
+| DELETE | `/api/v1/datasets/{dataset_id}` | Permanently erase the reviewed dataset-version cascade. |
+| DELETE | `/api/v1/models/{model_id}` | Permanently erase the reviewed model cascade. |
+| GET | `/api/v1/deletions/{operation_id}` | Saved `preparing`, `cleaning` or `complete` status and counts. |
+
+Both DELETE routes require `Idempotency-Key` and JSON containing exactly the
+reviewed fingerprint:
+
+```json
+{"preview_sha256": "0000000000000000000000000000000000000000000000000000000000000000"}
+```
+
+Replace that illustrative hash with the server preview. A changed scope returns
+409 `deletion_preview_stale`; fetch/review it again with a new key. Queued,
+running or cancelling related jobs, including expired leases awaiting recovery,
+return 409 `deletion_blocked` without cancelling or erasing them. Deletion also
+waits for live former workers to release their native storage locks.
+
+Dataset erasure removes that version's experiments, tuning jobs/trials, derived
+registered versions, associated monitoring observations and all checkpoint
+attempts. Model erasure removes the definition and the same history for all its
+datasets, preserving the dataset records/inputs. Dataset erasure removes uploaded
+source/canonical/preparation files only when no surviving dataset references
+them. Shared files and registered operator inputs outside `uploads/<project>/`
+are counted as retained. Saved conversations/Python drafts, exports, backups,
+retained evidence and historical Prometheus samples remain; saved chat facts
+must be checked against current records. This is not forensic disk wiping.
+
+A 200 receipt confirms complete cleanup. Failure or a lost response is uncertain:
+retry the same DELETE URL/body/key, and use any returned `operation_id` to inspect
+progress. A durable cleanup journal survives restart. New project mutations
+temporarily return 409 `deletion_in_progress` until it completes; unrelated reads
+remain available. Storage failures return correlated 503. Never delete an
+incomplete journal or clear its admission gate to bypass failed file cleanup.
+Erased resources return 404. Repeating a completed deletion with its original key
+returns the saved receipt; different arguments with that key conflict. Names can
+be reused with new record IDs after completion.
+
+Minimal operation and submission-key receipts retain counts, IDs and request/key
+hashes, without training data/metrics/configuration. Replaying an erased
+training/tuning submission returns 410 `submission_deleted`; changing that old
+key's body remains 409. An old submission cannot recreate an erased run.
+
+All participating services must use matching lifecycle-aware code and the shared
+artifact volume for native locks. Keep worker uploads read-only. Unsupported
+native locking or changed cleanup storage roots blocks cleanup; do not fall back
+to expiring soft locks. Existing dataset/model response schemas are unchanged.
+
 ## Raw CSV preparation
 
 The opt-in model-service routes `POST /api/v1/datasets/preview` and

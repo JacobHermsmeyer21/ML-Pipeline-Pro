@@ -38,18 +38,20 @@ async def create_tuning_job(
     fingerprint = hashlib.sha256(json.dumps(body.model_dump(), sort_keys=True).encode()).hexdigest()
     record = await tuning.jobs.by_submission(project, key)
     if record is None:
+        await store.lifecycle.check_submission(project, "tuning_jobs", key, fingerprint)
         if await store.datasets.get(project, body.dataset_id) is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
         if await store.models.get(project, body.model_id) is None:
             raise ApiError(404, "model_not_found", "Model was not found in this project")
         try:
-            record = await tuning.jobs.insert(
+            record = await tuning.jobs.admit(
                 TuningRecord(
                     **body.model_dump(),
                     project_id=project,
                     submission_key=key,
                     request_hash=fingerprint,
-                )
+                ),
+                [("datasets", body.dataset_id), ("models", body.model_id)],
             )
         except DuplicateKeyError:
             record = await tuning.jobs.by_submission(project, key)
@@ -61,6 +63,7 @@ async def create_tuning_job(
             "idempotency_conflict",
             "This submission key already belongs to a different tuning request",
         )
+    await store.lifecycle.check_read(project, "tuning_jobs", record.id)
     if record.status == "queued":
         try:
             await asyncio.to_thread(dispatch.publish_tuning, project, record.id)

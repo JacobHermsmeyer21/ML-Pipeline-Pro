@@ -69,6 +69,13 @@ encodings and stratified 70/15/15 splits; `POST /api/v1/datasets/prepare` saves 
 exact reviewed recipe. Both accept multipart CSV/JSON and use the same opt-in
 upload setting. See [raw CSV preparation](docs/reference/api.md#raw-csv-preparation).
 
+Use **Delete dataset** or **Manage models** in the dashboard to permanently erase
+an item and its related training history/checkpoints after reviewing the exact
+scope. Related active jobs block deletion; conversations/drafts and shared or
+operator-owned inputs are kept. The authenticated deletion-preview, `DELETE`
+dataset/model and operation-status routes are documented in
+[permanent deletion](docs/reference/api.md#permanent-dataset-and-model-deletion).
+
 For the independently runnable model/tuning APIs, follow
 [domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes
 use the [monitoring](docs/guides/monitoring-demo.md) and

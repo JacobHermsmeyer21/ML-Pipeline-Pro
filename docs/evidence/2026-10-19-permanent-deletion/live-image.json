@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "live_deletion_code_matches_verified_source": true,
+  "normalized_source_sha256": {
+    "deletions.py": "df3fd1b0754b3b0ee198ce851441831c046906cfcb62fb6e0bb05d2c784c5e48",
+    "lifecycle.py": "a2466e661d13dc92c40d9784c4d7729f5c2b943673316c1c348b187a75b1d635",
+    "deletion_files.py": "7d5636a8405760f148b3f518deac34a97b51d1940d3c18a9511447bd58f7fb94",
+    "deletion_api.py": "50dc2703eb0fddcd29e830a5431f8174784a7d67eedc389c5d6c1b076179918e",
+    "storage_control.py": "3c54365112957273196b2e2d5732c8bffe017e423ed266d446a7323906dafc04",
+    "dashboard/deletion.js": "86b2a0441ad7d0ce5f6890c2c018938ab84011ede261f22aa7a154226fe91aec",
+    "dashboard/core.js": "511236e9c5dd013116866db740365e21b90043b2ece2936cf8db1631f6df7a32",
+    "dashboard/app.js": "e268125d04249d65320f20a693a62e7f8ef719fecfc08f6dd6198d58dce2d3a1"
+  },
+  "matching_service_images": [
+    "/mlpp-rx9070-walkthrough-20261014-model-api-1 sha256:8c0bbed96f8b0a0a2185c3c2ede090bb5dcc902ab3645c90e8f05fe1d6801ddd",
+    "/mlpp-rx9070-walkthrough-20261014-tuning-api-1 sha256:8c0bbed96f8b0a0a2185c3c2ede090bb5dcc902ab3645c90e8f05fe1d6801ddd",
+    "/mlpp-rx9070-walkthrough-20261014-monitoring-api-1 sha256:8c0bbed96f8b0a0a2185c3c2ede090bb5dcc902ab3645c90e8f05fe1d6801ddd",
+    "/mlpp-rx9070-walkthrough-20261014-worker-1 sha256:8c0bbed96f8b0a0a2185c3c2ede090bb5dcc902ab3645c90e8f05fe1d6801ddd",
+    "/mlpp-rx9070-walkthrough-20261014-scheduler-1 sha256:8c0bbed96f8b0a0a2185c3c2ede090bb5dcc902ab3645c90e8f05fe1d6801ddd"
+  ],
+  "runtime_action": "Existing combined column/deletion deployment preserved; no downgrade and no user records deleted."
+}

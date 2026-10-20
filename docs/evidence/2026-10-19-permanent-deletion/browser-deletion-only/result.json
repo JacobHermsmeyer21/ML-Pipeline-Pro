@@ -1,0 +1,22 @@
+{
+  "project": "deletion_browser_91a12c4c63f3",
+  "origin": "http://127.0.0.1:19000",
+  "source_sha256": "50f854ef5c535326ccadd33b049c5a591cf2f26442de4e860c86c1746854fe45",
+  "checks": [
+    "two real serial training jobs and hash-verified artifacts",
+    "cancel leaves data unchanged",
+    "dataset cascade, double click, shared input and unrelated run survive",
+    "actual queued/running worker blocks browser confirmation",
+    "model cascade, lost response, reload and same-key recovery",
+    "name reuse, surviving shared-file training and 1280/1440 layouts",
+    "late deletion preview cannot enter a different project"
+  ],
+  "runs": [
+    "58ded793-5215-490e-96b7-c40f14811823",
+    "3ed89328-3e45-4211-b23e-5e907588ffce"
+  ],
+  "active_worker_terminal_status": "failed",
+  "page_errors": [],
+  "browser": "155.0.8059.82",
+  "status": "passed"
+}

@@ -1,12 +1,12 @@
 # Permanently delete datasets and classifier models
 
-- Status: awaiting revised review; implementation pending
+- Status: implemented and verified; independent review unavailable
 - Date: 2026-10-19
 - Source baseline: `486c861` on `person-a/conversation-foundation`
 - Request: dataset/model deletion. Jacob explicitly selects: "Permanently erase
   it and its related history and files."
 - Human decisions: permanent erasure, blocking active jobs and preserving agent
-  conversations/drafts confirmed; full design approval remains pending.
+  conversations/drafts confirmed. Jacob approves implementation on October 19.
 - Supersedes: the [history-preserving proposal](2026-10-19-dataset-model-deletion-plan.md).
 - Independent review: seek separate transaction, cleanup and worker-boundary
   review; availability unknown, and no independent review has occurred.
@@ -46,7 +46,8 @@ Jacob confirms both intent choices on October 19: **block deletion until related
 jobs finish** and **keep conversations and drafts; erase training history and
 files**. Deletion does not cancel jobs or erase saved agent messages/Python drafts.
 Chats can retain copied facts/code after underlying training records disappear.
-These resolve the presented intent questions; full design approval remains pending.
+These resolve the presented intent questions. Jacob subsequently approves this
+plan with the explicit instruction "implement" on October 19.
 
 Logical deletion was simpler and reversible, but Jacob selected permanent erasure.
 Refusing active jobs avoids adding standalone cancellation to this slice. Shared
@@ -206,21 +207,36 @@ Unsupported locking, storage failure or unresolved publication blocks cleanup.
 October 19: Jacob confirms permanent erasure, superseding the prior retained-
 history proposal. In the two explicit clarification replies, Jacob selects
 "Block deletion until those jobs finish (Recommended)" and "Keep conversations
-and drafts; erase training history and files (Recommended)". Approved scope of
-those replies: active-job behavior and chat/draft retention. They do not expressly
-approve the full revised design. Cascade, retention boundaries, name reuse,
-minimal receipts, locking dependency, recovery and acceptance design await that
-approval under [AGENTS.md](../../AGENTS.md). No application implementation has started.
+and drafts; erase training history and files (Recommended)". Jacob then explicitly
+instructs "implement" with this plan open on October 19, approving the full revised
+design: cascade, retention boundaries, name reuse, minimal receipts, locking
+dependency, recovery and acceptance criteria. This records approval before
+application changes under [AGENTS.md](../../AGENTS.md).
 
 ## Implementation outcome
 
-- Source/scope: planning only at the baseline above; permanent-erasure revision
-  and confirmed active-job/chat-retention choices recorded after `c90a550`.
-- Environment/commands: source and installed-lock inspection, `git fetch origin`,
-  Windows PowerShell. Branch matches upstream; `origin/main` remains an ancestor.
-- Application results/test changes: none; implementation pending revised approval.
-- Documentation checks: 13 local links/anchors across both plans validated;
-  whitespace/template checks and `git diff --check` pass. No executable examples.
-- Review: human design approval pending; no independent review performed.
-- Raw application evidence/durable findings: none for this documentation change.
-- Completion commit and push: recorded in the task handoff after validation.
+- Scope: approved permanent deletion, exact previews, scoped cascade, durable
+  cleanup/generation gate, native writer locks, minimal receipts, browser controls,
+  same-operation recovery and documentation. Prepared against `270ef7d`, preserving
+  concurrent column-editing changes outside this commit.
+- Commands/environment: Windows PowerShell, Python 3.11.5, uv 0.12.23, filelock
+  4.0.12 and real MongoDB/Redis/Docker. Locked training sync, Ruff lint/format,
+  fast coverage, installed compatibility and offline package build pass.
+- Results: deletion-only checkout passes 722 fast / 98 ordinary cases; serial
+  isolated recovery passes ten. Dedicated storage checks include 125 runs and
+  four process-death boundaries. Actual browser, native shared-volume exclusion,
+  killed-holder release and late erased-job delivery pass. No selected skips.
+- Evidence and provenance: [retained results](../evidence/2026-10-19-permanent-deletion/README.md),
+  including earlier failures and the distinction from combined-workspace gates.
+- Test changes: the preparation rejection test now requires exactly its empty
+  stable coordination file and no dataset/staging files. Monitoring arbitration
+  now supplies its required scoped version fixture; all existing assertions remain.
+- Boundary fix: browser reload previously reset a non-default project to `demo`,
+  hiding its saved pending deletion. Restore only the tab's nonsecret project ID;
+  API keys remain memory-only. Original lost-response/reload/project-switch checks pass.
+- Review: implementing Codex self-review of lifecycle, cascade, locks, paths,
+  cancellation and replay. No separate reviewer/provider was available; independent
+  review remains a disclosed gap, not a claimed pass. No material design deviation.
+- Durable finding: [permanent-deletion storage](../memory/permanent-deletion-storage.md).
+- Completion commit/push and live-image confirmation: recorded in the task handoff
+  and retained provenance after final Git validation.

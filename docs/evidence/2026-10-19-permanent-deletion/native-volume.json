@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "compose_project": "mlpp-deletion-validation-20261019",
+  "native_cross_container_exclusion": true,
+  "native_process_death_release": true,
+  "late_erased_job_not_claimed": true,
+  "late_delivery_log": "worker-1  | {\"timestamp\": \"2026-10-20T01:27:17.626229+00:00\", \"level\": \"INFO\", \"logger\": \"celery.app.trace\", \"message\": \"Task ml_pipeline_pro.train[f61fdfe7-222f-405e-966e-1aa311633f20] succeeded in 0.016937010001129238s: 'not_claimed'\"}"
+}

@@ -39,6 +39,9 @@ class MemoryRepository:
         self.records[record.id] = record.model_copy(deep=True)
         return record
 
+    async def admit(self, record, references=()):
+        return await self.insert(record)
+
     async def get(self, project_id, record_id):
         record = self.records.get(record_id)
         if record is None or record.project_id != project_id:
@@ -53,10 +56,24 @@ class MemoryRepository:
 
 class MemoryStore:
     def __init__(self) -> None:
+        self.lifecycle = MemoryLifecycle()
         self.datasets = MemoryDatasets(("project_id", "name", "version"))
         self.models = MemoryRepository(("project_id", "name"))
         self.experiments = MemoryExperiments(("project_id", "submission_key"))
         self.versions = MemoryVersions(("project_id", "model_id", "version"))
+
+
+class MemoryLifecycle:
+    """The fake has no concurrent database; transaction ordering uses the real-service gate."""
+
+    async def generation(self, project):
+        return 0
+
+    async def check_submission(self, project, collection, key, request_hash):
+        return None
+
+    async def check_read(self, project, collection, identity):
+        return None
 
 
 class MemoryVersions(MemoryRepository):

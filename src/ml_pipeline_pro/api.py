@@ -32,6 +32,7 @@ from ml_pipeline_pro.schemas import (
     ModelVersionRecord,
     Page,
 )
+from ml_pipeline_pro.storage_control import dataset_registration
 from ml_pipeline_pro.tracking import TrackingStore, get_store
 
 router = APIRouter(
@@ -55,6 +56,7 @@ SubmissionKey = Annotated[
 
 
 @router.post("/datasets", response_model=DatasetRecord, status_code=201, tags=["datasets"])
+@dataset_registration
 async def create_dataset(body: DatasetCreate, project: Project, store: Store, request: Request):
     check_dataset_scope(body.uri, project, request.app.state.settings)
     try:
@@ -121,6 +123,7 @@ async def create_experiment(
     fingerprint = hashlib.sha256(json.dumps(body.model_dump(), sort_keys=True).encode()).hexdigest()
     existing = await store.experiments.by_submission(project, key)
     if existing is None:
+        await store.lifecycle.check_submission(project, "experiments", key, fingerprint)
         if await store.datasets.get(project, body.dataset_id) is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
         if await store.models.get(project, body.model_id) is None:
@@ -129,7 +132,9 @@ async def create_experiment(
             **body.model_dump(), project_id=project, submission_key=key, request_hash=fingerprint
         )
         try:
-            existing = await store.experiments.insert(record)
+            existing = await store.experiments.admit(
+                record, [("datasets", body.dataset_id), ("models", body.model_id)]
+            )
         except DuplicateKeyError:
             existing = await store.experiments.by_submission(project, key)
             if existing is None:
@@ -140,6 +145,7 @@ async def create_experiment(
             "idempotency_conflict",
             "This submission key already belongs to a different request",
         )
+    await store.lifecycle.check_read(project, "experiments", existing.id)
     if existing.status == "queued":
         try:
             await asyncio.to_thread(dispatch.publish, project, existing.id)
@@ -289,7 +295,7 @@ async def create_model_version(
         )
     except ArtifactError as exc:
         raise ApiError(409, "artifact_invalid", str(exc)) from None
-    return await store.versions.insert(
+    return await store.versions.admit(
         ModelVersionRecord(
             project_id=project,
             model_id=model_id,
@@ -297,5 +303,6 @@ async def create_model_version(
             experiment_id=experiment.id,
             artifact=artifact,
             dependencies=experiment.dependencies,
-        )
+        ),
+        [("models", model_id), ("experiments", experiment.id)],
     )

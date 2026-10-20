@@ -7,6 +7,7 @@ export const state = {
   conversation: "", revision: 0, turns: [], actions: new Map(), actionReads: new Set(),
   actionBusy: new Set(), pendingChat: null, pendingTraining: null, chatBusy: false,
   loading: false, mutations: 0, detail: "", detailSignature: "", review: null,
+  pendingDeletion: null, deletionBusy: false,
 };
 const controllers = new Set();
 export function el(tag, className = "", text = "") {
@@ -104,6 +105,7 @@ export function valuesList(pairs) {
   return list;
 }
 export function openReview(title, pairs, callback, label = "Start training") {
+  $("review-confirm").classList.remove("danger-button");
   $("review-title").textContent = title; $("review-content").replaceChildren(valuesList(pairs));
   $("review-confirm").textContent = label; $("review-confirm").hidden = !callback;
   $("review-confirm").disabled = false; state.review = callback; $("review-dialog").showModal();
@@ -112,5 +114,16 @@ export function restoreSession() {
   const selection = stored("selection", {});
   state.selectedDataset = selection.dataset || ""; state.selectedModel = selection.model || "";
   state.conversation = stored("conversation", ""); state.pendingChat = stored("pendingChat"); state.pendingTraining = stored("pendingTraining");
+  state.pendingDeletion = stored("pendingDeletion"); state.renderDeletionRecovery?.();
   $("project-label").textContent = state.project; $("sidebar-project").textContent = `Project: ${state.project}`;
+}
+export function restoreProject() {
+  try {
+    const project = sessionStorage.getItem("mlpp:active-project");
+    if (project && /^[a-zA-Z0-9_-]{1,128}$/.test(project)) state.project = project;
+  } catch { /* The default project remains usable without browser storage. */ }
+}
+export function rememberProject() {
+  try { sessionStorage.setItem("mlpp:active-project", state.project); }
+  catch { notify("Browser storage is unavailable. Reconnect to this project after refresh.", "warning"); }
 }

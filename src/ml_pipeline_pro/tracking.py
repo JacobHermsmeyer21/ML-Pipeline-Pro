@@ -6,12 +6,14 @@ from fastapi import Request
 from pymongo import ASCENDING, DESCENDING
 
 from ml_pipeline_pro.jobs import ExperimentRepository
+from ml_pipeline_pro.lifecycle import Lifecycle
 from ml_pipeline_pro.repositories import MongoRepository
 from ml_pipeline_pro.schemas import DatasetRecord, ExperimentRecord, ModelRecord, ModelVersionRecord
 
 
 class TrackingStore:
     def __init__(self, database) -> None:
+        self.lifecycle = Lifecycle(database)
         self.datasets = DatasetRepository(database, "datasets", DatasetRecord)
         self.models = MongoRepository(database, "models", ModelRecord)
         self.experiments = ExperimentRepository(database, "experiments", ExperimentRecord)

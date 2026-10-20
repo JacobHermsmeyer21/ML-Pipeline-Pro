@@ -7,6 +7,8 @@ from uuid import uuid4
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 from pymongo.asynchronous.database import AsyncDatabase
 
+from ml_pipeline_pro.lifecycle import GATED_COLLECTIONS, Lifecycle
+
 
 class Record(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -24,6 +26,8 @@ RecordT = TypeVar("RecordT", bound=Record)
 class Repository(Protocol[RecordT]):
     async def insert(self, record: RecordT) -> RecordT: ...
 
+    async def admit(self, record: RecordT, references=()) -> RecordT: ...
+
     async def get(self, project_id: str, record_id: str) -> RecordT | None: ...
 
     async def list(self, project_id: str, *, limit: int = 50, offset: int = 0) -> list[RecordT]: ...
@@ -38,12 +42,20 @@ class MongoRepository(Generic[RecordT]):
         self.record_type = record_type
 
     async def insert(self, record: RecordT) -> RecordT:
+        if self.collection.name in GATED_COLLECTIONS:
+            return await self.admit(record)
         document = record.model_dump()
         document["_id"] = document.pop("id")
         await self.collection.insert_one(document)
         return record
 
+    async def admit(self, record: RecordT, references=()) -> RecordT:
+        """Public admission fences reference validation and insertion against deletion."""
+        return await Lifecycle(self.database).insert(self.collection.name, record, references)
+
     async def get(self, project_id: str, record_id: str) -> RecordT | None:
+        if self.collection.name in GATED_COLLECTIONS:
+            await Lifecycle(self.database).check_read(project_id, self.collection.name, record_id)
         document = await self.collection.find_one({"_id": record_id, "project_id": project_id})
         return self._decode(document) if document is not None else None
 

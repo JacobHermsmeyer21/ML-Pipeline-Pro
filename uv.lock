@@ -922,6 +922,7 @@ source = { editable = "." }
 dependencies = [
     { name = "celery", extra = ["redis"] },
     { name = "fastapi" },
+    { name = "filelock" },
     { name = "httpx" },
     { name = "langchain-core" },
     { name = "langchain-ollama" },
@@ -957,6 +958,7 @@ dev = [
 requires-dist = [
     { name = "celery", extras = ["redis"], specifier = ">=5.5,<6" },
     { name = "fastapi", specifier = ">=0.115,<1" },
+    { name = "filelock", specifier = ">=4.0.12,<5" },
     { name = "httpx", specifier = ">=0.27,<1" },
     { name = "langchain-core", specifier = ">=1,<2" },
     { name = "langchain-ollama", specifier = ">=1,<2" },

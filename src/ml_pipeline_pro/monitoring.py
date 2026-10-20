@@ -75,7 +75,9 @@ class MonitoringStore:
             **body.model_dump(),
         )
         try:
-            return await self.observations.insert(record)
+            return await self.observations.admit(
+                record, [("model_versions", body.model_version_id)]
+            )
         except DuplicateKeyError:
             existing = await self.observations.get(project, identity)
             if existing is None or existing.input_hash != record.input_hash:

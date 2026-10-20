@@ -23,6 +23,7 @@ from ml_pipeline_pro.errors import ApiError, ErrorResponse
 from ml_pipeline_pro.preparation_files import read_preparation
 from ml_pipeline_pro.preparation_schemas import PreparationSettings
 from ml_pipeline_pro.schemas import DatasetFileReference, DatasetRecord, PreparationReference
+from ml_pipeline_pro.storage_control import dataset_registration
 
 SETTINGS_MAX_BYTES = 32 * 1024
 OVERHEAD_MAX_BYTES = 32 * 1024
@@ -237,5 +238,6 @@ async def preview_dataset(request: Request, project: Project, store: Store, resp
 
 
 @router.post("/prepare", response_model=DatasetRecord, status_code=201)
+@dataset_registration
 async def prepare_dataset(request: Request, project: Project, store: Store, response: Response):
     return await _prepare(request, project, store, response, register=True)

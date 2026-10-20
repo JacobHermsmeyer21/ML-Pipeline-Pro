@@ -10,6 +10,7 @@ from pymongo.errors import PyMongoError
 
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.datasets import DatasetValidationError
+from ml_pipeline_pro.storage_control import attempt_lock, finish_owned
 from ml_pipeline_pro.training import TrainingError, train_classifier
 from ml_pipeline_pro.training_control import OwnershipLost, TrainingCancelled, TrainingControl
 
@@ -17,6 +18,31 @@ logger = logging.getLogger(__name__)
 
 
 async def execute_experiment(
+    store,
+    project_id,
+    experiment_id,
+    settings,
+    *,
+    control=None,
+    worker_token=None,
+    tuning_job_id=None,
+):
+    token = worker_token or str(uuid4())
+    with attempt_lock(settings, project_id, "experiments", experiment_id, token):
+        return await finish_owned(
+            _execute_experiment(
+                store,
+                project_id,
+                experiment_id,
+                settings,
+                control=control,
+                worker_token=token,
+                tuning_job_id=tuning_job_id,
+            )
+        )
+
+
+async def _execute_experiment(
     store,
     project_id: str,
     experiment_id: str,

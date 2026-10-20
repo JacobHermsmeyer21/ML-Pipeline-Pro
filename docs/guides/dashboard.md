@@ -144,6 +144,39 @@ these preserve the saved request/action identity. A transport error does not pro
 that a training job was rejected. Changing projects clears displayed records and
 prevents late responses from populating the next project.
 
+## Delete a dataset or model
+
+Open **Datasets → Delete dataset**, or **Runs → Manage models → Delete model**.
+Review the named item and exact counts, then choose **Permanently delete**.
+**Back** leaves the item unchanged. Related queued/running/cancelling jobs must
+finish first; deletion does not cancel them. Refresh and review again if the
+dependency preview changes before confirmation.
+
+Deleting a dataset version erases its training/tuning history, derived registered
+versions, observations and checkpoints. Deleting a model erases the definition
+and those records across its datasets, keeping dataset inputs. Exclusively used
+uploaded dataset files are removed with dataset deletion. Files still needed by
+other datasets and operator-owned files outside the uploads area are kept and
+reported in the preview. The original file in Downloads is an operator original.
+Completed deletion frees the name for a new record with a new ID.
+
+Agent conversations and Python drafts are kept. They may contain copied facts
+about records that no longer exist, so recheck sources before using them. Exports,
+backups, retained evidence and previously scraped Prometheus history also remain.
+Deleting a classifier does not uninstall the local conversation model.
+
+If the response is lost or cleanup fails, use **Check / resume same deletion**.
+Refresh preserves that operation in this browser tab. It reuses the original
+request/key; do not start a replacement operation to work around partial cleanup.
+The tab remembers its selected project; API keys still need re-entry after reload.
+New project changes may be blocked until cleanup completes. The dashboard reports
+success only after a saved completion receipt. The API has corresponding
+[preview, deletion and status routes](../reference/api.md#permanent-dataset-and-model-deletion).
+
+Upgrade the model/tuning/monitoring APIs, worker and scheduler together after
+active work drains. Their shared artifact volume holds stable native coordination
+locks; the worker still reads uploaded inputs through its read-only mount.
+
 ## Stop and preserve data
 
 Use the same Compose files and project name with `stop` to stop services. Do not

@@ -1,10 +1,12 @@
-import { $, state, activeRuns, api, report, notify, showView, restoreSession } from "./core.js";
+import { $, state, activeRuns, api, report, notify, showView, restoreSession, restoreProject } from "./core.js";
 import { initWorkspace, loadWorkspace } from "./workspace.js";
 import { initAgent, loadHistory, renderChat, renderConversationSelect } from "./agent.js";
+import { initDeletion } from "./deletion.js";
 
 async function start() {
+  restoreProject();
   if (location.port === "8010") $("preview-notice").hidden = false;
-  initWorkspace(); initAgent(); restoreSession(); renderConversationSelect();
+  initWorkspace(); initAgent(); restoreSession(); initDeletion(); renderConversationSelect();
   state.renderTrainingRecovery(); state.renderChatRecovery();
   document.querySelectorAll("[data-view]").forEach((node) => node.addEventListener("click", () => showView(node.dataset.view)));
   document.querySelectorAll("[data-close-dialog]").forEach((node) => node.addEventListener("click", () => node.closest("dialog").close()));

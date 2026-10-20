@@ -1298,6 +1298,14 @@ td small {
   margin:0;
   overflow-wrap:anywhere
 }
+.danger-text { color: #fda4a4; }
+.danger-text:hover { color: #fecaca; }
+.danger-button { background: #b42332; color: #fff; border-color: #d94a56; }
+.danger-button:hover { background: #cf3040; }
+.model-manage { align-self: flex-start; margin-top: 6px; }
+.snapshot-note { color: #92a0b2; font-size: 11px; line-height: 1.5; margin: 0; padding: 0 18px 8px; }
+#models-dialog { max-height: 80vh; overflow-y: auto; }
+
 dialog {
   background:var(--surface);
   color:var(--text);

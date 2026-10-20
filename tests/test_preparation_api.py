@@ -58,7 +58,12 @@ def test_preview_requires_no_registration_and_stale_encoding_cannot_be_saved(
     assert (
         stale.status_code == 409 and stale.json()["error"]["code"] == "preparation_review_required"
     )
-    assert not store.datasets.records and not list(tmp_path.rglob("*.*"))
+    assert not store.datasets.records
+    # Native coordination files must remain stable; rejected preparation still
+    # leaves no source, canonical, manifest or private staging data behind.
+    files = [path for path in tmp_path.rglob("*") if path.is_file()]
+    assert files == [tmp_path / "artifacts/.control/demo/publication.lock"]
+    assert files[0].stat().st_size == 0
 
 
 def test_reviewed_preparation_is_immutable_replayable_and_trains_with_saved_transform(

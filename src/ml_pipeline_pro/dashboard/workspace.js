@@ -1,6 +1,7 @@
 import { $, state, activeRuns, el, button, api, number, date, badge, modelName, datasetName,
   selectedDataset, selectedModel, fillSelect, store, notify, report, describe, setPending,
-  showView, openReview, download, abortReads, restoreSession } from "./core.js";
+  showView, openReview, download, abortReads, restoreSession, rememberProject } from "./core.js";
+import { reviewDeletion } from "./deletion.js";
 
 function updateContext() {
   const dataset = selectedDataset(), model = selectedModel();
@@ -31,7 +32,9 @@ export function renderWorkspace() {
     card.append(el("p", "record-meta", `${dataset.feature_columns.length} features · ${dataset.num_classes} classes · ${dataset.row_counts.train} train / ${dataset.row_counts.validation} validation / ${dataset.row_counts.test} test`), el("div", "hash-text", `SHA-256 ${dataset.sha256}`));
     const actions = el("div", "record-actions"); actions.append(button("Use for training →", "text-button", () => {
       state.selectedDataset = dataset.id; renderWorkspace(); showView("runs"); $("training-model").focus();
-    })); card.append(actions); $("datasets-list").append(card);
+    }));
+    actions.append(button("Delete dataset", "text-button danger-text", () => reviewDeletion("datasets", dataset)));
+    card.append(actions); $("datasets-list").append(card);
   }
   $("tuning-panel").hidden = !state.tuning.length; $("tuning-list").replaceChildren();
   for (const job of state.tuning.slice(0, 10)) {
@@ -265,6 +268,7 @@ export function initWorkspace() {
   $("connection-form").addEventListener("submit", async (event) => {
     event.preventDefault(); if (state.mutations) return; abortReads(); state.generation++;
     state.project = $("connection-project").value; state.key = $("connection-key").value; $("connection-key").value = ""; $("connection-dialog").close();
+    rememberProject();
     Object.assign(state, { datasets: [], models: [], experiments: [], tuning: [], versions: [], selectedDataset: "", selectedModel: "", selectedVersion: "", conversation: "", revision: 0, turns: [], detail: "", detailSignature: "", loading: false });
     state.resetPreparation?.();
     state.actions.clear(); state.actionReads.clear(); state.actionBusy.clear(); $("run-detail").hidden = true;

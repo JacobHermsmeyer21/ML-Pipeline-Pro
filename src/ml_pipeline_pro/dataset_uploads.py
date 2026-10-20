@@ -24,6 +24,7 @@ from ml_pipeline_pro.dataset_files import (
 from ml_pipeline_pro.datasets import DatasetValidationError, load_dataset
 from ml_pipeline_pro.errors import ApiError, ErrorResponse
 from ml_pipeline_pro.schemas import DatasetCreate, DatasetRecord, Name
+from ml_pipeline_pro.storage_control import dataset_registration
 
 
 def upload_access(request: Request, project: Project):
@@ -119,6 +120,7 @@ async def _matching_record(store, candidate: DatasetRecord, settings):
 
 
 @router.post("/upload", response_model=DatasetRecord, status_code=201)
+@dataset_registration
 async def upload_dataset(
     request: Request,
     response: Response,

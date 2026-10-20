@@ -11,6 +11,8 @@ from ml_pipeline_pro.connections import open_connections
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.monitoring import MonitoringStore, summarize
 from ml_pipeline_pro.monitoring_schemas import ObservationCreate
+from ml_pipeline_pro.schemas import ArtifactReference, ModelVersionRecord
+from ml_pipeline_pro.tracking import TrackingStore
 from tests.integration.helpers import integration_settings
 
 pytestmark = [
@@ -23,16 +25,36 @@ def test_real_immutable_concurrent_samples_window_pagination_and_index():
     async def run():
         settings = integration_settings()
         project = "monitor_" + uuid4().hex
+        version_id = str(uuid4())
         async with open_connections(settings) as connections:
             database = connections.mongo.get_database(settings.mongodb_database)
             store = MonitoringStore(database)
             await store.ensure_indexes()
             collection = store.observations.collection
             try:
+                # Observation admission now validates this reference in the same
+                # transaction that fences permanent deletion. Keep all existing
+                # insert-race, replay, pagination and index assertions below.
+                await TrackingStore(database).versions.insert(
+                    ModelVersionRecord(
+                        id=version_id,
+                        project_id=project,
+                        model_id="fixture",
+                        version="v1",
+                        experiment_id="fixture",
+                        dependencies={},
+                        artifact=ArtifactReference(
+                            name="model.pt",
+                            uri=f"{project}/fixture/token/model.pt",
+                            sha256="a" * 64,
+                            size_bytes=10,
+                        ),
+                    )
+                )
                 now = datetime.now(UTC)
                 body = ObservationCreate(
                     sample_id="same",
-                    model_version_id="version",
+                    model_version_id=version_id,
                     observed_at=now - timedelta(seconds=1),
                     latency_ms=150,
                     fault="seeded_latency",
@@ -59,9 +81,9 @@ def test_real_immutable_concurrent_samples_window_pagination_and_index():
                         update={"sample_id": "stale", "observed_at": now - timedelta(hours=2)}
                     ),
                 )
-                records = await store.window(project, "version", 300, now)
+                records = await store.window(project, version_id, 300, now)
                 assert len(records) == 101
-                summary = summarize(records, "version", 300, now)
+                summary = summarize(records, version_id, 300, now)
                 assert summary.partial and summary.sample_count == 100
                 assert summary.seeded_count == 100 and summary.labeled_accuracy is None
                 assert await store.window(project, "unknown", 300, now) == []
@@ -72,7 +94,7 @@ def test_real_immutable_concurrent_samples_window_pagination_and_index():
                             "find": collection.name,
                             "filter": {
                                 "project_id": project,
-                                "model_version_id": "version",
+                                "model_version_id": version_id,
                                 "observed_at": {"$gte": now - timedelta(seconds=300), "$lte": now},
                             },
                             "sort": {"observed_at": -1, "_id": -1},
@@ -86,6 +108,7 @@ def test_real_immutable_concurrent_samples_window_pagination_and_index():
                 assert plan["executionStats"]["totalDocsExamined"] <= 101
             finally:
                 await collection.delete_many({"project_id": project})
+                await database.model_versions.delete_one({"_id": version_id, "project_id": project})
 
     asyncio.run(run())
 

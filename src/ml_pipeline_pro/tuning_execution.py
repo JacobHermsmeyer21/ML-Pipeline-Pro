@@ -16,6 +16,7 @@ from pymongo.errors import DuplicateKeyError, PyMongoError
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.execution import execute_experiment
 from ml_pipeline_pro.schemas import ExperimentRecord
+from ml_pipeline_pro.storage_control import attempt_lock, finish_owned
 from ml_pipeline_pro.training import evaluate_checkpoint
 from ml_pipeline_pro.training_control import (
     OwnershipLost,
@@ -62,6 +63,13 @@ def remaining(deadline) -> float:
 
 async def execute_tuning(tuning, tracking, project_id: str, job_id: str, settings: Settings) -> str:
     token = str(uuid4())
+    with attempt_lock(settings, project_id, "tuning_jobs", job_id, token):
+        return await finish_owned(
+            _execute_tuning(tuning, tracking, project_id, job_id, settings, token)
+        )
+
+
+async def _execute_tuning(tuning, tracking, project_id, job_id, settings, token):
     job = await tuning.jobs.claim(
         project_id,
         job_id,
