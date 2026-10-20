@@ -1,12 +1,12 @@
-============================= test session starts =============================
-platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
-rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
-configfile: pyproject.toml
-testpaths: tests
-plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
-collected 941 items / 929 deselected / 12 selected
-
-tests\integration\test_recovery.py ............                          [100%]
-
-- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\logistic-validation\recovery-final.xml -
-=============== 12 passed, 929 deselected in 281.64s (0:04:41) ================
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 941 items / 929 deselected / 12 selected
+
+tests\integration\test_recovery.py ............                          [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\logistic-validation\recovery-final.xml -
+=============== 12 passed, 929 deselected in 281.64s (0:04:41) ================

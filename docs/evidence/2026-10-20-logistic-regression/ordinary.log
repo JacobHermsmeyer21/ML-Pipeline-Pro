@@ -1,27 +1,27 @@
-============================= test session starts =============================
-platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
-rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
-configfile: pyproject.toml
-testpaths: tests
-plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
-collected 941 items / 835 deselected / 106 selected
-
-tests\integration\test_conversation_actions.py ..........                [  9%]
-tests\integration\test_conversation_dispatch.py ....                     [ 13%]
-tests\integration\test_conversation_service.py .......                   [ 19%]
-tests\integration\test_conversation_store.py .................           [ 35%]
-tests\integration\test_dataset_columns.py ......                         [ 41%]
-tests\integration\test_dataset_uploads.py ..                             [ 43%]
-tests\integration\test_deletions.py .....................                [ 63%]
-tests\integration\test_experiments.py ...                                [ 66%]
-tests\integration\test_infrastructure.py ...                             [ 68%]
-tests\integration\test_monitoring.py ..                                  [ 70%]
-tests\integration\test_preparation.py ..                                 [ 72%]
-tests\integration\test_snippet_generation.py ...                         [ 75%]
-tests\integration\test_tools.py .                                        [ 76%]
-tests\integration\test_tuning.py .....                                   [ 81%]
-tests\integration\test_tuning_ownership.py ..........                    [ 90%]
-tests\integration\test_unbounded_store.py ..........                     [100%]
-
-- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\logistic-validation\ordinary-final.xml -
-=============== 106 passed, 835 deselected in 66.08s (0:01:06) ================
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 941 items / 835 deselected / 106 selected
+
+tests\integration\test_conversation_actions.py ..........                [  9%]
+tests\integration\test_conversation_dispatch.py ....                     [ 13%]
+tests\integration\test_conversation_service.py .......                   [ 19%]
+tests\integration\test_conversation_store.py .................           [ 35%]
+tests\integration\test_dataset_columns.py ......                         [ 41%]
+tests\integration\test_dataset_uploads.py ..                             [ 43%]
+tests\integration\test_deletions.py .....................                [ 63%]
+tests\integration\test_experiments.py ...                                [ 66%]
+tests\integration\test_infrastructure.py ...                             [ 68%]
+tests\integration\test_monitoring.py ..                                  [ 70%]
+tests\integration\test_preparation.py ..                                 [ 72%]
+tests\integration\test_snippet_generation.py ...                         [ 75%]
+tests\integration\test_tools.py .                                        [ 76%]
+tests\integration\test_tuning.py .....                                   [ 81%]
+tests\integration\test_tuning_ownership.py ..........                    [ 90%]
+tests\integration\test_unbounded_store.py ..........                     [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\logistic-validation\ordinary-final.xml -
+=============== 106 passed, 835 deselected in 66.08s (0:01:06) ================
