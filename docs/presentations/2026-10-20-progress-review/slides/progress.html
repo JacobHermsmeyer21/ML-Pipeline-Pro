@@ -1,0 +1,39 @@
+<section id="progress" data-transition="fade" style="display:flex; flex-direction:column; gap:48px; padding:128px 128px 160px; background:#f3f5f4">
+  <h2 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:64px; font-weight:600; line-height:1.1; letter-spacing:-1px; color:#14201c">Progress we can measure</h2>
+  <div style="display:grid; gap:24px; grid-template-columns:1fr 1fr 1fr">
+    <div style="display:flex; flex-direction:column; gap:8px; padding:32px 36px; background:#fbfcfb; border:1px solid #d5dcd9; border-radius:16px; box-shadow:0 12px 24px -16px #8fa39c">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:96px; font-weight:700; line-height:1; letter-spacing:-2px; color:#0b7a5f">758</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.35; color:#4b5a55">fast tests passing, 0 failing</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; padding:32px 36px; background:#fbfcfb; border:1px solid #d5dcd9; border-radius:16px; box-shadow:0 12px 24px -16px #8fa39c">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:96px; font-weight:700; line-height:1; letter-spacing:-2px; color:#0b7a5f">80%</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.35; color:#4b5a55">code covered by those tests</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; padding:32px 36px; background:#fbfcfb; border:1px solid #d5dcd9; border-radius:16px; box-shadow:0 12px 24px -16px #8fa39c">
+      <p style="font-family:'Space Grotesk', Arial, sans-serif; font-size:96px; font-weight:700; line-height:1; letter-spacing:-2px; color:#0b7a5f">14 / 14</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; line-height:1.35; color:#4b5a55">Claude backend tests passing</p>
+    </div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:20px">
+    <h3 style="font-family:'Space Grotesk', Arial, sans-serif; font-size:30px; font-weight:600; color:#14201c">Automated checks by suite</h3>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center">
+      <p style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#2e3b37">Unit and API tests</p>
+      <div style="width:1000px; height:44px; display:flex; flex-direction:column; background:#0b7a5f; border-radius:6px">
+      </div>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#14201c">758</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center">
+      <p style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#2e3b37">Real-service integration</p>
+      <div style="width:153px; height:44px; display:flex; flex-direction:column; background:#5e9f8c; border-radius:6px">
+      </div>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#14201c">114 <span style="color:#4b5a55">· run in CI with MongoDB and Redis</span></p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:24px; align-items:center">
+      <p style="width:420px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; color:#2e3b37">Dashboard browser tests</p>
+      <div style="width:35px; height:44px; display:flex; flex-direction:column; background:#9cc4b7; border-radius:6px">
+      </div>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#14201c">27 <span style="color:#4b5a55">· 5 screen widths, accessibility scan</span></p>
+    </div>
+  </div>
+  <aside>About 1 minute 15 seconds. These are measured numbers, not estimates. 758 fast tests pass with nothing failing and cover 80 percent of the code. All 14 tests for the new Claude backend pass; they check tool calls, approvals, code drafts, error handling and that the API key never leaks. The bar chart shows where the checks live: most are fast unit and API tests, 114 integration tests need real MongoDB and Redis and run in CI, and 27 new browser tests check the dashboard at five screen sizes.</aside>
+</section>

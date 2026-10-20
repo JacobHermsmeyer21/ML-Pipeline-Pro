@@ -1,0 +1,44 @@
+<section id="flow" data-transition="fade" style="background:#F3F5F4;color:#14201C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:space-between">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px">How one training run moves</h2>
+<div style="display:flex;flex-direction:row;align-items:center;gap:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFCFB;border:1px solid #C9D3CF;border-radius:16px;padding:28px;box-shadow:0 12px 24px -16px #8FA39C">
+<p style="font-size:26px;font-weight:600;color:#0B7A5F">1. Dashboard</p>
+<p style="font-size:24px;line-height:1.4;color:#2E3B37">You review the settings and submit once.</p>
+</div>
+<x-connector style="width:40px;color:#7D8F88;border-width:3px"></x-connector>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFCFB;border:1px solid #C9D3CF;border-radius:16px;padding:28px;box-shadow:0 12px 24px -16px #8FA39C">
+<p style="font-size:26px;font-weight:600;color:#0B7A5F">2. Model API</p>
+<p style="font-size:24px;line-height:1.4;color:#2E3B37">Saves the run as queued in MongoDB.</p>
+</div>
+<x-connector style="width:40px;color:#7D8F88;border-width:3px"></x-connector>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFCFB;border:1px solid #C9D3CF;border-radius:16px;padding:28px;box-shadow:0 12px 24px -16px #8FA39C">
+<p style="font-size:26px;font-weight:600;color:#0B7A5F">3. Queue</p>
+<p style="font-size:24px;line-height:1.4;color:#2E3B37">Redis and Celery hand the job to the worker.</p>
+</div>
+<x-connector style="width:40px;color:#7D8F88;border-width:3px"></x-connector>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#14201C;border:1px solid #14201C;border-radius:16px;padding:28px;box-shadow:0 16px 32px -16px #5E7068">
+<p style="font-size:26px;font-weight:600;color:#5FD3B0">4. Worker</p>
+<p style="font-size:24px;line-height:1.4;color:#E4ECE9">Trains the PyTorch MLP and keeps the best validation epoch.</p>
+</div>
+<x-connector style="width:40px;color:#7D8F88;border-width:3px"></x-connector>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFCFB;border:1px solid #C9D3CF;border-radius:16px;padding:28px;box-shadow:0 12px 24px -16px #8FA39C">
+<p style="font-size:26px;font-weight:600;color:#0B7A5F">5. Results</p>
+<p style="font-size:24px;line-height:1.4;color:#2E3B37">Scores the test split once, saves a checkpoint with its SHA-256.</p>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #0B7A5F;padding:24px 0px 0px 0px">
+<h3 style="font-size:30px;font-weight:600;font-family:'Space Grotesk', Arial, sans-serif">Never twice</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">One idempotency key per submission, so a double click starts one run.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #0B7A5F;padding:24px 0px 0px 0px">
+<h3 style="font-size:30px;font-weight:600;font-family:'Space Grotesk', Arial, sans-serif">No test leakage</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">Scaling and model choice use training and validation rows only.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #0B7A5F;padding:24px 0px 0px 0px">
+<h3 style="font-size:30px;font-weight:600;font-family:'Space Grotesk', Arial, sans-serif">Repeatable</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">Fixed seed, deterministic PyTorch, one CPU thread.</p>
+</div>
+</div>
+<aside>About 1 minute. Follow one run left to right. The dashboard sends a single request; the API stores it as queued; Redis and Celery hand it to a separate worker so the website never freezes; the worker trains the PyTorch network and keeps the epoch with the best validation score; only then is the held-out test split scored, and the checkpoint is saved with a fingerprint we verify before download. Point to the three guarantees underneath: no duplicate runs, no test leakage, repeatable results.</aside>
+</section>

@@ -1,0 +1,26 @@
+<section id="risks" data-transition="fade" style="background:#F3F5F4;color:#14201C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px">Bottlenecks and risks</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:14px;background:#FBFCFB;border:1px solid #D5DCD9;border-top:6px solid #B4610F;border-radius:14px;padding:32px 36px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600">Laptop CPU inference is slow</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">Reading the first prompt dominates a chat turn; one comparison ran past the 270-second limit.</p>
+<p style="font-size:24px;line-height:1.4;color:#0B7A5F;font-weight:500">Plan: done — the agent now runs on Claude through the Anthropic API.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;background:#FBFCFB;border:1px solid #D5DCD9;border-top:6px solid #B4610F;border-radius:14px;padding:32px 36px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600">Kubernetes storage fails at startup</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">The dataset API returns 503: a database connection opens before MongoDB’s replica set is ready.</p>
+<p style="font-size:24px;line-height:1.4;color:#0B7A5F;font-weight:500">Plan: replica-set discovery, then rerun the cluster smoke test.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;background:#FBFCFB;border:1px solid #D5DCD9;border-top:6px solid #B4610F;border-radius:14px;padding:32px 36px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600">Training can’t run on Vercel</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">Vercel functions are short-lived and share no disk; training runs minutes and needs its files.</p>
+<p style="font-size:24px;line-height:1.4;color:#0B7A5F;font-weight:500">Plan: API and training on Modal with shared storage; Vercel serves the site.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;background:#FBFCFB;border:1px solid #D5DCD9;border-top:6px solid #B4610F;border-radius:14px;padding:32px 36px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600">No independent reviewer yet</h3>
+<p style="font-size:24px;line-height:1.4;color:#4B5A55">Concurrency and recovery code has only been reviewed by its own authors.</p>
+<p style="font-size:24px;line-height:1.4;color:#0B7A5F;font-weight:500">Plan: ask a peer team to review; disclose the gap until then.</p>
+</div>
+</div>
+<aside>About 1 minute 15 seconds. Four risks, each with its plan. First, the assistant is slow on a laptop CPU because processing the first prompt dominates the turn; we solved it by moving the agent to Claude through the Anthropic API, which answers in seconds. Second, in Kubernetes the database connection opens before MongoDB is ready, so the dataset API returns 503; the fix is replica-set discovery. Third, Vercel's functions are short-lived and have no shared disk, but training runs for minutes and the API and training share dataset and model files. So the API and training both run on Modal with shared storage, and Vercel serves the site; the next slide shows the layout. Fourth, our concurrency code has not had an independent review; we will ask a peer team.</aside>
+</section>

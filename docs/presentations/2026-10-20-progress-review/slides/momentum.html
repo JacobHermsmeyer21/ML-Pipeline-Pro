@@ -1,0 +1,38 @@
+<section id="momentum" data-transition="fade" style="background:#F3F5F4;color:#14201C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px">Measured progress over two days</h2>
+<div style="display:flex;flex-direction:row;gap:64px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FBFCFB;border:1px solid #D5DCD9;border-radius:16px;padding:32px 40px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:30px;font-weight:600">Dashboard browser tests, by milestone</h3>
+<div style="display:flex;flex-direction:row;align-items:end;gap:40px;height:440px;border-bottom:2px solid #B9C4C0;padding:0px 16px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><p style="font-size:26px;font-weight:600">9</p><div style="width:100%;height:133px;background:#0B7A5F;border-radius:4px 4px 0px 0px"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><p style="font-size:26px;font-weight:600">21</p><div style="width:100%;height:311px;background:#0B7A5F;border-radius:4px 4px 0px 0px"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><p style="font-size:26px;font-weight:600">24</p><div style="width:100%;height:356px;background:#0B7A5F;border-radius:4px 4px 0px 0px"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><p style="font-size:26px;font-weight:600">26</p><div style="width:100%;height:385px;background:#0B7A5F;border-radius:4px 4px 0px 0px"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><p style="font-size:26px;font-weight:600">27</p><div style="width:100%;height:400px;background:#0B7A5F;border-radius:4px 4px 0px 0px"></div></div>
+</div>
+<div style="display:flex;flex-direction:row;gap:40px;padding:0px 16px">
+<p style="flex:1;font-size:24px;line-height:1.25;color:#4B5A55;text-align:center">Test net</p>
+<p style="flex:1;font-size:24px;line-height:1.25;color:#4B5A55;text-align:center">Redesign</p>
+<p style="flex:1;font-size:24px;line-height:1.25;color:#4B5A55;text-align:center">3D depth</p>
+<p style="flex:1;font-size:24px;line-height:1.25;color:#4B5A55;text-align:center">Review fixes</p>
+<p style="flex:1;font-size:24px;line-height:1.25;color:#4B5A55;text-align:center">Claude</p>
+</div>
+</div>
+<div style="width:520px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-direction:column;gap:4px;border-left:6px solid #0B7A5F;padding:8px 0px 8px 28px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;letter-spacing:-1px">740 → 758</p>
+<p style="font-size:26px;line-height:1.35;color:#4B5A55">Python tests, none failing</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;border-left:6px solid #0B7A5F;padding:8px 0px 8px 28px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;letter-spacing:-1px">79% → 80%</p>
+<p style="font-size:26px;line-height:1.35;color:#4B5A55">code covered by tests</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px;border-left:6px solid #0B7A5F;padding:8px 0px 8px 28px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;letter-spacing:-1px">Same day</p>
+<p style="font-size:26px;line-height:1.35;color:#4B5A55">security finding found and fixed</p>
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5A6863">Source: test runs at each commit, 19–20 Oct 2026, branches dashboard-redesign and claude-chat-backend.</p>
+<aside>About 45 seconds. This slide shows progress over time, not just a snapshot. The chart counts the browser tests that check the dashboard at each milestone: 9 when we built the safety net before redesigning, 27 now. On the right, the Python suite grew from 740 to 758 tests with nothing failing, coverage moved from 79 to 80 percent, and when an automated security review flagged a cost-limit bug in the new Claude backend, we fixed and tested it the same day.</aside>
+</section>
