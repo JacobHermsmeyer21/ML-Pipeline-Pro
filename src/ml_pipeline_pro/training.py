@@ -100,8 +100,8 @@ def train_classifier(
                 )
             loss.backward()
             optimizer.step()
-        accuracy, f1 = _scores(model, validation_x, validation_y, loaded.num_classes)
-        score = f1 if objective_metric == "validation_f1" else accuracy
+        validation_scores = _scores(model, validation_x, validation_y, loaded.num_classes)
+        score = validation_scores[objective_metric.removeprefix("validation_")]
         # Ties retain the first checkpoint; test labels never select a model.
         if score > best_f1:
             best_f1, best_epoch = score, epoch + 1
@@ -109,21 +109,22 @@ def train_classifier(
 
     check_budget()
     model.load_state_dict(best_state)
-    validation_accuracy, validation_f1 = _scores(
-        model, validation_x, validation_y, loaded.num_classes
-    )
     metrics = {
-        "validation_accuracy": validation_accuracy,
-        "validation_f1": validation_f1,
-        "best_epoch": float(best_epoch),
+        f"validation_{name}": value
+        for name, value in _scores(model, validation_x, validation_y, loaded.num_classes).items()
     }
+    metrics["best_epoch"] = float(best_epoch)
     if evaluate_test:
         check_budget()
         test = loaded.splits["test"]
         test_x = (torch.tensor(test.features, dtype=torch.float32) - mean) / std
         test_y = torch.tensor(test.targets, dtype=torch.long)
-        test_accuracy, test_f1 = _scores(model, test_x, test_y, loaded.num_classes)
-        metrics.update(test_accuracy=test_accuracy, test_f1=test_f1)
+        metrics.update(
+            {
+                f"test_{name}": value
+                for name, value in _scores(model, test_x, test_y, loaded.num_classes).items()
+            }
+        )
     dependencies = {
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -231,7 +232,8 @@ def load_checkpoint(content: bytes, experiment: ExperimentRecord, dataset: Datas
     return model, checkpoint
 
 
-def _scores(model, features, targets, num_classes: int) -> tuple[float, float]:
+def _scores(model, features, targets, num_classes: int) -> dict[str, float]:
+    """Score all dataset classes equally; undefined per-class ratios contribute zero."""
     import torch
 
     model.eval()
@@ -241,14 +243,21 @@ def _scores(model, features, targets, num_classes: int) -> tuple[float, float]:
             raise TrainingError("Evaluation produced nonfinite logits")
         predictions = logits.argmax(dim=1)
         accuracy = float((predictions == targets).float().mean())
-        class_f1 = []
+        class_f1, class_precision, class_recall = [], [], []
         for label in range(num_classes):
             tp = int(((predictions == label) & (targets == label)).sum())
             fp = int(((predictions == label) & (targets != label)).sum())
             fn = int(((predictions != label) & (targets == label)).sum())
             denominator = 2 * tp + fp + fn
             class_f1.append(2 * tp / denominator if denominator else 0.0)
-        return accuracy, sum(class_f1) / len(class_f1)
+            class_precision.append(tp / (tp + fp) if tp + fp else 0.0)
+            class_recall.append(tp / (tp + fn) if tp + fn else 0.0)
+        return {
+            "accuracy": accuracy,
+            "f1": sum(class_f1) / num_classes,
+            "precision": sum(class_precision) / num_classes,
+            "recall": sum(class_recall) / num_classes,
+        }
 
 
 def evaluate_checkpoint(
@@ -273,11 +282,14 @@ def evaluate_checkpoint(
     features = (torch.tensor(test.features, dtype=torch.float32) - checkpoint["mean"]) / checkpoint[
         "std"
     ]
-    accuracy, f1 = _scores(
+    test_scores = _scores(
         model, features, torch.tensor(test.targets, dtype=torch.long), dataset.num_classes
     )
     control.check()
-    metrics = {**experiment.metrics, "test_accuracy": accuracy, "test_f1": f1}
+    metrics = {
+        **experiment.metrics,
+        **{f"test_{name}": value for name, value in test_scores.items()},
+    }
     original_manifest = next(
         artifact for artifact in experiment.artifacts if artifact.name == "manifest.json"
     )

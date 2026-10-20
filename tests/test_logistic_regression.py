@@ -162,7 +162,7 @@ def test_linear_checkpoint_metrics_scaling_selection_and_reload(
     training_input, classes, monkeypatch
 ):
     import torch
-    from sklearn.metrics import accuracy_score, f1_score
+    from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
     from ml_pipeline_pro import training
 
@@ -215,6 +215,10 @@ def test_linear_checkpoint_metrics_scaling_selection_and_reload(
     assert result.metrics["test_f1"] == pytest.approx(
         f1_score(test.targets, predictions, average="macro"), abs=1e-6
     )
+    for name, scorer in [("precision", precision_score), ("recall", recall_score)]:
+        assert result.metrics[f"test_{name}"] == pytest.approx(
+            scorer(test.targets, predictions, average="macro", zero_division=0), abs=1e-6
+        )
     assert result.metrics["validation_f1"] >= 0.9
     again = train_classifier(
         experiment, dataset, "repeat", settings, architecture="logistic_regression"

@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import io
+import json
 from pathlib import Path
 
 import pytest
@@ -174,3 +175,59 @@ def test_worker_records_changed_dataset_failure(
     assert response["status"] == "failed"
     assert "changed after registration" in response["error_summary"]
     assert response["artifacts"] == []
+
+
+@pytest.mark.parametrize(
+    "targets,predictions,num_classes",
+    [
+        ([0, 0, 0, 0, 1, 1], [0, 0, 0, 1, 0, 0], 2),
+        ([0, 0, 0, 0, 1, 1, 2], [0, 0, 1, 2, 0, 0, 0], 3),
+        ([0, 0, 1, 1], [1, 1, 0, 0], 2),
+        ([0, 0, 0], [0, 0, 0], 3),
+    ],
+)
+def test_scores_match_independent_macro_metrics(targets, predictions, num_classes):
+    from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+    from ml_pipeline_pro.training import _scores
+
+    # Identity model passes explicit logits through; no training can obscure the boundary.
+    logits = torch.nn.functional.one_hot(torch.tensor(predictions), num_classes).float()
+    actual = _scores(torch.nn.Identity(), logits, torch.tensor(targets), num_classes)
+    expected = {"accuracy": accuracy_score(targets, predictions)}
+    for name, scorer in [
+        ("f1", f1_score),
+        ("precision", precision_score),
+        ("recall", recall_score),
+    ]:
+        expected[name] = scorer(
+            targets, predictions, labels=list(range(num_classes)), average="macro", zero_division=0
+        )
+    assert actual == pytest.approx(expected, abs=1e-6)
+
+
+def test_training_saves_all_split_scores_in_manifest(training_input):
+    settings, dataset, experiment = training_input
+    result = train_classifier(experiment, dataset, "four-metrics", settings)
+    for split in ("validation", "test"):
+        for metric in ("f1", "precision", "recall", "accuracy"):
+            assert 0 <= result.metrics[f"{split}_{metric}"] <= 1
+    manifest = next(a for a in result.artifacts if a.name == "manifest.json")
+    assert (
+        json.loads((settings.artifact_root / manifest.uri).read_bytes())["metrics"]
+        == result.metrics
+    )
+
+
+def test_validation_only_training_does_not_save_test_scores(training_input):
+    settings, dataset, experiment = training_input
+    result = train_classifier(
+        experiment, dataset, "validation-metrics", settings, evaluate_test=False
+    )
+    assert {
+        "validation_f1",
+        "validation_precision",
+        "validation_recall",
+        "validation_accuracy",
+    } <= result.metrics.keys()
+    assert not any(name.startswith("test_") for name in result.metrics)

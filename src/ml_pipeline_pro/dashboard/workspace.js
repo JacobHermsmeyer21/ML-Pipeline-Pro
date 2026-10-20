@@ -8,6 +8,8 @@ function updateContext() {
   $("chat-context").textContent = dataset ? `${dataset.name}${model ? ` / ${model.name}` : ""}` : "Choose a dataset to get started";
   store("selection", { dataset: state.selectedDataset, model: state.selectedModel });
 }
+const classificationMetrics = [["F1", "f1"], ["Precision", "precision"], ["Recall", "recall"], ["Accuracy", "accuracy"]];
+
 function algorithmLabel(algorithm) {
   return algorithm === "logistic_regression" ? "Logistic regression" : "MLP";
 }
@@ -34,7 +36,9 @@ export function renderWorkspace() {
     identity.append(el("strong", "", modelName(run.model_id)), el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`));
     status.append(badge(run.status));
     actions.append(button("View →", "text-button", () => showRun(run.id).catch(report)));
-    row.append(identity, status, el("td", "teal-text", number(run.metrics.validation_f1)), el("td", "", date(run.created_at)), actions); $("runs-body").append(row);
+    row.append(identity, status);
+    for (const [, name] of classificationMetrics) row.append(el("td", "teal-text", number(run.metrics[`validation_${name}`])));
+    row.append(el("td", "", date(run.created_at)), actions); $("runs-body").append(row);
   }
   $("datasets-list").replaceChildren();
   if (!state.datasets.length) $("datasets-list").append(el("div", "empty-state", "Your first dataset will appear here."));
@@ -130,11 +134,18 @@ function renderRunDetail(run) {
   const heading = el("div", "panel-title"), text = el("div"); text.append(el("h2", "", modelName(run.model_id)), el("p", "", `Experiment ${run.id}`));
   text.append(el("p", "muted-note", algorithmLabel(run.config.algorithm || "mlp")));
   heading.append(text, badge(run.status)); panel.append(heading);
-  const metrics = el("div", "detail-metrics");
-  for (const [label, value] of [["Validation F1", run.metrics.validation_f1], ["Validation accuracy", run.metrics.validation_accuracy], ["Selected epoch", run.metrics.best_epoch]]) {
-    const metric = el("div", "detail-metric", label); metric.append(el("strong", "", number(value, label === "Selected epoch" ? 0 : 3))); metrics.append(metric);
+  panel.append(el("p", "muted-note", "Scores range from 0 to 1. F1, precision and recall are macro averages across all classes. Missing scores appear as —; train a new run to record them."));
+  for (const split of run.test_evaluated ? ["validation", "test"] : ["validation"]) {
+    const title = split === "validation" ? "Validation" : "Held-out test";
+    const metrics = el("div", "detail-metrics"); metrics.setAttribute("aria-label", `${title} metrics`);
+    panel.append(el("h3", "", `${title} metrics`));
+    for (const [label, name] of classificationMetrics) {
+      const metric = el("div", "detail-metric", label); metric.append(el("strong", "", number(run.metrics[`${split}_${name}`]))); metrics.append(metric);
+    }
+    panel.append(metrics);
   }
-  panel.append(metrics, el("p", "muted-note", `${datasetName(run.dataset_id)} · ${run.attempts} attempt(s) · Started ${date(run.started_at)}`));
+  panel.append(el("p", "muted-note", `Selected epoch: ${number(run.metrics.best_epoch, 0)}`));
+  panel.append(el("p", "muted-note", `${datasetName(run.dataset_id)} · ${run.attempts} attempt(s) · Started ${date(run.started_at)}`));
   if (run.error_summary) panel.append(el("p", "error-text", run.error_summary));
   const actions = el("div", "record-actions"); actions.append(button("Ask agent about this run", "secondary", () => {
     $("chat-input").value = `Inspect experiment ${run.id}. Return a verified metrics.validation_f1 fact and guide my next pipeline step in one sentence.`; $("chat-input").focus();

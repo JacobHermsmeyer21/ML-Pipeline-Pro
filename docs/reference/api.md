@@ -22,6 +22,18 @@ admission and AI mutation proposals reject logistic models with
 `409 unsupported_model_algorithm`; read/list/compare tools support either algorithm.
 See the [dashboard flow](../guides/dashboard.md#compare-algorithms).
 
+## Classification metric fields
+
+Experiment `metrics` and manifests include `validation_f1`, `validation_precision`,
+`validation_recall` and `validation_accuracy` for new evaluated checkpoints.
+After held-out test evaluation, the corresponding `test_f1`, `test_precision`,
+`test_recall` and `test_accuracy` fields are present. Precision and recall are
+additive fields; historical records may omit them. All four scores use a 0 to 1 scale.
+F1, precision and recall average per-class scores equally across all dataset class
+IDs, with undefined per-class ratios treated as zero. Accuracy is the fraction
+correct. Selection and comparison still support only their existing validation
+F1/accuracy objectives; test scores never select checkpoints or tuning winners.
+
 ## Dataset upload
 
 `POST /api/v1/datasets/upload` is an opt-in model-service route. Supply the usual

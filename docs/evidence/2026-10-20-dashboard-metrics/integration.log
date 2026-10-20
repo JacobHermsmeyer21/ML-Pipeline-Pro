@@ -1,0 +1,12 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro\.tools\metrics-acceptance
+configfile: pyproject.toml
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 8 items
+
+tests\integration\test_experiments.py ...                                [ 37%]
+tests\integration\test_tuning.py .....                                   [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\.tools\metrics-acceptance\artifacts\metrics-integration.xml -
+============================= 8 passed in 12.63s ==============================

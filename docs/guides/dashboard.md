@@ -270,3 +270,18 @@ otherwise those records cannot train. Rejected/interrupted staging files are
 removed. Published files are retained after uncertain metadata writes; automated
 orphan cleanup is deferred. Existing named dataset/artifact volumes and models
 are preserved.
+
+## Classification scores
+
+The experiment table shows validation F1, precision, recall and accuracy side by
+side on a 0 to 1 scale. Run details show those validation scores and a separate
+**Held-out test metrics** group after test evaluation. F1, precision and recall
+are macro averages: each dataset class has equal weight, with undefined per-class
+ratios contributing zero. Accuracy is the fraction of correct predictions.
+The best-F1 summary and validation comparison keep their existing selection rule.
+
+New MLP and logistic runs save all four scores for each evaluated split. Older
+runs may lack precision or recall; an em dash means unavailable, while `0.000`
+means a measured zero. Train a new run to record missing scores. Existing runs
+and artifacts are not recomputed or changed. Tuning trials remain validation-only;
+only the selected winner receives held-out test evaluation.

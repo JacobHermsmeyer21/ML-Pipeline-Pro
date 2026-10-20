@@ -1,10 +1,10 @@
 # Dashboard classification metrics
 
-- Status: awaiting review
+- Status: implemented; verified in isolated stack
 - Date: 2026-10-20
 - Source baseline: `d0fad5a`, `main`; fetched origin, upstream and origin/main match.
 - Request: show F1, precision, recall and accuracy in the dashboard.
-- Human reviewer/approval: pending Jacob's review of this plan.
+- Human reviewer/approval: Jacob, October 20, 2026, "approved" in this chat.
 - Independent review: availability unknown; no concurrency or ownership changes planned.
 
 ## Proposed behavior and purpose
@@ -103,10 +103,32 @@ demo rebuild is included without separate authorization.
 
 ## Human review and approval
 
-Pending. No implementation is authorized by this plan until Jacob approves its
-written scope under the [development method](../project/development-methodology.md).
+Jacob approved this written plan on October 20, 2026 with "approved" in this
+chat. Approval covers all proposed behavior, compatibility choices and acceptance
+criteria above. No material deviations are authorized.
 
 ## Implementation outcome
 
-Pending implementation and verification. Plan-only checks: local relative link
-targets and `git diff --check`; no application or live-service acceptance claimed.
+- Scope: additive macro precision/recall in the shared scorer, four validation
+  table columns, separate validation/test detail groups, responsive cards and docs.
+  Existing checkpoint objectives, first-best ties, ownership and artifacts remain.
+- Evidence: [retained execution record](../evidence/2026-10-20-dashboard-metrics/README.md)
+  includes source hashes, raw logs/JUnit, three browser/worker runs and screenshots.
+- Checks: locked sync, Ruff lint/format, 829 fast tests, eight affected ordinary
+  real-service cases and dependency compatibility pass. All 50 targeted training,
+  logistic and tuning cases pass in isolation. Both ordinary flags enabled; no
+  selected-case skips. Recovery mechanisms unchanged; recovery suite not rerun.
+- Test additions establish independent macro/zero-denominator arithmetic, complete
+  manifest metrics, validation-only test exclusion and logistic precision/recall.
+  No prior assertions were removed or weakened.
+- Isolation: simultaneous short-ID edits caused unrelated tuning admission failures
+  in the shared working copy. Verification used archive `a917da0` plus only this
+  feature's overlay. Other work is preserved and excluded from this commit.
+- Review: implementing-assistant source/diff and visual review; no independent
+  review or final human usefulness acceptance claimed. No material deviations.
+- Durable findings: no additional memory entry needed; behavior documented in the
+  dashboard guide and API reference. Existing artifact/selection invariants hold.
+- Deployment: only the isolated test stack was rebuilt; the user's demo was not
+  upgraded. New runs record missing metrics; historical runs remain unchanged.
+- Completion commit: this implementation commit; remote push result reported in
+  the completion message.
