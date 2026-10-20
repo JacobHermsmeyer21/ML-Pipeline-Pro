@@ -179,14 +179,59 @@ revert the commit; no stored records, artifacts or API contracts are affected.
 
 ## Implementation outcome
 
-Fill this section after implementation without weakening the criteria above.
-
-- Source revision and changed scope: <reference>
-- Commands, environment, dependency/tool/model identifiers: <known values or unknown>
-- Results: <passes, failures, skips, warnings, and acceptance mapping>
-- Raw evidence and retained location: <paths/CI links with provenance>
-- Test changes and justification: <requirement-based explanation or none>
-- Review: <reviewer, submitted scope, findings, resolutions, remaining gaps>
-- Deviations and human review: <references or none>
-- Durable findings: <memory links or none>
-- Completion commit and push: <commit and remote outcome>
+- Source revision and changed scope: branch `dashboard-redesign`, commits `3c343db`
+  through `b944cb7` on base `8de4a93`. The changes cover the Astro project in
+  `frontend/dashboard/`, the committed build in `src/ml_pipeline_pro/dashboard/`,
+  CSP hashes in `dashboard_api.py`, `tests/test_dashboard.py`, the CI
+  `dashboard-build` job, the dashboard guide, the README and a memory note.
+  Task list: [implementation plan](2026-10-19-dashboard-redesign-implementation-plan.md).
+- Environment and tools: macOS (Darwin 25.5), Node 24.14.1, Python 3.11.15, Astro
+  7.4.1, `@astrojs/react` 7.1.0, React 19.3.1, TypeScript 6.0.3, Playwright 1.64.1
+  (Chromium headless shell 156), `@axe-core/playwright` 4.14.0 and IBM Plex 5.3.0.
+- Results:
+  - Fast gates: `ruff check` and `ruff format --check` pass. `pytest -m "not
+    integration" --cov` gives 743 passed and 114 deselected, with 79% total
+    coverage. `uv pip check` passes.
+  - `npm run check` reports 0 errors, and `npm run test:e2e` gives 26 passed.
+  - A fresh `npm ci && npm run build` reproduced the committed output. The `uv
+    build` wheel lists `index.html`, `_astro/*`, `csp-hashes.json` and `example.csv`.
+- Acceptance mapping:
+  - F1 is covered by `workflows.spec.ts`. It checks connection headers, a single
+    training POST with an `Idempotency-Key`, refresh recovery, preview/prepare,
+    column save, deletion preview before `DELETE`, one chat decision per choice,
+    and the monitoring empty state.
+  - F2/N1/N5 are covered by `layout.spec.ts`. It runs at five widths and covers
+    the Review Focus cases, banned copy, axe (no serious or critical findings),
+    hidden closed dialogs, truncation titles and drawer focus.
+  - F3/N2 are covered by `depth.spec.ts` (tilt, reduced motion, hydration keeps
+    owned values, no CSP console messages) and by the pytest hash and header checks.
+  - N3/N4 are covered by the wheel listing and the reproducible-build diff.
+- Not verified: the real-service browser walkthrough and the ordinary and recovery
+  integration gates. This machine has no Docker, MongoDB or Redis. The new CI job
+  and the existing Compose jobs run them after the push.
+- Raw evidence: local runs only. The screenshots are under
+  `frontend/dashboard/test-results/screens/` (gitignored, not retained).
+- Test changes and justification:
+  - The fixed `app.js`/`styles.css` asset check now checks that every asset
+    `index.html` references is served, because Astro emits hashed names.
+  - New tests were added for the inline-code hashes, the header hashes and no
+    `style=` attributes. No assertion was weakened.
+- Review: a same-vendor subagent review (Claude, a fresh context, not
+  independent) of `8de4a93..1941157` found no critical issues.
+  - Important, fixed in `b944cb7`: truncated names had no title; drawer focus
+    dropped after a choice (re-graded up from minor). Both were fixed RED to GREEN
+    with new Playwright tests.
+  - Deferred minors: no stricter focus trap beyond `inert`; weaker 100-row and
+    correlation-ID assertions; the inline-code regex is duplicated in pytest; the
+    static "Project: demo" text flashes before the JS runs; the CI diff misses
+    untracked build files; Playwright reuses a local server on port 8123.
+- Deviations: the rulings are listed in the implementation plan ledger summary
+  below. The main ones:
+  - IBM Plex and an oxide-green accent replace Inter and indigo.
+  - One readout strip replaces four stat cards.
+  - Astro's `security.csp` is not used.
+  - `EmptyState` renders server-only.
+  - Darker muted text meets AA contrast.
+  All of these sit within items the plan marked as the implementer's call.
+- Durable findings: [dashboard Astro CSP](../memory/dashboard-astro-csp.md).
+- Completion commit and push: recorded in the session report.
