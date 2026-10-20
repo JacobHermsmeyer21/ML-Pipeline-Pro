@@ -1,10 +1,10 @@
 # Claude API chat backend
 
-- Status: draft
+- Status: approved; implementation in progress
 - Date: 2026-10-20
 - Source baseline: `d259343` on `dashboard-redesign` (branch `claude-chat-backend`)
 - Request: "USE CLAUDE AS I GAVE YOU MY CLAUDE API KEY" (repository owner, October 20)
-- Human reviewer/approval: pending
+- Human reviewer/approval: repository owner (lama9811), October 20, in chat: "OK GO BUILD IT AND THEN UPDATE THE SLIDES"
 - Independent review: different-vendor reviewer unavailable; same-vendor subagent
   review of the adapter boundary planned and disclosed as such
 
@@ -145,7 +145,9 @@ are unaffected.
 
 ## Human review and approval
 
-Pending.
+- October 20: the owner approved building this plan in chat. No model was named, so the
+  plan's default `claude-opus-5-5` stands. The owner did not answer the course-scope
+  question; Ollama remains the default and the course requirement is not marked changed.
 
 ## Implementation outcome
 
