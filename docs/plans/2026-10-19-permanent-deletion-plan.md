@@ -5,7 +5,8 @@
 - Source baseline: `486c861` on `person-a/conversation-foundation`
 - Request: dataset/model deletion. Jacob explicitly selects: "Permanently erase
   it and its related history and files."
-- Human approval: permanent-erasure intent confirmed; this design awaits review.
+- Human decisions: permanent erasure, blocking active jobs and preserving agent
+  conversations/drafts confirmed; full design approval remains pending.
 - Supersedes: the [history-preserving proposal](2026-10-19-dataset-model-deletion-plan.md).
 - Independent review: seek separate transaction, cleanup and worker-boundary
   review; availability unknown, and no independent review has occurred.
@@ -41,11 +42,11 @@ require a scoped cascade and coordinated cleanup; see the
 [artifact contract](../memory/evaluation-artifacts.md) and
 [ownership finding](../memory/tuning-parent-fence.md).
 
-Two intent questions are pending: refuse deletion during related active jobs or
-cancel-and-wait; preserve saved agent conversations/drafts or erase those too.
-Proposed defaults are **refuse during active jobs** and **preserve chats/drafts**.
-They require Jacob's replies or explicit approval of this plan. Chats can retain
-copied facts/code after underlying training records disappear.
+Jacob confirms both intent choices on October 19: **block deletion until related
+jobs finish** and **keep conversations and drafts; erase training history and
+files**. Deletion does not cancel jobs or erase saved agent messages/Python drafts.
+Chats can retain copied facts/code after underlying training records disappear.
+These resolve the presented intent questions; full design approval remains pending.
 
 Logical deletion was simpler and reversible, but Jacob selected permanent erasure.
 Refusing active jobs avoids adding standalone cancellation to this slice. Shared
@@ -203,14 +204,18 @@ Unsupported locking, storage failure or unresolved publication blocks cleanup.
 ## Human review and approval
 
 October 19: Jacob confirms permanent erasure, superseding the prior retained-
-history proposal. Active-job and chat/draft preferences are pending. This revised
-cascade, retention boundaries, name reuse, minimal receipts, locking dependency,
-recovery and acceptance design await explicit review under
-[AGENTS.md](../../AGENTS.md). No application implementation has started.
+history proposal. In the two explicit clarification replies, Jacob selects
+"Block deletion until those jobs finish (Recommended)" and "Keep conversations
+and drafts; erase training history and files (Recommended)". Approved scope of
+those replies: active-job behavior and chat/draft retention. They do not expressly
+approve the full revised design. Cascade, retention boundaries, name reuse,
+minimal receipts, locking dependency, recovery and acceptance design await that
+approval under [AGENTS.md](../../AGENTS.md). No application implementation has started.
 
 ## Implementation outcome
 
-- Source/scope: planning only at the baseline above; permanent-erasure revision.
+- Source/scope: planning only at the baseline above; permanent-erasure revision
+  and confirmed active-job/chat-retention choices recorded after `c90a550`.
 - Environment/commands: source and installed-lock inspection, `git fetch origin`,
   Windows PowerShell. Branch matches upstream; `origin/main` remains an ancestor.
 - Application results/test changes: none; implementation pending revised approval.
