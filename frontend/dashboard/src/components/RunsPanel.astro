@@ -1,0 +1,20 @@
+---
+---
+<article class="panel runs-panel">
+  <div class="panel-title">
+    <div><h2>Experiments <span id="run-count" class="count-label">0</span></h2></div>
+    <button class="quiet-button" id="refresh-runs" type="button">Refresh</button>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th scope="col">Experiment</th><th scope="col">Status</th><th scope="col">Validation F1</th><th scope="col">Created</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+      <tbody id="runs-body"></tbody>
+    </table>
+  </div>
+  <div id="runs-empty" class="empty-state">
+    <slot name="empty" />
+    <h3>No experiments yet</h3>
+    <p>Start one above. Each run appears here with its validation score when training finishes.</p>
+  </div>
+  <p class="table-footnote">Showing the latest 100 experiments.</p>
+</article>

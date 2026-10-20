@@ -1,103 +1,77 @@
 ---
-import "../styles/legacy.css";
+import "@fontsource/ibm-plex-sans/latin-400.css";
+import "@fontsource/ibm-plex-sans/latin-500.css";
+import "@fontsource/ibm-plex-sans/latin-600.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/layout.css";
+import "../styles/components.css";
+import IconSprite from "../components/IconSprite.astro";
+import Icon from "../components/Icon.astro";
+import Sidebar from "../components/Sidebar.astro";
+import Topbar from "../components/Topbar.astro";
+import StatsGrid from "../components/StatsGrid.astro";
+import LaunchPanel from "../components/LaunchPanel.astro";
+import RunsPanel from "../components/RunsPanel.astro";
+import DatasetsView from "../components/DatasetsView.astro";
+import MonitoringView from "../components/MonitoringView.astro";
+import AgentPanel from "../components/AgentPanel.astro";
+import ConnectionDialog from "../components/dialogs/ConnectionDialog.astro";
+import ModelDialog from "../components/dialogs/ModelDialog.astro";
+import ModelsDialog from "../components/dialogs/ModelsDialog.astro";
+import ReviewDialog from "../components/dialogs/ReviewDialog.astro";
+import ColumnDialog from "../components/dialogs/ColumnDialog.astro";
 ---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Your local workspace for datasets, experiments, and AI-guided machine learning.">
+  <meta name="description" content="Train, compare and monitor classification models on your own machine.">
   <title>Workspace · ML Pipeline Pro</title>
 </head>
 <body>
-<svg class="icon-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
-  <symbol id="i-data" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></symbol>
-  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6m-5 0v6L4 19c-.5 1 .2 2 1.5 2h13c1.3 0 2-1 1.5-2L14 9V3M7 14h10"/></symbol>
-  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M6 16l5-6 4 3 6-8"/></symbol>
-  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6L12 3ZM20 2v4m-2-2h4"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></symbol>
-  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
-  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7m0-7L10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
-</svg>
+<IconSprite />
 <a class="skip-link" href="#workspace">Skip to workspace</a>
-<aside class="sidebar">
-  <a class="brand" href="./" aria-label="ML Pipeline Pro workspace"><span class="brand-mark"><svg><use href="#i-grid"/></svg></span><span>pipeline<span class="brand-pro">pro</span></span></a>
-  <div class="nav-label">WORKSPACE</div>
-  <nav aria-label="Workspace views">
-    <button class="nav-item active" data-view="runs" aria-current="page"><svg><use href="#i-grid"/></svg>Overview<span class="nav-shortcut">01</span></button>
-    <button class="nav-item" data-view="datasets"><svg><use href="#i-data"/></svg>Datasets<span id="nav-dataset-count" class="nav-count">—</span></button>
-    <button class="nav-item" data-view="experiments"><svg><use href="#i-flask"/></svg>Experiments</button>
-    <button class="nav-item" data-view="monitoring"><svg><use href="#i-chart"/></svg>Monitoring</button>
-  </nav>
-  <div class="sidebar-note"><span class="small-spark"><svg><use href="#i-spark"/></svg></span><strong>Built to experiment.</strong><p>Your data. Your models.<br>Your machine.</p><span class="local-tag"><span class="status-dot"></span>LOCAL INFERENCE</span></div>
-  <div class="sidebar-bottom"><a href="/docs" target="_blank" rel="noopener"><svg><use href="#i-external"/></svg>API documentation</a><button id="connection-open"><svg><use href="#i-settings"/></svg>Connection settings</button><div class="workspace-person"><span class="avatar">J</span><span>Local workspace<small id="sidebar-project">Project: demo</small></span><span class="local-lock">LOCAL</span></div></div>
-</aside>
-<div class="page">
-  <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="project-label">demo</strong></div><div class="topbar-right"><span id="service-status" class="status-chip"><span class="status-dot"></span>Connecting</span><span class="top-divider"></span><span class="host-label">On your machine</span><span class="avatar avatar-small">J</span></div></header>
-  <main id="workspace">
-    <div id="preview-notice" class="notice preview-notice" hidden>DESIGN PREVIEW · Controls are being connected to the local backend.</div>
-    <div class="page-intro"><h1>Your next model starts here<span>.</span></h1><button class="primary" id="intro-upload"><svg><use href="#i-plus"/></svg>Add dataset</button></div>
-    <div id="global-message" class="notice" role="status" aria-live="polite" hidden></div>
-    <div id="deletion-recovery" class="notice warning" role="status" aria-live="polite" hidden></div>
-    <section class="stats-grid" aria-label="Workspace summary">
-      <article class="stat-card"><div class="stat-top"><span>Dataset versions</span><svg><use href="#i-data"/></svg></div><strong id="stat-datasets">—</strong></article>
-      <article class="stat-card"><div class="stat-top"><span>Experiments</span><svg><use href="#i-flask"/></svg></div><strong id="stat-runs">—</strong></article>
-      <article class="stat-card"><div class="stat-top"><span>Best validation F1</span><svg><use href="#i-chart"/></svg></div><strong id="stat-f1" class="teal-text">—</strong></article>
-      <article class="stat-card"><div class="stat-top"><span>Active runs</span><svg><use href="#i-clock"/></svg></div><strong id="stat-active">—</strong></article>
-    </section>
-    <div class="workspace-grid">
-      <div class="work-column">
-        <section id="view-runs" class="view-section">
-          <article class="panel launch-panel"><div class="panel-heading"><div><span class="section-kicker">BUILD YOUR PIPELINE</span><h2>Pick a dataset and model to start an experiment.</h2></div><span class="outline-icon"><svg><use href="#i-flask"/></svg></span></div>
-            <form id="training-form"><div class="form-grid"><label>Dataset<select id="training-dataset" required><option value="">Choose a dataset</option></select></label><div class="form-field"><div class="label-row"><label for="training-model">Model</label><button type="button" class="text-button" id="model-create-open">+ Create model</button></div><select id="training-model" required><option value="">Choose a model</option></select><button type="button" class="text-button model-manage" id="models-manage-open">Manage models</button></div></div>
-              <details class="settings-details"><summary>Training settings <span>Reproducible defaults</span></summary><div class="form-grid form-grid-three"><label>Epochs<input name="epochs" type="number" value="30" min="1" max="500" required></label><label>Batch size<input name="batch_size" type="number" value="16" min="1" max="4096" required></label><label>Learning rate<input name="learning_rate" type="number" value="0.01" min="0.000001" max="1" step="any" required></label><label>Hidden units<input name="hidden_units" type="number" value="16" min="1" max="512" required></label><label>Runtime limit (s)<input name="max_runtime_seconds" type="number" value="60" min="1" max="600" required></label><label>Seed<input name="seed" type="number" value="42" min="0" max="4294967295" required></label></div></details>
-              <div class="form-footer"><span><svg><use href="#i-check"/></svg>Validation-based selection</span><button class="primary" id="train-submit" type="submit">Review training<svg><use href="#i-arrow"/></svg></button></div>
-            </form><div id="training-recovery" class="notice" hidden></div>
-          </article>
-          <article class="panel runs-panel"><div class="panel-title"><div><h2>Recent experiments <span id="run-count" class="count-label">0</span></h2></div><button class="quiet-button" id="refresh-runs">Refresh</button></div><div class="table-scroll"><table><thead><tr><th>EXPERIMENT</th><th>STATUS</th><th>VALIDATION F1</th><th>CREATED</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="runs-body"></tbody></table></div><div id="runs-empty" class="empty-state"><span class="empty-icon"><svg><use href="#i-flask"/></svg></span><h3>A fresh place to experiment</h3><p>Your experiments and results will appear here.</p></div><div class="table-footnote">Showing the latest 100 experiments.</div></article>
-          <article id="run-detail" class="panel" hidden></article>
-          <article id="tuning-panel" class="panel" hidden><div class="panel-title"><div><h2>Tuning jobs</h2><p>Bounded searches suggested by your agent.</p></div></div><div id="tuning-list" class="record-list"></div></article>
-        </section>
-        <section id="view-datasets" class="view-section" hidden>
-          <article class="panel"><div class="panel-title"><div><span class="section-kicker">START WITH YOUR DATA</span><h2>Add a dataset</h2><p>Upload CSV. Review and edit encoding before saving.</p></div><span class="outline-icon"><svg><use href="#i-upload"/></svg></span></div>
-            <form id="upload-form"><label class="dropzone" for="dataset-file"><span class="upload-symbol"><svg><use href="#i-upload"/></svg></span><strong id="file-label">A good model starts with good data.</strong><span id="file-description">Choose a CSV file to get started</span><span class="secondary file-choose">Choose CSV<svg><use href="#i-plus"/></svg></span><input id="dataset-file" type="file" accept=".csv,text/csv" required></label>
-              <div class="form-grid"><label>Dataset name<input id="dataset-name" placeholder="customer_outcomes" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label><label>Version<input id="dataset-version" value="v1" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label><label class="full-width">Prediction target<select id="dataset-target" required><option value="">Choose a CSV first</option></select></label></div>
-              <details class="settings-details"><summary>Preparation settings <span>70 / 15 / 15 · Seed 42</span></summary><div class="form-grid form-grid-three"><label>Training %<input id="split-train" type="number" min="1" max="98" value="70" required></label><label>Validation %<input id="split-validation" type="number" min="1" max="98" value="15" required></label><label>Test %<input id="split-test" type="number" min="1" max="98" value="15" required></label><label>Split seed<input id="split-seed" type="number" min="0" max="4294967295" value="42" required></label><label>Existing split column<select id="dataset-split"><option value="">Create splits automatically</option></select></label><label class="check-field"><input id="impute-missing" type="checkbox">Fill missing features using training medians / modes</label></div><p class="muted-note">Stratified random splitting assumes independent rows. Repeated subjects or time-dependent data need suitable existing splits.</p><label class="check-field"><input id="prepared-upload" type="checkbox">Upload an already prepared numeric CSV</label><label id="legacy-features" hidden>Feature columns<input id="dataset-features" placeholder="feature_1, feature_2"><small>Prepared mode keeps the original numeric features, integer labels and existing splits.</small></label></details>
-              <section id="upload-column-selection" class="encoding-review" hidden><h3>Choose input columns</h3><p id="upload-column-summary" class="muted-note"></p><div id="upload-columns" class="column-choices"></div></section>
-              <div id="upload-limit" class="muted-note">UTF-8 CSV · Up to 10 MB · Numeric and categorical features</div><div class="form-footer"><a class="text-button" href="./example.csv" download="classification-example.csv">Download example CSV<svg><use href="#i-external"/></svg></a><button id="upload-submit" class="secondary" type="submit">Preview encoding</button></div>
-              <section id="encoding-review" class="encoding-review" aria-label="Review dataset encoding" hidden><div class="panel-title"><div><h3>Review your encoding</h3><p id="encoding-summary"></p></div></div><p id="encoding-review-status" role="status" class="muted-note"></p><div id="encoding-warnings" class="muted-note"></div><div id="encoding-columns"></div><h3>Target class IDs</h3><p class="muted-note">Names stay readable. IDs must be distinct and cover 0 through the last class.</p><div id="encoding-labels" class="encoding-labels"></div><p class="muted-note">Encodings and missing-value fills learn from training rows only. Unseen one-hot categories become all zeros; custom mappings use your chosen fallback.</p><div class="form-footer"><button id="encoding-reset" class="quiet-button" type="button">Reset encoding choices</button><button id="prepare-save" class="primary" type="button" disabled>Save reviewed dataset</button></div></section>
-            </form><div id="upload-result" class="notice" role="status" hidden></div>
-          </article>
-          <article class="panel"><div class="panel-title"><div><h2>Your datasets</h2></div></div><div id="column-recovery" class="notice warning" role="status" hidden></div><div id="datasets-list" class="record-list"></div></article>
-        </section>
-        <section id="view-monitoring" class="view-section" hidden>
-          <article class="panel"><div class="panel-title"><div><span class="section-kicker">SEE HOW IT'S DOING</span><h2>Model monitoring</h2><p>Live Grafana graphs from recorded inference observations.</p></div><a id="grafana-open" class="quiet-button" hidden href="http://127.0.0.1:3000/d/mlpp-workspace" target="_blank" rel="noopener">Open Grafana<svg><use href="#i-external"/></svg></a></div><div class="form-grid"><label>Registered model version<select id="monitor-version"><option value="">Choose a version</option></select></label><label>Time range<select id="monitor-range"><option value="15m">Last 15 minutes</option><option value="1h">Last hour</option><option value="6h">Last 6 hours</option><option value="24h">Last 24 hours</option></select></label></div><div id="monitor-summary" class="muted-note">Select a registered version to inspect its observations.</div><div class="monitor-disclaimer">These graphs measure inference, not training loss. Declared demo delays are artificial; missing observations remain unknown.</div></article>
-          <div id="grafana-panels" class="grafana-grid"></div><article class="panel"><div class="panel-title"><div><h2>Understand the signals</h2><p>Ask the local model to explain the current measured window.</p></div><button class="secondary" id="diagnose-button" disabled><svg><use href="#i-spark"/></svg>Explain observations</button></div><div id="diagnosis-result"></div></article>
-        </section>
+<div class="shell">
+  <Sidebar />
+  <div class="page">
+    <Topbar />
+    <main id="workspace">
+      <div id="preview-notice" class="notice preview-notice" hidden>Design preview. Controls are still being connected to the local backend.</div>
+      <div class="page-intro">
+        <h1>Overview</h1>
+        <button class="primary" id="intro-upload" type="button"><Icon name="plus" />Add dataset</button>
       </div>
-      <aside class="panel agent-panel" aria-label="Pipeline agent">
-        <div class="agent-header"><span class="agent-icon"><svg><use href="#i-spark"/></svg></span><div><h2>Pipeline agent</h2><span>Your thinking partner</span></div><button id="new-chat" class="icon-button" title="Start a new conversation" aria-label="Start a new conversation"><svg><use href="#i-plus"/></svg></button></div>
-        <div class="agent-model"><span class="mini-dot"></span><span id="agent-model">Local Qwen · on your machine</span><span>GUIDED</span></div>
-        <div class="conversation-selector"><label for="conversation-select" class="sr-only">Saved conversations in this browser</label><select id="conversation-select"><option value="">New conversation</option></select></div>
-        <p class="snapshot-note">Saved messages and drafts may refer to deleted records. Recheck sources before use.</p>
-        <div id="chat-messages" class="chat-messages" role="log" aria-live="polite"><div class="agent-welcome"><span class="welcome-spark"><svg><use href="#i-spark"/></svg></span><h3>Let's build something useful.</h3><p>I can help you explore your data, plan a training run, and make sense of the results.</p><div class="prompt-starters"><button data-prompt="inspect"><svg><use href="#i-data"/></svg>Explore my dataset<svg><use href="#i-arrow"/></svg></button><button data-prompt="train"><svg><use href="#i-flask"/></svg>Plan a training run<svg><use href="#i-arrow"/></svg></button><button data-prompt="python"><svg><use href="#i-file"/></svg>Generate integration code<svg><use href="#i-arrow"/></svg></button></div><span class="agent-help">You review every proposed action.<br>Nothing trains without your say.</span></div></div>
-        <div id="chat-recovery" class="chat-recovery" hidden></div><form id="chat-form" class="chat-composer"><label for="chat-input" class="sr-only">Message your pipeline agent</label><textarea id="chat-input" placeholder="Ask about your pipeline…" rows="2" maxlength="8192" required></textarea><div class="composer-bottom"><span id="chat-context">Choose a dataset to get started</span><button id="chat-send" class="send-button" type="submit" title="Send message" aria-label="Send message"><svg><use href="#i-arrow"/></svg></button></div></form><div class="agent-footnote">Local AI · Review suggestions before use</div>
-      </aside>
-    </div>
-    <footer class="page-footer"><span>ML PIPELINE PRO <span class="footer-version">v0.1</span></span></footer>
-  </main>
+      <div id="global-message" class="notice" role="status" aria-live="polite" hidden></div>
+      <div id="deletion-recovery" class="notice warning" role="status" aria-live="polite" hidden></div>
+      <StatsGrid />
+      <div class="workspace-grid">
+        <div class="work-column">
+          <section id="view-runs" class="view-section">
+            <LaunchPanel />
+            <RunsPanel />
+            <article id="run-detail" class="panel" hidden></article>
+            <article id="tuning-panel" class="panel" hidden>
+              <div class="panel-title"><div><h2>Tuning jobs</h2><p>Bounded searches proposed by the agent.</p></div></div>
+              <div id="tuning-list" class="record-list"></div>
+            </article>
+          </section>
+          <DatasetsView />
+          <MonitoringView />
+        </div>
+        <AgentPanel />
+      </div>
+      <footer class="page-footer">ML Pipeline Pro v0.1</footer>
+    </main>
+  </div>
 </div>
-<dialog id="connection-dialog"><form id="connection-form"><div class="dialog-heading"><h2>Workspace connection</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close">×</button></div><p class="muted-note">Connect to your project on this machine. Keys stay in memory for this page.</p><label>Project ID<input id="connection-project" value="demo" pattern="[a-zA-Z0-9_-]{1,128}" required></label><label>API key, if configured<input id="connection-key" type="password" autocomplete="off"></label><div class="dialog-actions"><button class="primary" type="submit">Connect workspace</button></div></form></dialog>
-<dialog id="model-dialog"><form id="model-form"><div class="dialog-heading"><h2>Create a model</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close">×</button></div><p class="muted-note">A small PyTorch MLP for numeric classification.</p><label>Model name<input id="model-name" placeholder="my_classifier" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label><div class="dialog-actions"><button class="primary" type="submit">Create model</button></div></form></dialog>
-<dialog id="models-dialog"><div class="dialog-heading"><h2>Manage models</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close">×</button></div><p class="muted-note">Delete a classifier and its related training history and checkpoint files. Source datasets, conversations and drafts are kept.</p><div id="models-list" class="record-list"></div></dialog>
-<dialog id="review-dialog"><div class="dialog-heading"><h2 id="review-title">Review training</h2><button class="icon-button" data-close-dialog aria-label="Close">×</button></div><div id="review-content"></div><div class="dialog-actions"><button class="quiet-button" data-close-dialog>Back</button><button class="primary" id="review-confirm">Start training</button></div></dialog>
-<dialog id="column-dialog" aria-labelledby="column-title"><form id="column-form"><div class="dialog-heading"><h2 id="column-title">Edit dataset columns</h2><button type="button" class="icon-button" data-close-dialog aria-label="Close column editor">×</button></div><p id="column-parent" class="muted-note"></p><label>New version<input id="column-version" placeholder="v2" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label><h3>Keep input columns</h3><div id="column-choices" class="column-choices"></div><p id="column-protected" class="muted-note"></p><p id="column-preview-result" class="notice" role="status"></p><div class="dialog-actions"><button class="secondary" type="submit">Preview column changes</button><button id="column-save" class="primary" type="button" disabled>Review &amp; save</button></div></form></dialog>
-<script>import "../lib/app.js";</script>
+<ConnectionDialog />
+<ModelDialog />
+<ModelsDialog />
+<ReviewDialog />
+<ColumnDialog />
+<script>import "../lib/nav-drawer.js"; import "../lib/app.js";</script>
 </body>
 </html>

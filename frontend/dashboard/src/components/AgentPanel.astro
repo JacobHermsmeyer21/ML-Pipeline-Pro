@@ -1,0 +1,30 @@
+---
+import Icon from "./Icon.astro";
+---
+<aside class="panel agent-panel" aria-label="Pipeline agent">
+  <div class="agent-header">
+    <span class="agent-icon"><Icon name="chat" /></span>
+    <div><h2>Pipeline agent</h2><span>Answers from your saved records</span></div>
+    <button id="new-chat" class="icon-button" type="button" title="Start a new conversation" aria-label="Start a new conversation"><Icon name="plus" /></button>
+  </div>
+  <div class="agent-model"><span class="mini-dot"></span><span id="agent-model">Local model on this machine</span></div>
+  <div class="conversation-selector"><label for="conversation-select" class="sr-only">Saved conversations in this browser</label><select id="conversation-select"><option value="">New conversation</option></select></div>
+  <div id="chat-messages" class="chat-messages" role="log" aria-live="polite">
+    <div class="agent-welcome">
+      <h3>Ask about your data, runs or results</h3>
+      <p>The agent reads your saved records. Anything it proposes waits for your approval.</p>
+      <div class="prompt-starters">
+        <button type="button" data-prompt="inspect"><Icon name="data" />Explore my dataset</button>
+        <button type="button" data-prompt="train"><Icon name="flask" />Plan a training run</button>
+        <button type="button" data-prompt="python"><Icon name="code" />Generate integration code</button>
+      </div>
+    </div>
+  </div>
+  <p class="snapshot-note">Saved messages may mention records you have since deleted.</p>
+  <div id="chat-recovery" class="chat-recovery" hidden></div>
+  <form id="chat-form" class="chat-composer">
+    <label for="chat-input" class="sr-only">Message your pipeline agent</label>
+    <textarea id="chat-input" placeholder="Ask about your pipeline" rows="2" maxlength="8192" required></textarea>
+    <div class="composer-bottom"><span id="chat-context">Choose a dataset to get started</span><button id="chat-send" class="send-button" type="submit" title="Send message" aria-label="Send message"><Icon name="send" /></button></div>
+  </form>
+</aside>

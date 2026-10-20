@@ -1,0 +1,8 @@
+---
+import CloseButton from "./CloseButton.astro";
+---
+<dialog id="review-dialog" aria-labelledby="review-title">
+  <div class="dialog-heading"><h2 id="review-title">Review training</h2><CloseButton /></div>
+  <div id="review-content"></div>
+  <div class="dialog-actions"><button type="button" class="quiet-button" data-close-dialog>Back</button><button type="button" class="primary" id="review-confirm">Start training</button></div>
+</dialog>

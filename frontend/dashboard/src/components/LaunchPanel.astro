@@ -1,0 +1,37 @@
+---
+import Icon from "./Icon.astro";
+---
+<article class="panel launch-panel">
+  <div class="panel-heading">
+    <div>
+      <h2>Start an experiment</h2>
+      <p>Choose a dataset and a model, then review the settings before anything trains.</p>
+    </div>
+  </div>
+  <form id="training-form">
+    <div class="form-grid">
+      <label>Dataset<select id="training-dataset" required><option value="">Choose a dataset</option></select></label>
+      <div class="form-field">
+        <div class="label-row"><label for="training-model">Model</label><button type="button" class="text-button" id="model-create-open"><Icon name="plus" />New model</button></div>
+        <select id="training-model" required><option value="">Choose a model</option></select>
+        <button type="button" class="text-button model-manage" id="models-manage-open">Manage models</button>
+      </div>
+    </div>
+    <details class="settings-details">
+      <summary>Training settings <span>Reproducible defaults</span></summary>
+      <div class="form-grid form-grid-three">
+        <label>Epochs<input name="epochs" type="number" value="30" min="1" max="500" required></label>
+        <label>Batch size<input name="batch_size" type="number" value="16" min="1" max="4096" required></label>
+        <label>Learning rate<input name="learning_rate" type="number" value="0.01" min="0.000001" max="1" step="any" required></label>
+        <label>Hidden units<input name="hidden_units" type="number" value="16" min="1" max="512" required></label>
+        <label>Runtime limit (s)<input name="max_runtime_seconds" type="number" value="60" min="1" max="600" required></label>
+        <label>Seed<input name="seed" type="number" value="42" min="0" max="4294967295" required></label>
+      </div>
+    </details>
+    <div class="form-footer">
+      <span class="footer-note"><Icon name="check" />The best epoch is chosen by validation score</span>
+      <button class="primary" id="train-submit" type="submit">Review training</button>
+    </div>
+  </form>
+  <div id="training-recovery" class="notice" hidden></div>
+</article>
