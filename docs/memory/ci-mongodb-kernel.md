@@ -14,8 +14,8 @@ Containers share the host kernel; an Ubuntu user-space image or unchanged
 8.0.32. Check the actual failure and published/runtime kernel before upgrading
 images, changing timeouts, or weakening gates.
 
-The [plan](../plans/2026-10-19-ci-mongodb-kernel-plan.md) proposes `ubuntu-22.04`
-for MongoDB-dependent CI jobs and explicit kernel logging; approval and fresh
-hosted acceptance are pending. Revisit when MongoDB/kernel compatibility is
-demonstrated on a newer supported runner, and before Ubuntu 22.04's April 2027
+Jacob approved the [plan](../plans/2026-10-19-ci-mongodb-kernel-plan.md) on October 19.
+It pins `ubuntu-22.04` for all three MongoDB-dependent CI jobs and adds explicit
+kernel logging; fresh hosted acceptance is pending. Revisit when MongoDB/kernel
+compatibility is demonstrated on a newer supported runner, and before Ubuntu 22.04's April 2027
 runner retirement. The healthy local WSL kernel is a separate environment.

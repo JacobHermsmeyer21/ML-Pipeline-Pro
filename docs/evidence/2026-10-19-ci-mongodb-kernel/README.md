@@ -36,5 +36,15 @@ Full downloaded logs and Actions job metadata are retained locally under ignored
 provide the retained diagnosis. GitHub access was read-only and explicitly
 authorized by Jacob; no credentials or signed storage URLs were saved.
 
-The [repair plan](../../plans/2026-10-19-ci-mongodb-kernel-plan.md) awaits human
-review. No workflow implementation or repaired run is claimed here.
+Jacob approved the [repair plan](../../plans/2026-10-19-ci-mongodb-kernel-plan.md)
+on October 19. The three MongoDB-dependent jobs now select `ubuntu-22.04` and
+print their kernel before startup. Fresh hosted acceptance is pending; the
+diagnostic failure above remains retained.
+
+Post-approval local checks pass on Windows/Python 3.11.5 with uv 0.12.23:
+locked dependency sync, Ruff lint/format (264 files), 740 fast tests in 94.71
+seconds (114 integration cases deselected, no selected skips), installed dependency
+compatibility (116 packages), both CI Compose configurations, exact parsed workflow
+scope comparison and 51 local documentation links/anchors. Raw local JUnit is
+`artifacts/ci-compose-diagnosis/approved-unit.xml`; configuration comparison is
+`implementation-config-checks.json` in that directory. No test assertions changed.

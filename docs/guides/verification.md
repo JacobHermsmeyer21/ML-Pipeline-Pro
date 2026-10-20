@@ -89,6 +89,14 @@ and its `MLPP_TEST_API_BASE_URL`, `MLPP_TEST_MONGODB_URI`, and
 defines the automated checks; [project status](../project/project-status.md#validation-evidence)
 retains results by source revision.
 
+The MongoDB-dependent CI jobs currently use `ubuntu-22.04` and print `uname -r`
+before startup. Newer hosted kernels can cause MongoDB 8.0 to reject startup before
+any application tests run; see the [diagnosis and repair evidence](../evidence/2026-10-19-ci-mongodb-kernel/README.md).
+The Python-only checks retain `ubuntu-latest`. This is a temporary host constraint:
+revisit once a newer supported runner/MongoDB combination passes all existing
+gates, and before [Ubuntu 22.04 runner retirement](https://github.com/actions/runner-images/issues/14254)
+in April 2027. A container image does not select the host kernel.
+
 ## Deletion browser and storage acceptance
 
 Use the isolated, unauthenticated validation stack, preserving its generated

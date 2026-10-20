@@ -1,10 +1,10 @@
 # Restore MongoDB startup on hosted CI runners
 
-- Status: awaiting review; implementation pending
+- Status: approved; implemented locally, hosted acceptance pending
 - Date: 2026-10-19 (America/New_York)
 - Source baseline: `96c652c` / `main`
 - Request: repair the GitHub Actions `compose-smoke` startup failure
-- Human reviewer/approval: Jacob; pending for the specific design below
+- Human reviewer/approval: Jacob; approved October 19, 2026, as recorded below
 - Independent review: not required for this runner configuration change; no concurrency,
   ownership, state-machine, or rate/size arithmetic changes
 
@@ -97,13 +97,28 @@ local deployment configuration are unaffected.
 
 ## Human review and approval
 
-Pending. Jacob approved read-only GitHub credential use to inspect CI logs on
-October 19; that access approval is not approval of this runner design.
+Jacob approved the committed `2f8d732` plan on October 19, 2026, replying
+"Approve the runner fix" to the plan-review question in this session. Approval
+covers pinning all three MongoDB-dependent CI jobs to Ubuntu 22.04, kernel
+logging, the specified documentation and verification. The separate preceding
+read-only GitHub credential approval continues to cover CI status/log inspection.
 
 ## Implementation outcome
 
-Implementation pending human review. The diagnosis and retained evidence are
-documentation-only; no repaired CI run or new application gate is claimed.
+The approved runner pins and kernel diagnostics are implemented. Hosted acceptance
+and the implementation commit/push are pending; no repaired CI run is claimed yet.
+No application code, test assertions, database images or gates change.
 The plan/evidence/memory links were checked (36 local links/anchors), external
 kernel/issue/retirement facts were checked against their primary sources, and
 `git diff --check` passed before the documentation commit.
+
+Post-approval local verification on Windows/Python 3.11.5 with uv 0.12.23 passes:
+locked sync, Ruff lint, Ruff format (264 files), 740 fast tests (114 integration
+cases deselected, no selected-case skips, 94.71 seconds), and compatibility for
+116 installed packages. Both CI Compose configurations validate. Parsed YAML
+comparison against `2f8d732` confirms that removing only the three new kernel
+steps and reverting their runner labels exactly restores the prior workflow.
+All 51 local documentation links/anchors pass. Local JUnit and configuration
+evidence is under `artifacts/ci-compose-diagnosis/approved-unit.xml` and
+`implementation-config-checks.json`. Hosted service/recovery acceptance remains
+pending the pushed run; no local run substitutes for that gate.

@@ -8,6 +8,7 @@ permissions:
   contents: read
 
 jobs:
+  # MongoDB jobs need a compatible host kernel: https://jira.mongodb.org/browse/SERVER-121912
   checks:
     runs-on: ubuntu-latest
     strategy:
@@ -41,9 +42,11 @@ jobs:
           uv run --locked --extra training pip-audit -r /tmp/torch-audit.txt --no-deps --disable-pip
 
   domain-compose-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: checks
     steps:
+      - name: Record runner kernel
+        run: uname -r
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -72,9 +75,11 @@ jobs:
         run: docker compose -f compose.yaml -f compose.services.yaml -f compose.monitoring.yaml -f compose.dashboard.yaml down
 
   kubernetes-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: checks
     steps:
+      - name: Record runner kernel
+        run: uname -r
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -103,8 +108,10 @@ jobs:
             artifacts/kubernetes-validation/replicas/*.log
 
   compose-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
+      - name: Record runner kernel
+        run: uname -r
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
