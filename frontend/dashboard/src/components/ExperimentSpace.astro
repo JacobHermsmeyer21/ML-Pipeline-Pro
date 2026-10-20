@@ -1,0 +1,20 @@
+<article class="panel scene-panel" aria-labelledby="scene-title">
+  <div class="panel-title">
+    <div>
+      <h2 id="scene-title">Experiment space</h2>
+      <p>Runs sit at their learning rate and hidden units, raised by validation F1.</p>
+    </div>
+    <span class="scene-hint">Drag to turn it. Click a point to open the run.</span>
+  </div>
+  <div class="scene-stage">
+    <canvas id="scene-canvas" tabindex="0" role="application" aria-roledescription="3D plot" aria-labelledby="scene-title" aria-describedby="scene-label"></canvas>
+    <p id="scene-label" class="sr-only">No experiments to plot yet.</p>
+    <div id="scene-tip" class="scene-tip" role="status" hidden></div>
+    <p id="scene-empty" class="scene-empty">Finished experiments rise here.</p>
+  </div>
+  <div class="scene-legend" aria-hidden="true">
+    <span><i class="legend-ramp"></i>Validation F1, low to high</span>
+    <span><i class="legend-active"></i>Running</span>
+    <span><i class="legend-idle"></i>No score</span>
+  </div>
+</article>

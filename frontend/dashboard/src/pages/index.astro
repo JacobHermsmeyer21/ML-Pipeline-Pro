@@ -7,11 +7,13 @@ import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/layout.css";
 import "../styles/components.css";
+import "../styles/depth.css";
 import IconSprite from "../components/IconSprite.astro";
 import Icon from "../components/Icon.astro";
 import Sidebar from "../components/Sidebar.astro";
 import Topbar from "../components/Topbar.astro";
 import StatsGrid from "../components/StatsGrid.astro";
+import ExperimentSpace from "../components/ExperimentSpace.astro";
 import LaunchPanel from "../components/LaunchPanel.astro";
 import RunsPanel from "../components/RunsPanel.astro";
 import DatasetsView from "../components/DatasetsView.astro";
@@ -40,13 +42,17 @@ import ColumnDialog from "../components/dialogs/ColumnDialog.astro";
     <Topbar />
     <main id="workspace" tabindex="-1">
       <div id="preview-notice" class="notice preview-notice" hidden>Design preview. Controls are still being connected to the local backend.</div>
+      <div class="hero-floor" aria-hidden="true"></div>
       <div class="page-intro">
         <h1>Overview</h1>
         <button class="primary" id="intro-upload" type="button"><Icon name="plus" />Add dataset</button>
       </div>
       <div id="global-message" class="notice" role="status" aria-live="polite" hidden></div>
       <div id="deletion-recovery" class="notice warning" role="status" aria-live="polite" hidden></div>
-      <StatsGrid />
+      <div class="hero">
+        <StatsGrid />
+        <ExperimentSpace />
+      </div>
       <div class="workspace-grid">
         <div class="work-column">
           <section id="view-runs" class="view-section">
@@ -72,6 +78,6 @@ import ColumnDialog from "../components/dialogs/ColumnDialog.astro";
 <ModelsDialog />
 <ReviewDialog />
 <ColumnDialog />
-<script>import "../lib/nav-drawer.js"; import "../lib/app.js";</script>
+<script>import "../lib/nav-drawer.js"; import "../lib/app.js"; import { initScene } from "../lib/scene.js"; import { initMotion } from "../lib/motion.js"; initScene(); initMotion();</script>
 </body>
 </html>

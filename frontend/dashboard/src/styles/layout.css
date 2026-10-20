@@ -33,7 +33,7 @@ nav { display: grid; gap: 2px; }
 .scrim { position: fixed; inset: 0; z-index: 30; background: rgb(22 38 33 / 0.32); }
 
 /* Page */
-.page { min-width: 0; display: flex; flex-direction: column; }
+.page { min-width: 0; display: flex; flex-direction: column; overflow-x: clip; }
 .topbar {
   position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: var(--space-3);
   min-height: 56px; padding: 0 var(--space-8); background: rgb(238 241 240 / 0.86); border-bottom: 1px solid var(--border);

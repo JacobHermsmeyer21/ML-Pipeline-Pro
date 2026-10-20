@@ -55,7 +55,7 @@ export function renderWorkspace() {
     })); card.append(actions); $("tuning-list").append(card);
   }
   if (state.detail) { const run = state.experiments.find((item) => item.id === state.detail); if (run) renderRunDetail(run); }
-  updateContext(); renderTrainingRecovery();
+  updateContext(); renderTrainingRecovery(); state.onWorkspaceRender?.();
 }
 let workspacePromise = null;
 let versionsRequest = 0;
@@ -263,7 +263,7 @@ export function initWorkspace() {
   initColumns();
   state.refresh = loadWorkspace; state.renderWorkspace = renderWorkspace;
   state.renderTrainingRecovery = renderTrainingRecovery; state.updateMonitoring = updateMonitoring;
-  state.refreshMonitoring = refreshMonitoringSummary;
+  state.refreshMonitoring = refreshMonitoringSummary; state.openRun = (id) => showRun(id).catch(report);
   $("connection-open").addEventListener("click", () => {
     if (state.mutations) { notify("Let the current request finish before changing workspace.", "warning"); return; }
     $("connection-project").value = state.project; $("connection-key").value = state.key; $("connection-dialog").showModal();

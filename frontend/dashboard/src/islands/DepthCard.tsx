@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 
-// Tilts its children slightly toward the pointer. The children are Astro-rendered
+// Tilts its children toward the pointer inside the parent's perspective. The children are Astro-rendered
 // markup owned by the behavior modules; this component never re-renders them.
 export default function DepthCard({ children, maxTilt = 4 }: { children: ReactNode; maxTilt?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -17,7 +17,7 @@ export default function DepthCard({ children, maxTilt = 4 }: { children: ReactNo
       const x = (event.clientX - box.left) / box.width - 0.5, y = (event.clientY - box.top) / box.height - 0.5;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        node.style.transform = `perspective(1200px) rotateX(${(-y * maxTilt).toFixed(2)}deg) rotateY(${(x * maxTilt).toFixed(2)}deg)`;
+        node.style.transform = `rotateX(${(-y * maxTilt).toFixed(2)}deg) rotateY(${(x * maxTilt).toFixed(2)}deg)`;
       });
     };
     node.addEventListener("pointermove", move);

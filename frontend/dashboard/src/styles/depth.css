@@ -1,0 +1,104 @@
+/* Depth language: a perspective floor behind the hero, plates and keycaps that sit
+   above their surfaces, light that follows the pointer, and one load sequence. */
+
+/* Hero: readout tray beside the experiment space */
+main { position: relative; isolation: isolate; }
+.page-intro, .hero, .workspace-grid { position: relative; z-index: 1; }
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-5); align-items: stretch; perspective: 1600px; }
+.hero > astro-island { display: block; min-width: 0; transform-style: preserve-3d; }
+.hero .depth-card { height: 100%; }
+.hero-floor {
+  position: absolute; z-index: -1; inset: -40px 0 auto; height: 420px; pointer-events: none;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px; background-position: center top;
+  transform: perspective(520px) rotateX(58deg); transform-origin: 50% 0;
+  mask-image: radial-gradient(60% 80% at 50% 0%, #000 15%, transparent 70%);
+  opacity: 0.6; animation: floor-drift 18s linear infinite;
+}
+@keyframes floor-drift { to { background-position: center 44px; } }
+
+/* Experiment space */
+.scene-panel { display: flex; flex-direction: column; padding-bottom: var(--space-4); overflow: hidden; }
+.scene-panel .panel-title { margin-bottom: var(--space-2); }
+.scene-hint { flex: none; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-sunken); color: var(--text-muted); font-size: 12.5px; }
+.scene-stage { position: relative; flex: 1; min-height: 300px; margin: 0 calc(var(--space-6) * -1); }
+#scene-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+#scene-canvas:focus-visible { box-shadow: inset 0 0 0 3px rgb(11 122 95 / 0.28); border-radius: var(--radius-md); }
+.scene-tip {
+  position: absolute; left: 0; top: 0; z-index: 2; display: grid; gap: 2px; max-width: 260px; padding: 8px 12px; pointer-events: none;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: rgb(255 255 255 / 0.94); box-shadow: var(--elev-3);
+  backdrop-filter: blur(6px); font-size: 13px; white-space: nowrap;
+}
+.scene-tip strong { overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.scene-tip span { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.scene-empty { position: absolute; left: 50%; top: 14%; white-space: nowrap; translate: -50% 0; color: var(--text-faint); font-size: 14px; pointer-events: none; }
+.scene-legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); padding-top: var(--space-3); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12.5px; }
+.scene-legend span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.scene-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.legend-ramp { width: 34px !important; border-radius: 5px !important; background: linear-gradient(90deg, var(--scene-low), var(--scene-high)); }
+.legend-active { background: var(--scene-active); box-shadow: 0 0 0 3px rgb(212 138 28 / 0.25); }
+.legend-idle { background: var(--text-faint); opacity: 0.6; }
+
+/* Light: a soft highlight tracks the pointer across raised surfaces */
+.panel, .grafana-card { position: relative; }
+.panel::after, .plate::after, .grafana-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0), rgb(255 255 255 / 0.7), rgb(95 211 176 / 0.07) 40%, transparent 65%);
+  transition: opacity 260ms var(--ease);
+}
+.plate::after { background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0), rgb(255 255 255 / 0.85), transparent 70%); }
+.lit::after { opacity: 1; }
+.panel > *, .plate > * { position: relative; z-index: 1; }
+.scene-stage { z-index: 0; }
+
+/* Cards lean toward the pointer and lift off the page */
+.record-card, .prompt-starters button {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transition: box-shadow 200ms var(--ease), transform 260ms var(--ease-spring), border-color 120ms var(--ease);
+}
+.record-card:hover { box-shadow: var(--elev-3); transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(14px); }
+.prompt-starters button:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(10px); }
+
+/* Navigation: one raised tab that slides between items */
+.sidebar nav { position: relative; }
+.nav-indicator {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 0; border-radius: var(--radius-sm); pointer-events: none;
+  background: var(--surface); box-shadow: var(--elev-2), 0 3px 0 rgb(22 38 33 / 0.06);
+}
+.nav-indicator::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--accent); }
+.sidebar .nav-item { position: relative; z-index: 1; }
+.sidebar .nav-item.active { background: transparent; box-shadow: none; }
+.sidebar .nav-item.active:hover { background: transparent; }
+.brand-mark { transform: perspective(200px) rotateY(-18deg) rotateX(8deg); box-shadow: 3px 3px 0 #0d1412, var(--elev-2); transition: transform 400ms var(--ease-spring); }
+.brand:hover .brand-mark { transform: perspective(200px) rotateY(18deg) rotateX(-6deg); }
+
+/* Dialogs swing up out of the page */
+dialog[open] { animation: dialog-in 460ms var(--ease-spring); transform-origin: 50% 100%; }
+dialog[open]::backdrop { animation: backdrop-in 260ms var(--ease); }
+@keyframes dialog-in { from { opacity: 0; transform: perspective(1000px) rotateX(-16deg) translateY(36px) scale(0.96); } }
+@keyframes backdrop-in { from { opacity: 0; } }
+
+/* Load: the tray settles, plates rise from it, panels follow */
+@keyframes plate-rise { from { opacity: 0; transform: translateY(26px) rotateX(-28deg); } }
+@keyframes panel-in { from { opacity: 0; transform: perspective(1400px) rotateX(9deg) translateY(28px); } }
+.hero .depth-card, .scene-panel, .work-column > section > .panel:first-child, .agent-panel { animation: panel-in 820ms var(--ease-spring) backwards; }
+.scene-panel { animation-delay: 140ms; }
+.work-column > section > .panel:first-child { animation-delay: 260ms; }
+.agent-panel { animation-delay: 340ms; }
+
+@media (max-width: 1099px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .scene-stage { min-height: 280px; }
+}
+@media (max-width: 560px) {
+  .scene-stage { min-height: 240px; margin: 0 calc(var(--space-4) * -1); }
+  .scene-panel .panel-title { flex-direction: column; }
+  .hero-floor { height: 420px; background-size: 32px 32px; }
+}
+@media (hover: none) {
+  .scene-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .record-card, .prompt-starters button { transform: none !important; }
+  .brand-mark { transform: none; }
+}

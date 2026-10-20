@@ -17,6 +17,13 @@
   --warning-soft: #fbf1e1;
   --danger: #b4372a;
   --danger-soft: #fbeceb;
+  --accent-deep: #054a3a;
+  --key-base: #a9b5b0;
+
+  /* Experiment space: sequential F1 ramp on the accent hue, amber for running runs. */
+  --scene-low: #bcd9cf;
+  --scene-high: #06614b;
+  --scene-active: #d48a1c;
 
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -32,7 +39,9 @@
   --elev-1: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(22 38 33 / 0.06), 0 2px 6px -2px rgb(22 38 33 / 0.06);
   --elev-2: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 2px 4px rgb(22 38 33 / 0.06), 0 12px 24px -12px rgb(22 38 33 / 0.18);
   --elev-3: 0 4px 8px rgb(22 38 33 / 0.08), 0 28px 56px -16px rgb(22 38 33 / 0.32);
+  --elev-4: inset 0 1px 0 rgb(255 255 255 / 0.95), 0 2px 3px rgb(22 38 33 / 0.06), 0 18px 32px -14px rgb(22 38 33 / 0.28), 0 44px 70px -30px rgb(11 122 95 / 0.22);
   --focus-ring: 0 0 0 3px rgb(11 122 95 / 0.28);
 
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
 }
