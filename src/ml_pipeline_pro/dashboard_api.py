@@ -55,6 +55,7 @@ def install_dashboard(app: FastAPI) -> None:
             "max_dataset_rows": settings.dataset_max_rows,
             "grafana_origin": "http://127.0.0.1:3000",
             "chat_enabled": settings.chat_enabled,
+            "chat_backend": settings.chat_backend,
             "chat_model": settings.chat_model,
         }
 

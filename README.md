@@ -58,7 +58,8 @@ require `X-Project-ID` and, when configured, `X-API-Key`. Stop with
 Follow the [setup guide](docs/guides/setup.md) for host development, configuration,
 custom data, and shared artifact storage. Chat defaults to disabled; enabling it
 still requires an installed model and verified artifact-specific token counter.
-See [conversation development](docs/guides/conversation-development.md).
+Alternatively, the opt-in Claude backend uses the Anthropic API with your own key;
+see [conversation development](docs/guides/conversation-development.md#claude-backend).
 
 ## Try a workflow
 

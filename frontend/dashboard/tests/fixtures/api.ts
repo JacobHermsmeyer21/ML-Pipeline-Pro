@@ -70,7 +70,7 @@ const page = (items: unknown[]) => ({ items, limit: 100, offset: 0 });
 export async function mockApi(target: Page, overrides: Partial<ApiState> = {}): Promise<ApiLog> {
   const state: ApiState = {
     config: { uploads_enabled: true, max_upload_bytes: 10_000_000, max_dataset_rows: 100_000,
-      grafana_origin: "http://127.0.0.1:3000", chat_enabled: true, chat_model: "qwen2.5:7b" },
+      grafana_origin: "http://127.0.0.1:3000", chat_enabled: true, chat_backend: "ollama", chat_model: "qwen2.5:7b" },
     datasets: [dataset()], models: [model()], experiments: [experimentCompleted], tuning: [], failExperimentPost: null,
     ...overrides,
   };

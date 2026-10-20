@@ -36,6 +36,7 @@ def test_config_only_exposes_public_capabilities_and_upload_effective_limits(app
         "max_dataset_rows": 100_000,
         "grafana_origin": "http://127.0.0.1:3000",
         "chat_enabled": False,
+        "chat_backend": "ollama",
         "chat_model": None,
     }
     assert "secret" not in response.text and "mongodb" not in response.text
