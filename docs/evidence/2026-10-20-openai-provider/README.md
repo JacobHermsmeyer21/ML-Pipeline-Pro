@@ -14,6 +14,10 @@ accompanying implementation commit and subsequent evidence commit retain the
 final source. No local-model acceptance or deployed Kubernetes OpenAI rollout is
 claimed by these hosted results.
 
+Implementation `7c1ef49` was successfully pushed to `origin/main` on October 20.
+The isolated validation containers/volumes were removed after evidence retention;
+the active local reservation ledger remains preserved outside Git.
+
 ## Results and limits
 
 | Gate | Result | Raw evidence |
@@ -101,7 +105,8 @@ Final re-review identified no remaining concrete blocker in the submitted scope.
 Self-review is not counted as independent review. Human usefulness review of the
 new hosted guidance, Python drafts and diagnosis remains pending; the original
 local-model human review does not transfer automatically. Review the saved sample
-turns/code/advice in `http-walkthrough-03.json` before broader use.
+turns/code/advice in [the human-review samples](human-review.md) before broader use;
+the archive retains their complete `http-walkthrough-03.json` source.
 
 ## Reproduction and provenance
 

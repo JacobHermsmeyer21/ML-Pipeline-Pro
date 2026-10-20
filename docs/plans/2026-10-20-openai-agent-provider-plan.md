@@ -271,8 +271,8 @@ billing guarantee. No paid requests preceded this renewed approval.
 
 ## Implementation outcome
 
-Implementation began at `1af066b` plus the worktree and is retained by the
-accompanying implementation commit. Defaults, provider, local fixtures, locked
+Implementation began at `1af066b` plus the worktree and is retained in `7c1ef49`,
+successfully pushed to `origin/main` on October 20. Defaults, provider, local fixtures, locked
 dependencies and documentation were checked together because they share the
 backend-selection contract; this combined the planned implementation slices
 without changing their functional scope. Final source uses LangChain OpenAI 1.7.0
