@@ -120,6 +120,8 @@ async def _execute_tuning(tuning, tracking, project_id, job_id, settings, token)
         model = await tracking.models.get(project_id, job.model_id)
         if dataset is None or model is None:
             raise TrainingError("The tuning dataset or model is missing from this project")
+        if model.architecture != "mlp":
+            raise TrainingError("Logistic tuning is not supported")
         if not await tuning.jobs.progress(
             project_id, job_id, token, number=None, values={"sampler_version": version("optuna")}
         ):

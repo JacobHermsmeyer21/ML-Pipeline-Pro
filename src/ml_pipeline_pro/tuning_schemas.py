@@ -61,6 +61,7 @@ class TuningLimits(RequestModel):
 
 
 class TuningCreate(ExperimentCreate):
+    config: TrainingConfig = Field(default_factory=TrainingConfig)
     objective_metric: Literal["validation_f1", "validation_accuracy"] = "validation_f1"
     direction: Literal["maximize"] = "maximize"
     sampler_seed: int = Field(default=42, strict=True, ge=0, le=2**32 - 1)

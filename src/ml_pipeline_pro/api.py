@@ -126,8 +126,13 @@ async def create_experiment(
         await store.lifecycle.check_submission(project, "experiments", key, fingerprint)
         if await store.datasets.get(project, body.dataset_id) is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
-        if await store.models.get(project, body.model_id) is None:
+        model = await store.models.get(project, body.model_id)
+        if model is None:
             raise ApiError(404, "model_not_found", "Model was not found in this project")
+        from ml_pipeline_pro.schemas import config_algorithm
+
+        if model.architecture != config_algorithm(body.config):
+            raise ApiError(409, "model_config_mismatch", "Config algorithm must match the model")
         record = ExperimentRecord(
             **body.model_dump(), project_id=project, submission_key=key, request_hash=fingerprint
         )

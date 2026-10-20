@@ -1,5 +1,27 @@
 # API reference
 
+## Classifier algorithms
+
+`POST /api/v1/models` accepts immutable `architecture: mlp | logistic_regression`;
+omitting it preserves MLP. Framework/task remain `pytorch`/`classification`.
+`POST /api/v1/experiments` requires project-scoped dataset/model IDs and an
+`Idempotency-Key`. Existing MLP configs stay unchanged. A logistic config requires
+`algorithm: logistic_regression`, accepts `l2_strength` from 0 through 1 (default 0),
+and rejects hidden units. Common defaults/bounds are seed 42 (0–4294967295), epochs
+30 (1–500), batch size 16 (1–4096), learning rate 0.01 (>0 through 1) and runtime
+limit 60 seconds (1–600). Numeric rates/strengths must be finite. An omitted config
+still means MLP; it cannot be submitted to a logistic model. Mismatches return
+`409 model_config_mismatch`. Same-key replay resolves the original record first.
+
+Logistic training uses minibatch Adam on linear logits, cross entropy and
+`0.5 * l2_strength * sum(weight ** 2)`, excluding bias. Binary and multiclass models
+share validation/test metrics, verified `model.pt`/`manifest.json` downloads and
+model-version registration. Scaling fits training rows and validation selects
+checkpoints. This is gradient training without a convergence guarantee. Tuning
+admission and AI mutation proposals reject logistic models with
+`409 unsupported_model_algorithm`; read/list/compare tools support either algorithm.
+See the [dashboard flow](../guides/dashboard.md#compare-algorithms).
+
 ## Dataset upload
 
 `POST /api/v1/datasets/upload` is an opt-in model-service route. Supply the usual

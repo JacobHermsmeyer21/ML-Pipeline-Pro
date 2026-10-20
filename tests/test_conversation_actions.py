@@ -11,6 +11,7 @@ from ml_pipeline_pro.conversation_actions import ConversationActions, outcome_st
 from ml_pipeline_pro.conversation_schemas import ActionAttempt, ActionDecision, ConversationAction
 from ml_pipeline_pro.conversation_store import ActionClaim
 from ml_pipeline_pro.errors import ApiError, ErrorDetail
+from ml_pipeline_pro.schemas import ModelRecord
 from ml_pipeline_pro.tool_schemas import ToolCall, ToolContext, ToolFailure, ToolSuccess
 from ml_pipeline_pro.tool_transport import HttpToolTransport, ToolResponse
 from ml_pipeline_pro.tools import validated_proposal
@@ -86,6 +87,13 @@ def test_decision_dispatch_binds_private_key_and_records_malformed_response_as_u
         requests = []
 
         def endpoint(request):
+            if request.method == "GET":
+                return httpx.Response(
+                    200,
+                    json=ModelRecord(id="model", project_id="demo", name="mlp").model_dump(
+                        mode="json"
+                    ),
+                )
             requests.append(request)
             return httpx.Response(202, json={"not": "a valid experiment"})
 
@@ -121,6 +129,13 @@ def test_storage_loss_after_dispatch_does_not_retry_or_report_submission_failed(
         requests = []
 
         def endpoint(request):
+            if request.method == "GET":
+                return httpx.Response(
+                    200,
+                    json=ModelRecord(id="model", project_id="demo", name="mlp").model_dump(
+                        mode="json"
+                    ),
+                )
             requests.append(request)
             return httpx.Response(202, json={"not": "valid audit evidence"})
 
@@ -157,6 +172,12 @@ def test_slow_optional_refresh_preserves_accepted_id_before_dispatch_deadline():
         store.action.return_value = action.model_copy(update={"status": "unknown"})
 
         async def endpoint(method, path, **kwargs):
+            if path == "/api/v1/models/model":
+                return ToolResponse(
+                    200,
+                    ModelRecord(id="model", project_id="demo", name="mlp").model_dump(mode="json"),
+                    "host",
+                )
             if method == "GET":
                 await asyncio.sleep(1)
             return ToolResponse(

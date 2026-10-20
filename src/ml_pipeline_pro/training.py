@@ -12,7 +12,13 @@ from ml_pipeline_pro.artifacts import read_artifact, write_artifact
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.datasets import DatasetValidationError, load_dataset
 from ml_pipeline_pro.preparation_files import read_preparation
-from ml_pipeline_pro.schemas import ArtifactReference, DatasetRecord, ExperimentRecord
+from ml_pipeline_pro.schemas import (
+    ArtifactReference,
+    DatasetRecord,
+    ExperimentRecord,
+    LogisticRegressionConfig,
+    config_algorithm,
+)
 from ml_pipeline_pro.training_control import TrainingBudgetExceeded, TrainingControl, TrainingError
 
 
@@ -32,6 +38,7 @@ def train_classifier(
     control: TrainingControl | None = None,
     evaluate_test: bool = True,
     objective_metric: str = "validation_f1",
+    architecture: str = "mlp",
 ) -> TrainingResult:
     started = perf_counter()
     try:
@@ -40,6 +47,8 @@ def train_classifier(
         raise TrainingError("Install the training extra to run PyTorch experiments") from None
 
     config = experiment.config
+    if architecture != config_algorithm(config):
+        raise TrainingError("Model/config algorithm mismatch")
 
     def check_budget() -> None:
         if control:
@@ -67,11 +76,7 @@ def train_classifier(
     validation_x = (torch.tensor(validation.features, dtype=torch.float32) - mean) / std
     validation_y = torch.tensor(validation.targets, dtype=torch.long)
 
-    model = torch.nn.Sequential(
-        torch.nn.Linear(len(dataset.feature_columns), config.hidden_units),
-        torch.nn.ReLU(),
-        torch.nn.Linear(config.hidden_units, loaded.num_classes),
-    )
+    model = _classifier(config, len(dataset.feature_columns), loaded.num_classes)
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
     loss_function = torch.nn.CrossEntropyLoss()
 
@@ -87,6 +92,8 @@ def train_classifier(
             batch = order[start : start + config.batch_size]
             optimizer.zero_grad(set_to_none=True)
             loss = loss_function(model(features[batch]), targets[batch])
+            if isinstance(config, LogisticRegressionConfig):
+                loss = loss + 0.5 * config.l2_strength * model.weight.square().sum()
             if not torch.isfinite(loss):
                 raise TrainingError(
                     "Training produced nonfinite loss; review the data and learning rate"
@@ -132,7 +139,15 @@ def train_classifier(
             "std": std,
             "feature_columns": dataset.feature_columns,
             "num_classes": loaded.num_classes,
-            "hidden_units": config.hidden_units,
+            **(
+                {
+                    "format_version": 1,
+                    "algorithm": architecture,
+                    "num_features": len(dataset.feature_columns),
+                }
+                if isinstance(config, LogisticRegressionConfig)
+                else {"hidden_units": config.hidden_units}
+            ),
             **({"preparation": preparation} if preparation is not None else {}),
         },
         checkpoint,
@@ -167,12 +182,64 @@ def train_classifier(
     return TrainingResult(metrics, artifacts, dependencies)
 
 
+def _classifier(config, feature_count: int, class_count: int):
+    import torch
+
+    if isinstance(config, LogisticRegressionConfig):
+        return torch.nn.Linear(feature_count, class_count)
+    return torch.nn.Sequential(
+        torch.nn.Linear(feature_count, config.hidden_units),
+        torch.nn.ReLU(),
+        torch.nn.Linear(config.hidden_units, class_count),
+    )
+
+
+def load_checkpoint(content: bytes, experiment: ExperimentRecord, dataset: DatasetRecord):
+    """Reconstruct a verified checkpoint; absent algorithm is the historical MLP format."""
+    import torch
+
+    checkpoint = torch.load(io.BytesIO(content), weights_only=True)
+    algorithm = checkpoint.get("algorithm", "mlp")
+    if algorithm not in {"mlp", "logistic_regression"} or algorithm != config_algorithm(
+        experiment.config
+    ):
+        raise TrainingError("Checkpoint/config algorithm mismatch")
+    if algorithm == "logistic_regression" and checkpoint.get("format_version") != 1:
+        raise TrainingError("Unsupported logistic checkpoint format")
+    features = len(dataset.feature_columns)
+    if algorithm == "logistic_regression" and checkpoint.get("num_features") != features:
+        raise TrainingError("Checkpoint feature dimension mismatch")
+    if (
+        checkpoint.get("feature_columns") != dataset.feature_columns
+        or checkpoint.get("num_classes") != dataset.num_classes
+        or checkpoint["mean"].shape != (features,)
+        or checkpoint["std"].shape != (features,)
+        or not torch.isfinite(checkpoint["mean"]).all()
+        or not torch.isfinite(checkpoint["std"]).all()
+        or not (checkpoint["std"] > 0).all()
+    ):
+        raise TrainingError("Checkpoint dataset dimensions or preprocessing mismatch")
+    if algorithm == "mlp" and checkpoint.get("hidden_units") != experiment.config.hidden_units:
+        raise TrainingError("Checkpoint hidden units mismatch")
+    model = _classifier(experiment.config, features, dataset.num_classes)
+    try:
+        model.load_state_dict(checkpoint["state_dict"], strict=True)
+    except (RuntimeError, KeyError) as exc:
+        raise TrainingError("Checkpoint state dimensions mismatch") from exc
+    if any(not torch.isfinite(parameter).all() for parameter in model.parameters()):
+        raise TrainingError("Checkpoint contains nonfinite weights")
+    return model, checkpoint
+
+
 def _scores(model, features, targets, num_classes: int) -> tuple[float, float]:
     import torch
 
     model.eval()
     with torch.inference_mode():
-        predictions = model(features).argmax(dim=1)
+        logits = model(features)
+        if not torch.isfinite(logits).all():
+            raise TrainingError("Evaluation produced nonfinite logits")
+        predictions = logits.argmax(dim=1)
         accuracy = float((predictions == targets).float().mean())
         class_f1 = []
         for label in range(num_classes):
@@ -200,13 +267,7 @@ def evaluate_checkpoint(
         raise DatasetValidationError("Dataset changed after registration; register a new version")
     reference = next(artifact for artifact in experiment.artifacts if artifact.name == "model.pt")
     content = read_artifact(reference, experiment.project_id, experiment.id, settings)
-    checkpoint = torch.load(io.BytesIO(content), weights_only=True)
-    model = torch.nn.Sequential(
-        torch.nn.Linear(len(dataset.feature_columns), experiment.config.hidden_units),
-        torch.nn.ReLU(),
-        torch.nn.Linear(experiment.config.hidden_units, dataset.num_classes),
-    )
-    model.load_state_dict(checkpoint["state_dict"])
+    model, checkpoint = load_checkpoint(content, experiment, dataset)
     control.check()
     test = loaded.splits["test"]
     features = (torch.tensor(test.features, dtype=torch.float32) - checkpoint["mean"]) / checkpoint[

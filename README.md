@@ -1,5 +1,24 @@
 # ML Pipeline Pro
 
+Models support `mlp` (the default) and `logistic_regression`. Create a linear model
+with `POST /api/v1/models` and
+`{"name":"linear_baseline","architecture":"logistic_regression"}`. Submit
+`POST /api/v1/experiments` with your `dataset_id`, `model_id`, an `Idempotency-Key`
+header, and `"config":{"algorithm":"logistic_regression","epochs":30,"l2_strength":0}`.
+Common config fields/defaults are seed 42, batch size 16, learning rate 0.01 and
+runtime limit 60 seconds. Logistic configs exclude `hidden_units`; MLP payloads
+retain their existing defaults. A config/model mismatch returns scoped
+`409 model_config_mismatch`. Architecture is immutable after creation.
+
+Logistic regression is a fresh PyTorch linear classifier trained with minibatch
+Adam, cross entropy and optional `0.5 * l2_strength * sum(weight ** 2)` (bias is
+unpenalized). It supports binary and multiclass classification; convergence and
+superiority over MLP are not guaranteed. Scaling fits training rows and checkpoints
+are selected by validation metrics. Logistic tuning and AI mutation proposals are
+deferred (`409 unsupported_model_algorithm`); manual training, read/compare tools,
+artifact downloads and version registration work with both algorithms. See the
+[dashboard comparison walkthrough](docs/guides/dashboard.md#compare-algorithms).
+
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
 MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses

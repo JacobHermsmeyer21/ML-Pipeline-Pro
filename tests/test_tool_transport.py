@@ -136,7 +136,20 @@ def test_http_client_binds_headers_timeout_query_and_closes():
 
 
 def test_submission_uses_bound_key_and_documented_nonbudget_defaults():
-    probe = ProbeTransport(
+    class SubmissionProbe(ProbeTransport):
+        async def handle_async_request(self, request):
+            if request.url.path == "/api/v1/models/model":
+                assert request.method == "GET"
+                assert "Idempotency-Key" not in request.headers
+                return httpx.Response(
+                    200,
+                    json=ModelRecord(id="model", project_id="demo", name="mlp").model_dump(
+                        mode="json"
+                    ),
+                )
+            return await super().handle_async_request(request)
+
+    probe = SubmissionProbe(
         httpx.Response(
             503,
             json=ErrorResponse(

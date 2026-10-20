@@ -87,6 +87,7 @@ async def _execute_experiment(
             control=control,
             evaluate_test=experiment.evaluate_test,
             objective_metric=experiment.selection_metric,
+            architecture=model.architecture,
         )
         if any(not math.isfinite(value) for value in result.metrics.values()):
             raise TrainingError("Training did not produce finite evaluation metrics")

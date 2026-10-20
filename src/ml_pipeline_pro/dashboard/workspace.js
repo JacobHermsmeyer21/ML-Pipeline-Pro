@@ -8,6 +8,16 @@ function updateContext() {
   $("chat-context").textContent = dataset ? `${dataset.name}${model ? ` / ${model.name}` : ""}` : "Choose a dataset to get started";
   store("selection", { dataset: state.selectedDataset, model: state.selectedModel });
 }
+function algorithmLabel(algorithm) {
+  return algorithm === "logistic_regression" ? "Logistic regression" : "MLP";
+}
+function updateTrainingSettings() {
+  const logistic = selectedModel()?.architecture === "logistic_regression";
+  for (const [name, applicable] of [["hidden_units", !logistic], ["l2_strength", logistic]]) {
+    const input = $("training-form").elements.namedItem(name);
+    input.disabled = !applicable; input.closest("label").hidden = !applicable;
+  }
+}
 export function renderWorkspace() {
   $("stat-datasets").textContent = state.datasets.length; $("nav-dataset-count").textContent = state.datasets.length;
   $("stat-runs").textContent = state.experiments.length;
@@ -15,7 +25,8 @@ export function renderWorkspace() {
   $("stat-f1").textContent = completed.length ? number(Math.max(...completed.map((item) => item.metrics.validation_f1))) : "—";
   $("stat-active").textContent = state.experiments.filter((item) => activeRuns.has(item.status)).length;
   fillSelect($("training-dataset"), state.datasets, state.selectedDataset, "Choose a dataset", (item) => `${item.name} · ${item.version}`);
-  fillSelect($("training-model"), state.models, state.selectedModel, "Choose a model", (item) => item.name);
+  fillSelect($("training-model"), state.models, state.selectedModel, "Choose a model", (item) => `${item.name} · ${algorithmLabel(item.architecture)}`);
+  updateTrainingSettings();
   $("run-count").textContent = state.experiments.length; $("runs-empty").hidden = state.experiments.length > 0;
   $("runs-body").replaceChildren();
   for (const run of state.experiments) {
@@ -117,6 +128,7 @@ function renderRunDetail(run) {
   const signature = JSON.stringify(run); if (state.detailSignature === signature) return;
   state.detailSignature = signature; const panel = $("run-detail"); panel.hidden = false; panel.replaceChildren();
   const heading = el("div", "panel-title"), text = el("div"); text.append(el("h2", "", modelName(run.model_id)), el("p", "", `Experiment ${run.id}`));
+  text.append(el("p", "muted-note", algorithmLabel(run.config.algorithm || "mlp")));
   heading.append(text, badge(run.status)); panel.append(heading);
   const metrics = el("div", "detail-metrics");
   for (const [label, value] of [["Validation F1", run.metrics.validation_f1], ["Validation accuracy", run.metrics.validation_accuracy], ["Selected epoch", run.metrics.best_epoch]]) {
@@ -280,12 +292,12 @@ export function initWorkspace() {
     if (state.conversation) await state.loadHistory().catch(report);
   });
   $("training-dataset").addEventListener("change", () => { state.selectedDataset = $("training-dataset").value; updateContext(); });
-  $("training-model").addEventListener("change", async () => { state.selectedModel = $("training-model").value; state.selectedVersion = ""; updateContext(); await loadVersions().catch(report); });
+  $("training-model").addEventListener("change", async () => { state.selectedModel = $("training-model").value; state.selectedVersion = ""; updateTrainingSettings(); updateContext(); await loadVersions().catch(report); });
   $("model-create-open").addEventListener("click", () => { $("model-dialog").showModal(); $("model-name").focus(); });
   $("model-form").addEventListener("submit", async (event) => {
     event.preventDefault(); if (state.modelBusy) return;
     state.modelBusy = true; const submit = event.submitter; submit.disabled = true; state.mutations++;
-    try { const model = await api("/models", { method: "POST", body: { name: $("model-name").value } });
+    try { const model = await api("/models", { method: "POST", body: { name: $("model-name").value, architecture: $("model-architecture").value } });
       $("model-dialog").close(); $("model-form").reset(); await loadWorkspace(); state.selectedModel = model.id; renderWorkspace(); await loadVersions(); notify("Model created. Choose your dataset and review training settings.");
     } catch (error) { $("model-dialog").close(); report(error); }
     finally { state.modelBusy = false; submit.disabled = false; state.mutations--; }
@@ -293,9 +305,11 @@ export function initWorkspace() {
   $("training-form").addEventListener("submit", (event) => {
     event.preventDefault(); if (state.pendingTraining) { renderTrainingRecovery(); return; }
     const data = new FormData($("training-form")), config = {};
-    for (const key of ["epochs", "batch_size", "learning_rate", "hidden_units", "max_runtime_seconds", "seed"]) config[key] = Number(data.get(key));
+    const logistic = selectedModel()?.architecture === "logistic_regression";
+    for (const key of ["epochs", "batch_size", "learning_rate", "max_runtime_seconds", "seed", logistic ? "l2_strength" : "hidden_units"]) config[key] = Number(data.get(key));
+    if (logistic) config.algorithm = "logistic_regression";
     const body = { dataset_id: state.selectedDataset, model_id: state.selectedModel, config };
-    openReview("Review your training run", [["Dataset", datasetName(body.dataset_id)], ["Model", modelName(body.model_id)], ...Object.entries(config)], async () => {
+    openReview("Review your training run", [["Dataset", datasetName(body.dataset_id)], ["Model", modelName(body.model_id)], ["Algorithm", algorithmLabel(config.algorithm || "mlp")], ...Object.entries(config)], async () => {
       const attempt = { key: crypto.randomUUID(), body, unknown: false }; setPending("training", attempt); await submitTraining(attempt);
     });
   });

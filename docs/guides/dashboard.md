@@ -52,7 +52,7 @@ Keep other heavy verification/inference work quiescent during an agent demo.
    encoding, missing-value fill, target class ID and split count. Change any
    choices, refresh the preview, then click **Save reviewed dataset**. The normal
    path automatically creates stratified 70/15/15 splits with seed 42.
-2. Select **Use for training**, select or create a named MLP model, and review
+2. Select **Use for training**, select or create a named MLP or logistic regression model, and review
    training settings. Click **Review training**, then **Start training**. The run
    list polls active work; it displays actual states and saved validation metrics.
 3. Open a run to inspect results, ask the agent about its validation F1, download
@@ -66,6 +66,32 @@ Keep other heavy verification/inference work quiescent during an agent demo.
    panels show inference latency, labeled accuracy, errors and declared artificial
    delays. **Explain observations** requests evidence-linked local-model advice
    when the latest five-minute window contains observations.
+
+### Compare algorithms
+
+Create two named models using **Create model → Algorithm**: MLP and Logistic
+regression. Use the same saved dataset version for both. Model menus and run
+details show the algorithm. Each experiment trains fresh weights. MLP settings
+include hidden units; logistic settings replace that field with **L2 strength**
+(0 through 1, default 0). Common defaults are 30 epochs, batch size 16, learning
+rate 0.01, seed 42 and a 60-second runtime limit. Review the applicable settings
+before **Start training**. An unresolved submission retains its original model,
+settings and key even if you change the selected model or reconnect.
+
+Logistic regression uses a PyTorch linear layer, binary/multiclass logits,
+cross-entropy and minibatch Adam. L2 adds half the strength times squared weights
+to the loss, excluding bias. It is gradient training without a convergence
+guarantee. Both algorithms standardize using training rows only and select the
+checkpoint using validation results before evaluating the test split.
+
+After both runs succeed, open one and choose **Compare validation results**.
+The comparison uses validation F1 on that same dataset version. Download each
+checkpoint/manifest for hash/size verification; register a completed run through
+**Register version**. Registration alone does not create monitoring observations.
+Read/compare agent tools support both algorithms; AI training proposals, AI tuning,
+and generated logistic snippets are deferred. Use the manual form for logistic
+training. Logistic tuning and AI mutation requests fail explicitly. Deploy the API,
+worker and dashboard together; old workers cannot run logistic jobs.
 
 Supported original CSVs use UTF-8 with distinct nonempty headers, numeric or
 categorical features and 2-64 nonempty target classes. The app converts categories

@@ -188,8 +188,8 @@ rewrite logistic records as MLP or delete records/artifacts as an implicit rollb
 
 ## Implementation outcome
 
-Not implemented. No application, model, browser or service gates run for this plan.
-Record implementation revision, execution provenance, results/failures/skips, raw
-evidence, test justification, reviews, deviations, durable findings and completion
-commit/push here after approved work. Documentation validation and plan publication
-are reported separately; they do not establish feature acceptance.
+Implemented in the working tree after Jacob's explicit approval. Automated
+acceptance is in progress; see the [execution record](../evidence/2026-10-20-logistic-regression/README.md)
+for scope, test justification, provenance, results, reviews and remaining gaps.
+No logistic tuning, AI mutation, alternative backend or concurrency change was
+introduced. The approval record is published as `10e9f37` on `origin/main`.

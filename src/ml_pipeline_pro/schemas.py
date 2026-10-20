@@ -85,7 +85,7 @@ class ModelCreate(RequestModel):
     name: Name
     framework: Literal["pytorch"] = "pytorch"
     task: Literal["classification"] = "classification"
-    architecture: Literal["mlp"] = "mlp"
+    architecture: Literal["mlp", "logistic_regression"] = "mlp"
 
 
 class ModelRecord(Record, ModelCreate):
@@ -101,10 +101,24 @@ class TrainingConfig(RequestModel):
     max_runtime_seconds: int = Field(default=60, ge=1, le=600)
 
 
+class LogisticRegressionConfig(RequestModel):
+    algorithm: Literal["logistic_regression"]
+    seed: int = Field(default=42, ge=0, le=2**32 - 1)
+    epochs: int = Field(default=30, ge=1, le=500)
+    batch_size: int = Field(default=16, ge=1, le=4096)
+    learning_rate: float = Field(default=0.01, gt=0, le=1, allow_inf_nan=False)
+    max_runtime_seconds: int = Field(default=60, ge=1, le=600)
+    l2_strength: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
+
+
+def config_algorithm(config: TrainingConfig | LogisticRegressionConfig) -> str:
+    return "logistic_regression" if isinstance(config, LogisticRegressionConfig) else "mlp"
+
+
 class ExperimentCreate(RequestModel):
     dataset_id: str = Field(min_length=1, max_length=128)
     model_id: str = Field(min_length=1, max_length=128)
-    config: TrainingConfig = Field(default_factory=TrainingConfig)
+    config: TrainingConfig | LogisticRegressionConfig = Field(default_factory=TrainingConfig)
 
 
 class ArtifactReference(RequestModel):

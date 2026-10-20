@@ -64,6 +64,8 @@ for _prefix in ("config", "best_config"):
             "batch_size",
             "learning_rate",
             "hidden_units",
+            "algorithm",
+            "l2_strength",
             "max_runtime_seconds",
         )
     )

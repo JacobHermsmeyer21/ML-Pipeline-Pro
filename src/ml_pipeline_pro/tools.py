@@ -320,6 +320,25 @@ class ToolDispatcher:
     def __init__(self, transport: ToolTransport):
         self._transport = transport
 
+    async def mutation_preflight(self, call: ToolCall, context: ToolContext) -> ToolFailure | None:
+        if call.name not in {"create_experiment", "create_tuning_job"}:
+            return None
+        lookup = ToolCall(name="get_model", arguments={"model_id": call.arguments["model_id"]})
+        result = await self.execute(
+            lookup, context.model_copy(update={"allow_mutations": False, "submission_key": None})
+        )
+        if isinstance(result, ToolFailure):
+            return result
+        if result.data["architecture"] != "mlp":
+            return _failure(
+                context,
+                call.name,
+                "unsupported_model_algorithm",
+                "AI training and tuning proposals support MLP only; use manual logistic training.",
+                http_status=409,
+            )
+        return None
+
     async def execute(self, call: ToolCall | dict[str, Any], context: ToolContext) -> ToolResult:
         """Execute one validated call; the host owns approval and submission keys."""
         name = None
@@ -356,6 +375,10 @@ class ToolDispatcher:
                 "tool_submission_key_required",
                 "The host must supply a stable submission key",
             )
+        if spec.submission:
+            failure = await self.mutation_preflight(call, context)
+            if failure is not None:
+                return failure
         values = arguments.model_dump(mode="json", exclude_none=True)
         path = spec.path
         if spec.path_key is not None:

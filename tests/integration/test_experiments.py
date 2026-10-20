@@ -102,7 +102,8 @@ def test_mongodb_claims_are_atomic_and_recovery_attempts_are_bounded():
     os.getenv("MLPP_RUN_WORKER_INTEGRATION") != "1",
     reason="Requires the full Compose stack, including the worker",
 )
-def test_queued_training_artifact_download_and_model_version_registration():
+@pytest.mark.parametrize("architecture", ["mlp", "logistic_regression"])
+def test_queued_training_artifact_download_and_model_version_registration(architecture):
     project_id = f"test_{uuid4().hex}"
     try:
         with httpx.Client(
@@ -118,12 +119,18 @@ def test_queued_training_artifact_download_and_model_version_registration():
                 },
             )
             assert dataset.status_code == 201, dataset.text
-            model = client.post("/models", json={"name": "classifier"})
+            model = client.post(
+                "/models", json={"name": "classifier", "architecture": architecture}
+            )
             assert model.status_code == 201, model.text
             body = {
                 "dataset_id": dataset.json()["id"],
                 "model_id": model.json()["id"],
-                "config": {"epochs": 10},
+                "config": (
+                    {"algorithm": architecture, "epochs": 30}
+                    if architecture == "logistic_regression"
+                    else {"epochs": 10}
+                ),
             }
             response = client.post(
                 "/experiments", json=body, headers={"Idempotency-Key": "integration-job"}

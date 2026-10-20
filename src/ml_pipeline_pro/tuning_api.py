@@ -41,8 +41,11 @@ async def create_tuning_job(
         await store.lifecycle.check_submission(project, "tuning_jobs", key, fingerprint)
         if await store.datasets.get(project, body.dataset_id) is None:
             raise ApiError(404, "dataset_not_found", "Dataset was not found in this project")
-        if await store.models.get(project, body.model_id) is None:
+        model = await store.models.get(project, body.model_id)
+        if model is None:
             raise ApiError(404, "model_not_found", "Model was not found in this project")
+        if model.architecture != "mlp":
+            raise ApiError(409, "unsupported_model_algorithm", "Logistic tuning is not supported")
         try:
             record = await tuning.jobs.admit(
                 TuningRecord(

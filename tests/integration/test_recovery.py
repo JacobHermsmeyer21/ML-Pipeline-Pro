@@ -203,6 +203,60 @@ def test_killed_training_worker_is_recovered_by_beat(recovery_case):
     assert len(records["experiments"]) == 1
 
 
+def test_logistic_worker_loss_preserves_config_and_experiment(recovery_case):
+    case = recovery_case
+    model = case.client.post(
+        "/models", json={"name": "linear", "architecture": "logistic_regression"}
+    )
+    assert model.status_code == 201
+    body = {
+        **case.inputs,
+        "model_id": model.json()["id"],
+        "config": {"algorithm": "logistic_regression", "epochs": 10, "l2_strength": 0.02},
+    }
+    case.pause("training")
+    response = case.client.post("/experiments", json=body, headers={"Idempotency-Key": "linear"})
+    assert response.status_code == 202, response.text
+    path = f"/experiments/{response.json()['id']}"
+    case.at_boundary()
+    before = case.snapshot("linear-interrupted")["experiments"][0]
+    case.stack.kill_worker()
+    case.release()
+    case.stack.restart_worker()
+    after = case.terminal(path)
+    assert after["status"] == "succeeded" and after["attempts"] == 2, after
+    assert after["config"] == before["config"]
+    assert after["id"] == before["_id"]
+    case.artifacts(after)
+    assert len(case.snapshot("linear-recovered")["experiments"]) == 1
+
+
+def test_logistic_runtime_expiry_cannot_publish_success(recovery_case):
+    case = recovery_case
+    model = case.client.post(
+        "/models", json={"name": "linear", "architecture": "logistic_regression"}
+    )
+    assert model.status_code == 201
+    case.pause("training")
+    response = case.client.post(
+        "/experiments",
+        json={
+            **case.inputs,
+            "model_id": model.json()["id"],
+            "config": {"algorithm": "logistic_regression", "epochs": 500, "max_runtime_seconds": 5},
+        },
+        headers={"Idempotency-Key": "expiry"},
+    )
+    assert response.status_code == 202, response.text
+    case.at_boundary()
+    time.sleep(6)
+    case.release()
+    after = case.terminal(f"/experiments/{response.json()['id']}")
+    assert after["status"] == "failed", after
+    assert "runtime budget" in after["error_summary"]
+    assert after["artifacts"] == [] and after["metrics"] == {}
+
+
 @pytest.mark.parametrize("boundary", ["training", "final_evaluation", "final_commit"])
 def test_killed_tuning_worker_preserves_reservations_results_and_deadlines(recovery_case, boundary):
     case = recovery_case
