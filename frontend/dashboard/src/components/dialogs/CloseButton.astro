@@ -1,0 +1,6 @@
+---
+import Icon from "../Icon.astro";
+interface Props { label?: string }
+const { label = "Close" } = Astro.props;
+---
+<button type="button" class="icon-button" data-close-dialog aria-label={label}><Icon name="close" /></button>

@@ -58,7 +58,8 @@ require `X-Project-ID` and, when configured, `X-API-Key`. Stop with
 Follow the [setup guide](docs/guides/setup.md) for host development, configuration,
 custom data, and shared artifact storage. Chat defaults to disabled; enabling it
 still requires an installed model and verified artifact-specific token counter.
-See [conversation development](docs/guides/conversation-development.md).
+Alternatively, the opt-in Claude backend uses the Anthropic API with your own key;
+see [conversation development](docs/guides/conversation-development.md#claude-backend).
 
 ## Try a workflow
 
@@ -66,6 +67,7 @@ The [local dashboard](docs/guides/dashboard.md) brings CSV upload, model trainin
 saved experiments, local-agent chat and embedded Grafana panels into one browser
 workspace at `http://127.0.0.1:8000/dashboard/`. Use the dashboard Compose overlay
 for durable shared uploads and Grafana embedding. Uploads are disabled by default.
+The page is built with Astro; see [developing the dashboard](docs/guides/dashboard.md#develop-the-dashboard).
 The additive `POST /api/v1/datasets/upload` accepts raw `text/csv` with dataset
 metadata in query parameters; [the API reference](docs/reference/api.md#dataset-upload)
 documents its limits, project scope, replay and failure responses.

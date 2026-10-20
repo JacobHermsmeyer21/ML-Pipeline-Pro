@@ -6,6 +6,7 @@ import { reviewDeletion } from "./deletion.js";
 function updateContext() {
   const dataset = selectedDataset(), model = selectedModel();
   $("chat-context").textContent = dataset ? `${dataset.name}${model ? ` / ${model.name}` : ""}` : "Choose a dataset to get started";
+  $("chat-context").title = $("chat-context").textContent;
   store("selection", { dataset: state.selectedDataset, model: state.selectedModel });
 }
 export function renderWorkspace() {
@@ -20,9 +21,10 @@ export function renderWorkspace() {
   $("runs-body").replaceChildren();
   for (const run of state.experiments) {
     const row = el("tr"), identity = el("td"), status = el("td"), actions = el("td");
-    identity.append(el("strong", "", modelName(run.model_id)), el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`));
+    const name = el("strong", "", modelName(run.model_id)), detail = el("small", "", `${datasetName(run.dataset_id)} · ${run.id.slice(0, 8)}`);
+    name.title = name.textContent; detail.title = detail.textContent; identity.append(name, detail);
     status.append(badge(run.status));
-    actions.append(button("View →", "text-button", () => showRun(run.id).catch(report)));
+    actions.append(button("View", "text-button", () => showRun(run.id).catch(report)));
     row.append(identity, status, el("td", "teal-text", number(run.metrics.validation_f1)), el("td", "", date(run.created_at)), actions); $("runs-body").append(row);
   }
   $("datasets-list").replaceChildren();
@@ -30,7 +32,7 @@ export function renderWorkspace() {
   for (const dataset of state.datasets) {
     const card = el("article", "record-card"); card.append(el("h3", "", `${dataset.name} / ${dataset.version}`));
     card.append(el("p", "record-meta", `${dataset.feature_columns.length} features · ${dataset.num_classes} classes · ${dataset.row_counts.train} train / ${dataset.row_counts.validation} validation / ${dataset.row_counts.test} test`), el("div", "hash-text", `SHA-256 ${dataset.sha256}`));
-    const actions = el("div", "record-actions"); actions.append(button("Use for training →", "text-button", () => {
+    const actions = el("div", "record-actions"); actions.append(button("Use for training", "text-button", () => {
       state.selectedDataset = dataset.id; renderWorkspace(); showView("runs"); $("training-model").focus();
     }));
     if (state.config?.uploads_enabled) actions.append(button("Edit columns", "text-button", () => editColumns(dataset)));
@@ -219,9 +221,9 @@ async function loadVersions() {
 }
 function graphCard(title, panelId, version) {
   const card = el("article", "grafana-card"), heading = el("h3", "", title);
-  const url = new URL(`/d-solo/mlpp-workspace?orgId=1&panelId=${panelId}&theme=dark&from=now-${$("monitor-range").value}&to=now&refresh=15s`, state.config.grafana_origin);
+  const url = new URL(`/d-solo/mlpp-workspace?orgId=1&panelId=${panelId}&theme=light&from=now-${$("monitor-range").value}&to=now&refresh=15s`, state.config.grafana_origin);
   url.searchParams.set("var-model_version_id", version);
-  const link = el("a", "text-button", "Open panel ↗"); link.href = url.href; link.target = "_blank"; link.rel = "noopener noreferrer"; heading.append(link); card.append(heading);
+  const link = el("a", "text-button", "Open in Grafana"); link.href = url.href; link.target = "_blank"; link.rel = "noopener noreferrer"; heading.append(link); card.append(heading);
   if (version && state.project === "demo") { const frame = el("iframe"); frame.title = `${title} for version ${version}`; frame.src = url.href; frame.loading = "lazy"; frame.referrerPolicy = "no-referrer"; card.append(frame); }
   else card.append(el("div", "graph-placeholder", state.project === "demo" ? "Choose a registered model version to load this Grafana panel." : "Grafana is configured for demo. These graphs are unavailable in this project."));
   return card;
@@ -230,7 +232,7 @@ async function updateMonitoring() {
   const version = state.selectedVersion;
   $("grafana-panels").replaceChildren(); $("diagnose-button").disabled = true; state.monitorDataAvailable = null; if (!state.config) return;
   const fullDashboard = new URL("/d/mlpp-workspace", state.config.grafana_origin);
-  for (const [key, value] of Object.entries({ "var-model_version_id": version, from: `now-${$("monitor-range").value}`, to: "now", refresh: "15s", theme: "dark" })) fullDashboard.searchParams.set(key, value);
+  for (const [key, value] of Object.entries({ "var-model_version_id": version, from: `now-${$("monitor-range").value}`, to: "now", refresh: "15s", theme: "light" })) fullDashboard.searchParams.set(key, value);
   $("grafana-open").href = fullDashboard.href; $("grafana-open").hidden = !version || state.project !== "demo";
   for (const [title, id] of [["Inference latency · milliseconds", 1], ["Labeled inference accuracy", 2], ["Errors & declared demo delays", 3]]) $("grafana-panels").append(graphCard(title, id, version));
   $("monitor-summary").textContent = version ? `Version ${version} · Checking latest observations…` : "Select a registered version. A newly trained model has no observations until inference samples are collected.";

@@ -1,0 +1,13 @@
+---
+import CloseButton from "./CloseButton.astro";
+---
+<dialog id="column-dialog" aria-labelledby="column-title"><form id="column-form">
+  <div class="dialog-heading"><h2 id="column-title">Edit dataset columns</h2><CloseButton label="Close column editor" /></div>
+  <p id="column-parent" class="muted-note"></p>
+  <label>New version<input id="column-version" placeholder="v2" pattern="[a-zA-Z0-9_-]{1,80}" maxlength="80" required></label>
+  <h3>Input columns to keep</h3>
+  <div id="column-choices" class="column-choices"></div>
+  <p id="column-protected" class="muted-note"></p>
+  <p id="column-preview-result" class="notice" role="status"></p>
+  <div class="dialog-actions"><button class="secondary" type="submit">Preview changes</button><button id="column-save" class="primary" type="button" disabled>Review and save</button></div>
+</form></dialog>

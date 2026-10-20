@@ -1,0 +1,8 @@
+---
+import CloseButton from "./CloseButton.astro";
+---
+<dialog id="models-dialog" aria-labelledby="models-title">
+  <div class="dialog-heading"><h2 id="models-title">Manage models</h2><CloseButton /></div>
+  <p class="muted-note">Deleting a model also erases its training history and checkpoint files. Datasets, conversations and drafts are kept.</p>
+  <div id="models-list" class="record-list"></div>
+</dialog>

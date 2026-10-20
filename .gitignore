@@ -20,3 +20,9 @@ datasets/
 .audit-requirements.txt
 .vscode/
 .idea/
+
+# Dashboard frontend
+frontend/dashboard/node_modules/
+frontend/dashboard/.astro/
+frontend/dashboard/test-results/
+frontend/dashboard/playwright-report/
