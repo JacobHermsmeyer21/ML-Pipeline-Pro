@@ -33,6 +33,7 @@ export function renderWorkspace() {
     const actions = el("div", "record-actions"); actions.append(button("Use for training →", "text-button", () => {
       state.selectedDataset = dataset.id; renderWorkspace(); showView("runs"); $("training-model").focus();
     }));
+    if (state.config?.uploads_enabled) actions.append(button("Edit columns", "text-button", () => editColumns(dataset)));
     actions.append(button("Delete dataset", "text-button danger-text", () => reviewDeletion("datasets", dataset)));
     card.append(actions); $("datasets-list").append(card);
   }
@@ -257,6 +258,7 @@ async function diagnose() {
   finally { state.diagnosing = false; state.mutations--; $("diagnose-button").disabled = state.monitorDataAvailable !== state.selectedVersion; }
 }
 export function initWorkspace() {
+  initColumns();
   state.refresh = loadWorkspace; state.renderWorkspace = renderWorkspace;
   state.renderTrainingRecovery = renderTrainingRecovery; state.updateMonitoring = updateMonitoring;
   state.refreshMonitoring = refreshMonitoringSummary;
@@ -271,6 +273,7 @@ export function initWorkspace() {
     rememberProject();
     Object.assign(state, { datasets: [], models: [], experiments: [], tuning: [], versions: [], selectedDataset: "", selectedModel: "", selectedVersion: "", conversation: "", revision: 0, turns: [], detail: "", detailSignature: "", loading: false });
     state.resetPreparation?.();
+    state.resetColumns?.();
     state.actions.clear(); state.actionReads.clear(); state.actionBusy.clear(); $("run-detail").hidden = true;
     $("grafana-panels").replaceChildren(); $("diagnosis-result").replaceChildren(); $("global-message").hidden = true;
     restoreSession(); renderWorkspace(); state.renderChat(); state.renderConversationSelect(); await loadWorkspace();
@@ -305,3 +308,4 @@ export function initWorkspace() {
   $("monitor-range").addEventListener("change", () => updateMonitoring().catch(report)); $("diagnose-button").addEventListener("click", diagnose);
 }
 import { initPreparation } from "./preparation.js";
+import { editColumns, initColumns } from "./columns.js";

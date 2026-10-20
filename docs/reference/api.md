@@ -166,6 +166,63 @@ route or automatic generated-code execution.
 Open [interactive API docs](http://127.0.0.1:8000/docs) after
 [setup](../guides/setup.md). Run example requests from the repository root.
 
+## Dataset column editing
+
+These model-service routes use the usual project/key headers and
+`MLPP_DATASET_UPLOAD_ENABLED` opt-in:
+
+| Method | Route | Result |
+| --- | --- | --- |
+| GET | `/api/v1/datasets/{id}/columns` | Verified editable original input names, encoded groups, protected roles, feature/split counts and `source_sha256`. |
+| POST | `/api/v1/datasets/{id}/columns/preview` | Review a column subset for a new version without registering/publishing files. |
+| POST | `/api/v1/datasets/{id}/columns` | Save the exact reviewed subset as a new immutable dataset version. |
+
+Preview accepts JSON `version`, `drop_columns` and the parent's `source_sha256`.
+Save also requires the returned `preview_sha256` as `reviewed_sha256`. For example,
+with hashes replaced by the actual descriptor/preview values:
+
+```json
+{
+  "version": "v2",
+  "drop_columns": ["BP"],
+  "source_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "reviewed_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+}
+```
+
+Omit `reviewed_sha256` from preview. Select 1-128 unique currently active input
+names, leaving at least one. Original categorical names identify whole encoded
+groups; numeric datasets use registered feature names. The target/split cannot
+be removed. The destination retains the parent name and requires a different,
+unused version. Omission order is normalized; retained feature order is preserved.
+Both JSON POSTs have a 65,536-byte body cap independent of `Content-Length`.
+Existing CSV, row, feature and preparation-manifest limits still apply, and
+projection uses the existing 30-second preparation budget.
+
+Save returns the existing dataset response with optional `selection` provenance:
+parent ID/content/manifest hashes, normalized omissions, request digest and exact
+review digest. It returns 201 created or 200 identical saved replay. Replay
+checks the saved child before requiring a surviving parent, so a lost-response
+retry can succeed after parent deletion. A conflicting destination or changed
+request/review returns 409. The browser retains the exact uncertain request per
+project. There is no automatic retry under a new destination.
+
+Other correlated errors are 403 access denied, 404 disabled/missing/foreign
+dataset, 408 preparation timeout, 409 `column_review_required`,
+`dataset_file_conflict`, `dataset_identity_conflict` or existing lifecycle/storage
+conflicts, 422 invalid selection/schema or `column_limit_exceeded`, and 503
+unavailable storage/database. No error includes raw source values.
+
+Derivation projects the verified saved numeric CSV without resplitting or fitting
+new transformations. Raw-prepared children directly retain their original raw
+source reference and receive a self-contained v2 selection recipe with frozen
+retained transforms, label map and split digest. Retained internal feature aliases
+are not renumbered. Old v1 recipes and old records without `selection` still work;
+deploy matching domain services/workers before creating v2 children. Parent IDs
+are provenance rather than cascade dependencies: either version can be deleted
+independently, preserving shared files needed by survivors. Original data remains
+in prior versions/raw-source files; feature removal is not data erasure.
+
 ## Access and submissions
 
 Metadata, experiment, tuning, and conversation operations require `X-Project-ID`
@@ -181,6 +238,9 @@ to the selected project. Training and tuning submissions require an
 | `GET /api/v1/health/ready` | MongoDB and Redis both respond within the configured timeout |
 | `POST /api/v1/datasets` | Validate a local CSV and register its content hash and split metadata |
 | `GET /api/v1/datasets` and `GET /api/v1/datasets/{id}` | List or retrieve datasets within a project |
+| `GET /api/v1/datasets/{id}/columns` | Inspect verified editable input columns |
+| `POST /api/v1/datasets/{id}/columns/preview` | Preview dropping columns under a new dataset version |
+| `POST /api/v1/datasets/{id}/columns` | Publish the reviewed column subset; replay the same saved version |
 | `POST /api/v1/models` | Register a PyTorch classification model |
 | `GET /api/v1/models` and `GET /api/v1/models/{id}` | List or retrieve models within a project |
 | `POST /api/v1/experiments` | Queue a bounded training job; requires `Idempotency-Key` |

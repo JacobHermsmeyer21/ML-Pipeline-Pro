@@ -19,6 +19,31 @@ Package changes also require `uv build`. Documentation-only changes require loca
 link/anchor checks, example syntax and factual source checks, and `git diff --check`.
 See [AGENTS.md](../../AGENTS.md#verification-commands) for the standing gate policy.
 
+## Column-editing browser acceptance
+
+With an isolated upload-enabled test stack and Chrome installed, the opt-in
+[browser script](../../scripts/verify_column_dashboard.py) exercises input
+selection before preview, editing saved numeric/categorical datasets, cancellation,
+stale preview, duplicate clicks, lost-response recovery after reconnecting,
+project switching and actual shared-volume parent/child deletion. It submits five
+small serial training runs and verifies their downloaded artifact hashes. Use
+disposable data only; do not run this while presenting or running other training.
+
+Playwright is an optional verification dependency, not an application dependency:
+
+```powershell
+uv run --locked --extra training --with playwright==1.64.0 python `
+    scripts/verify_column_dashboard.py --origin http://127.0.0.1:18001 `
+    --output artifacts/column-editing/browser
+```
+
+Replace the origin with the isolated stack's actual port. The default browser is
+`C:/Program Files/Google/Chrome/Application/chrome.exe`; use `--browser` for
+another installed Chromium binary. The script creates a uniquely named
+`columns_browser_*` project, screenshots and a JSON execution report. Its remaining
+records/files stay in that disposable project for inspection. Human usefulness
+review and independent concurrency review remain separate from these assertions.
+
 ## Ordinary integration
 
 With Docker Compose 2.24 or later installed:

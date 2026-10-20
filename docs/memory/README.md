@@ -7,6 +7,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 | Finding | Scope |
 | --- | --- |
 | [Permanent erasure needs metadata fencing and live-writer exclusion](permanent-deletion-storage.md) | Scoped cascade, resumable cleanup, generation-bound publication, native attempt locks, erased submission receipts and project restoration |
+| [Dropping columns must preserve saved transforms and row membership](dataset-column-projection.md) | Immutable projection, whole categorical groups, v2 recipes and replay after parent deletion |
 | [Two-stage stratification needs integer holdout counts](stratified-split-counts.md) | Confirmed 139/31/30 floating-point allocation; integer-count fix and original raw-drug200 acceptance |
 | [Changing a CSV target must also update inferred features](dashboard-column-mapping.md) | Confirmed drug200 metadata overlap, numeric-only preparation and browser-to-worker demo |
 | [Uploaded CSV publication must survive uncertain metadata writes](dataset-upload-publication.md) | Atomic publication, scoped replay, cancellation and shared read-only worker files |

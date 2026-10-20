@@ -30,6 +30,16 @@ class TrackingStore:
                 unique=True,
                 name="dataset_project_name_version",
             )
+            await self.datasets.collection.create_index(
+                [
+                    ("project_id", ASCENDING),
+                    ("selection.parent_id", ASCENDING),
+                    ("version", ASCENDING),
+                ],
+                unique=True,
+                partialFilterExpression={"selection.parent_id": {"$exists": True}},
+                name="dataset_parent_selection_version",
+            )
             await self.models.collection.create_index(
                 [("project_id", ASCENDING), ("name", ASCENDING)],
                 unique=True,
@@ -89,6 +99,15 @@ class ModelVersionRepository(MongoRepository[ModelVersionRecord]):
 
 
 class DatasetRepository(MongoRepository[DatasetRecord]):
+    async def by_selection(self, project_id: str, parent_id: str, version: str):
+        document = await self.collection.find_one(
+            {"project_id": project_id, "selection.parent_id": parent_id, "version": version}
+        )
+        if document is None:
+            return None
+        await Lifecycle(self.database).check_read(project_id, "datasets", document["_id"])
+        return self._decode(document)
+
     async def by_identity(self, project_id: str, name: str, version: str):
         document = await self.collection.find_one(
             {"project_id": project_id, "name": name, "version": version}

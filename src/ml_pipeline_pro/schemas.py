@@ -62,11 +62,23 @@ class PreparationReference(RequestModel):
     recipe_sha256: Sha256
 
 
+class DatasetSelection(RequestModel):
+    parent_id: str = Field(min_length=1, max_length=128)
+    parent_sha256: Sha256
+    parent_manifest_sha256: Sha256 | None = None
+    drop_columns: list[Annotated[str, Field(min_length=1, max_length=128)]] = Field(
+        min_length=1, max_length=128
+    )
+    request_sha256: Sha256
+    reviewed_sha256: Sha256
+
+
 class DatasetRecord(Record, DatasetDefinition):
     sha256: Sha256
     num_classes: int = Field(ge=2, le=64)
     row_counts: dict[Literal["train", "validation", "test"], int]
     preparation: PreparationReference | None = None
+    selection: DatasetSelection | None = None
 
 
 class ModelCreate(RequestModel):

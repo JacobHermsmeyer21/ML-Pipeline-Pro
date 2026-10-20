@@ -80,6 +80,24 @@ in the independent monitoring service under the
 
 Tuning jobs use `queued`, `running`, `succeeded`, `failed`, `cancel_requested`, and `cancelled`; experiment records also support `cancelled` for tuning children but have no standalone cancellation endpoint. Submission retries are idempotent, leases/heartbeats are persisted, and recovery claims are bounded. Tuning child writes share a transaction with a parent ownership fence; MongoDB replica set/sharded-cluster support is required. Preserve these contracts while strengthening outage/restart coverage. A succeeded tuning job can report `final_evaluation: skipped_budget`; version registration still requires an evaluated experiment.
 
+## Dataset column versions
+
+The model service owns reviewed column-subset creation. An optional typed
+`DatasetRecord.selection` records immediate parent hashes/ID, omissions and
+request/review digests. A partial unique index on project, selection parent ID
+and destination version supports exact replay even after parent removal.
+Original datasets need no migration. Parent IDs are provenance, not cascading
+ownership. Each child directly references all files needed to train it.
+
+Projection retains canonical row order, targets, split membership and feature
+aliases. Raw-prepared children use a self-contained v2 manifest with frozen
+retained transforms, supported alongside v1. The existing project publication
+lock and lifecycle-generation transaction fence the new writer against deletion;
+file work stays owned through cancellation and uncertain inserts retain published
+files. Deploy matching services/workers together. See
+[the API contract](api.md#dataset-column-editing) and
+[the approved plan](../plans/2026-10-19-dataset-column-editing-plan.md).
+
 ## Risks and mitigations
 
 | Risk | Mitigation |

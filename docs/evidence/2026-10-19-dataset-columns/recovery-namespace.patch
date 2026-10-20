@@ -1,0 +1,16 @@
+--- tests/integration/test_recovery.py
++++ artifacts/column-editing/test_recovery_columns.py
+@@ -24,2 +24,2 @@
+-ROOT = Path(__file__).resolve().parents[2]
+-EVIDENCE = ROOT / "artifacts/recovery-validation"
++ROOT = Path.cwd()
++EVIDENCE = ROOT / "artifacts/column-editing/recovery"
+@@ -53,0 +54,2 @@
++            "--file",
++            "artifacts/column-editing/recovery-overlay.yaml",
+@@ -155 +157 @@
+-            base_url="http://127.0.0.1:28000/api/v1",
++            base_url="http://127.0.0.1:28001/api/v1",
+@@ -160 +162 @@
+-            "mongodb://127.0.0.1:47017/?directConnection=true", timeoutMS=3000, tz_aware=True
++            "mongodb://127.0.0.1:47018/?directConnection=true", timeoutMS=3000, tz_aware=True

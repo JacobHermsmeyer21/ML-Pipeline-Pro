@@ -1,0 +1,16 @@
+services:
+  api:
+    image: ml-pipeline-pro:columns-recovery
+    ports: !override ["127.0.0.1:28001:8000"]
+  worker:
+    image: ml-pipeline-pro:columns-recovery
+    volumes: !override
+      - artifacts:/app/artifacts
+      - ./tests/integration/recovery_worker.py:/app/recovery_worker.py:ro
+      - ./artifacts/column-editing/recovery/control:/recovery-control
+  scheduler:
+    image: ml-pipeline-pro:columns-recovery
+  mongo:
+    ports: !override ["127.0.0.1:47018:27017"]
+  redis:
+    ports: !override ["127.0.0.1:26380:6379"]

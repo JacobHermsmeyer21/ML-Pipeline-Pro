@@ -15,6 +15,7 @@ from starlette.responses import Response
 
 from ml_pipeline_pro import __version__
 from ml_pipeline_pro.api import router
+from ml_pipeline_pro.column_api import router as column_router
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.connections import check_readiness, open_connections
 from ml_pipeline_pro.conversation_api import ModelFactory, conversation_clients
@@ -132,6 +133,7 @@ def _create_app(
         app.include_router(deletion_router)
         app.include_router(upload_router)
         app.include_router(preparation_router)
+        app.include_router(column_router)
         install_dashboard(app)
 
     @app.middleware("http")
@@ -142,8 +144,12 @@ def _create_app(
         started = perf_counter()
         path = request.url.path
         monitoring_post = path.startswith("/api/v1/monitoring/")
+        column_post = path.startswith("/api/v1/datasets/") and (
+            path.endswith("/columns") or path.endswith("/columns/preview")
+        )
         if request.method == "POST" and (
             monitoring_post
+            or column_post
             or path == "/api/v1/chat"
             or (path.startswith("/api/v1/conversations/") and path.endswith("/decision"))
         ):
@@ -153,8 +159,14 @@ def _create_app(
                     return error_response(
                         request,
                         422,
-                        "monitoring_limit_exceeded" if monitoring_post else "chat_limit_exceeded",
-                        "Monitoring request exceeds byte limit"
+                        "column_limit_exceeded"
+                        if column_post
+                        else "monitoring_limit_exceeded"
+                        if monitoring_post
+                        else "chat_limit_exceeded",
+                        "Column request exceeds byte limit"
+                        if column_post
+                        else "Monitoring request exceeds byte limit"
                         if monitoring_post
                         else "Conversation request exceeds byte limit",
                     )

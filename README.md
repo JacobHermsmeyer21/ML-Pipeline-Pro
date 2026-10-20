@@ -69,6 +69,13 @@ encodings and stratified 70/15/15 splits; `POST /api/v1/datasets/prepare` saves 
 exact reviewed recipe. Both accept multipart CSV/JSON and use the same opt-in
 upload setting. See [raw CSV preparation](docs/reference/api.md#raw-csv-preparation).
 
+Choose input columns before uploading, or use **Edit columns** on a saved dataset
+to drop inputs and **Save as new version**. Existing versions/runs retain their
+original data; rows, labels and splits are preserved. The additive
+`GET /api/v1/datasets/{id}/columns`, `POST /api/v1/datasets/{id}/columns/preview`
+and `POST /api/v1/datasets/{id}/columns` routes use the upload opt-in setting.
+See [column editing](docs/reference/api.md#dataset-column-editing).
+
 Use **Delete dataset** or **Manage models** in the dashboard to permanently erase
 an item and its related training history/checkpoints after reviewing the exact
 scope. Related active jobs block deletion; conversations/drafts and shared or

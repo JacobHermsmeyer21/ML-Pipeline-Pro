@@ -1,6 +1,6 @@
 import { $, state, api, el, notify, report } from "./core.js";
 
-let preview = null, overrides = {}, labels = {}, serial = 0, busy = false, pending = null;
+let preview = null, overrides = Object.create(null), labels = Object.create(null), serial = 0, busy = false, pending = null, sourceHeaders = [];
 const rawMode = () => !$("prepared-upload").checked;
 const settingsIds = ["dataset-name", "dataset-version", "dataset-target", "dataset-split", "split-train", "split-validation", "split-test", "split-seed", "impute-missing"];
 function invalidate() {
@@ -26,6 +26,34 @@ function setBusy(value) {
   $("prepare-save").disabled = value || (!preview && !pending);
   $("encoding-reset").disabled = value;
   for (const input of $("upload-form").querySelectorAll("input, select, textarea")) input.disabled = value || Boolean(pending);
+  renderInputSelection();
+}
+function renderInputSelection() {
+  const focused = document.activeElement?.dataset.column;
+  const reserved = new Set([$("dataset-target").value, $("dataset-split").value]);
+  const legacy = new Set($("dataset-features").value.split(",").map((name) => name.trim()));
+  $("upload-columns").replaceChildren();
+  $("upload-column-selection").hidden = !sourceHeaders.length;
+  let kept = 0;
+  for (const name of sourceHeaders) {
+    const protectedRole = reserved.has(name), label = el("label", "check-field column-choice"), input = el("input");
+    input.type = "checkbox"; input.dataset.column = name; input.checked = protectedRole || (rawMode() ? overrides[name]?.treatment !== "exclude" : legacy.has(name));
+    input.disabled = protectedRole || busy || Boolean(pending); input.setAttribute("aria-label", `Keep column ${name}`);
+    if (!protectedRole && input.checked) kept++;
+    input.addEventListener("change", () => {
+      if (rawMode()) { if (input.checked) delete overrides[name]; else overrides[name] = { treatment: "exclude" }; }
+      else {
+        if (input.checked) legacy.add(name); else legacy.delete(name);
+        $("dataset-features").value = sourceHeaders.filter((column) => legacy.has(column) && !reserved.has(column)).join(", ");
+      }
+      invalidate(); renderInputSelection();
+    });
+    label.append(input, el("span", "", name), ...(protectedRole ? [el("small", "muted-note", "Protected")] : []));
+    $("upload-columns").append(label);
+    if (focused === name && !input.disabled) input.focus();
+  }
+  $("upload-column-summary").textContent = `${kept} input columns selected. Uncheck a column to drop it from the saved training inputs.`;
+  $("upload-submit").disabled = busy || Boolean(pending) || !state.config?.uploads_enabled || !kept;
 }
 function numericInput(value, onChange, label) {
   const input = el("input"); input.type = "number"; input.step = "any"; input.value = value;
@@ -44,7 +72,7 @@ function render(result) {
     select.value = overrides[column.name]?.treatment || "auto";
     select.addEventListener("change", () => {
       overrides[column.name] = select.value === "mapping" ? { treatment: "mapping", mapping: Object.fromEntries(column.categories.map((category, index) => [category, index])), unknown_value: 0 } : { treatment: select.value };
-      invalidate(); render({ ...result, columns: result.columns.map((item) => item.name === column.name ? { ...item, treatment: select.value === "auto" ? column.treatment : select.value } : item) });
+      invalidate(); renderInputSelection(); render({ ...result, columns: result.columns.map((item) => item.name === column.name ? { ...item, treatment: select.value === "auto" ? column.treatment : select.value } : item) });
     });
     heading.append(name, select); card.append(heading);
     card.append(el("p", "muted-note", `${column.output_columns.length} output columns · ${column.missing_count} missing values · ${column.unknown_count} unseen values`));
@@ -77,11 +105,12 @@ function render(result) {
 export function initPreparation({ parseHeaders, chooseLegacyFile, uploadLegacyFile, loadWorkspace, renderWorkspace }) {
   const reset = () => {
     if (busy) return;
-    overrides = {}; labels = {}; pending = null; invalidate(); $("encoding-review").hidden = true;
+    overrides = Object.create(null); labels = Object.create(null); pending = null; invalidate(); $("encoding-review").hidden = true;
     $("prepare-save").textContent = "Save reviewed dataset";
     setBusy(false);
   };
   state.resetPreparation = () => {
+    sourceHeaders = [];
     reset(); $("dataset-file").value = ""; $("dataset-name").value = ""; $("dataset-version").value = "v1";
     $("dataset-features").value = ""; $("file-label").textContent = "Choose your original CSV";
     $("file-description").textContent = "Review and edit encoding before saving";
@@ -91,7 +120,7 @@ export function initPreparation({ parseHeaders, chooseLegacyFile, uploadLegacyFi
     $("upload-result").hidden = true;
   };
   async function chooseFile() {
-    reset(); const file = $("dataset-file").files[0]; if (!file) return;
+    sourceHeaders = []; reset(); const file = $("dataset-file").files[0]; if (!file) return;
     $("file-label").textContent = file.name; $("file-description").textContent = `${(file.size / 1000).toFixed(1)} KB · Original CSV selected`;
     if (!$("dataset-name").value) $("dataset-name").value = file.name.replace(/\.csv$/i, "").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 80);
     const request = serial, generation = state.generation;
@@ -99,6 +128,7 @@ export function initPreparation({ parseHeaders, chooseLegacyFile, uploadLegacyFi
       if (state.config && file.size > state.config.max_upload_bytes) throw new Error("File exceeds the upload limit.");
       const headers = parseHeaders(await file.slice(0, 65536).text());
       if (request !== serial || generation !== state.generation) return;
+      sourceHeaders = headers;
       for (const id of ["dataset-target", "dataset-split"]) {
         $(id).replaceChildren(new Option(id === "dataset-target" ? "Choose the prediction target" : "Create splits automatically", ""));
         for (const name of headers) $(id).add(new Option(name, name));
@@ -106,13 +136,16 @@ export function initPreparation({ parseHeaders, chooseLegacyFile, uploadLegacyFi
       $("dataset-target").value = headers.includes("target") ? "target" : headers.includes("Drug") ? "Drug" : "";
       if (headers.includes("split")) overrides.split = { treatment: "exclude" };
       if (!rawMode()) { $("dataset-split").value = headers.includes("split") ? "split" : ""; await chooseLegacyFile(); }
+      renderInputSelection();
     } catch (error) { report(error, "upload-result"); }
   }
   $("dataset-file").addEventListener("change", chooseFile);
   for (const id of settingsIds) $(id).addEventListener("input", () => {
-    if (id === "dataset-target") labels = {};
+    if (id === "dataset-target") labels = Object.create(null);
     invalidate();
+    renderInputSelection();
   });
+  $("dataset-features").addEventListener("input", renderInputSelection);
   $("prepared-upload").addEventListener("change", () => {
     reset(); $("legacy-features").hidden = rawMode(); $("dataset-features").required = !rawMode();
     $("dataset-split").required = !rawMode(); $("upload-submit").textContent = rawMode() ? "Preview encoding" : "Validate & add prepared dataset";

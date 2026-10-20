@@ -1,0 +1,360 @@
+{
+  "project": "columns_browser_90fc4bf31794",
+  "origin": "http://127.0.0.1:18001",
+  "checks": [
+    "drop missing/high-cardinality columns before preview; upload and actual worker training",
+    "cancel leaves the original dataset and file references unchanged",
+    "saved categorical group removal; invalidated preview; duplicate-click protection; actual worker training",
+    "numeric saved edit; committed response loss; refresh restores same-request recovery; no duplicate; real worker training",
+    "actual shared-volume parent/child erasure preserves surviving training inputs and parentless replay",
+    "project switching clears editor state and scopes saved requests"
+  ],
+  "runs": [
+    {
+      "dataset_id": "380fbe86-b258-43a7-8bbd-e67aca2754cc",
+      "model_id": "47885a72-e5b3-4fa2-b744-24f5d9efd248",
+      "config": {
+        "seed": 42,
+        "epochs": 2,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 4,
+        "max_runtime_seconds": 30
+      },
+      "id": "964eeef5-7fb2-4b65-8ce0-6679fbd26759",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:07.890000Z",
+      "updated_at": "2026-10-20T01:32:13.516000Z",
+      "status": "succeeded",
+      "attempts": 1,
+      "heartbeat_at": "2026-10-20T01:32:08.072000Z",
+      "started_at": "2026-10-20T01:32:08.072000Z",
+      "completed_at": "2026-10-20T01:32:13.516000Z",
+      "metrics": {
+        "validation_accuracy": 0.5666666626930237,
+        "validation_f1": 0.5622895622895623,
+        "best_epoch": 1.0,
+        "test_accuracy": 0.5,
+        "test_f1": 0.45054945054945056
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "columns_browser_90fc4bf31794/964eeef5-7fb2-4b65-8ce0-6679fbd26759/3a2ff7d4-d836-44b4-8199-b95c0b281b72/model.pt",
+          "sha256": "c1fc0db8420fbe978a9a09015a156b72f2135d59a9a5ff0dd868303a50067d2e",
+          "size_bytes": 4821
+        },
+        {
+          "name": "manifest.json",
+          "uri": "columns_browser_90fc4bf31794/964eeef5-7fb2-4b65-8ce0-6679fbd26759/3a2ff7d4-d836-44b4-8199-b95c0b281b72/manifest.json",
+          "sha256": "41c8e15afb324f2026b3044634cdf90382f3b29829b1f05c2e1f09aeec50c7ca",
+          "size_bytes": 5417
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true
+    },
+    {
+      "dataset_id": "a7abb641-c2de-48e0-ba50-a6fdbea0478d",
+      "model_id": "47885a72-e5b3-4fa2-b744-24f5d9efd248",
+      "config": {
+        "seed": 42,
+        "epochs": 2,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 4,
+        "max_runtime_seconds": 30
+      },
+      "id": "ff222110-af82-42de-a5b1-c52bc055b5e9",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:14.129000Z",
+      "updated_at": "2026-10-20T01:32:14.182000Z",
+      "status": "succeeded",
+      "attempts": 1,
+      "heartbeat_at": "2026-10-20T01:32:14.152000Z",
+      "started_at": "2026-10-20T01:32:14.152000Z",
+      "completed_at": "2026-10-20T01:32:14.182000Z",
+      "metrics": {
+        "validation_accuracy": 0.5666666626930237,
+        "validation_f1": 0.5238095238095237,
+        "best_epoch": 1.0,
+        "test_accuracy": 0.6333333253860474,
+        "test_f1": 0.576379974326059
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "columns_browser_90fc4bf31794/ff222110-af82-42de-a5b1-c52bc055b5e9/2ca009c4-8134-48a4-8947-94546196873f/model.pt",
+          "sha256": "15f8aefc592d10f9bd0b4ec117216a75444ff5d14c589600f3d25b7dad5b82e6",
+          "size_bytes": 5141
+        },
+        {
+          "name": "manifest.json",
+          "uri": "columns_browser_90fc4bf31794/ff222110-af82-42de-a5b1-c52bc055b5e9/2ca009c4-8134-48a4-8947-94546196873f/manifest.json",
+          "sha256": "47c16ea2c3a903342314e9be1c9c4e1bb743f64a401fd60851457c4fcdefd90b",
+          "size_bytes": 6175
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true
+    },
+    {
+      "dataset_id": "efd2a78a-ed74-4f91-bb00-9f080986d747",
+      "model_id": "47885a72-e5b3-4fa2-b744-24f5d9efd248",
+      "config": {
+        "seed": 42,
+        "epochs": 2,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 4,
+        "max_runtime_seconds": 30
+      },
+      "id": "ec5b2be5-b9d4-401d-a473-f6446f99a45b",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:14.903000Z",
+      "updated_at": "2026-10-20T01:32:14.951000Z",
+      "status": "succeeded",
+      "attempts": 1,
+      "heartbeat_at": "2026-10-20T01:32:14.931000Z",
+      "started_at": "2026-10-20T01:32:14.931000Z",
+      "completed_at": "2026-10-20T01:32:14.951000Z",
+      "metrics": {
+        "validation_accuracy": 1.0,
+        "validation_f1": 1.0,
+        "best_epoch": 1.0,
+        "test_accuracy": 1.0,
+        "test_f1": 1.0
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "columns_browser_90fc4bf31794/ec5b2be5-b9d4-401d-a473-f6446f99a45b/13460697-7efa-47c2-9fb0-cdc524255f86/model.pt",
+          "sha256": "ad8ae793826c0adf844cb85ed35d91255d2de374d176ce18480227cdcec59576",
+          "size_bytes": 3093
+        },
+        {
+          "name": "manifest.json",
+          "uri": "columns_browser_90fc4bf31794/ec5b2be5-b9d4-401d-a473-f6446f99a45b/13460697-7efa-47c2-9fb0-cdc524255f86/manifest.json",
+          "sha256": "01f1d2b0ec14e03d7f7d6cdee797858eedb54dee5bad3481fb7733ddea7ad59e",
+          "size_bytes": 1959
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true
+    },
+    {
+      "dataset_id": "a7abb641-c2de-48e0-ba50-a6fdbea0478d",
+      "model_id": "47885a72-e5b3-4fa2-b744-24f5d9efd248",
+      "config": {
+        "seed": 42,
+        "epochs": 2,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 4,
+        "max_runtime_seconds": 30
+      },
+      "id": "ea4825f7-66bf-49e2-aff8-ee74c091dc77",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:15.289000Z",
+      "updated_at": "2026-10-20T01:32:15.337000Z",
+      "status": "succeeded",
+      "attempts": 1,
+      "heartbeat_at": "2026-10-20T01:32:15.311000Z",
+      "started_at": "2026-10-20T01:32:15.311000Z",
+      "completed_at": "2026-10-20T01:32:15.337000Z",
+      "metrics": {
+        "validation_accuracy": 0.5666666626930237,
+        "validation_f1": 0.5238095238095237,
+        "best_epoch": 1.0,
+        "test_accuracy": 0.6333333253860474,
+        "test_f1": 0.576379974326059
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "columns_browser_90fc4bf31794/ea4825f7-66bf-49e2-aff8-ee74c091dc77/dacab020-29c2-4a77-bf18-00034c22933e/model.pt",
+          "sha256": "15f8aefc592d10f9bd0b4ec117216a75444ff5d14c589600f3d25b7dad5b82e6",
+          "size_bytes": 5141
+        },
+        {
+          "name": "manifest.json",
+          "uri": "columns_browser_90fc4bf31794/ea4825f7-66bf-49e2-aff8-ee74c091dc77/dacab020-29c2-4a77-bf18-00034c22933e/manifest.json",
+          "sha256": "cd0cf4339173777fb53e16b923c6280309c02a3453d6204f6481f6cda35a9212",
+          "size_bytes": 6175
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true
+    },
+    {
+      "dataset_id": "4d175798-045d-47f8-909b-f807b182800c",
+      "model_id": "47885a72-e5b3-4fa2-b744-24f5d9efd248",
+      "config": {
+        "seed": 42,
+        "epochs": 2,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "hidden_units": 4,
+        "max_runtime_seconds": 30
+      },
+      "id": "6adef73f-a3e8-42a9-9935-f5037136a2ca",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:15.590000Z",
+      "updated_at": "2026-10-20T01:32:15.636000Z",
+      "status": "succeeded",
+      "attempts": 1,
+      "heartbeat_at": "2026-10-20T01:32:15.613000Z",
+      "started_at": "2026-10-20T01:32:15.613000Z",
+      "completed_at": "2026-10-20T01:32:15.636000Z",
+      "metrics": {
+        "validation_accuracy": 1.0,
+        "validation_f1": 1.0,
+        "best_epoch": 1.0,
+        "test_accuracy": 1.0,
+        "test_f1": 1.0
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "columns_browser_90fc4bf31794/6adef73f-a3e8-42a9-9935-f5037136a2ca/a88cc9bb-c0a7-4323-9014-4c29acf6b723/model.pt",
+          "sha256": "511cf790084cdd2219fb870e90afc8a734bd5d6cb799e83ab266cec2751d6f9c",
+          "size_bytes": 3093
+        },
+        {
+          "name": "manifest.json",
+          "uri": "columns_browser_90fc4bf31794/6adef73f-a3e8-42a9-9935-f5037136a2ca/a88cc9bb-c0a7-4323-9014-4c29acf6b723/manifest.json",
+          "sha256": "3fbb818d1b3b3e9c73de2ef6ef0665de9a0d263b7efe0473d3d37658f4b1bf54",
+          "size_bytes": 1550
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true
+    }
+  ],
+  "source_sha256": "de658ea6a4665e361a605361d76e2526e191b7e829e2ed24436bd3deebbcb92c",
+  "revision": "270ef7d71ef1c116125acfa952f8f3d64ce5fdce",
+  "browser_errors": [],
+  "datasets": [
+    {
+      "name": "numeric",
+      "version": "v1",
+      "uri": "uploads/columns_browser_90fc4bf31794/50f854ef5c535326ccadd33b049c5a591cf2f26442de4e860c86c1746854fe45.csv",
+      "feature_columns": [
+        "feature_1",
+        "feature_2"
+      ],
+      "target_column": "target",
+      "split_column": "split",
+      "id": "4d175798-045d-47f8-909b-f807b182800c",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:14.362000Z",
+      "updated_at": "2026-10-20T01:32:14.362000Z",
+      "sha256": "50f854ef5c535326ccadd33b049c5a591cf2f26442de4e860c86c1746854fe45",
+      "num_classes": 2,
+      "row_counts": {
+        "train": 80,
+        "validation": 20,
+        "test": 20
+      },
+      "preparation": null,
+      "selection": null
+    },
+    {
+      "name": "raw_columns",
+      "version": "v2",
+      "uri": "uploads/columns_browser_90fc4bf31794/d864bfd825d65b3079bdf6a6101bdf9722d46cf39d1acb0644d539cd36f4568f.csv",
+      "feature_columns": [
+        "feature_0"
+      ],
+      "target_column": "target",
+      "split_column": "split",
+      "id": "a7abb641-c2de-48e0-ba50-a6fdbea0478d",
+      "project_id": "columns_browser_90fc4bf31794",
+      "schema_version": 1,
+      "created_at": "2026-10-20T01:32:14.074000Z",
+      "updated_at": "2026-10-20T01:32:14.074000Z",
+      "sha256": "d864bfd825d65b3079bdf6a6101bdf9722d46cf39d1acb0644d539cd36f4568f",
+      "num_classes": 2,
+      "row_counts": {
+        "train": 140,
+        "validation": 30,
+        "test": 30
+      },
+      "preparation": {
+        "source": {
+          "uri": "uploads/columns_browser_90fc4bf31794/de658ea6a4665e361a605361d76e2526e191b7e829e2ed24436bd3deebbcb92c.csv",
+          "sha256": "de658ea6a4665e361a605361d76e2526e191b7e829e2ed24436bd3deebbcb92c",
+          "size_bytes": 5931
+        },
+        "manifest": {
+          "uri": "uploads/columns_browser_90fc4bf31794/26d360a9a1920fbe5e13006109255ea8c056cc346a8c4255809411941a8c6fb5.preparation.json",
+          "sha256": "26d360a9a1920fbe5e13006109255ea8c056cc346a8c4255809411941a8c6fb5",
+          "size_bytes": 2293
+        },
+        "recipe_sha256": "34857321f34e17e7958c60fe90cb2faca11cea4e1f64f0319b5886bbe43edfcc"
+      },
+      "selection": {
+        "parent_id": "380fbe86-b258-43a7-8bbd-e67aca2754cc",
+        "parent_sha256": "eb572fae80c057faeaa0b0783a8513092792709a16dfdad5edaef5728ae467c2",
+        "parent_manifest_sha256": "a173503da7e589922b49880421fadde6cfa836ca9264d3fda5aa966c72d1d583",
+        "drop_columns": [
+          "Category"
+        ],
+        "request_sha256": "3705fedca77678ed118848aa8bb25e835e9cb0625ee556c67617efd2cb770484",
+        "reviewed_sha256": "825b729d3d59ea62b56d79da76f61bd19e39609d3d24d99aa53fd703f4d7531a"
+      }
+    }
+  ],
+  "status": "passed"
+}

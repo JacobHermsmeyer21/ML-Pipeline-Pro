@@ -102,6 +102,34 @@ only to intentionally start a different import; reloading requires selecting the
 original file again. Existing saved versions stay immutable; use a new version
 for revised encoding.
 
+### Drop input columns
+
+Select a CSV and its target, then uncheck unwanted inputs under **Choose input
+columns** before **Preview encoding**. This also lets you exclude missing-value
+or high-cardinality inputs that would otherwise prevent encoding. Target and
+selected existing-split columns are protected. Keep at least one input.
+
+For a saved dataset, choose **Edit columns**, enter a new version such as `v2`,
+and uncheck inputs. **Preview column changes** shows what will be dropped, the
+remaining feature count and unchanged split counts. Choose **Review & save**,
+then **Save as new version**. Cancel leaves the original dataset unchanged.
+For categorical inputs, original names represent complete encoded groups:
+dropping `BP` removes all its one-hot features. Retained values, fitted mappings,
+class IDs, row order and split assignments stay the same. Existing runs retain
+their original dataset; train a new run to use the edited version.
+
+Changing the selection or destination version requires a new preview. A lost
+save response offers **Check / retry same column save**. That exact request is
+remembered per project in this browser session; after reloading, verify the same
+project is selected and use the recovery button. Existing exact saves replay even
+if the original dataset version was subsequently deleted. Column edits need
+uploads enabled and work for both raw-prepared and numeric datasets.
+
+This removes features from the new training-ready CSV. Original/raw-source files
+remain for reproducibility; dropping a column does not permanently erase it.
+To restore an omitted input, start from the original dataset version. Row/value
+editing, renaming and filtering are outside this first column-editing feature.
+
 ## Monitoring data and history
 
 Training alone creates no inference observations. A newly registered version can

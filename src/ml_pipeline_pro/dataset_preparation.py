@@ -26,6 +26,12 @@ def digest(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def selection_recipe_digest(recipe: dict) -> str:
+    return digest(
+        json_bytes({key: value for key, value in recipe.items() if key != "recipe_sha256"})
+    )
+
+
 @dataclass
 class PreparedDataset:
     content: bytes

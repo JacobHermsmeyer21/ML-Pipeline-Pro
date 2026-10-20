@@ -1,5 +1,15 @@
 # Project audit and development status
 
+October 19 column editing: the approved dashboard/API change adds input selection
+before encoding and **Edit columns** for saved numeric/raw-prepared datasets.
+Edits create new versions with unchanged retained cells, labels, split membership
+and frozen transforms. All 740 fast, 104 ordinary and ten isolated recovery cases
+pass; Chrome verifies five real worker runs, uncertain-save recovery and training
+after parent/child deletion on shared storage. The existing local dashboard is
+updated. Independent review and human usefulness review remain outstanding.
+[Evidence and boundaries](../evidence/2026-10-19-dataset-columns/README.md) do not
+close other course or CPU-laptop AI gaps.
+
 October 19 raw CSV improvement: the approved preparation plan adds original-file
 import, editable categorical encoding/class IDs and automatic stratified 70/15/15
 splits. Actual browser controls train the unchanged drug200 with both default and

@@ -101,6 +101,7 @@ async def _matching_record(store, candidate: DatasetRecord, settings):
         "num_classes",
         "row_counts",
         "preparation",
+        "selection",
     }
     if saved.model_dump(include=fields) != candidate.model_dump(include=fields):
         raise ApiError(

@@ -1,0 +1,8 @@
+{
+  "exact_bytes": 65536,
+  "exact_status": 200,
+  "over_bytes": 65537,
+  "over_status": 422,
+  "over_error": "column_limit_exceeded",
+  "correlation": "columns-live-cap"
+}

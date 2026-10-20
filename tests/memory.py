@@ -85,6 +85,19 @@ class MemoryVersions(MemoryRepository):
 
 
 class MemoryDatasets(MemoryRepository):
+    async def by_selection(self, project_id, parent_id, version):
+        return next(
+            (
+                record.model_copy(deep=True)
+                for record in self.records.values()
+                if record.project_id == project_id
+                and record.version == version
+                and record.selection is not None
+                and record.selection.parent_id == parent_id
+            ),
+            None,
+        )
+
     async def by_identity(self, project_id, name, version):
         return next(
             (

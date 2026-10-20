@@ -1,0 +1,9 @@
+{
+  "origin": "http://127.0.0.1:8000",
+  "ready": true,
+  "packaged_final_script": true,
+  "keyboard_focus_preserved": true,
+  "protected_target": true,
+  "browser_errors": [],
+  "writes": "none; local form selection only"
+}

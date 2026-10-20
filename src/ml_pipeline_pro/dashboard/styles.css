@@ -1890,3 +1890,8 @@ td small,.table-footnote {
 .check-field { display: flex; align-items: center; gap: 10px; }
 .check-field input[type="checkbox"] { width: 16px; height: 16px; flex: 0 0 16px; }
 .encoding-review h3 { font-size: 15px; margin: 14px 0 8px; }
+.column-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin: 12px 0; }
+.column-choice { padding: 10px; border: 1px solid var(--border, #303c4c); border-radius: 8px; overflow-wrap: anywhere; flex-wrap: wrap; }
+.column-choice small { margin-left: 26px; }
+#column-dialog { width: min(680px, calc(100vw - 32px)); max-height: calc(100vh - 40px); overflow-y: auto; }
+#column-dialog h3 { margin-top: 16px; font-size: 15px; }

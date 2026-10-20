@@ -3,7 +3,7 @@
 import json
 
 from ml_pipeline_pro.dataset_files import check_dataset_scope
-from ml_pipeline_pro.dataset_preparation import MANIFEST_MAX_BYTES, digest
+from ml_pipeline_pro.dataset_preparation import MANIFEST_MAX_BYTES, digest, selection_recipe_digest
 from ml_pipeline_pro.datasets import DatasetValidationError
 
 
@@ -35,7 +35,7 @@ def read_preparation(dataset, settings):
     try:
         recipe = json.loads(contents[1])
         if (
-            recipe["format_version"] != 1
+            recipe["format_version"] not in {1, 2}
             or recipe["source_sha256"] != reference.source.sha256
             or recipe["output_sha256"] != dataset.sha256
             or recipe["recipe_sha256"] != reference.recipe_sha256
@@ -43,6 +43,21 @@ def read_preparation(dataset, settings):
             or recipe["row_counts"] != dataset.row_counts
         ):
             raise ValueError
+        if recipe["format_version"] == 2:
+            if (
+                recipe["implementation"] != "classification-csv-selection-v1"
+                or selection_recipe_digest(recipe) != recipe["recipe_sha256"]
+                or dataset.selection is None
+                or recipe["selection"] != dataset.selection.model_dump(exclude={"reviewed_sha256"})
+                or [name for column in recipe["columns"] for name in column["output_columns"]]
+                != dataset.feature_columns
+                or any(
+                    column["output_columns"]
+                    for column in recipe["columns"]
+                    if column["treatment"] == "exclude"
+                )
+            ):
+                raise ValueError
     except (ValueError, KeyError, TypeError):
         raise DatasetValidationError(
             "Preparation metadata does not match the saved dataset"
