@@ -151,4 +151,36 @@ are unaffected.
 
 ## Implementation outcome
 
-Fill this section after implementation without weakening the criteria above.
+- Changed scope:
+  - new adapter `conversation_anthropic.py`;
+  - settings `chat_backend=anthropic`, `anthropic_api_key` and `chat_effort`, plus a
+    Claude model-ID check and the `claude-opus-5-5` default;
+  - API-key redaction;
+  - adapter selection in `conversation_api.py`;
+  - `chat_backend` in `/dashboard/config.json` and the dashboard label;
+  - `anthropic` 1.15.0 added to the lockfile;
+  - docs in `.env.example`, the README and the conversation guide.
+- Results, on this machine with Python 3.11 and Node 24:
+  - `ruff check` and `ruff format --check` pass.
+  - `pytest -m "not integration" --cov` gives 757 passed and 114 deselected, with 80%
+    coverage.
+  - `uv pip check` passes, and `astro check` reports 0 errors.
+  - Playwright gives 27 passed.
+- Test changes:
+  - New: `tests/test_conversation_anthropic.py`, 14 tests with an injected fake client
+    and no network.
+  - `test_dashboard` expects the new `chat_backend` field (F3).
+  - New Playwright check of the Claude label.
+  - Process note: the adapter tests were written after the adapter, not test-first.
+- Key check: on October 20 a read-only `GET /v1/models` with the owner's key returned
+  200. No Messages call has been made yet. The live check (N4) waits for the owner's
+  go-ahead on spending.
+- Deviations:
+  - Domain tools are sent without `strict: true`. Their schemas carry constraints the
+    strict compiler does not accept. The host validates arguments, as on the Ollama path.
+  - `max_tokens` is a fixed 16000, so adaptive thinking has room. The visible reply
+    stays bounded by `ModelReply`.
+  - Provenance records the model, effort and hashes, but not per-request IDs.
+- Review: the planned same-vendor review has not run yet; this is a remaining gap.
+- Not verified: the real-service integration gates (no Docker here) and live Claude
+  turns.

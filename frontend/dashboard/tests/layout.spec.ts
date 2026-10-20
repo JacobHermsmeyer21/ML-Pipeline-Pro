@@ -134,3 +134,10 @@ test("drawer keeps keyboard focus inside and lands on the workspace after a choi
   await expect(page.locator(".page")).not.toHaveAttribute("inert", "");
   await expect(page.locator("#workspace")).toBeFocused();
 });
+
+test("agent label names the Claude backend when it answers", async ({ page }) => {
+  await mockApi(page, { config: { uploads_enabled: true, max_upload_bytes: 10_000_000, max_dataset_rows: 100_000,
+    grafana_origin: "http://127.0.0.1:3000", chat_enabled: true, chat_backend: "anthropic", chat_model: "claude-opus-5-5" } });
+  await open(page);
+  await expect(page.locator("#agent-model")).toHaveText("Claude (Anthropic API) · claude-opus-5-5");
+});
