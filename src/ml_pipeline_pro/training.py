@@ -11,6 +11,7 @@ from time import perf_counter
 from ml_pipeline_pro.artifacts import read_artifact, write_artifact
 from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.datasets import DatasetValidationError, load_dataset
+from ml_pipeline_pro.preparation_files import read_preparation
 from ml_pipeline_pro.schemas import ArtifactReference, DatasetRecord, ExperimentRecord
 from ml_pipeline_pro.training_control import TrainingBudgetExceeded, TrainingControl, TrainingError
 
@@ -48,6 +49,7 @@ def train_classifier(
 
     check_budget()
     loaded = load_dataset(dataset, settings)
+    preparation = read_preparation(dataset, settings)
     if loaded.sha256 != dataset.sha256:
         raise DatasetValidationError("Dataset changed after registration; register a new version")
     torch.set_num_threads(1)
@@ -131,6 +133,7 @@ def train_classifier(
             "feature_columns": dataset.feature_columns,
             "num_classes": loaded.num_classes,
             "hidden_units": config.hidden_units,
+            **({"preparation": preparation} if preparation is not None else {}),
         },
         checkpoint,
     )
@@ -145,6 +148,7 @@ def train_classifier(
         "selection_metric": objective_metric,
         "selection_direction": "maximize",
         "test_evaluated": evaluate_test,
+        **({"preparation": preparation} if preparation is not None else {}),
     }
     check_budget()
     artifacts = [
@@ -191,6 +195,7 @@ def evaluate_checkpoint(
 
     control.check()
     loaded = load_dataset(dataset, settings)
+    read_preparation(dataset, settings)
     if loaded.sha256 != dataset.sha256:
         raise DatasetValidationError("Dataset changed after registration; register a new version")
     reference = next(artifact for artifact in experiment.artifacts if artifact.name == "model.pt")

@@ -1,5 +1,14 @@
 # Project audit and development status
 
+October 19 raw CSV improvement: the approved preparation plan adds original-file
+import, editable categorical encoding/class IDs and automatic stratified 70/15/15
+splits. Actual browser controls train the unchanged drug200 with both default and
+edited mappings; saved recipe hashes, custom tuning/final evaluation, agent and
+monitored inference are verified. All 710 fast, 77 ordinary and ten isolated
+recovery cases pass without selected skips. Human usefulness/independent boundary
+review remain outstanding. [Evidence and limits](../evidence/2026-10-19-dataset-preparation/README.md)
+supersede the numeric-only dashboard limitation, not historical laptop/course gaps.
+
 October 19 desktop dashboard: the approved prototype is implemented as a working
 local workspace at `/dashboard/`, with scoped CSV uploads/shared worker storage,
 training/results/artifact/version controls, local-agent history and exact decisions,

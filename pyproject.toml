@@ -18,13 +18,14 @@ dependencies = [
     "prometheus-client>=0.23,<0.25",
     "pydantic-settings>=2.6,<3",
     "pymongo>=4.13,<5",
+    "python-multipart>=0.0.20,<1",
     "redis>=5,<8",
     "tokenizers>=0.22.2,<0.23",
     "uvicorn>=0.30,<1",
 ]
 
 [project.optional-dependencies]
-training = ["numpy>=2,<3", "optuna>=4.6,<6", "torch>=2.8,<3"]
+training = ["numpy>=2,<3", "optuna>=4.6,<6", "scikit-learn>=1.7,<2", "torch>=2.8,<3"]
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu", marker = "sys_platform != 'darwin'" }]

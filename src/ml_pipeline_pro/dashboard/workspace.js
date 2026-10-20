@@ -266,6 +266,7 @@ export function initWorkspace() {
     event.preventDefault(); if (state.mutations) return; abortReads(); state.generation++;
     state.project = $("connection-project").value; state.key = $("connection-key").value; $("connection-key").value = ""; $("connection-dialog").close();
     Object.assign(state, { datasets: [], models: [], experiments: [], tuning: [], versions: [], selectedDataset: "", selectedModel: "", selectedVersion: "", conversation: "", revision: 0, turns: [], detail: "", detailSignature: "", loading: false });
+    state.resetPreparation?.();
     state.actions.clear(); state.actionReads.clear(); state.actionBusy.clear(); $("run-detail").hidden = true;
     $("grafana-panels").replaceChildren(); $("diagnosis-result").replaceChildren(); $("global-message").hidden = true;
     restoreSession(); renderWorkspace(); state.renderChat(); state.renderConversationSelect(); await loadWorkspace();
@@ -291,10 +292,12 @@ export function initWorkspace() {
       const attempt = { key: crypto.randomUUID(), body, unknown: false }; setPending("training", attempt); await submitTraining(attempt);
     });
   });
-  $("refresh-runs").addEventListener("click", loadWorkspace); $("dataset-file").addEventListener("change", chooseFile); $("upload-form").addEventListener("submit", uploadFile);
+  $("refresh-runs").addEventListener("click", loadWorkspace);
+  initPreparation({ parseHeaders, chooseLegacyFile: chooseFile, uploadLegacyFile: uploadFile, loadWorkspace, renderWorkspace });
   for (const id of ["dataset-target", "dataset-split"]) {
     for (const event of ["input", "change"]) $(id).addEventListener(event, excludeMappedColumns);
   }
   $("monitor-version").addEventListener("change", () => { state.selectedVersion = $("monitor-version").value; $("diagnosis-result").replaceChildren(); updateMonitoring().catch(report); });
   $("monitor-range").addEventListener("change", () => updateMonitoring().catch(report)); $("diagnose-button").addEventListener("click", diagnose);
 }
+import { initPreparation } from "./preparation.js";

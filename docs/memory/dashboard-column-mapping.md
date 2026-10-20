@@ -21,3 +21,9 @@ a general CSV importer or relax the loader to accept unprepared categorical data
 [Retained browser reproduction and successful demo](../evidence/2026-10-19-drug200-demo/README.md)
 include before/after requests, real worker results and file hashes. Revisit when
 adding a reviewed data preparation interface or changing mapping controls.
+
+Later October 19: the [approved preparation workflow](../plans/2026-10-19-dataset-preparation-plan.md)
+adds raw CSV import, editable training-fitted encoding and automatic splits. Its
+[original-file browser evidence](../evidence/2026-10-19-dataset-preparation/README.md)
+supersedes the external-copy limitation for the new default flow. The numeric-only
+loader and advanced prepared-upload path retain their earlier contracts.

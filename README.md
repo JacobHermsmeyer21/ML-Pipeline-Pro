@@ -64,6 +64,10 @@ for durable shared uploads and Grafana embedding. Uploads are disabled by defaul
 The additive `POST /api/v1/datasets/upload` accepts raw `text/csv` with dataset
 metadata in query parameters; [the API reference](docs/reference/api.md#dataset-upload)
 documents its limits, project scope, replay and failure responses.
+For original classification CSVs, `POST /api/v1/datasets/preview` proposes editable
+encodings and stratified 70/15/15 splits; `POST /api/v1/datasets/prepare` saves the
+exact reviewed recipe. Both accept multipart CSV/JSON and use the same opt-in
+upload setting. See [raw CSV preparation](docs/reference/api.md#raw-csv-preparation).
 
 For the independently runnable model/tuning APIs, follow
 [domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes

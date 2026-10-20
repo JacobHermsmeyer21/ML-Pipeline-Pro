@@ -50,10 +50,23 @@ class DatasetCreate(DatasetDefinition):
     expected_sha256: Sha256 | None = None
 
 
+class DatasetFileReference(RequestModel):
+    uri: str = Field(min_length=1, max_length=256)
+    sha256: Sha256
+    size_bytes: int = Field(ge=1)
+
+
+class PreparationReference(RequestModel):
+    source: DatasetFileReference
+    manifest: DatasetFileReference
+    recipe_sha256: Sha256
+
+
 class DatasetRecord(Record, DatasetDefinition):
     sha256: Sha256
     num_classes: int = Field(ge=2, le=64)
     row_counts: dict[Literal["train", "validation", "test"], int]
+    preparation: PreparationReference | None = None
 
 
 class ModelCreate(RequestModel):

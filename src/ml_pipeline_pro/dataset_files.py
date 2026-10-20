@@ -44,8 +44,12 @@ def upload_directory(project: str, settings: Settings) -> Path:
     return directory
 
 
-def publish_dataset(staged: Path, directory: Path, digest: str, size: int) -> str:
-    destination = directory / f"{digest}.csv"
+def publish_dataset(
+    staged: Path, directory: Path, digest: str, size: int, *, suffix: str = ".csv"
+) -> str:
+    if suffix not in {".csv", ".preparation.json"}:
+        raise ValueError("Unsupported dataset file suffix")
+    destination = directory / f"{digest}{suffix}"
     try:
         # Same-filesystem link is atomic and never replaces a prior destination.
         os.link(staged, destination)
@@ -60,4 +64,4 @@ def publish_dataset(staged: Path, directory: Path, digest: str, size: int) -> st
             raise ApiError(
                 409, "dataset_file_conflict", "Saved dataset content does not match"
             ) from None
-    return f"uploads/{directory.name}/{digest}.csv"
+    return f"uploads/{directory.name}/{digest}{suffix}"

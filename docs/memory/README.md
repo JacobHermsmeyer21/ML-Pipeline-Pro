@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Two-stage stratification needs integer holdout counts](stratified-split-counts.md) | Confirmed 139/31/30 floating-point allocation; integer-count fix and original raw-drug200 acceptance |
 | [Changing a CSV target must also update inferred features](dashboard-column-mapping.md) | Confirmed drug200 metadata overlap, numeric-only preparation and browser-to-worker demo |
 | [Uploaded CSV publication must survive uncertain metadata writes](dataset-upload-publication.md) | Atomic publication, scoped replay, cancellation and shared read-only worker files |
 | [Laptop inference can outlast Kubernetes health availability](laptop-inference-probe-restarts.md) | Two direct-AI/probe-free unlimited workflows pass; comparison exceeds 270-second turn; finite gateway acceptance and resource cause remain open |

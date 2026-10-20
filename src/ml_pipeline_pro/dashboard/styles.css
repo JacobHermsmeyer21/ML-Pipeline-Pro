@@ -1871,3 +1871,14 @@ td small,.table-footnote {
     scroll-behavior:auto!important
   }
 }
+/* Dataset preparation remains part of the existing local workspace. */
+.encoding-review { margin-top: 24px; border-top: 1px solid var(--border, #303c4c); padding-top: 20px; }
+.encoding-card { margin: 12px 0; padding: 14px; background: rgba(255,255,255,.025); border: 1px solid var(--border, #303c4c); border-radius: 10px; overflow-wrap: anywhere; }
+.encoding-heading { display: flex; gap: 12px; justify-content: space-between; align-items: center; }
+.encoding-heading select { width: min(240px, 65%); }
+.encoding-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+.encoding-category-list { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 8px; }
+.encoding-category-list span { padding: 4px 8px; background: rgba(30,186,169,.08); border-radius: 4px; }
+.check-field { display: flex; align-items: center; gap: 10px; }
+.check-field input[type="checkbox"] { width: 16px; height: 16px; flex: 0 0 16px; }
+.encoding-review h3 { font-size: 15px; margin: 14px 0 8px; }

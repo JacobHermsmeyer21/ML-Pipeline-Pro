@@ -25,6 +25,7 @@ from ml_pipeline_pro.dataset_uploads import router as upload_router
 from ml_pipeline_pro.errors import ApiError, ErrorResponse, error_response, install_error_handlers
 from ml_pipeline_pro.logging import configure_logging
 from ml_pipeline_pro.monitoring_api import router as monitoring_router
+from ml_pipeline_pro.preparation_api import router as preparation_router
 from ml_pipeline_pro.tuning_api import router as tuning_router
 
 logger = logging.getLogger(__name__)
@@ -128,6 +129,7 @@ def _create_app(
         app.include_router(domain_router)
     if router in routers:
         app.include_router(upload_router)
+        app.include_router(preparation_router)
         install_dashboard(app)
 
     @app.middleware("http")

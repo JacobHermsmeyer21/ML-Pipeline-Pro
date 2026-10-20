@@ -20,7 +20,7 @@ async function start() {
     if (!response.ok) throw new Error("Dashboard configuration is unavailable.");
     state.config = await response.json();
     if (state.config.grafana_origin !== "http://127.0.0.1:3000") throw new Error("Unsupported Grafana origin.");
-    $("upload-limit").textContent = `UTF-8 CSV · Up to ${(state.config.max_upload_bytes / 1_000_000).toFixed(1)} MB · ${state.config.max_dataset_rows.toLocaleString()} rows · Integer class labels`;
+    $("upload-limit").textContent = `UTF-8 CSV · Up to ${(state.config.max_upload_bytes / 1_000_000).toFixed(1)} MB · ${state.config.max_dataset_rows.toLocaleString()} rows · Numeric and categorical features`;
     $("upload-submit").disabled = !state.config.uploads_enabled;
     if (!state.config.uploads_enabled) notify("File uploads are unavailable in this stack. Existing registered datasets remain usable.", "warning", "upload-result");
     $("agent-model").textContent = state.config.chat_enabled ? "Local Qwen · on your machine" : "Local agent is not enabled in this stack";

@@ -1,6 +1,6 @@
 # Prepare raw classification CSVs inside the dashboard
 
-- Status: approved for implementation, including editable encoding review
+- Status: implemented and locally verified; human usefulness and independent review pending
 - Date: 2026-10-19
 - Source baseline: `f152132f8495290e1c05c5636e934f51a11be8de`, `person-a/conversation-foundation`
 - Request: minimize external preprocessing; encode categories and create training,
@@ -117,8 +117,10 @@ Changing any setting invalidates review. Require a refreshed preview and bind
 registration to its hash so the saved recipe is the one the user reviewed.
 
 For automatic splits, reserve 15% test first, then take 15/85 of the remainder for
-validation, using stratified shuffling and seed 42 for both operations. Generalize
-that fraction to the requested positive integer percentages summing to 100.
+validation, using stratified shuffling and seed 42 for both operations. Compute
+integer ceiling holdout counts from the original total before calling the splitter,
+avoiding floating-point ceiling drift in the equivalent 15/85 fraction. Generalize
+to the requested positive integer percentages summing to 100.
 Persist the utility version and actual counts; rounding means small datasets may
 not match percentages exactly. Reject impossible allocations and any resulting
 split missing a class; offer more rows, different ratios or existing splits.
@@ -253,13 +255,49 @@ requirements remain in force.
 
 ## Implementation outcome
 
-Outstanding; this change prepares the review document only. No categorical
-importer, automatic splitter or new dataset preparation acceptance is claimed.
-Planning validation: eight local links/anchors resolve, template sections and
-whitespace checks pass, and the original CSV summary/hash was inspected read-only
-with the existing virtual environment's Python (`csv`/`hashlib`). Application tests
-are not run for this documentation-only change; implementation gates remain above.
-Fresh fetch shows no incoming upstream or `origin/main` commits at this baseline.
+Implemented F1-F6 with server preview/review hashing, editable one-hot/numeric/
+custom mappings/exclusion and target IDs, fixed stratified splits, optional
+training-fitted missing-value handling, immutable source/canonical/recipe files,
+scoped replay and verified checkpoint provenance. Existing prepared datasets,
+tuning ownership/deadlines, final-evaluation artifact behavior and serial worker
+execution are preserved. The approved prototype styling and agent panel remain.
+
+Validation baseline is approval commit `c14dd97`; the
+[retained execution evidence](../evidence/2026-10-19-dataset-preparation/README.md)
+identifies the exact changed source hashes, dependencies and images. Locked sync,
+Ruff lint/format, dependency compatibility (116 packages), offline
+package build/content inspection, **710 fast cases** (82% rounded coverage),
+**77 ordinary cases** with both flags, and **10 serial isolated recovery cases**
+pass without selected skips. Core Python sources are identical across service,
+worker and recovery checks. The later static-only configuration-loading guard
+has fresh model-API image, wheel and browser boundary verification.
+
+Actual Chrome controls upload the unchanged original drug200, preview nine
+features/140-30-30 rows, save once, train, verify both artifacts and register a
+version. A second version changes BP to HIGH=3/LOW=1/NORMAL=2 and reorders all drug
+class IDs; its seven-feature model trains with those exact saved mappings.
+Reload, double clicks, missing acknowledgement/same-body replay, unavailable
+preview, legacy upload and project clearing pass. Screenshots fit both desktop
+sizes. A three-trial custom-recipe tuning run completes final holdout evaluation;
+the local agent verifies the run's saved F1 and actual version-filtered monitoring
+passes with 20 declared fixture observations/five artificial delays.
+Human usefulness review remains pending; implementing-assistant visual and
+boundary inspection is self-review, not independent review.
+
+No existing test assertions were weakened or skipped. New tests establish the
+reviewed transformations, class coverage, exact expansion/reception/output limits,
+deadline/cancellation cleanup, provenance tampering and actual MongoDB/worker
+boundaries. A raw-cap fixture was padded so canonical output did not hit an
+unrelated smaller output guard first. Initial split rounding and a browser harness
+wait failure are retained with their confirmed mechanisms/resolutions. The
+[integer-count finding](../memory/stratified-split-counts.md) records the durable
+split correction. Final commit/push outcome is reported with the completed change.
+
+Automatic learned ordinal/target encoding remains deferred; explicit user numeric
+mappings implement Jacob's requested review/edit addition. Source rows and model
+weights are excluded from the evidence archive. Original files, published data,
+saved runs and local services remain available. Independent boundary/arithmetic
+review was unavailable in this session and remains a disclosed gap.
 
 Design references checked October 19: scikit-learn's
 [training-only preprocessing guidance](https://scikit-learn.org/stable/common_pitfalls.html#data-leakage),

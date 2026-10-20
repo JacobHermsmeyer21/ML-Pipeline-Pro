@@ -1,0 +1,49 @@
+{
+  "status": "locally_verified",
+  "approval_baseline": "c14dd97",
+  "source_sha256": "10caebf3b055e149ef1e7494042031e510b47ba644f3c304bbb86c428fe89b66",
+  "checks": {
+    "fast": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "710",
+      "time": "51.679",
+      "timestamp": "2026-10-19T20:26:43.752631-04:00",
+      "hostname": "DESKTOP-16VTT2I"
+    },
+    "ordinary": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "77",
+      "time": "39.463",
+      "timestamp": "2026-10-19T20:24:31.900945-04:00",
+      "hostname": "DESKTOP-16VTT2I"
+    },
+    "recovery": {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "10",
+      "time": "356.833",
+      "timestamp": "2026-10-19T20:25:15.761593-04:00",
+      "hostname": "DESKTOP-16VTT2I"
+    }
+  },
+  "browser": "passed",
+  "boundaries": "passed",
+  "agent_and_grafana": "passed",
+  "tuning_final_evaluation": "succeeded",
+  "default_dataset_id": "a792a1f2-fe5c-4947-b02d-f6f90737f1e5",
+  "default_experiment_id": "61a87ff5-b414-4bdc-aef9-9850e4fc7180",
+  "custom_dataset_id": "90bc3a5b-663d-45eb-a595-e730b915687b",
+  "custom_experiment_id": "674a98ef-0aa0-4fe6-9fab-6e54297fa09a",
+  "tuning_job_id": "fe9916b8-585b-4510-8a0b-e85e834def17",
+  "source_unchanged": true,
+  "independent_review": "unavailable",
+  "human_usefulness_review": "pending"
+}

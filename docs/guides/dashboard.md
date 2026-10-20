@@ -1,7 +1,7 @@
 # Local ML workspace
 
 The dashboard runs on the existing model API at
-`http://127.0.0.1:8000/dashboard/`. It supports numeric CSV classification,
+`http://127.0.0.1:8000/dashboard/`. It supports raw tabular CSV classification,
 training/results/artifacts, local-agent conversations and real Grafana panels.
 The dataset and trained classifier are separate from the pre-trained local agent.
 
@@ -37,10 +37,11 @@ Keep other heavy verification/inference work quiescent during an agent demo.
 
 ## Browser walkthrough
 
-1. Open **Datasets**, choose a CSV, enter a name/version and review feature, target
-   and split columns. The downloadable example matches the checked-in 120-row
-   fixture: 80 training, 20 validation and 20 test rows. Click **Validate & add
-   dataset**. Server validation is authoritative and returns the hash/split counts.
+1. Open **Datasets**, choose the original CSV, enter a name/version and select the
+   prediction target. Click **Preview encoding**. Review each feature, category
+   encoding, missing-value fill, target class ID and split count. Change any
+   choices, refresh the preview, then click **Save reviewed dataset**. The normal
+   path automatically creates stratified 70/15/15 splits with seed 42.
 2. Select **Use for training**, select or create a named MLP model, and review
    training settings. Click **Review training**, then **Start training**. The run
    list polls active work; it displays actual states and saved validation metrics.
@@ -56,37 +57,50 @@ Keep other heavy verification/inference work quiescent during an agent demo.
    delays. **Explain observations** requests evidence-linked local-model advice
    when the latest five-minute window contains observations.
 
-Supported CSVs use UTF-8, distinct named numeric feature columns, contiguous
-integer training classes beginning at zero, and explicit nonempty `train`,
-`validation`, `test` splits. Validation/test classes must appear in training.
+Supported original CSVs use UTF-8 with distinct nonempty headers, numeric or
+categorical features and 2-64 nonempty target classes. The app converts categories
+and string class names into numeric inputs, retaining readable mappings. Source
+headers/cells have a 128 UTF-8 byte bound. Every split must contain every class;
+very small classes require more rows or adjusted ratios. Missing targets fail.
 Uploads are limited to the smaller of 10,000,000 bytes and
-`MLPP_DATASET_MAX_BYTES`, plus the existing row/class/value limits. Automatic
-splitting, categorical encoding, text/image training and LLM fine-tuning are not
-provided. New dataset versions get immutable file references; changing content
+`MLPP_DATASET_MAX_BYTES`, plus row/class/value and encoded expansion limits in the
+[API reference](../reference/api.md#raw-csv-preparation). Text/image training and
+LLM fine-tuning remain outside this classifier. New versions get immutable source,
+prepared CSV and recipe references; changing content or preparation settings
 under the same name/version returns 409. Matching upload replay returns its saved
 record rather than creating another version.
 
-### Column mapping and an unprepared CSV
+### Review and change encoding
 
-Changing the target or split column removes that column from the feature list.
-Manually reintroducing an overlap, repeating a feature, or using the same target
-and split is rejected in the browser before upload. The server independently
-enforces the same distinct-column requirement.
+The review shows training-derived vocabularies, source names and generated output
+columns. Each feature offers automatic treatment, numeric, one-hot, an explicit
+custom numeric category mapping, or exclusion. Prefer one-hot for unordered
+categories; a custom numeric mapping imposes distances. You may also change the
+target class IDs while keeping them distinct and contiguous. Unseen one-hot
+categories become zeros; custom mappings use the reviewed fallback. Any edit
+disables saving until **Preview encoding** refreshes the exact recipe.
 
-The original `drug200.csv` has unique headers, but selecting `Drug` as the target
-previously left it in the automatically populated features and produced
-`Dataset columns must be distinct`. It also contains categorical inputs and
-string labels, and lacks the required split column. Correcting the mapping alone
-does not prepare that file for this numeric classifier.
+Under **Preparation settings**, adjust ratios/seed, opt into training-fitted
+numeric median / categorical mode filling, or select an existing split column.
+Random splitting assumes independent rows. Repeated people or time-dependent
+data need suitable existing splits; group/time splitting is a follow-up.
+**Upload an already prepared numeric CSV** retains the original numeric feature,
+integer target and explicit split contract. The downloadable 120-row fixture
+uses 80/20/20 existing rows; select its `split` column to preserve those counts.
 
-The [October 19 drug200 demo](../evidence/2026-10-19-drug200-demo/README.md) records
-a separate prepared copy, fixed category/label mappings, deterministic stratified
-splits, and the completed browser upload/training run. On this desktop the copy is
-`artifacts/drug200-demo/drug200-demo.csv`; choose target `Drug`, split `split`, and
-the nine remaining columns as features. The saved dataset is `drug200_demo`,
-version `v1`, in project `demo`. The original Downloads file remains unchanged.
-This is explicit preparation for that run; the dashboard still requires prepared
-numeric CSVs.
+For the current demo, select **the original Downloads `drug200.csv`**, target
+`Drug`, and preview. Default treatment yields two numeric features and one-hot
+`Sex`, `BP`, `Cholesterol`, nine encoded features in total, with 140 training,
+30 validation and 30 test rows. Review or edit those encodings in the app, save,
+then train. No prepared-copy upload or external editing is required. The
+[earlier drug200 run](../evidence/2026-10-19-drug200-demo/README.md) retains its
+historical prepared-copy evidence; it does not prove this newer raw importer.
+
+After an uncertain save, **Check / retry same save** retains the original file and
+exact settings in this tab. The server replays the same dataset version. Reset
+only to intentionally start a different import; reloading requires selecting the
+original file again. Existing saved versions stay immutable; use a new version
+for revised encoding.
 
 ## Monitoring data and history
 

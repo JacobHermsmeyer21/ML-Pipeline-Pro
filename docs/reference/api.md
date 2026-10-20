@@ -30,6 +30,84 @@ uploads volume while registered datasets reference it.
 public capability/limit information without credentials. See the
 [dashboard guide](../guides/dashboard.md) for local startup and browser workflows.
 
+## Raw CSV preparation
+
+The opt-in model-service routes `POST /api/v1/datasets/preview` and
+`POST /api/v1/datasets/prepare` accept multipart `file` (original UTF-8 CSV) and
+`settings` (JSON text). Supply the same project/key headers. Authenticate before
+body parsing; absent training dependencies return correlated 503. Preview is
+stateless and returns no registered dataset. Prepare requires `reviewed_sha256`
+equal to the latest preview's `preview_sha256`, or returns correlated 409
+`preparation_review_required`. Do not use the old numeric upload route for raw CSVs.
+
+Settings include `name`, `version`, `target_column`, optional `columns`,
+`label_mapping`, `train_percent=70`, `validation_percent=15`, `test_percent=15`,
+`seed=42`, `split_column=null` and `impute_missing=false`. Percentages are positive
+integers summing to 100. Class-stratified splitting reserves test rows first,
+then validation rows, using integer ceiling counts from the original row total;
+the training remainder is never empty. Each split must contain every class.
+Rare classes/impossible ratios produce 422, without falling back to random splits.
+
+Example JSON for the `settings` part (send it with the original CSV):
+
+```json
+{
+  "name": "drug200",
+  "version": "v1",
+  "target_column": "Drug",
+  "columns": {
+    "BP": {
+      "treatment": "mapping",
+      "mapping": {"HIGH": 3, "LOW": 1, "NORMAL": 2},
+      "unknown_value": 0
+    }
+  }
+}
+```
+
+Unspecified columns use training-inferred numeric or one-hot treatment. Overrides
+may choose `auto`, `numeric`, `one_hot`, `mapping` or `exclude`; mapping must cover
+the training vocabulary with finite numbers of magnitude at most 1e12 and an
+explicitly reviewed unknown fallback (default zero). Numeric mappings impose
+distances; one-hot is the normal choice for unordered categories. Target/split
+columns cannot be features. Optional `label_mapping` reorders contiguous IDs
+`0..classes-1` without changing readable names. Custom settings, generated feature
+columns, categories, fills, unknown counts and target IDs appear in preview.
+
+Split membership is fixed per dataset version and independent of training seeds.
+Type inference, category vocabularies and optional median/mode imputation use only
+training rows. Missing targets or entirely missing training features fail 422.
+Unseen feature categories use all zeros for one-hot or the configured mapping
+fallback; preview warns and feature width stays fixed. There is no automatic
+ordinal/target encoding, balancing, grouping, time splitting or row removal.
+
+Source limits: the smaller of 10,000,000 bytes and `MLPP_DATASET_MAX_BYTES`, the
+configured row limit, at most 130 unique nonempty headers, 128 UTF-8 bytes per
+header/cell, and 2-64 classes. Settings are capped at 32 KiB, multipart overhead at
+32 KiB; the gateway's new route guard is 10,065,536 bytes, and the application
+uses the effective smaller raw cap plus 64 KiB. Actual received bytes govern the
+limits independently of `Content-Length`. Receipt has a 30-second deadline;
+parsing/transformation share a separate cooperative 30-second deadline.
+The encoded float32 matrix is capped at 64 MiB and 128 features before allocation;
+canonical CSV uses `MLPP_DATASET_MAX_BYTES`, and preparation JSON is capped at
+256 KiB. These are allocation/output bounds, not a measured peak-memory guarantee.
+
+Prepare publishes source CSV, canonical numeric CSV and versioned preparation JSON
+without replacement under `uploads/<project>/`, then inserts one dataset record.
+`DatasetRecord.preparation` is optional for old records and references source and
+manifest URI/hash/size plus the recipe hash. The existing dataset `sha256` describes
+the canonical CSV. Same identity/source/recipe/output replays with 200; creation
+returns 201; changed settings conflict even if numeric output happens to match.
+All published files survive uncertain metadata writes. Original rows are never
+returned in error messages, and preview removes its staging files.
+
+New worker checkpoints/manifests include the verified preparation recipe alongside
+existing training-only normalization. `dataset_preparation.transform_rows` applies
+saved encodings to raw feature dictionaries, then inference applies checkpoint
+`mean`/`std`; `decode_labels` restores class names. Old checkpoints remain numeric.
+Final evaluation preserves original training artifacts. There is no new scoring
+route or automatic generated-code execution.
+
 Open [interactive API docs](http://127.0.0.1:8000/docs) after
 [setup](../guides/setup.md). Run example requests from the repository root.
 
