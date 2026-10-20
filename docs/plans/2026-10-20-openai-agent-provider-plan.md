@@ -1,6 +1,6 @@
 # Make OpenAI the default agent provider
 
-- Status: approved; implementation in progress
+- Status: implemented; hosted output usefulness review remains pending
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `e7c8e76` / `main`; fetched `origin/main` matches this revision
 - Request: use OpenAI API calls for the application agent and create a written plan
@@ -167,8 +167,11 @@ Use [the host interface](../../src/ml_pipeline_pro/conversation_model.py),
    arithmetic rounded upward. Include any documented counting charges; verify
    their billing before starting, or reserve conservatively. Never rely on cache
    savings or release uncertain reservations. Before the counting request itself,
-   reserve its conservative maximum charge from the configured context ceiling;
-   refuse to call if its price cannot be bounded. Reconcile completed requests with
+   reserve an estimated charge at the full uncached model input rate for every
+   serialized request byte plus 1024 framing tokens. This is an approved
+   conservative estimate, not a documented counting-endpoint tariff or a proved
+   tokenizer bound. Preserve the distinction in evidence; see the renewed
+   October 20 approval below. Reconcile completed requests with
    usage, retain reservations for missing usage, and stop when another maximum
    request cannot fit. Disable retries/parallel test runs and retain the ledger
    across reruns; refuse missing/stale pricing or a changed model. No automatic
@@ -257,11 +260,55 @@ Jacob approved this written design at `81fd761` on October 20, 2026, replying
 compatibility, deployment/documentation, and verification within the shared $2
 live-testing ceiling. Material deviations require renewed review.
 
+On October 20, after separate review identified the missing published counting
+tariff, Jacob approved the concrete revised policy in this session by selecting
+"Approve conservative estimated reservations": charge counting at the full model
+input rate, retain failed/uncertain reservations and stop admission at $1.90,
+leaving $0.10 of the unchanged $2 authorization as margin. Counting reservations
+use request bytes plus framing allowance rather than the smaller context ceiling.
+These reservations bound the runner's estimates, not an independent account-wide
+billing guarantee. No paid requests preceded this renewed approval.
+
 ## Implementation outcome
 
-Not implemented. This change adds the plan only. No new model, application,
-integration, deployment or paid acceptance results are claimed. Record revisions,
-commands/environment/model identities, requirement mapping, raw evidence, test
-justifications, review/resolutions, deviations, durable findings and completion
-commit/push results here after implementation. Plan preparation checks and its
-commit/push outcome are reported separately in the accompanying session response.
+Implementation began at `1af066b` plus the worktree and is retained by the
+accompanying implementation commit. Defaults, provider, local fixtures, locked
+dependencies and documentation were checked together because they share the
+backend-selection contract; this combined the planned implementation slices
+without changing their functional scope. Final source uses LangChain OpenAI 1.7.0
+and OpenAI SDK 2.54.0. The default model resolves to `gpt-5.4-mini`; captured hosted
+responses identify `gpt-5.4-mini-2026-03-17`.
+
+F1/F5/N1/N2: 778 fast, 104 ordinary/worker and ten serial recovery cases pass,
+plus locked sync, Ruff lint/format, installed-package compatibility (121 packages),
+wheel/sdist builds, archive-content checks and static deployment/docs checks.
+F2/F3: unchanged original ten/seven semantic assertions pass against the hosted
+model. F4: normal/partial hosted fixtures and separate-service real HTTP diagnosis
+pass; empty observations return 409 without inference. The real-ID walkthrough
+also proves saved replay/history, exact confirmed bounded training, comparison,
+unsubmitted tuning advice, validated/unexecuted drafts and project isolation.
+N3: all live attempts together reserve an estimated $1.686037 under the renewed
+approved estimating policy; actual account billing was not reconciled.
+
+[Retained evidence](../evidence/2026-10-20-openai-provider/README.md) includes raw
+successful and failed runs, model/source identities, JUnit reports, ledger and
+separate counting/generation timings where instrumented. Earlier nine/ten foreign
+record handling, diagnostic fixture and walkthrough-harness failures remain
+retained. No assertions were weakened: old local tests now explicitly select
+Ollama, the changed default assertion checks the approved OpenAI default, shared
+snippet assertions preserve local artifact identity and check hosted identity
+without inventing an artifact, and the HTTP tuning assertion now includes the
+canonical required serial-concurrency default. New tests establish provider HTTP,
+resource/error, isolation, replay, secret and persistent-reservation boundaries.
+
+Separate same-model review `/root/provider_review` covered admission, isolation,
+arithmetic, lifecycle, budget runner and the real HTTP walkthrough. It confirmed
+SDK ambient-header inheritance, required HTTP/SDK headers, malformed envelope
+classification and nested observer usage leaks; all concrete findings were fixed
+and re-reviewed with no remaining blocker. Different-vendor review was unavailable.
+The [durable finding](../memory/openai-provider-boundary.md) records those SDK
+contracts and the estimating limitation. Human usefulness review of the new hosted
+examples remains pending. The new OpenAI Kubernetes patch is validated as static
+configuration, not claimed as an exercised hosted deployment. Existing local/laptop
+acceptance gaps remain unchanged. Commit/push results are reported in the session
+and any subsequent evidence completion record.

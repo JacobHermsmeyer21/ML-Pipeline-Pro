@@ -1,5 +1,18 @@
 # Project audit and development status
 
+## OpenAI provider: October 20, 2026
+
+The approved OpenAI extension makes hosted LangChain inference the default backend
+while chat remains opt-in and Ollama stays explicitly selectable. Conversation,
+generated Python and monitoring use the existing host tools, evidence and exact
+confirmation. [Retained hosted evidence](../evidence/2026-10-20-openai-provider/README.md)
+records ten/seven semantic passes, normal/partial diagnosis and a real-ID HTTP/
+worker walkthrough, plus 778 fast, 104 ordinary and ten recovery passes. All live
+attempts reserve an estimated $1.686037 under the approved $2 testing authorization;
+this is not a reconciled bill. Separate same-model review is complete; hosted
+output usefulness review and a deployed OpenAI Kubernetes rollout remain separate.
+The older local-model, laptop and course evidence below retains its original limits.
+
 ## Current snapshot: October 19, 2026
 
 Documentation reconciled against application revision `28c22fb` on `main`.

@@ -1,0 +1,31 @@
+# Use with compose.yaml, compose.services.yaml and compose.monitoring.yaml.
+# Keep the credential in ignored .env; do not print rendered Compose configuration.
+x-openai: &openai
+  MLPP_CHAT_ENABLED: "true"
+  MLPP_CHAT_BACKEND: openai
+  MLPP_CHAT_PROTOCOL: native
+  MLPP_CHAT_MODEL: ${MLPP_OPENAI_MODEL:-gpt-5.4-mini}
+  MLPP_CHAT_TOKENIZER_PATH: ""
+  MLPP_CHAT_UNBOUNDED_DIAGNOSTIC: "false"
+  MLPP_CHAT_TIMEOUT_SECONDS: "60"
+  MLPP_CHAT_MODEL_TIMEOUT_SECONDS: "20"
+  OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in ignored .env}
+services:
+  model-api:
+    environment:
+      <<: *openai
+  monitoring-api:
+    environment:
+      <<: *openai
+  tuning-api:
+    environment:
+      MLPP_CHAT_ENABLED: "false"
+      OPENAI_API_KEY: ""
+  worker:
+    environment:
+      MLPP_CHAT_ENABLED: "false"
+      OPENAI_API_KEY: ""
+  scheduler:
+    environment:
+      MLPP_CHAT_ENABLED: "false"
+      OPENAI_API_KEY: ""

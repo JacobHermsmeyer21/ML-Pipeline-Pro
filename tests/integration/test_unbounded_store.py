@@ -25,6 +25,7 @@ def unbounded_store(database, settings, clock):
         **(
             settings.model_dump()
             | {
+                "chat_backend": "ollama",
                 "chat_unbounded_diagnostic": True,
                 "chat_timeout_seconds": None,
                 "chat_model_timeout_seconds": None,

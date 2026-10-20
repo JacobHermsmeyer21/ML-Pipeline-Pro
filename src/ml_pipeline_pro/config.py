@@ -36,7 +36,8 @@ class Settings(BaseSettings):
     worker_lease_seconds: int = Field(default=30, ge=10, le=300)
     worker_max_attempts: int = Field(default=3, ge=1, le=10)
     chat_enabled: bool = False
-    chat_backend: Literal["ollama"] = "ollama"
+    chat_backend: Literal["openai", "ollama"] = "openai"
+    openai_api_key: SecretStr | None = Field(default=None, validation_alias="OPENAI_API_KEY")
     chat_protocol: Literal["native", "guided"] = "native"
     chat_tokenizer_path: Path | None = None
     chat_model: str | None = Field(default=None, min_length=1, max_length=128)
@@ -78,8 +79,11 @@ class Settings(BaseSettings):
 
     @field_validator("chat_model")
     @classmethod
-    def local_model_tag(cls, value: str | None) -> str | None:
-        if value is not None and (
+    def model_identifier(cls, value: str | None, info: ValidationInfo) -> str | None:
+        if info.data.get("chat_backend") == "openai":
+            if value is not None and not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*", value):
+                raise ValueError("OpenAI model must be an explicit model identifier")
+        elif value is not None and (
             not re.fullmatch(r"[a-zA-Z0-9_][a-zA-Z0-9_./-]*:[a-zA-Z0-9_][a-zA-Z0-9_.-]*", value)
             or "cloud" in value.lower()
         ):
@@ -144,6 +148,14 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def chat_limits(self):
+        if self.chat_backend == "openai" and (
+            self.chat_protocol != "native"
+            or self.chat_tokenizer_path is not None
+            or self.chat_unbounded_diagnostic
+        ):
+            raise ValueError(
+                "OpenAI requires native protocol, no local tokenizer and finite limits"
+            )
         null_timeouts = (
             self.chat_model_timeout_seconds is None and self.chat_timeout_seconds is None
         )

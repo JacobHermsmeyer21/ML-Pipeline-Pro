@@ -108,6 +108,7 @@ add `--timing-profile laptop-five-minute` as documented in the
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+$env:MLPP_CHAT_BACKEND = 'ollama'
 $env:MLPP_CHAT_PROTOCOL = 'guided'
 try {
     uv run --locked --extra training pytest evaluations/test_snippet_model.py `

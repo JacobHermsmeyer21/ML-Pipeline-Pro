@@ -58,7 +58,7 @@ def completion_response(arguments, *, content=""):
 
 
 def settings(**changes):
-    return Settings(_env_file=None, chat_model=TAG, **changes)
+    return Settings(chat_backend="ollama", _env_file=None, chat_model=TAG, **changes)
 
 
 class Runtime:
@@ -113,7 +113,7 @@ def test_construction_is_lazy_and_missing_tag_does_not_open_clients():
     assert runtime.requests == []
     asyncio.run(model.close())
     with pytest.raises(ConversationModelError, match="installed model tag"):
-        OllamaConversationModel(Settings(_env_file=None))
+        OllamaConversationModel(Settings(chat_backend="ollama", _env_file=None))
 
 
 def test_native_langchain_request_identity_usage_and_cleanup(monkeypatch):

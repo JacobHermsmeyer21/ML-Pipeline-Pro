@@ -8,6 +8,12 @@ local pre-trained model, and AI-generated Python snippets. Separate domain REST
 services, Docker, Kubernetes, CI/CD, tests, and onboarding are required.
 Paid model APIs and custom language-model training are outside the required scope.
 
+October 20 adds the separately requested [OpenAI agent provider](docs/guides/openai-agent.md)
+as the default backend, retaining explicit local Ollama profiles and opt-in chat.
+The [approved plan](docs/plans/2026-10-20-openai-agent-provider-plan.md) and
+[hosted evidence](docs/evidence/2026-10-20-openai-provider/README.md) distinguish
+this extension from local course acceptance and outstanding laptop/review gaps.
+
 The **minimal class demo has retained evidence for all nine requirements**.
 October 14 CPU-laptop reproduction remains unsuccessful: the latest dialogue and
 snippet gates fail, and the walkthrough times out before its first tool read.

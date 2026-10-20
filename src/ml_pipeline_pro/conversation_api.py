@@ -11,6 +11,7 @@ from ml_pipeline_pro.config import Settings
 from ml_pipeline_pro.conversation_actions import ConversationActions
 from ml_pipeline_pro.conversation_model import ConversationModel
 from ml_pipeline_pro.conversation_ollama import OllamaConversationModel
+from ml_pipeline_pro.conversation_openai import OpenAIConversationModel
 from ml_pipeline_pro.conversation_qwen_counter import QwenConversationModel
 from ml_pipeline_pro.conversation_schemas import (
     TOOL_BYTES,
@@ -70,10 +71,31 @@ async def conversation_clients(
                     max_response_bytes=TOOL_BYTES,
                 )
             )
-            if model_factory is not None or settings.chat_model is not None:
+            if (
+                model_factory is not None
+                or settings.chat_model is not None
+                or (
+                    settings.chat_backend == "openai"
+                    and settings.openai_api_key
+                    and settings.openai_api_key.get_secret_value().strip()
+                )
+            ):
+                # Missing hosted credentials keep audit/replay/direct API available.
+                if (
+                    model_factory is None
+                    and settings.chat_backend == "openai"
+                    and not (
+                        settings.openai_api_key
+                        and settings.openai_api_key.get_secret_value().strip()
+                    )
+                ):
+                    yield None, transport
+                    return
                 model = (
                     model_factory(settings)
                     if model_factory is not None
+                    else OpenAIConversationModel(settings)
+                    if settings.chat_backend == "openai"
                     else QwenConversationModel(settings, settings.chat_tokenizer_path)
                     if settings.chat_tokenizer_path is not None
                     else OllamaConversationModel(settings)

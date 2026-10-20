@@ -14,6 +14,7 @@ from tests.test_conversation_actions import fixture
 def test_explicit_tokenizer_factory_stays_offline_and_closes(fake_connections, tmp_path):
     app = create_app(
         Settings(
+            chat_backend="ollama",
             _env_file=None,
             chat_enabled=True,
             chat_model="mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1",
@@ -25,7 +26,10 @@ def test_explicit_tokenizer_factory_stays_offline_and_closes(fake_connections, t
         assert isinstance(model, QwenConversationModel)
         assert model._native is None and model._counter is None
     assert model._closed is True
-    assert Settings(_env_file=None, chat_tokenizer_path="").chat_tokenizer_path is None
+    assert (
+        Settings(chat_backend="ollama", _env_file=None, chat_tokenizer_path="").chat_tokenizer_path
+        is None
+    )
 
 
 def test_disabled_chat_and_decisions_preserve_authenticated_audit_reads(app):

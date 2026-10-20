@@ -1,0 +1,29 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "DOMAIN_NAME",
+            "env": [
+              {"name": "MLPP_CHAT_ENABLED", "value": "true"},
+              {"name": "MLPP_CHAT_BACKEND", "value": "openai"},
+              {"name": "MLPP_CHAT_PROTOCOL", "value": "native"},
+              {"name": "MLPP_CHAT_MODEL", "value": "gpt-5.4-mini"},
+              {"name": "MLPP_CHAT_TOKENIZER_PATH", "value": ""},
+              {"name": "MLPP_CHAT_UNBOUNDED_DIAGNOSTIC", "value": "false"},
+              {"name": "MLPP_CHAT_TIMEOUT_SECONDS", "value": "60"},
+              {"name": "MLPP_CHAT_MODEL_TIMEOUT_SECONDS", "value": "20"},
+              {
+                "name": "OPENAI_API_KEY",
+                "valueFrom": {
+                  "secretKeyRef": {"name": "mlpp-openai", "key": "OPENAI_API_KEY"}
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

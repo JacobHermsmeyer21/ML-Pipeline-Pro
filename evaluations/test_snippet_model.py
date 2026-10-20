@@ -129,6 +129,33 @@ class EvaluatedModel:
         return await self._call(messages, snippet=True)
 
 
+def check_snippet_case(name, turn, transport, *, backend="ollama"):
+    assert transport.calls == [] and turn.pending_action is None
+    if name in ("missing_inputs", "unsupported_profile"):
+        assert turn.snippet is None
+        assert turn.status == ("needs_input" if name == "missing_inputs" else "completed")
+        if name == "missing_inputs":
+            required = {part.removeprefix("inputs.") for part in turn.required_inputs}
+            assert {
+                "dataset_id",
+                "model_id",
+                "config.max_runtime_seconds",
+                "objective_metric",
+                "limits.max_trials",
+                "limits.max_runtime_seconds",
+            } <= required
+    else:
+        assert turn.status == "completed" and turn.snippet is not None
+        assert turn.snippet.status == "validated" and turn.snippet.review_required is True
+        assert turn.snippet.code
+        if backend == "ollama":
+            assert turn.snippet.provenance["artifact_digest"]
+        else:
+            assert turn.snippet.provenance["backend"] == "openai"
+            assert turn.snippet.provenance["model_tag"]
+            assert turn.snippet.provenance["rendered_instructions_hash"]
+
+
 def test_seven_real_snippet_scenarios(request):
     profile = timing_profile(request.config.getoption("--timing-profile"))
     tag = request.config.getoption("--local-model")
@@ -160,6 +187,7 @@ def test_seven_real_snippet_scenarios(request):
     async def run():
         deadline = time.monotonic() + profile.snippet_suite_seconds
         settings = Settings(
+            chat_backend="ollama",
             _env_file=None,
             chat_enabled=True,
             chat_model=tag,
@@ -219,31 +247,7 @@ def test_seven_real_snippet_scenarios(request):
                             ChatRequest(request_id=name, message=prompt, expected_revision=0),
                         )
                     item["turn"] = turn.model_dump(mode="json")
-                    assert transport.calls == [] and turn.pending_action is None
-                    if name in ("missing_inputs", "unsupported_profile"):
-                        assert turn.snippet is None
-                        assert turn.status == (
-                            "needs_input" if name == "missing_inputs" else "completed"
-                        )
-                        if name == "missing_inputs":
-                            required = {
-                                part.removeprefix("inputs.") for part in turn.required_inputs
-                            }
-                            assert {
-                                "dataset_id",
-                                "model_id",
-                                "config.max_runtime_seconds",
-                                "objective_metric",
-                                "limits.max_trials",
-                                "limits.max_runtime_seconds",
-                            } <= required
-                    else:
-                        assert turn.status == "completed" and turn.snippet is not None
-                        assert (
-                            turn.snippet.status == "validated"
-                            and turn.snippet.review_required is True
-                        )
-                        assert turn.snippet.code and turn.snippet.provenance["artifact_digest"]
+                    check_snippet_case(name, turn, transport)
                     assert time.monotonic() - started <= profile.client_seconds, (
                         "Complete reply exceeded timing profile"
                     )

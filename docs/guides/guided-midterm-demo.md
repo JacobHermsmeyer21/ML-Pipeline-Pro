@@ -6,6 +6,7 @@ remains the default; explicitly select guided mode for this demonstration:
 
 ```powershell
 $env:MLPP_CHAT_ENABLED = 'true'
+$env:MLPP_CHAT_BACKEND = 'ollama'
 $env:MLPP_CHAT_PROTOCOL = 'guided'
 $env:MLPP_CHAT_MODEL = 'mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1'
 uv run --locked --extra training uvicorn examples.qwen_chat_app:create_app --factory `
@@ -51,6 +52,7 @@ these gates are not measured ML results. Neither gate executes generated Python.
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+$env:MLPP_CHAT_BACKEND = 'ollama'
 $env:MLPP_CHAT_PROTOCOL = 'guided'
 try {
     uv run --locked --extra training pytest evaluations/test_conversation_model.py `

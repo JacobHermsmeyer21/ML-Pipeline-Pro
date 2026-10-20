@@ -13,7 +13,9 @@ def main():
     parser.add_argument("--model", required=True)
     parser.add_argument("--origin", default="http://127.0.0.1:11434")
     args = parser.parse_args()
-    settings = Settings(_env_file=None, chat_model=args.model, chat_model_origin=args.origin)
+    settings = Settings(
+        chat_backend="ollama", _env_file=None, chat_model=args.model, chat_model_origin=args.origin
+    )
     with httpx.Client(
         base_url=settings.chat_model_origin, timeout=120, trust_env=False, follow_redirects=False
     ) as client:

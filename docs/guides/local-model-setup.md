@@ -140,6 +140,7 @@ the reviewed follow-up fixes its protocol/quality behavior.
 
 ```powershell
 $env:MLPP_RUN_LOCAL_MODEL_EVAL = '1'
+$env:MLPP_CHAT_BACKEND = 'ollama'
 $env:MLPP_CHAT_PROTOCOL = 'guided'
 try {
     uv run --locked --extra training pytest evaluations/test_conversation_model.py -m local_model_eval `
@@ -160,6 +161,7 @@ backend workers per [setup](setup.md#develop-the-api-on-your-host):
 
 ```powershell
 $env:MLPP_CHAT_ENABLED = 'true'
+$env:MLPP_CHAT_BACKEND = 'ollama'
 $env:MLPP_CHAT_PROTOCOL = 'guided'
 $env:MLPP_CHAT_MODEL = 'mlpp-qwen2.5:7b-instruct-q4_K_M-json-tools-v1'
 uv run --locked --extra training uvicorn examples.qwen_chat_app:create_app --factory `

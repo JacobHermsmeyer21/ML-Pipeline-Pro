@@ -10,6 +10,8 @@ from ml_pipeline_pro.main import create_app as base_app
 def create_app():
     tokenizer_path = Path(__file__).resolve().parents[1] / ".tools/local-model-setup/tokenizer.json"
     return base_app(
-        Settings(),
+        Settings(
+            chat_backend="ollama",
+        ),
         chat_model_factory=lambda settings: QwenConversationModel(settings, tokenizer_path),
     )

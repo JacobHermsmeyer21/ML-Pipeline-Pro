@@ -348,6 +348,7 @@ def test_ten_real_local_model_scenarios(request):
 
     async def run():
         settings = Settings(
+            chat_backend="ollama",
             _env_file=None,
             chat_enabled=True,
             chat_model=tag,

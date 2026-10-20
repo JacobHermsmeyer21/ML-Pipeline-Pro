@@ -8,7 +8,7 @@ def test_chat_defaults_and_missing_model_leave_direct_api_configuration_availabl
     settings = Settings(_env_file=None)
     assert settings.chat_enabled is False
     assert settings.chat_model is None
-    assert settings.chat_backend == "ollama"
+    assert settings.chat_backend == "openai"
     assert Settings(_env_file=None, chat_enabled=True).chat_model is None
 
 
@@ -91,12 +91,12 @@ def test_trusted_api_origin_preserves_existing_transport_host_policy():
 )
 def test_local_model_requires_explicit_tag_and_rejects_cloud_tags(tag):
     with pytest.raises(ValidationError):
-        Settings(_env_file=None, chat_model=tag)
+        Settings(_env_file=None, chat_backend="ollama", chat_model=tag)
 
 
 @pytest.mark.parametrize("tag", ["model:1b", "library/model:q4_K_M", "model.name:latest"])
 def test_local_model_accepts_explicit_artifact_tags(tag):
-    assert Settings(_env_file=None, chat_model=tag).chat_model == tag
+    assert Settings(_env_file=None, chat_backend="ollama", chat_model=tag).chat_model == tag
 
 
 @pytest.mark.parametrize(
@@ -120,3 +120,29 @@ def test_local_model_accepts_explicit_artifact_tags(tag):
 def test_chat_resource_limits_reject_invalid_or_incompatible_budgets(config):
     with pytest.raises(ValidationError):
         Settings(_env_file=None, **config)
+
+
+@pytest.mark.parametrize(
+    "config",
+    [
+        {"chat_protocol": "guided"},
+        {"chat_tokenizer_path": "local-tokenizer.json"},
+        {"chat_unbounded_diagnostic": True},
+    ],
+)
+def test_openai_rejects_local_only_or_unbounded_configuration(config):
+    with pytest.raises(ValidationError, match="OpenAI requires"):
+        Settings(_env_file=None, **config)
+
+
+def test_openai_model_and_key_configuration_redact_nested_values(monkeypatch):
+    from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+
+    secret = "fixture-provider-secret"
+    monkeypatch.setenv("OPENAI_API_KEY", secret)
+    config = Settings(_env_file=None, chat_model="gpt-5.4-mini")
+    assert config.openai_api_key.get_secret_value() == secret
+    assert secret not in repr(config) and secret not in config.model_dump_json()
+    assert JsonFormatter(configured_secrets(config)).redact(secret) == "[REDACTED]"
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, chat_model="https://other/model")

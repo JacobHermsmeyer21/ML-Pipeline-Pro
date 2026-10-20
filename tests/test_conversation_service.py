@@ -91,7 +91,7 @@ def reply(message="Interpretation", *, record_id=None, field=None, required_inpu
 
 
 def config(**changes):
-    return Settings(_env_file=None, chat_enabled=True, **changes)
+    return Settings(chat_backend="ollama", _env_file=None, chat_enabled=True, **changes)
 
 
 def run(model, transport=None, *, settings=None, store=None, request=None):

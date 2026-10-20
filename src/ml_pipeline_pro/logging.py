@@ -47,6 +47,8 @@ class JsonFormatter(logging.Formatter):
 def configured_secrets(settings: Settings) -> tuple[str, ...]:
     """Known project keys and encoded/decoded connection passwords."""
     secrets = [key.get_secret_value() for key in settings.project_api_keys.values()]
+    if settings.openai_api_key is not None:
+        secrets.append(settings.openai_api_key.get_secret_value())
     for connection_url in (settings.mongodb_uri, settings.redis_url):
         password = urlsplit(connection_url.get_secret_value()).password
         if password:
@@ -67,6 +69,8 @@ def configure_logging(settings: Settings) -> None:
         "langchain",
         "langchain_core",
         "langchain_ollama",
+        "langchain_openai",
+        "openai",
         "langsmith",
         "ollama",
         "httpx",

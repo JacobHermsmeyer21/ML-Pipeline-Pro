@@ -3,7 +3,14 @@
 A machine learning class project for reproducible classification experiments,
 bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
 MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses
-LangChain with a locally served pre-trained model.
+LangChain with OpenAI as the default agent provider and an explicit local Ollama option.
+
+For OpenAI, set `OPENAI_API_KEY` in the ignored `.env` file and enable
+`MLPP_CHAT_ENABLED=true`, `MLPP_CHAT_BACKEND=openai`, `MLPP_CHAT_PROTOCOL=native`.
+The default hosted model is `gpt-5.4-mini`; prompts and supplied record context are
+sent externally. Read the [OpenAI setup and verification guide](docs/guides/openai-agent.md)
+for limits, deployment, local compatibility and current acceptance evidence.
+The retained local-model results below do not establish OpenAI acceptance.
 
 Current as of October 19, 2026: the local dashboard supports original CSV import,
 reviewed categorical encoding/splits, immutable column-subset versions and

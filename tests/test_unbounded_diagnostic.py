@@ -25,6 +25,7 @@ from tests.test_conversation_service import RecordsTransport, ScriptedModel, rep
 
 def diagnostic_settings(**changes):
     return Settings(
+        chat_backend="ollama",
         _env_file=None,
         chat_enabled=True,
         **(timing_profile(DIAGNOSTIC_PROFILE).settings_overrides() | changes),
@@ -55,14 +56,14 @@ def diagnostic_settings(**changes):
 )
 def test_invalid_or_partial_diagnostic_configuration_is_rejected(changes):
     with pytest.raises(ValidationError):
-        Settings(_env_file=None, **changes)
+        Settings(chat_backend="ollama", _env_file=None, **changes)
 
 
 def test_diagnostic_env_nulls_are_explicit_and_finite_profiles_are_preserved(monkeypatch):
     monkeypatch.setenv("MLPP_CHAT_UNBOUNDED_DIAGNOSTIC", "true")
     monkeypatch.setenv("MLPP_CHAT_TIMEOUT_SECONDS", "none")
     monkeypatch.setenv("MLPP_CHAT_MODEL_TIMEOUT_SECONDS", "none")
-    config = Settings(_env_file=None)
+    config = Settings(chat_backend="ollama", _env_file=None)
     assert config.chat_timeout_seconds is config.chat_model_timeout_seconds is None
     for name, expected in [("default", (20, 60, 90)), ("laptop-five-minute", (240, 270, 300))]:
         profile = timing_profile(name)

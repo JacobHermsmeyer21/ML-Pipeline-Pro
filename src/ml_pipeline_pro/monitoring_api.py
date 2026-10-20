@@ -96,7 +96,7 @@ async def diagnosis(
             )
     except ConversationModelError as exc:
         raise ApiError(
-            503 if exc.code == "model_unavailable" else 422, exc.code, exc.message
+            503 if exc.code == "model_unavailable" else 422, exc.code, str(exc)
         ) from None
     except TimeoutError:
         raise ApiError(503, "chat_timeout", "Monitoring explanation timed out") from None

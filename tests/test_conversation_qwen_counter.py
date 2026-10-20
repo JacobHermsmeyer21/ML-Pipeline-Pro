@@ -101,7 +101,8 @@ def test_lazy_adapter_missing_configuration_and_closed_use_never_construct_clien
             await model.generate([])
         await model.close()
         configured = QwenConversationModel(
-            Settings(_env_file=None, chat_model=MODEL_TAG), tmp_path / "absent.json"
+            Settings(chat_backend="ollama", _env_file=None, chat_model=MODEL_TAG),
+            tmp_path / "absent.json",
         )
         await configured.close()
         with pytest.raises(ConversationModelError):
@@ -123,7 +124,8 @@ def test_lazy_adapter_rejects_unverified_counter_before_inference_and_closes_cli
 
     async def run():
         model = QwenConversationModel(
-            Settings(_env_file=None, chat_model=MODEL_TAG), tmp_path / "absent.json"
+            Settings(chat_backend="ollama", _env_file=None, chat_model=MODEL_TAG),
+            tmp_path / "absent.json",
         )
         with pytest.raises(ConversationModelError):
             await model.generate([])

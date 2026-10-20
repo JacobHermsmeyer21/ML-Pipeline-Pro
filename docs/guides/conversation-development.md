@@ -1,5 +1,8 @@
 # Conversation development
 
+OpenAI is the default provider; see [hosted setup](openai-agent.md). The local
+protocol/runtime details below apply when `MLPP_CHAT_BACKEND=ollama`.
+
 For the current class demo use [guided 7B](guided-midterm-demo.md) and the
 [complete walkthrough](midterm-walkthrough.md). Their original ten/seven gates,
 human examples and clean onboarding have retained workstation acceptance. October
@@ -51,10 +54,10 @@ the selected artifact's verified counter is supplied.
 | Setting | Default and validation |
 | --- | --- |
 | `MLPP_CHAT_ENABLED` | `false`; opt in to generation and confirmed decisions; history/action reads remain available. |
-| `MLPP_CHAT_BACKEND` | `ollama`; no external provider backend. |
+| `MLPP_CHAT_BACKEND` | `openai`; select `ollama` explicitly for the local demo. |
 | `MLPP_CHAT_PROTOCOL` | `native`; use explicit `guided` for the evaluated schema-constrained demo. |
 | `MLPP_CHAT_TOKENIZER_PATH` | Unset; a configured verified Qwen tokenizer selects the artifact-specific factory used by the AI overlay. |
-| `MLPP_CHAT_MODEL` | Unset. Use an explicit installed artifact tag; cloud tags are rejected. No automatic download. |
+| `MLPP_CHAT_MODEL` | OpenAI resolves unset to `gpt-5.4-mini`. Ollama requires an explicit installed artifact tag and rejects cloud tags; no automatic download. |
 | `MLPP_CHAT_MODEL_ORIGIN` | `http://127.0.0.1:11434`. HTTP(S), no credentials/path/query/fragment, port 1-65535 when specified. Host must be loopback, RFC1918 IPv4, IPv6 ULA, `localhost`, `ollama`, `host.docker.internal`, or `service.namespace.svc.cluster.local`. DNS names are trusted operator configuration; this is not a DNS rebinding guard. |
 | `MLPP_CHAT_API_ORIGIN` | `http://127.0.0.1:8000`. Operator-configured HTTP(S) origin, matching the existing tool transport's host policy; no credentials/path/query/fragment. |
 | `MLPP_CHAT_TIMEOUT_SECONDS` | 60; positive finite, at most 300. The opt-in five-minute profile uses 270. |

@@ -35,6 +35,7 @@ class Captured(BaseException):
 def config():
     # Ignore operator chat overrides as well as .env; this is a fixed diagnostic.
     return Settings(
+        chat_backend="ollama",
         _env_file=None,
         chat_enabled=True,
         chat_model=JSON_TOOLS_TAG,

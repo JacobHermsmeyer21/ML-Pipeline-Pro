@@ -23,6 +23,7 @@
         "MLPP_DATASET_ROOT": "/app/examples/data",
         "MLPP_CHAT_API_ORIGIN": "http://gateway:8000",
         "MLPP_CHAT_ENABLED": "false",
+        "MLPP_CHAT_BACKEND": "ollama",
         "MLPP_CHAT_PROTOCOL": "guided"
       }
     },
