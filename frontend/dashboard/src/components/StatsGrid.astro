@@ -1,5 +1,7 @@
 ---
+import DepthCard from "../islands/DepthCard";
 ---
+<DepthCard client:visible maxTilt={2}>
 <section class="stats-grid" aria-label="Workspace summary">
   <div class="readout readout-primary">
     <span class="readout-label">Best validation F1</span>
@@ -10,3 +12,4 @@
   <div class="readout"><span class="readout-label">Running now</span><strong id="stat-active">0</strong></div>
   <div class="readout"><span class="readout-label">Dataset versions</span><strong id="stat-datasets">0</strong></div>
 </section>
+</DepthCard>

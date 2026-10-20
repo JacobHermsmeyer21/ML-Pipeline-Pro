@@ -76,3 +76,16 @@ def test_dashboard_has_no_unhashed_inline_code():
         for body in re.findall(rf"<{tag}(?![^>]*\bsrc=)[^>]*>(.*?)</{tag}>", html, re.S):
             digest = base64.b64encode(hashlib.sha256(body.encode()).digest()).decode()
             assert f"'sha256-{digest}'" in hashes[directive]
+
+
+def test_csp_header_includes_build_hashes(client):
+    hashes = json.loads(Path("src/ml_pipeline_pro/dashboard/csp-hashes.json").read_text())
+    # React islands make Astro emit inline loader code, which must be allowed only by hash.
+    assert hashes["script-src"] and hashes["style-src"]
+    policy = client.get("/dashboard/").headers["Content-Security-Policy"]
+    directives = dict(part.strip().split(" ", 1) for part in policy.split(";") if part.strip())
+    for directive in ("script-src", "style-src"):
+        assert directives[directive].startswith("'self'")
+        for digest in hashes[directive]:
+            assert digest in directives[directive].split()
+    assert "unsafe-" not in policy

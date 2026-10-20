@@ -1,4 +1,5 @@
 ---
+import EmptyState from "../islands/EmptyState";
 ---
 <article class="panel runs-panel">
   <div class="panel-title">
@@ -12,7 +13,7 @@
     </table>
   </div>
   <div id="runs-empty" class="empty-state">
-    <slot name="empty" />
+    <EmptyState variant="runs" />
     <h3>No experiments yet</h3>
     <p>Start one above. Each run appears here with its validation score when training finishes.</p>
   </div>
