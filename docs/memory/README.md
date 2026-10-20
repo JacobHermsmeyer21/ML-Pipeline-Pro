@@ -6,6 +6,7 @@ holds standing rules; [plans](../plans/template.md) hold change-specific decisio
 
 | Finding | Scope |
 | --- | --- |
+| [Hosted runner kernels can prevent MongoDB startup](ci-mongodb-kernel.md) | Confirmed CI startup rejection during Ubuntu image rollout; compatible-runner plan and hosted verification pending |
 | [Permanent erasure needs metadata fencing and live-writer exclusion](permanent-deletion-storage.md) | Scoped cascade, resumable cleanup, generation-bound publication, native attempt locks, erased submission receipts and project restoration |
 | [Dropping columns must preserve saved transforms and row membership](dataset-column-projection.md) | Immutable projection, whole categorical groups, v2 recipes and replay after parent deletion |
 | [Two-stage stratification needs integer holdout counts](stratified-split-counts.md) | Confirmed 139/31/30 floating-point allocation; integer-count fix and original raw-drug200 acceptance |

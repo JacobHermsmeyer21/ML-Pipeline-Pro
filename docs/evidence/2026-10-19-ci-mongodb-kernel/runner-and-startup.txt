@@ -1,0 +1,11 @@
+Job 118424959581
+2026-10-20T02:42:48.2016391Z Image: ubuntu-24.04
+2026-10-20T02:42:48.2017571Z Version: 20261018.339.1
+2026-10-20T02:42:48.2020491Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261018.339/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-20T02:44:18.3989287Z dependency failed to start: container ml-pipeline-pro-mongo-1 exited (1)
+2026-10-20T02:44:18.9519759Z mongo-1  | {"t":{"$date":"2026-10-20T02:44:12.997Z"},"s":"F",  "c":"CONTROL",  "id":12257600,"ctx":"main","msg":"MongoDB cannot start: Linux kernel versions 6.19 and newer has a known incompatibility with this version of MongoDB. See https://jira.mongodb.org/browse/SERVER-121912 for more information."}
+
+Job 118425437272
+2026-10-20T02:44:27.6131856Z Image: ubuntu-24.04
+2026-10-20T02:44:27.6132911Z Version: 20261012.334.1
+2026-10-20T02:44:27.6135217Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
