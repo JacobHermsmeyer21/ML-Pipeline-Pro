@@ -1,5 +1,22 @@
 # Project audit and development status
 
+## Logistic regression: October 20, 2026
+
+The [approved logistic-only plan](../plans/2026-10-20-logistic-regression-plan.md)
+is implemented in `5c5f429`/`dbfaae6`: immutable MLP/logistic models, explicit
+config/worker dispatch, linear binary/multiclass PyTorch training, weight-only L2,
+verified checkpoint reload and dashboard settings. MLP serialization/replay remain
+compatible. Logistic tuning and AI mutation proposals fail explicitly; read/compare
+tools, artifacts and version registration support both algorithms.
+
+[Retained evidence](../evidence/2026-10-20-logistic-regression/README.md) records
+823 fast, 106 ordinary and 12 final-source serial recovery passes without skips,
+three browser/worker runs, independent checkpoint/scaling/metric checks and package
+validation. Human usefulness review and independent review remain open. No live-AI
+logistic acceptance, superiority result or new course completion is claimed. The
+existing demo deployment remains on its earlier image until rebuilt with matching
+API/worker/dashboard code; test projects and volumes were isolated.
+
 ## Agent reply validation: October 20, 2026
 
 The [approved correction](../plans/2026-10-20-agent-reply-validation-plan.md)

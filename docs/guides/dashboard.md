@@ -93,6 +93,24 @@ and generated logistic snippets are deferred. Use the manual form for logistic
 training. Logistic tuning and AI mutation requests fail explicitly. Deploy the API,
 worker and dashboard together; old workers cannot run logistic jobs.
 
+For automated acceptance, start a disposable upload-enabled stack using
+`compose.yaml` plus `tests/integration/compose.validation.yaml` with a unique
+Compose project name. That overlay uses API port 18000 and separate volumes.
+With Chrome installed, run:
+
+```powershell
+uv run --locked --extra training --with playwright==1.64.0 python `
+    scripts/verify_logistic_dashboard.py --origin http://127.0.0.1:18000 `
+    --output artifacts/logistic-validation/browser
+```
+
+The script creates an isolated project, two prepared synthetic datasets and three
+real serial worker runs. It verifies model switching, settings/review, lost-response
+retry across reload, checkpoint hashes/predictions/metrics, comparison and version
+registration. It retains screenshots and `result.json`; records stay in that
+disposable project for inspection. It does not invoke a live AI model or establish
+human usefulness review.
+
 Supported original CSVs use UTF-8 with distinct nonempty headers, numeric or
 categorical features and 2-64 nonempty target classes. The app converts categories
 and string class names into numeric inputs, retaining readable mappings. Source

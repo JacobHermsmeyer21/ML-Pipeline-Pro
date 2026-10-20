@@ -1,0 +1,55 @@
+{
+  "experiments": [
+    {
+      "_id": "db90db4a-bcb8-4a1a-91ef-12eea26f8375",
+      "dataset_id": "ea151215-ad78-4cee-a658-0299a08ab815",
+      "model_id": "989c2f25-7ab6-4194-9144-fd24c567672f",
+      "config": {
+        "algorithm": "logistic_regression",
+        "seed": 42,
+        "epochs": 500,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "max_runtime_seconds": 5,
+        "l2_strength": 0.0
+      },
+      "project_id": "test_023c9598c37a43cda88510ea37eb25e6",
+      "schema_version": 1,
+      "created_at": {
+        "$date": "2026-10-20T22:34:40.247Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-20T22:34:46.383Z"
+      },
+      "status": "failed",
+      "attempts": 1,
+      "heartbeat_at": {
+        "$date": "2026-10-20T22:34:43.604Z"
+      },
+      "started_at": {
+        "$date": "2026-10-20T22:34:40.266Z"
+      },
+      "completed_at": {
+        "$date": "2026-10-20T22:34:46.383Z"
+      },
+      "metrics": {},
+      "artifacts": [],
+      "dependencies": {},
+      "error_summary": "Training exceeded its configured runtime budget",
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": false,
+      "submission_key": "expiry",
+      "request_hash": "53306860f55e569b320c12ad6e1855c7d00feb08f8d53e69e2039730d206f8cf",
+      "worker_token": null,
+      "lease_expires_at": null,
+      "last_dispatch_at": {
+        "$date": "2026-10-20T22:34:40.254Z"
+      },
+      "evaluate_test": true,
+      "selection_metric": "validation_f1"
+    }
+  ],
+  "trials": [],
+  "tuning_jobs": []
+}

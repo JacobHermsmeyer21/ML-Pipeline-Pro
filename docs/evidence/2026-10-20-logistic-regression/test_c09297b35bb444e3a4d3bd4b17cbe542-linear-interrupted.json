@@ -1,0 +1,55 @@
+{
+  "experiments": [
+    {
+      "_id": "5a806607-6f12-48e4-b6d4-26c99403e821",
+      "dataset_id": "fd921a35-ec2f-4a6b-bedf-8a81b9aa54a8",
+      "model_id": "b9b6029e-17b7-4628-adfa-8443000d6e8c",
+      "config": {
+        "algorithm": "logistic_regression",
+        "seed": 42,
+        "epochs": 10,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "max_runtime_seconds": 60,
+        "l2_strength": 0.02
+      },
+      "project_id": "test_c09297b35bb444e3a4d3bd4b17cbe542",
+      "schema_version": 1,
+      "created_at": {
+        "$date": "2026-10-20T22:34:10.240Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-20T22:34:10.258Z"
+      },
+      "status": "running",
+      "attempts": 1,
+      "heartbeat_at": {
+        "$date": "2026-10-20T22:34:10.258Z"
+      },
+      "started_at": {
+        "$date": "2026-10-20T22:34:10.258Z"
+      },
+      "completed_at": null,
+      "metrics": {},
+      "artifacts": [],
+      "dependencies": {},
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": false,
+      "submission_key": "linear",
+      "request_hash": "627d53d6b6681812b96ed68748e0c64ff7383a801f29598276c52f2dccc91e30",
+      "worker_token": "05393e40-77b2-4085-ac15-80530c7d0a9a",
+      "lease_expires_at": {
+        "$date": "2026-10-20T22:34:20.258Z"
+      },
+      "last_dispatch_at": {
+        "$date": "2026-10-20T22:34:10.247Z"
+      },
+      "evaluate_test": true,
+      "selection_metric": "validation_f1"
+    }
+  ],
+  "trials": [],
+  "tuning_jobs": []
+}

@@ -1,0 +1,257 @@
+[
+  {
+    "experiment_id": "4ae75dff-3225-4052-a904-2b1752c99c4c",
+    "dataset": {
+      "name": "classes_2",
+      "version": "v1",
+      "uri": "uploads/logistic_browser_9d171e740585/1f4612d96ef7500fdc20c5436d0206cbef9a30184362670fefce0737828f7154.csv",
+      "feature_columns": [
+        "x",
+        "y"
+      ],
+      "target_column": "target",
+      "split_column": "split",
+      "id": "da2d6d37-a6a6-4b34-b208-8f82acc51cbb",
+      "project_id": "logistic_browser_9d171e740585",
+      "schema_version": 1,
+      "created_at": "2026-10-20T22:31:56.215000Z",
+      "updated_at": "2026-10-20T22:31:56.215000Z",
+      "sha256": "1f4612d96ef7500fdc20c5436d0206cbef9a30184362670fefce0737828f7154",
+      "num_classes": 2,
+      "row_counts": {
+        "train": 40,
+        "validation": 12,
+        "test": 12
+      },
+      "preparation": null,
+      "selection": null
+    },
+    "checkpoint": {
+      "name": "model.pt",
+      "uri": "logistic_browser_9d171e740585/4ae75dff-3225-4052-a904-2b1752c99c4c/c03314a3-70f0-4787-abd4-56a2765eb5a9/model.pt",
+      "sha256": "5c58b3de2dc7f49e7fb79e328c0f3d3dafeefd2088f2415378d27278a2cb75c2",
+      "size_bytes": 3221
+    },
+    "algorithm": "mlp",
+    "format_version": null,
+    "mean": [
+      0.09500005096197128,
+      -3.980999708175659
+    ],
+    "std": [
+      4.000415802001953,
+      0.016093460842967033
+    ],
+    "targets": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "reloaded_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "independent_accuracy": 1.0,
+    "independent_macro_f1": 1.0,
+    "reported_metrics": {
+      "validation_accuracy": 1.0,
+      "validation_f1": 1.0,
+      "best_epoch": 2.0,
+      "test_accuracy": 1.0,
+      "test_f1": 1.0
+    }
+  },
+  {
+    "experiment_id": "b5e6d1e1-e15a-448f-b573-3b9c7dbf7915",
+    "dataset": {
+      "name": "classes_2",
+      "version": "v1",
+      "uri": "uploads/logistic_browser_9d171e740585/1f4612d96ef7500fdc20c5436d0206cbef9a30184362670fefce0737828f7154.csv",
+      "feature_columns": [
+        "x",
+        "y"
+      ],
+      "target_column": "target",
+      "split_column": "split",
+      "id": "da2d6d37-a6a6-4b34-b208-8f82acc51cbb",
+      "project_id": "logistic_browser_9d171e740585",
+      "schema_version": 1,
+      "created_at": "2026-10-20T22:31:56.215000Z",
+      "updated_at": "2026-10-20T22:31:56.215000Z",
+      "sha256": "1f4612d96ef7500fdc20c5436d0206cbef9a30184362670fefce0737828f7154",
+      "num_classes": 2,
+      "row_counts": {
+        "train": 40,
+        "validation": 12,
+        "test": 12
+      },
+      "preparation": null,
+      "selection": null
+    },
+    "checkpoint": {
+      "name": "model.pt",
+      "uri": "logistic_browser_9d171e740585/b5e6d1e1-e15a-448f-b573-3b9c7dbf7915/4bfc85bb-c433-48bc-b448-393423da6c08/model.pt",
+      "sha256": "96b483954a2730f1e6156e17785ba77860016f3930484f90bda044a1004f219d",
+      "size_bytes": 2589
+    },
+    "algorithm": "logistic_regression",
+    "format_version": 1,
+    "mean": [
+      0.09500005096197128,
+      -3.980999708175659
+    ],
+    "std": [
+      4.000415802001953,
+      0.016093460842967033
+    ],
+    "targets": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "reloaded_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "independent_accuracy": 1.0,
+    "independent_macro_f1": 1.0,
+    "reported_metrics": {
+      "validation_accuracy": 1.0,
+      "validation_f1": 1.0,
+      "best_epoch": 14.0,
+      "test_accuracy": 1.0,
+      "test_f1": 1.0
+    }
+  },
+  {
+    "experiment_id": "2d6cc49e-73f6-4c48-bc7b-eab68b0ee9bb",
+    "dataset": {
+      "name": "classes_3",
+      "version": "v1",
+      "uri": "uploads/logistic_browser_9d171e740585/13e7af20120e1bf0bcbf9b3c2bba401e7180bfe3e4b734a9a38339d33954c5cb.csv",
+      "feature_columns": [
+        "x",
+        "y"
+      ],
+      "target_column": "target",
+      "split_column": "split",
+      "id": "79f957de-f649-4aac-9e60-12dc3b95d4e1",
+      "project_id": "logistic_browser_9d171e740585",
+      "schema_version": 1,
+      "created_at": "2026-10-20T22:31:56.228000Z",
+      "updated_at": "2026-10-20T22:31:56.228000Z",
+      "sha256": "13e7af20120e1bf0bcbf9b3c2bba401e7180bfe3e4b734a9a38339d33954c5cb",
+      "num_classes": 3,
+      "row_counts": {
+        "train": 60,
+        "validation": 18,
+        "test": 18
+      },
+      "preparation": null,
+      "selection": null
+    },
+    "checkpoint": {
+      "name": "model.pt",
+      "uri": "logistic_browser_9d171e740585/2d6cc49e-73f6-4c48-bc7b-eab68b0ee9bb/1867b635-4604-4e48-a175-34f54ed1be28/model.pt",
+      "sha256": "397516161f1b6545108684a630e2cea1c0521288097889bf6221414a7d1f3e3b",
+      "size_bytes": 2589
+    },
+    "algorithm": "logistic_regression",
+    "format_version": 1,
+    "mean": [
+      0.09500002861022949,
+      -1.3143330812454224
+    ],
+    "std": [
+      3.2664952278137207,
+      3.771270513534546
+    ],
+    "targets": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "reloaded_predictions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "independent_accuracy": 1.0,
+    "independent_macro_f1": 1.0,
+    "reported_metrics": {
+      "validation_accuracy": 1.0,
+      "validation_f1": 1.0,
+      "best_epoch": 15.0,
+      "test_accuracy": 1.0,
+      "test_f1": 1.0
+    }
+  }
+]

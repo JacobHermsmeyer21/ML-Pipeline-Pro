@@ -1,0 +1,130 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.5, pytest-9.1.1, pluggy-1.6.0
+rootdir: C:\Users\jacob\Desktop\ML-Pipeline-Pro
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, langsmith-0.14.5, platformdirs-4.12.3, cov-7.1.0
+collected 941 items / 118 deselected / 823 selected
+
+tests\test_column_api.py ..................                              [  2%]
+tests\test_config.py ................                                    [  4%]
+tests\test_conversation_actions.py ...........                           [  5%]
+tests\test_conversation_api.py .........                                 [  6%]
+tests\test_conversation_config.py ...................................... [ 11%]
+..................                                                       [ 13%]
+tests\test_conversation_evaluation.py ......                             [ 14%]
+tests\test_conversation_grounding.py .........                           [ 15%]
+tests\test_conversation_guidance.py .................................... [ 19%]
+.................................                                        [ 23%]
+tests\test_conversation_model.py ...                                     [ 23%]
+tests\test_conversation_ollama.py ...................................... [ 28%]
+....................                                                     [ 30%]
+tests\test_conversation_openai.py ..............................         [ 34%]
+tests\test_conversation_qwen_counter.py ..........................       [ 37%]
+tests\test_conversation_schemas.py ...........................           [ 41%]
+tests\test_conversation_service.py ..................................... [ 45%]
+...                                                                      [ 45%]
+tests\test_conversation_store.py ...                                     [ 46%]
+tests\test_dashboard.py ....                                             [ 46%]
+tests\test_dataset_preparation.py ..............                         [ 48%]
+tests\test_dataset_uploads.py ...................                        [ 50%]
+tests\test_datasets.py .............                                     [ 52%]
+tests\test_deletion_api.py ....                                          [ 52%]
+tests\test_deletion_files.py ........                                    [ 53%]
+tests\test_errors.py .....                                               [ 54%]
+tests\test_experiments.py ..................                             [ 56%]
+tests\test_health.py .............                                       [ 58%]
+tests\test_laptop_cpu_trials.py ..................                       [ 60%]
+tests\test_laptop_qwen_diagnostic.py .............                       [ 61%]
+tests\test_laptop_timing.py ..................                           [ 64%]
+tests\test_logging.py .........                                          [ 65%]
+tests\test_logistic_regression.py ..................                     [ 67%]
+tests\test_monitoring.py ..........                                      [ 68%]
+tests\test_openai_test_budget.py .................                       [ 70%]
+tests\test_preparation_api.py ............                               [ 72%]
+tests\test_registration.py ..............                                [ 73%]
+tests\test_reply_validation_runner.py ...                                [ 74%]
+tests\test_service_factories.py ..                                       [ 74%]
+tests\test_snippet_generation.py ...........................             [ 77%]
+tests\test_snippet_validation.py .................................       [ 81%]
+tests\test_tool_transport.py ........................................    [ 86%]
+tests\test_tools.py ................................................     [ 92%]
+tests\test_training.py .......                                           [ 93%]
+tests\test_tuning_api.py ......................                          [ 95%]
+tests\test_tuning_execution.py ...................                       [ 98%]
+tests\test_unbounded_diagnostic.py ..............                        [100%]
+
+- generated xml file: C:\Users\jacob\Desktop\ML-Pipeline-Pro\artifacts\logistic-validation\fast-final.xml -
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.11.5-final-0 _______________
+
+Name                                               Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------------------------
+src\ml_pipeline_pro\__init__.py                        1      0      0      0   100%
+src\ml_pipeline_pro\access.py                         13      0      4      0   100%
+src\ml_pipeline_pro\api.py                           156     10     48      6    91%   142-145, 190, 232, 251, 279, 282, 295
+src\ml_pipeline_pro\artifacts.py                      40      5      4      1    86%   22-23, 36, 55-56
+src\ml_pipeline_pro\column_api.py                     85     11     14      0    87%   54, 76-77, 136-142, 144, 148, 152
+src\ml_pipeline_pro\column_schemas.py                 39      1      4      1    95%   20
+src\ml_pipeline_pro\config.py                        129      0     30      0   100%
+src\ml_pipeline_pro\connections.py                    35      7      0      0    80%   26-44
+src\ml_pipeline_pro\conversation_actions.py           73     11     28      6    81%   47, 84->113, 89->84, 107, 111, 122, 143, 150-161
+src\ml_pipeline_pro\conversation_api.py               79      9     16      3    85%   50-51, 92-93, 110-116, 150, 197->199
+src\ml_pipeline_pro\conversation_diagnostics.py       13      0      4      0   100%
+src\ml_pipeline_pro\conversation_grounding.py        104      4     52      4    95%   89, 91, 178, 192
+src\ml_pipeline_pro\conversation_guidance.py         171      4    104      5    97%   178-179, 184, 188->182, 260, 278->273
+src\ml_pipeline_pro\conversation_model.py             24      0      4      0   100%
+src\ml_pipeline_pro\conversation_ollama.py           262      9    118      9    95%   174, 184, 219, 388, 395, 412, 421, 462, 477
+src\ml_pipeline_pro\conversation_openai.py           227     16     98     16    90%   191, 218, 222, 241, 310, 322, 324, 327, 373, 380->382, 384, 393, 407, 418, 423, 429, 434->448, 442
+src\ml_pipeline_pro\conversation_qwen_counter.py     224     33    114     11    83%   71, 120, 134, 167-174, 232->250, 234->236, 259->271, 271->279, 299-301, 304-305, 308-314, 333-335, 341, 344, 351->356, 361-365
+src\ml_pipeline_pro\conversation_schemas.py          101      0      6      0   100%
+src\ml_pipeline_pro\conversation_service.py          285     20     96     12    91%   191, 227->232, 242, 244, 282-286, 321, 366, 385, 463-466, 498->496, 587, 596, 602, 605-606, 621
+src\ml_pipeline_pro\conversation_store.py            309    229    116      3    21%   63, 67, 85-91, 95-97, 130-149, 152-153, 160-170, 174, 178-193, 196-278, 281-288, 296-298, 305-419, 430-538, 550-645, 656-708, 716-728, 733-742
+src\ml_pipeline_pro\conversation_timing.py            46      0     10      0   100%
+src\ml_pipeline_pro\dashboard_api.py                  22      0      0      0   100%
+src\ml_pipeline_pro\dataset_columns.py                88      6     28      6    90%   32, 41, 54, 97, 113, 165
+src\ml_pipeline_pro\dataset_files.py                  48      5     20      5    85%   31, 39, 43, 51, 58
+src\ml_pipeline_pro\dataset_preparation.py           219     18     96      9    91%   45-46, 48, 61, 64-66, 81-82, 94-95, 114, 118, 135, 140, 146, 151, 179
+src\ml_pipeline_pro\dataset_uploads.py               109      7     22      2    93%   59-60, 63-64, 119, 186, 190
+src\ml_pipeline_pro\datasets.py                       72      2     22      1    97%   79, 83
+src\ml_pipeline_pro\deletion_api.py                   26      4      0      0    85%   14-17, 35, 53
+src\ml_pipeline_pro\deletion_files.py                 70      4     28      2    94%   14-15, 32, 101
+src\ml_pipeline_pro\deletion_schemas.py               33      0      0      0   100%
+src\ml_pipeline_pro\deletions.py                     183    153     52      0    13%   27, 31, 38-41, 44-57, 64-139, 142, 147-151, 162-165, 170-178, 181-184, 187-252, 260-264, 267-277, 282-335, 338-403
+src\ml_pipeline_pro\errors.py                         51      0      0      0   100%
+src\ml_pipeline_pro\execution.py                      52      3      8      0    92%   70-73, 120
+src\ml_pipeline_pro\jobs.py                           90     70     24      0    18%   16-32, 35-38, 41-42, 62-83, 86-117, 122-136, 139-151, 156-159, 181-201, 206-220, 225-252, 261-272
+src\ml_pipeline_pro\laptop_deployment.py              53      3     26      3    92%   13, 18, 22
+src\ml_pipeline_pro\lifecycle.py                      70     50     20      0    22%   25, 29, 39-40, 43-59, 62-63, 70-74, 77-89, 92-99, 102-132, 135-139
+src\ml_pipeline_pro\logging.py                        51      0     20      0   100%
+src\ml_pipeline_pro\main.py                          103      0     12      0   100%
+src\ml_pipeline_pro\monitoring.py                     87     27     20      1    66%   32-34, 37-51, 65, 81-87, 90-101, 107-114
+src\ml_pipeline_pro\monitoring_api.py                 68     15     12      4    76%   37, 42-43, 53, 74, 88, 91, 97-102, 104, 137-139
+src\ml_pipeline_pro\monitoring_schemas.py             63      0      4      0   100%
+src\ml_pipeline_pro\openai_test_budget.py             93      3     22      4    94%   50, 87, 97->exit, 137
+src\ml_pipeline_pro\ownership.py                      14     10      4      0    22%   18-37
+src\ml_pipeline_pro\preparation_api.py               165     10     34      2    93%   64, 207-212, 216, 222, 226, 231->230
+src\ml_pipeline_pro\preparation_files.py              34      2     14      2    92%   25, 45
+src\ml_pipeline_pro\preparation_schemas.py            40      4      8      4    83%   21, 45, 51, 53
+src\ml_pipeline_pro\queue.py                          18      9      2      0    45%   10-36, 41, 44, 53, 63-65
+src\ml_pipeline_pro\repositories.py                   42     20      6      0    46%   40-42, 45-50, 54, 57-60, 63-71, 74-75
+src\ml_pipeline_pro\schemas.py                       132      0      6      0   100%
+src\ml_pipeline_pro\snippet_generation.py             31      0      6      0   100%
+src\ml_pipeline_pro\snippet_schemas.py                33      0      2      0   100%
+src\ml_pipeline_pro\snippet_validation.py            143      3     42      1    98%   60-62
+src\ml_pipeline_pro\storage_control.py                94     11     22      5    84%   29, 31, 42, 53, 79-84, 102-103, 104->106, 121
+src\ml_pipeline_pro\tool_schemas.py                   89      0      4      0   100%
+src\ml_pipeline_pro\tool_transport.py                 71      0     18      0   100%
+src\ml_pipeline_pro\tools.py                         164      8     88      8    94%   233, 283, 296, 304, 325, 431, 435, 441
+src\ml_pipeline_pro\tracking.py                       52     36     10      0    26%   16-22, 25-76, 80-87, 92-98, 103-109, 112-115
+src\ml_pipeline_pro\training.py                      160     10     40      6    92%   46-47, 98, 211, 223, 227-228, 230, 241, 267
+src\ml_pipeline_pro\training_control.py               23      1      6      1    93%   32
+src\ml_pipeline_pro\tuning_api.py                     66      4     20      0    93%   59-62
+src\ml_pipeline_pro\tuning_execution.py              194     28     82     19    82%   103-104, 105->107, 108-113, 115, 122, 124, 128, 134, 144, 161-162, 163->240, 187-188, 204, 239, 244, 249, 256, 269, 274->298, 293-295, 314, 324, 392
+src\ml_pipeline_pro\tuning_sampler.py                 19      0      2      0   100%
+src\ml_pipeline_pro\tuning_schemas.py                 96      0      6      0   100%
+src\ml_pipeline_pro\tuning_store.py                  124     94     22      0    21%   17-20, 23-24, 30-54, 59-124, 127, 135-146, 151-167, 172-179, 182-214, 217, 228-250, 255-269, 272-278, 281-304, 307-333, 340-366, 375-378, 381-410, 414-421
+src\ml_pipeline_pro\worker.py                         58     58      4      0     0%   3-76
+----------------------------------------------------------------------------------------------
+TOTAL                                               5929   1047   1754    162    80%
+=============== 823 passed, 118 deselected in 78.01s (0:01:18) ================

@@ -1,6 +1,6 @@
 # Add logistic regression experiments
 
-- Status: approved; implementation in progress
+- Status: implemented; automated acceptance passed; human usefulness review outstanding
 - Date: 2026-10-20 (America/New_York)
 - Source baseline: `37904ac` / `main`; fetched `origin/main` matches
 - Request: a plan for logistic regression only, following the one-night scope discussion
@@ -188,8 +188,19 @@ rewrite logistic records as MLP or delete records/artifacts as an implicit rollb
 
 ## Implementation outcome
 
-Implemented in the working tree after Jacob's explicit approval. Automated
-acceptance is in progress; see the [execution record](../evidence/2026-10-20-logistic-regression/README.md)
-for scope, test justification, provenance, results, reviews and remaining gaps.
-No logistic tuning, AI mutation, alternative backend or concurrency change was
-introduced. The approval record is published as `10e9f37` on `origin/main`.
+Implemented after Jacob's explicit approval and published to `origin/main` as
+`5c5f429`, followed by canonical float defaults and explicit dashboard errors in
+`dbfaae6`. Final-source acceptance passes 823 fast, 106 ordinary and 12 serial
+recovery cases with zero selected skips, plus three actual browser/worker runs,
+checkpoint reload/metric checks, comparison and registration. Locked sync,
+lint/format, dependency compatibility, package build and packaged assets pass.
+
+The [execution record](../evidence/2026-10-20-logistic-regression/README.md) retains
+commands/results, exact source/image identities, raw JUnit/logs, dataset hashes,
+configs/metrics/checkpoint hashes, predictions, recovery snapshots, screenshots,
+test justification and self-review. A source-confirmed integer/float default
+normalization issue was fixed within the approved contract; no logistic tuning,
+AI mutation, alternative backend or concurrency change was introduced. No course
+requirement is closed by this linear baseline. Independent review was unavailable;
+human usefulness review remains outstanding. The existing demo deployment was not
+updated; compatible API/worker/dashboard versions must be rebuilt together.

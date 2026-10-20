@@ -1,0 +1,11 @@
+{
+  "scope": "reconstructed prior field default from 5c5f429; final installed source",
+  "prior": [
+    "{\"algorithm\": \"logistic_regression\", \"batch_size\": 16, \"epochs\": 30, \"l2_strength\": 0, \"learning_rate\": 0.01, \"max_runtime_seconds\": 60, \"seed\": 42}",
+    "{\"algorithm\": \"logistic_regression\", \"batch_size\": 16, \"epochs\": 30, \"l2_strength\": 0.0, \"learning_rate\": 0.01, \"max_runtime_seconds\": 60, \"seed\": 42}"
+  ],
+  "final": [
+    "{\"algorithm\": \"logistic_regression\", \"batch_size\": 16, \"epochs\": 30, \"l2_strength\": 0.0, \"learning_rate\": 0.01, \"max_runtime_seconds\": 60, \"seed\": 42}",
+    "{\"algorithm\": \"logistic_regression\", \"batch_size\": 16, \"epochs\": 30, \"l2_strength\": 0.0, \"learning_rate\": 0.01, \"max_runtime_seconds\": 60, \"seed\": 42}"
+  ]
+}

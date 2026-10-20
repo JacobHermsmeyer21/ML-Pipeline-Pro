@@ -1,0 +1,80 @@
+{
+  "experiments": [
+    {
+      "_id": "5a806607-6f12-48e4-b6d4-26c99403e821",
+      "dataset_id": "fd921a35-ec2f-4a6b-bedf-8a81b9aa54a8",
+      "model_id": "b9b6029e-17b7-4628-adfa-8443000d6e8c",
+      "config": {
+        "algorithm": "logistic_regression",
+        "seed": 42,
+        "epochs": 10,
+        "batch_size": 16,
+        "learning_rate": 0.01,
+        "max_runtime_seconds": 60,
+        "l2_strength": 0.02
+      },
+      "project_id": "test_c09297b35bb444e3a4d3bd4b17cbe542",
+      "schema_version": 1,
+      "created_at": {
+        "$date": "2026-10-20T22:34:10.240Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-20T22:34:38.801Z"
+      },
+      "status": "succeeded",
+      "attempts": 2,
+      "heartbeat_at": {
+        "$date": "2026-10-20T22:34:38.095Z"
+      },
+      "started_at": {
+        "$date": "2026-10-20T22:34:34.754Z"
+      },
+      "completed_at": {
+        "$date": "2026-10-20T22:34:38.801Z"
+      },
+      "metrics": {
+        "validation_accuracy": 1.0,
+        "validation_f1": 1.0,
+        "best_epoch": 7.0,
+        "test_accuracy": 1.0,
+        "test_f1": 1.0
+      },
+      "artifacts": [
+        {
+          "name": "model.pt",
+          "uri": "test_c09297b35bb444e3a4d3bd4b17cbe542/5a806607-6f12-48e4-b6d4-26c99403e821/abe9fb8b-ebc1-43ea-ad15-b79eeb01e160/model.pt",
+          "sha256": "14ac828d83857a7727a4f771fbad878e3d3348a088bd0c656c67cb7313d660b7",
+          "size_bytes": 2589
+        },
+        {
+          "name": "manifest.json",
+          "uri": "test_c09297b35bb444e3a4d3bd4b17cbe542/5a806607-6f12-48e4-b6d4-26c99403e821/abe9fb8b-ebc1-43ea-ad15-b79eeb01e160/manifest.json",
+          "sha256": "28bb8ac82a9f0cdc4a558d27784ab344bb2622048a33fc6bccbbc9dcaa1815d3",
+          "size_bytes": 1531
+        }
+      ],
+      "dependencies": {
+        "python": "3.11.17",
+        "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+        "torch": "2.14.1+cpu",
+        "numpy": "2.4.6",
+        "ml_pipeline_pro": "0.1.0"
+      },
+      "error_summary": null,
+      "tuning_job_id": null,
+      "tuning_trial_number": null,
+      "test_evaluated": true,
+      "submission_key": "linear",
+      "request_hash": "627d53d6b6681812b96ed68748e0c64ff7383a801f29598276c52f2dccc91e30",
+      "worker_token": null,
+      "lease_expires_at": null,
+      "last_dispatch_at": {
+        "$date": "2026-10-20T22:34:10.247Z"
+      },
+      "evaluate_test": true,
+      "selection_metric": "validation_f1"
+    }
+  ],
+  "trials": [],
+  "tuning_jobs": []
+}
