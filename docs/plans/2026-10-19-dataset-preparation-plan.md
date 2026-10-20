@@ -1,11 +1,11 @@
 # Prepare raw classification CSVs inside the dashboard
 
-- Status: awaiting review; defaults and original-drug200 acceptance approved
+- Status: approved for implementation, including editable encoding review
 - Date: 2026-10-19
 - Source baseline: `f152132f8495290e1c05c5636e934f51a11be8de`, `person-a/conversation-foundation`
 - Request: minimize external preprocessing; encode categories and create training,
   validation and test splits without requiring a split column
-- Human reviewer/implementation approval: Jacob; full design approval pending
+- Human reviewer/implementation approval: Jacob, October 19, with encoding-review addition below
 - Independent review: seek a separate reviewer for publication/replay and size/split
   arithmetic; availability unconfirmed; implementing-assistant review is self-review
 
@@ -64,6 +64,7 @@ Use maintained splitting/encoding utilities rather than bespoke split arithmetic
 | F3 | Functional | Infer editable feature roles; one-hot encode categorical features and map string targets to readable class IDs. | Drug200 has two numeric and three categorical inputs; training-derived vocabularies and reversible label mapping persist. Unknown feature categories do not change feature width. |
 | F4 | Functional | Preview missingness and class balance; offer training-fitted missing-feature handling. | Opt-in numeric median / categorical mode imputation works; missing targets and wholly missing training features fail with actionable errors. |
 | F5 | Functional | Save immutable preparation provenance and reuse it for training, tuning, evaluation and raw-row transformation. | Recipe/source/output hashes verify; checkpoint retains maps/order; saved transform reproduces prepared model inputs and readable labels. |
+| F6 | Functional | Review automatic encoding before saving and change feature treatment, category mappings or target class IDs. | Browser shows training-derived vocabularies and generated columns; user changes BP to an explicit numeric mapping and reorders drug class IDs, refreshes preview, then trains with those exact settings. Stale or incomplete mappings cannot be saved. |
 | N1 | Reliability | Keep project access, exact replay/conflicts, artifact integrity, serial execution and existing prepared datasets working. | API, actual-volume replay/race and worker/recovery checks; unchanged legacy fixture trains and evaluates. |
 | N2 | Resources | Bound reception, parsing, expansion and output; do not accept an upload that cannot become a supported dataset. | Exact-limit/limit+1 tests reach each guard; no partial registration, unbounded matrix allocation or raw-value error logging. |
 | N3 | Usability | No external editing or split-column entry in the main path; preview and errors are usable at both approved desktop sizes. | Browser walkthrough, keyboard checks and screenshots at 1440x900 and 1280x800; human usefulness review. |
@@ -72,7 +73,7 @@ Use maintained splitting/encoding utilities rather than bespoke split arithmetic
 
 First version: UTF-8 CSV classification, 2-64 classes, existing row/value limits
 and at most 128 numeric features after encoding. Regression, free-text/date feature
-engineering, ordinal/target encoding, automatic balancing, deduplication and
+engineering, learned ordinal/target encoding, automatic balancing, deduplication and
 group/time splitting are follow-ups, not implemented scope. Imputation defaults to
 **reject missing values** until the user explicitly selects the offered strategy.
 
@@ -104,6 +105,16 @@ numeric category codes. Support distinct nonempty source headers up to 128 UTF-8
 bytes, including spaces, using stable generated internal aliases that satisfy
 existing numeric dataset column-name constraints. Render source names as text.
 Never include target or existing-split columns in model features.
+
+Before registration, show each feature's inferred treatment, training-derived
+category vocabulary, generated output columns and target-label-to-ID mapping.
+Allow numeric, one-hot, explicitly supplied numeric category mapping, or exclusion;
+custom numeric mappings must cover the training vocabulary with finite bounded
+values and declare an unknown-category fallback. Explain that numeric mappings
+impose distances. Target IDs may be reordered but must remain a bijection onto
+`0..classes-1`. Do not learn a category ordering or target statistics automatically.
+Changing any setting invalidates review. Require a refreshed preview and bind
+registration to its hash so the saved recipe is the one the user reviewed.
 
 For automatic splits, reserve 15% test first, then take 15/85 of the remainder for
 validation, using stratified shuffling and seed 42 for both operations. Generalize
@@ -230,6 +241,15 @@ ratios/seed/existing splits, explicitly requiring the original unprocessed drug2
 for the demo. The complete design, dependency additions, preparation metadata,
 API/limits, imputation policy and acceptance criteria above await review. This
 record does not extend the earlier dashboard approval to new public contracts.
+
+Jacob subsequently reviewed this plan and said: "ok plan looks good, only thing
+is i want to be able to review the automatic encoding and change it if i please".
+This approves implementation of the full plan with the F6 review/edit requirement.
+The implementation will expose editable feature treatments, explicit category
+numeric mappings and target class IDs, then require a refreshed preview before
+saving. This addition is requested and approved by that same message; no further
+approval is required for these controls. All original-data and verification
+requirements remain in force.
 
 ## Implementation outcome
 
