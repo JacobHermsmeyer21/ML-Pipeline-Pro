@@ -1,5 +1,61 @@
 # ML Pipeline Pro
 
+A course project by **Team MJN** for reproducible classification experiments,
+bounded hyperparameter tuning, monitoring, and conversational pipeline guidance.
+
+## Demo
+
+![Animated ML Pipeline Pro dashboard walkthrough](demo.gif)
+
+The recording shows the locally hosted browser dashboard. For a live local
+walkthrough, follow the [dashboard startup guide](docs/guides/dashboard.md#start-on-this-desktop)
+and open `http://127.0.0.1:8000/dashboard/`. The base Compose stack below starts
+with chat and uploads disabled; the guide explains the additional services and
+configuration. Public URL verification is outside this submission update at
+Jacob's request.
+
+## Team and contributions
+
+Contributions below are grounded in published Git history through `baa8189`
+(October 20, 2026). Commit authorship records submitted work; it does not establish
+how much was written manually versus with AI assistance. No contributions outside
+Git were reported for this audit.
+
+| Team member | Verified workflow contributions | Status in the submitted application |
+| --- | --- | --- |
+| **Jacob Hermsmeyer** ([JacobHermsmeyer21](https://github.com/JacobHermsmeyer21)) | Backend/services, dataset and model registration, serial PyTorch training, Optuna tuning and recovery, LangChain tools and Python drafts, monitoring, Docker/Kubernetes/CI, original dashboard, CSV preparation/column versions/deletion, deployment diagnostics, OpenAI integration, logistic regression, short IDs and classification metrics. Representative commits: `0e37e6e`, `5c5f429`, `c31898c`, `a44452e`. | Maintained implementation and subsequent feature work are present in the current tree. |
+| **Mingma Lama** ([lama9811](https://github.com/lama9811); also commits as Mingma) | Astro/React dashboard redesign, mocked-API browser regression tests and build checks, CSP changes, Claude backend and output-budget correction, public-deployment plan, presentation slides/PDF, and an earlier submission README. Representative commits: `20bef4f`, `4f9b4a3`, `c0d3cb7`, `e0ac45c`, `c012423`, `1d89614`. | This work was contributed and merged, then removed from the application tree by restoration commit `e7c8e76`. It remains credited in history; Astro, Claude, and those slides are absent from the current submission. |
+| **Nasif Ajilore** | No contribution is recorded under this name in the inspected repository history, and no work outside Git has been reported. | No verified contribution to report. An unidentified Git alias or unreported work cannot be ruled out. |
+
+## Git workflow
+
+The history contains repeated commits from October 6–20, 2026, feature branches,
+and merged pull requests, including [PR #1](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/1)
+and [PR #2](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/2).
+At audit revision `baa8189`, `git shortlog -sne HEAD` records 131 commits by
+Jacob's identity and 20 by Mingma's two identities (18 + 2, including merges).
+These counts describe reachable history, including work later removed; they are
+not measures of effort. **Active Git collaboration by all three members is not
+demonstrated:** no third contributor identity appears. This requirement remains
+unmet on the available evidence.
+
+Substantive changes use written plans and human review; completed major changes
+are checked, committed and pushed. See [repository workflow](AGENTS.md) and the
+[development method](docs/project/development-methodology.md).
+
+## Submission checklist
+
+| Professor's requirement | Evidence or remaining limitation |
+| --- | --- |
+| Embedded animated walkthrough | Root `demo.gif` is embedded above; decoded successfully as 2,002 frames at 1922 × 1042. A recording does not establish current service availability. |
+| Operational public app link | Not assessed in this update, at Jacob's request. Local startup is documented above. |
+| Exact README template | Jacob confirmed that the professor did not supply a template. This README covers the supplied checklist; exact-template compliance cannot be assessed. |
+| Three named members and specific contributions | All three are listed above, with historical/removed work and absent evidence stated explicitly. |
+| Regular commits and collaboration by every member | Regular history exists for Jacob and Mingma; participation by Nasif is not evidenced. |
+| Installation, dependencies, datasets and evaluation metrics | Documented below and in the linked setup, API and evidence guides. |
+
+## Overview and features
+
 Datasets, experiments and conversations support easy-to-type references such as
 `d1`, `e1` and `c1` in the dashboard, agent chat and API. Full IDs keep working. See
 [short IDs and the existing-data upgrade](docs/guides/short-record-ids.md).
@@ -73,6 +129,28 @@ pass. Kubernetes and recovery [successful implementation CI](https://github.com/
 
 ## Development setup
 
+Dependencies are declared in [pyproject.toml](pyproject.toml) and resolved in
+[uv.lock](uv.lock). Python 3.11–3.14 is supported; CI checks Python 3.11 and 3.13.
+FastAPI/Uvicorn serve the APIs; PyMongo connects to a MongoDB replica set;
+Redis/Celery queue serial work; PyTorch, NumPy, scikit-learn and Optuna provide
+classification and Bayesian tuning. LangChain integrates the hosted OpenAI or
+local Ollama agent. Prometheus/Grafana provide monitoring. The current dashboard
+is packaged HTML/CSS/JavaScript and needs no Node/Astro build.
+
+For Python development, install uv, then run:
+
+```powershell
+uv sync --locked --extra training
+# Create configuration only if it does not already exist.
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+uv run --locked --extra training python examples/train_local.py
+```
+
+The last command runs the synthetic classification example without external
+services. Full API workflows need MongoDB/Redis; chat additionally needs its
+configured provider. Settings and secret handling are documented in
+[.env.example](.env.example) and the [setup guide](docs/guides/setup.md).
+
 Install Docker with Compose 2.24 or later. From the repository root:
 
 ```powershell
@@ -87,8 +165,10 @@ require `X-Project-ID` and, when configured, `X-API-Key`. Stop with
 
 Follow the [setup guide](docs/guides/setup.md) for host development, configuration,
 custom data, and shared artifact storage. Chat defaults to disabled; enabling it
-still requires an installed model and verified artifact-specific token counter.
-See [conversation development](docs/guides/conversation-development.md).
+requires configured OpenAI credentials or an installed local model with its
+verified artifact-specific token counter. See the
+[OpenAI guide](docs/guides/openai-agent.md) or
+[local conversation development](docs/guides/conversation-development.md).
 
 ## Try a workflow
 
@@ -131,6 +211,61 @@ use the [monitoring](docs/guides/monitoring-demo.md) and
 - [Complete midterm demo](docs/guides/midterm-walkthrough.md): the approved minimal all-nine workflow.
 
 The walkthroughs include demos that run without services.
+
+## Datasets
+
+The checked-in [classification CSV](examples/data/classification.csv) is synthetic
+educational data generated by [make_dataset.py](examples/make_dataset.py) with
+seed 42. It has 120 rows, two numeric features, balanced binary labels, and an
+explicit `split` column: 80 training, 20 validation and 20 test rows. Regenerate it
+with `uv run --locked python examples/make_dataset.py`. Its deliberately separated
+classes make it a pipeline smoke test, not a representative performance benchmark.
+
+Custom UTF-8 classification CSVs can be imported through the dashboard after
+enabling managed uploads. Review the target, feature columns, categorical
+encodings and splits before saving. Raw preparation defaults to stratified
+70/15/15 splits with seed 42, subject to integer allocation and sufficient rows
+per class; an existing split column can preserve membership. Default limits are
+10,000,000 bytes and 100,000 rows. Preprocessing and normalization fit training
+rows only; immutable saved versions preserve input hashes, recipes and splits.
+See [raw preparation contracts](docs/reference/api.md#raw-csv-preparation).
+
+The demo recording also shows an Iris CSV imported locally. That CSV's exact
+source and license have not been supplied for this audit, and it is not the
+checked-in synthetic example. A separate historical
+[Drug200 run](docs/evidence/2026-10-19-drug200-demo/README.md) documents its input
+hash, preparation and saved results; its original CSV is not distributed here.
+Verify provenance and permission before redistributing external datasets.
+
+## Models and evaluation metrics
+
+The supported classifiers are a PyTorch MLP (linear → ReLU → linear) and logistic
+regression (a linear classifier). Both use Adam and cross-entropy; the classifier
+is separate from the pre-trained language model used for chat. Training is serial
+on CPU. See [algorithm comparison](docs/guides/dashboard.md#compare-algorithms).
+
+| Metric | Definition and use |
+| --- | --- |
+| Accuracy | Correct predictions divided by evaluated rows. |
+| Precision | Per-class `TP / (TP + FP)`, averaged equally across all dataset classes. |
+| Recall | Per-class `TP / (TP + FN)`, averaged equally across all dataset classes. |
+| F1 | Per-class `2TP / (2TP + FP + FN)`, averaged equally across all dataset classes. |
+
+Undefined per-class ratios contribute zero. Training selects the checkpoint using
+validation F1 by default; bounded MLP tuning can select validation F1 or accuracy.
+Test metrics are evaluated after selection, never used to pick the winner. The
+dashboard separates validation values from held-out test values. Saved artifacts
+are checked against recorded SHA-256 and size. Monitoring separately reports
+observed inference latency, labeled accuracy, errors and declared artificial
+delays; AI explanations are not measurements.
+
+Retained results include the historical Drug200 run above: validation F1/accuracy
+1.0 and held-out test macro F1 0.9586666667 / accuracy 0.9555555582 on its documented
+117/38/45 split. These describe one small split, not generalization guarantees or
+the Iris recording. The later
+[classification-metrics acceptance record](docs/evidence/2026-10-20-dashboard-metrics/README.md)
+checks all four metrics against independently reconstructed predictions for real
+binary/multiclass runs. No new model evaluation was run for this README update.
 
 ## Run checks
 
