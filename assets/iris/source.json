@@ -1,0 +1,30 @@
+{
+  "captured_at": "2026-10-21T04:07:04.193446+00:00",
+  "source_file": "Downloads/IRIS.csv",
+  "source_attribution": "Kaggle, per user; exact download slug not supplied",
+  "sha256": "9194e2b71f7144e7d192a1c38f9a54f26b0e8f705c0929b8225b0cd10275efd1",
+  "size_bytes": 4617,
+  "columns": [
+    "sepal_length",
+    "sepal_width",
+    "petal_length",
+    "petal_width",
+    "species"
+  ],
+  "rows": 150,
+  "class_counts": {
+    "Iris-setosa": 50,
+    "Iris-versicolor": 50,
+    "Iris-virginica": 50
+  },
+  "retrieval": {
+    "origin": "http://127.0.0.1:8000",
+    "project_id": "demo",
+    "method": "GET",
+    "dataset_reference": "d5",
+    "experiment_reference": "e32",
+    "manifest_hash_size_verified": true
+  },
+  "execution": "Existing saved run; no new training or final evaluation requested",
+  "running_source_revision": "Not independently established"
+}

@@ -1,0 +1,185 @@
+{
+  "config": {
+    "batch_size": 16,
+    "epochs": 30,
+    "hidden_units": 16,
+    "learning_rate": 0.01,
+    "max_runtime_seconds": 60,
+    "seed": 42
+  },
+  "dataset": {
+    "created_at": "2026-10-21T03:49:27.322000Z",
+    "feature_columns": [
+      "feature_0",
+      "feature_1",
+      "feature_2",
+      "feature_3"
+    ],
+    "id": "bd123afa-31a9-4863-b8f8-f3ed2999e218",
+    "name": "IRIS",
+    "num_classes": 3,
+    "preparation": {
+      "manifest": {
+        "sha256": "f8a48de5eade3d42dc5f4f4648a29c23f9cdcd567b82fd4ef9fd0a5fdafbb3a8",
+        "size_bytes": 1794,
+        "uri": "uploads/demo/f8a48de5eade3d42dc5f4f4648a29c23f9cdcd567b82fd4ef9fd0a5fdafbb3a8.preparation.json"
+      },
+      "recipe_sha256": "3da0c907eb5a5ec49c46a0e9f9b74ebbe1d9a5e3b446d15961c95f551650af21",
+      "source": {
+        "sha256": "9194e2b71f7144e7d192a1c38f9a54f26b0e8f705c0929b8225b0cd10275efd1",
+        "size_bytes": 4617,
+        "uri": "uploads/demo/9194e2b71f7144e7d192a1c38f9a54f26b0e8f705c0929b8225b0cd10275efd1.csv"
+      }
+    },
+    "project_id": "demo",
+    "row_counts": {
+      "test": 23,
+      "train": 104,
+      "validation": 23
+    },
+    "schema_version": 1,
+    "selection": null,
+    "sha256": "f1f1343485ebe8e2fe28eb5747db31b23269fe7c72f576cdb002aa3cde2503e2",
+    "short_id": "d5",
+    "split_column": "split",
+    "target_column": "target",
+    "updated_at": "2026-10-21T03:49:27.322000Z",
+    "uri": "uploads/demo/f1f1343485ebe8e2fe28eb5747db31b23269fe7c72f576cdb002aa3cde2503e2.csv",
+    "version": "v1"
+  },
+  "dependencies": {
+    "ml_pipeline_pro": "0.1.0",
+    "numpy": "2.4.6",
+    "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "python": "3.11.17",
+    "torch": "2.14.1+cpu"
+  },
+  "experiment_id": "e4ba8047-52f8-4493-936a-0e9903977492",
+  "metrics": {
+    "best_epoch": 6.0,
+    "test_accuracy": 0.8260869383811951,
+    "test_f1": 0.8306878306878307,
+    "test_precision": 0.8444444444444444,
+    "test_recall": 0.8333333333333334,
+    "validation_accuracy": 1.0,
+    "validation_f1": 1.0,
+    "validation_precision": 1.0,
+    "validation_recall": 1.0
+  },
+  "model_id": "a774da81-c1eb-4cef-9f53-234e9bad76c3",
+  "preparation": {
+    "class_counts": {
+      "test": {
+        "Iris-setosa": 7,
+        "Iris-versicolor": 8,
+        "Iris-virginica": 8
+      },
+      "train": {
+        "Iris-setosa": 35,
+        "Iris-versicolor": 34,
+        "Iris-virginica": 35
+      },
+      "validation": {
+        "Iris-setosa": 8,
+        "Iris-versicolor": 8,
+        "Iris-virginica": 7
+      }
+    },
+    "columns": [
+      {
+        "categories": [],
+        "fill_value": null,
+        "mapping": {},
+        "missing_count": 0,
+        "name": "sepal_length",
+        "output_columns": [
+          "feature_0"
+        ],
+        "treatment": "numeric",
+        "unknown_count": 0,
+        "unknown_value": 0
+      },
+      {
+        "categories": [],
+        "fill_value": null,
+        "mapping": {},
+        "missing_count": 0,
+        "name": "sepal_width",
+        "output_columns": [
+          "feature_1"
+        ],
+        "treatment": "numeric",
+        "unknown_count": 0,
+        "unknown_value": 0
+      },
+      {
+        "categories": [],
+        "fill_value": null,
+        "mapping": {},
+        "missing_count": 0,
+        "name": "petal_length",
+        "output_columns": [
+          "feature_2"
+        ],
+        "treatment": "numeric",
+        "unknown_count": 0,
+        "unknown_value": 0
+      },
+      {
+        "categories": [],
+        "fill_value": null,
+        "mapping": {},
+        "missing_count": 0,
+        "name": "petal_width",
+        "output_columns": [
+          "feature_3"
+        ],
+        "treatment": "numeric",
+        "unknown_count": 0,
+        "unknown_value": 0
+      }
+    ],
+    "dependencies": {
+      "ml-pipeline-pro": "0.1.0",
+      "numpy": "2.4.6",
+      "scikit-learn": "1.9.1"
+    },
+    "feature_columns": [
+      "feature_0",
+      "feature_1",
+      "feature_2",
+      "feature_3"
+    ],
+    "format_version": 1,
+    "implementation": "classification-csv-v1",
+    "label_mapping": {
+      "Iris-setosa": 0,
+      "Iris-versicolor": 1,
+      "Iris-virginica": 2
+    },
+    "output_sha256": "f1f1343485ebe8e2fe28eb5747db31b23269fe7c72f576cdb002aa3cde2503e2",
+    "recipe_sha256": "3da0c907eb5a5ec49c46a0e9f9b74ebbe1d9a5e3b446d15961c95f551650af21",
+    "row_counts": {
+      "test": 23,
+      "train": 104,
+      "validation": 23
+    },
+    "settings": {
+      "columns": {},
+      "impute_missing": false,
+      "label_mapping": {},
+      "seed": 42,
+      "split_column": null,
+      "target_column": "species",
+      "test_percent": 15,
+      "train_percent": 70,
+      "validation_percent": 15
+    },
+    "source_sha256": "9194e2b71f7144e7d192a1c38f9a54f26b0e8f705c0929b8225b0cd10275efd1",
+    "split_sha256": "9c3fe361ecee47ccb0bd96691192d065eec26869c97b4b707c58314d7ffe7f86"
+  },
+  "project_id": "demo",
+  "selection_direction": "maximize",
+  "selection_metric": "validation_f1",
+  "test_evaluated": true
+}
