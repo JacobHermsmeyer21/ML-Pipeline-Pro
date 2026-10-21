@@ -42,6 +42,7 @@ from ml_pipeline_pro.conversation_store import TurnClaim
 from ml_pipeline_pro.conversation_timing import timed_boundary
 from ml_pipeline_pro.errors import ApiError
 from ml_pipeline_pro.logging import JsonFormatter, configured_secrets
+from ml_pipeline_pro.short_ids import is_short_id
 from ml_pipeline_pro.snippet_generation import (
     SNIPPET_INSTRUCTIONS,
     SnippetGenerator,
@@ -395,6 +396,19 @@ class ConversationService:
                 turn.evidence = ledger.evidence
             return result
 
+        async def resolve_model_reference(call: ToolCall):
+            identity = call.arguments.get("model_id")
+            if not isinstance(identity, str) or not is_short_id("experiments", identity):
+                return call, None
+            experiment = await read(
+                ToolCall(name="get_experiment", arguments={"experiment_id": identity})
+            )
+            if not isinstance(experiment, ToolSuccess):
+                return call, experiment
+            return call.model_copy(
+                update={"arguments": {**call.arguments, "model_id": experiment.data["model_id"]}}
+            ), None
+
         for number in range(self.settings.chat_max_model_calls):
             admission()
             inference_messages = [
@@ -494,6 +508,14 @@ class ConversationService:
                         "Provide or correct the listed inputs before proposing this action."
                     )
                     return await self._publish(context, claim, turn)
+                if call.name in {"create_experiment", "create_tuning_job"}:
+                    call, failure = await resolve_model_reference(call)
+                    if failure is not None:
+                        raise ApiError(
+                            failure.http_status or 503,
+                            failure.error.code,
+                            "Proposal experiment reference could not be verified",
+                        )
                 targets = (
                     [("dataset", "get_dataset", "dataset_id"), ("model", "get_model", "model_id")]
                     if call.name != "cancel_tuning_job"
@@ -522,7 +544,10 @@ class ConversationService:
                     "A separate exact-action decision is required."
                 )
                 return await self._publish(context, claim, turn, proposal=call)
-            result = await read(call)
+            resolved_call, failure = (
+                await resolve_model_reference(call) if call.name == "get_model" else (call, None)
+            )
+            result = failure if failure is not None else await read(resolved_call)
             call_id = f"call-{number + 1}"
             messages.extend(
                 [

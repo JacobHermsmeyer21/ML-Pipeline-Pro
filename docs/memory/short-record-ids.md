@@ -37,3 +37,13 @@ targets only after checking receipts and hashing the original path. Column saves
 resolve through the registry without requiring a surviving parent, preserving
 child replay after parent deletion. Dataset proposals keep dN in the saved action
 and exact dispatch, while verified facts still cite canonical dataset IDs.
+
+The later October 20 [chat reference correction](../evidence/2026-10-20-experiment-model-reference/README.md)
+addresses a live proposal that put `e8` into `model_id` and failed `/models/e8`.
+For direct chat model reads and training/tuning proposals, the host now reads the
+experiment alias and uses its saved canonical model ID. Both successful reads
+retain evidence and consume the existing host budget; saved proposals contain the
+canonical model ID. Public model routes still require model IDs. Logistic
+proposal restrictions still apply after resolution. Deterministic regressions and
+real-service persistence/replay checks establish the host behavior; fresh model
+reliability was not measured. Jacob explicitly waived the separate plan for this fix.

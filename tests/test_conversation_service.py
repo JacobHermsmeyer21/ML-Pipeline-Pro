@@ -429,6 +429,142 @@ def test_missing_mutation_inputs_stop_without_preflight_or_submission(arguments,
     assert result.pending_action is None and transport.calls == []
 
 
+def experiment_model_transport(*, architecture="mlp", **experiment_changes):
+    from ml_pipeline_pro.schemas import DatasetRecord
+
+    dataset = DatasetRecord(
+        id="dataset",
+        project_id="demo",
+        name="dataset",
+        version="v1",
+        uri="source.csv",
+        feature_columns=["x"],
+        sha256="a" * 64,
+        num_classes=2,
+        row_counts={"train": 1, "validation": 1, "test": 1},
+    ).model_dump(mode="json")
+    record = experiment(short_id="e8")
+    record.update(experiment_changes)
+    return RecordsTransport(
+        {
+            "/api/v1/experiments/e8": record,
+            "/api/v1/experiments/experiment": record,
+            "/api/v1/models/model": model_record(architecture=architecture),
+            "/api/v1/datasets/dataset": dataset,
+        }
+    )
+
+
+def test_model_read_resolves_experiment_alias_and_retains_canonical_evidence():
+    original = call("get_model", model_id="e8")
+    result, _, transport = run(
+        ScriptedModel(original, reply(record_id="model", field="architecture")),
+        experiment_model_transport(),
+    )
+    assert result.status == "completed"
+    assert result.facts[0].value == "mlp"
+    assert original.call.arguments == {"model_id": "e8"}
+    assert [entry[1] for entry in transport.calls] == [
+        "/api/v1/experiments/e8",
+        "/api/v1/experiments/experiment",
+        "/api/v1/models/model",
+    ]
+    assert [(item.tool_name, item.data["id"]) for item in result.tool_results] == [
+        ("get_experiment", "experiment"),
+        ("get_model", "model"),
+    ]
+
+
+@pytest.mark.parametrize("tool", ["create_experiment", "create_tuning_job"])
+@pytest.mark.parametrize("architecture", ["mlp", "logistic_regression"])
+def test_proposal_resolves_experiment_model_before_architecture_check_and_save(tool, architecture):
+    arguments = {
+        "dataset_id": "dataset",
+        "model_id": "e8",
+        "config": {"max_runtime_seconds": 60},
+    }
+    if tool == "create_tuning_job":
+        arguments.update(
+            objective_metric="validation_f1",
+            limits={"max_trials": 5, "max_runtime_seconds": 300},
+        )
+    original = call(tool, **arguments)
+    model = ScriptedModel(original)
+    transport = experiment_model_transport(architecture=architecture)
+    result, store, _ = run(model, transport)
+    assert original.call.arguments["model_id"] == "e8"
+    assert [entry[1] for entry in transport.calls] == [
+        "/api/v1/experiments/e8",
+        "/api/v1/experiments/experiment",
+        "/api/v1/datasets/dataset",
+        "/api/v1/models/model",
+    ]
+    if architecture == "logistic_regression":
+        assert result.status == "failed"
+        assert result.error["code"] == "unsupported_model_algorithm"
+        assert result.pending_action is None
+    else:
+        assert result.status == "awaiting_confirmation"
+        assert result.pending_action.tool.arguments["model_id"] == "model"
+        assert result.pending_action.tool.arguments["config"]["max_runtime_seconds"] == 60
+        if tool == "create_tuning_job":
+            assert result.pending_action.tool.arguments["limits"] == {
+                **arguments["limits"],
+                "concurrency": 1,
+            }
+    reads = len(transport.calls)
+    replay, _, _ = run(model, transport, store=store)
+    assert replay == result and len(transport.calls) == reads and len(model.messages) == 1
+
+
+@pytest.mark.parametrize("proposal", [False, True])
+@pytest.mark.parametrize("failure", ["missing", "foreign", "mismatched", "budget"])
+def test_experiment_model_resolution_fails_before_model_lookup(proposal, failure):
+    transport = experiment_model_transport()
+    if failure == "missing":
+        transport.responses["/api/v1/experiments/e8"] = (
+            404,
+            {
+                "error": {
+                    "code": "experiment_not_found",
+                    "message": "Not found",
+                    "correlation_id": CONTEXT.correlation_id,
+                }
+            },
+        )
+    elif failure == "foreign":
+        transport.responses["/api/v1/experiments/e8"]["project_id"] = "other"
+    elif failure == "mismatched":
+        transport.responses["/api/v1/experiments/e8"]["short_id"] = "e9"
+    step = (
+        call(
+            "create_experiment",
+            model_id="e8",
+            dataset_id="dataset",
+            config={"max_runtime_seconds": 10},
+        )
+        if proposal
+        else call("get_model", model_id="e8")
+    )
+    model = ScriptedModel(step, reply("Cannot inspect the requested model."))
+    result, _, _ = run(
+        model,
+        transport,
+        settings=config(chat_max_tool_calls=1) if failure == "budget" else None,
+    )
+    assert result.pending_action is None
+    assert not any(entry[1].startswith("/api/v1/models/") for entry in transport.calls)
+    if failure == "budget":
+        assert result.status == "failed" and result.error["code"] == "chat_limit_exceeded"
+        assert result.tool_results[0].tool_name == "get_experiment"
+    elif proposal:
+        assert result.status == "failed"
+    else:
+        assert result.status == "completed"
+    if failure != "budget":
+        assert result.tool_results[0].status == "error"
+
+
 @pytest.mark.parametrize(
     "changes,expected", [({"chat_max_model_calls": 1}, 1), ({"chat_max_tool_calls": 1}, 2)]
 )

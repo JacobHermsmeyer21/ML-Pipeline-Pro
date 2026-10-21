@@ -259,6 +259,14 @@ values remain labelled model-proposed. Natural-language intent and whether a
 model guessed an unprovided budget still need prompt evaluation and exact human
 review; schema completeness alone cannot establish those facts.
 
+In chat, an experiment reference such as `e8` supplied as `model_id` means the
+model used by that experiment. The host reads the experiment in the current
+project and uses its saved canonical `model_id` for model reads and training/tuning
+proposals. Both reads consume existing limits and retain evidence; saved proposals
+contain the canonical model ID. Public model API inputs still use model IDs.
+Logistic regression tuning and AI training proposals remain unsupported even
+after resolving an experiment reference.
+
 For replies, citations must occur in successful current-turn public tool evidence.
 Scalar identity/configuration/status/validation-metric fields are resolved from
 actual supplied record fields. Supported examples include `name`, `status`,

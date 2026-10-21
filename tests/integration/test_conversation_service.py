@@ -97,6 +97,86 @@ def test_real_scoped_read_grounding_persistence_and_replay_need_no_second_model_
     exercise(run)
 
 
+@pytest.mark.parametrize("tool", ["get_model", "create_experiment", "create_tuning_job"])
+@pytest.mark.parametrize("architecture", ["mlp", "logistic_regression"])
+def test_experiment_model_alias_uses_real_scoped_reads_and_canonical_saved_action(
+    tool, architecture
+):
+    from ml_pipeline_pro.schemas import ExperimentRecord, LogisticRegressionConfig
+    from ml_pipeline_pro.tracking import TrackingStore
+
+    async def run(settings, connections, database, store, context, client, transport):
+        dataset = await client.post(
+            "/datasets",
+            json={
+                "name": "alias_data",
+                "version": "v1",
+                "uri": "classification.csv",
+                "feature_columns": ["feature_1", "feature_2"],
+            },
+        )
+        created = await client.post(
+            "/models", json={"name": "alias_model", "architecture": architecture}
+        )
+        assert dataset.status_code == created.status_code == 201
+        dataset_id, model_id = dataset.json()["id"], created.json()["id"]
+        domain = connections.mongo.get_database(integration_settings().mongodb_database)
+        tracking = TrackingStore(domain)
+        await tracking.ensure_indexes()
+        experiment = await tracking.experiments.insert(
+            ExperimentRecord(
+                project_id=context.project_id,
+                dataset_id=dataset_id,
+                model_id=model_id,
+                submission_key="alias-fixture",
+                request_hash="a" * 64,
+                config=LogisticRegressionConfig(algorithm="logistic_regression")
+                if architecture == "logistic_regression"
+                else TrainingConfig(),
+            )
+        )
+        arguments = {"model_id": experiment.short_id}
+        if tool != "get_model":
+            arguments.update(dataset_id=dataset_id, config={"max_runtime_seconds": 60})
+        if tool == "create_tuning_job":
+            arguments.update(
+                objective_metric="validation_f1",
+                limits={"max_trials": 5, "max_runtime_seconds": 300},
+            )
+        model = ScriptedModel(
+            call(tool, **arguments), reply(record_id=model_id, field="architecture")
+        )
+        transport.request = AsyncMock(wraps=transport.request)
+        service = ConversationService(settings, store, model, transport)
+        body = ChatRequest(
+            request_id="alias", message="Use the experiment's model", expected_revision=0
+        )
+        result = await service.chat(context, body)
+        assert result.tool_results[0].data["id"] == experiment.id
+        assert result.tool_results[-1].data["id"] == model_id
+        if tool == "get_model":
+            assert result.status == "completed" and result.facts[0].value == architecture
+        elif architecture == "logistic_regression":
+            assert (
+                result.status == "failed" and result.error["code"] == "unsupported_model_algorithm"
+            )
+            assert result.pending_action is None
+        else:
+            assert result.status == "awaiting_confirmation"
+            assert result.pending_action.tool.arguments["model_id"] == model_id
+        assert all(entry.args[0] == "GET" for entry in transport.request.call_args_list)
+        reads = transport.request.call_count
+        restarted = ConversationService(
+            settings, ConversationStore(database, settings), None, transport
+        )
+        assert await restarted.chat(context, body) == result
+        assert transport.request.call_count == reads
+        assert await domain.tuning_jobs.count_documents({"project_id": context.project_id}) == 0
+        assert await domain.experiments.count_documents({"project_id": context.project_id}) == 1
+
+    exercise(run)
+
+
 def test_real_rejected_fact_persists_diagnostic_and_replays_after_restart():
     async def run(settings, connections, database, store, context, client, transport):
         created = await client.post("/models", json={"name": "diagnostic_model"})
