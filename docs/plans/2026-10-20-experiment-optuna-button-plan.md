@@ -45,6 +45,28 @@ The remainder of this document preserves the abandoned proposal for context.
 - Commit/push result is reported in the task handoff. The abandoned full-search
   acceptance criteria below do not describe this clarified prompt-only change.
 
+### Local dashboard deployment follow-up
+
+October 20: Jacob reported the button missing. An HTTP read confirmed the running
+`/dashboard/workspace.js` returned 200 but lacked `Plan Optuna trials`; the source
+change had been pushed as `edaac96` without rebuilding the local app.
+
+Fetched origin (no incoming changes), built `model-api` and recreated only that
+service with `--no-build --no-deps --wait --wait-timeout 120`, using the running
+container's exact Compose project/files: `mlpp-rx9070-walkthrough-20261014`, base,
+services, monitoring, dashboard and OpenAI overlays. Existing volume configuration
+was retained; no dataset/model mutation or AI request was made. Build and healthy
+startup passed. Other services were not recreated.
+
+The gateway now returns the updated asset and readiness 200. A headless Chrome /
+Playwright 1.64.0 check opened the actual dashboard and experiment `e25`, clicked
+the visible button, and verified the filled model/dataset/config against that
+saved experiment, zero POST requests and zero browser errors. Local harness and
+screenshot: `artifacts/verify_deployed_optuna_button.py` and
+`artifacts/optuna-button-deployed.png`. A first browser attempt did not find an MLP
+record; the subsequent run completed the click checks. No application source changed
+in this deployment follow-up; the preceding fast gate remains the source validation.
+
 ## Proposed behavior and purpose
 
 Add **Run Optuna trials** to MLP experiment details in the existing dashboard.
