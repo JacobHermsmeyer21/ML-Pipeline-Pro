@@ -1,11 +1,49 @@
 # Run Optuna trials from an experiment
 
-- Status: awaiting review
+- Status: superseded by the user's narrower prompt-only request
 - Date: 2026-10-20
 - Source baseline: `fd36e79` on `main`; fetched origin, no incoming commits
 - Request: a button on the experiment for doing trials with “opfana”
 - Human reviewer/approval: pending; interpret the requested engine as Optuna
 - Independent review: availability unknown; submission recovery changes need review
+
+## October 20 scope correction
+
+Jacob clarified: "i just want it to give the agent a prompt with all the info
+filled in". The direct-submission design below is not approved or implemented.
+Instead, add a local **Plan Optuna trials** prompt starter alongside the existing
+experiment inspection prompt. It fills and focuses the editable agent message
+box with the source experiment's IDs/config and explicit existing tuning-contract
+settings (five trials, 300 seconds, serial, validation F1 and default search ranges).
+The user sends the message and reviews any agent proposal through the existing
+workflow. Show it for MLP only, consistent with current tuning support.
+
+This follows the compressed loop for a local UI edit under the user's clarified
+scope: no new submission flow, API, persistence, ownership or execution behavior.
+Verify the browser click against saved experiment values rather than current
+training selection, confirm no request is sent on click, and run the fast gates.
+The remainder of this document preserves the abandoned proposal for context.
+
+### Prompt-only implementation outcome
+
+- Added the MLP experiment-detail prompt button in `dashboard/workspace.js` and
+  documented it in the dashboard guide. Source base: `034b67b`.
+- Verification: locked training-extra sync checked 121 packages; Ruff lint and
+  format pass; existing training environment's `python -m pytest -m "not
+  integration" --cov` passes 855 tests, 134 deselected, 79% overall coverage.
+  Sync subsequently confirmed the installed environment already matched the lock.
+  `uv pip check` passes for 121 packages; `git diff --check` passes.
+- Chrome headless / Playwright 1.64.0 loaded the actual local dashboard modules
+  with fixture records: clicking uses source IDs and the complete saved config
+  despite another selected model/dataset, fills all search settings, focuses an
+  editable message, sends no mutation request and reports no browser errors.
+  Logistic details omit the unsupported tuning starter. Local harness:
+  `artifacts/verify_optuna_prompt.py`; no live AI invocation or training run.
+- No existing tests changed and no new permanent tests added for this local edit.
+  Implementing assistant reviewed the diff; no concurrency/state-machine change
+  or independent review is claimed. Existing agent approval flow is reused.
+- Commit/push result is reported in the task handoff. The abandoned full-search
+  acceptance criteria below do not describe this clarified prompt-only change.
 
 ## Proposed behavior and purpose
 

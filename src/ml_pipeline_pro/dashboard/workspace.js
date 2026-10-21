@@ -152,6 +152,19 @@ function renderRunDetail(run) {
   const actions = el("div", "record-actions"); actions.append(button("Ask agent about this run", "secondary", () => {
     $("chat-input").value = `Inspect experiment ${run.short_id || run.id}. Return a verified metrics.validation_f1 fact and guide my next pipeline step in one sentence.`; $("chat-input").focus();
   }));
+  if (!run.config.algorithm || run.config.algorithm === "mlp") actions.append(button("Plan Optuna trials", "secondary", () => {
+    const request = {
+      dataset_id: run.dataset_id, model_id: run.model_id, config: run.config,
+      objective_metric: "validation_f1", direction: "maximize", sampler_seed: 42,
+      search_space: {
+        learning_rate: { low: 0.0001, high: 0.05, log: true },
+        batch_size: { choices: [8, 16, 32] }, hidden_units: { low: 8, high: 64, step: 8 },
+      },
+      limits: { max_trials: 5, max_runtime_seconds: 300, concurrency: 1 },
+    };
+    $("chat-input").value = `Inspect experiment ${run.short_id || run.id} and propose an Optuna tuning search with these exact arguments. Use the saved base training config, a per-trial runtime limit of ${run.config.max_runtime_seconds} seconds, at most 5 trials and a total runtime budget of 300 seconds, executing serially. Select by validation F1. Present the proposal for my approval; do not submit it.\n${JSON.stringify(request, null, 2)}`;
+    $("chat-input").focus();
+  }));
   for (const artifact of run.artifacts) actions.append(button(`Download ${artifact.name}`, "quiet-button", async () => {
     try {
       const blob = await api(`/experiments/${encodeURIComponent(run.id)}/artifacts/${encodeURIComponent(artifact.name)}`, { raw: true });

@@ -65,6 +65,10 @@ Keep other heavy verification/inference work quiescent during an agent demo.
 3. Open a run to inspect results, ask the agent about its validation F1, download
    hash/size-verified artifacts or register an eligible completed model version.
    Comparison uses validation F1 and the same dataset version.
+   For an MLP experiment, **Plan Optuna trials** fills the agent message box with
+   that run's dataset, model and saved training configuration, the search ranges,
+   and a five-trial/300-second serial search budget. Edit the prompt if needed,
+   then send it and review the agent's proposal before approving any search.
 4. Use the agent's visible prompt starters or write a request with real IDs and
    explicit budgets. Review the complete proposed arguments before **Approve
    action** or **Reject**. A Python draft is displayed for review/copy/download;
