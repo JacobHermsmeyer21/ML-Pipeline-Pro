@@ -1,6 +1,6 @@
 # Run Optuna trials from an experiment
 
-- Status: superseded by the user's narrower prompt-only request
+- Status: prompt-only button removed at Jacob's request on October 20, 2026
 - Date: 2026-10-20
 - Source baseline: `fd36e79` on `main`; fetched origin, no incoming commits
 - Request: a button on the experiment for doing trials with “opfana”
@@ -8,6 +8,24 @@
 - Independent review: availability unknown; submission recovery changes need review
 
 ## October 20 scope correction
+
+Jacob subsequently requested "go back before we added the button, just remove
+it". Restore the pre-button workspace source and dashboard guide, retaining this
+document as historical evidence. Existing conversations, tuning and all unrelated
+features remain intact. Verify the restored source against `fd36e79`, run the fast
+checks and rebuild/recreate only the local dashboard service.
+
+Removal verification: workspace source and guide match `fd36e79` exactly after
+newline normalization. Locked sync, Ruff lint/format, 855 fast tests (134 integration
+cases deselected, 79% coverage), dependency compatibility and diff checks pass.
+Built and recreated only `model-api` with the same project/overlays described below;
+startup is healthy. Gateway readiness returns 200 and served workspace JavaScript
+matches the restored file with no button text. Chrome loads the real dashboard,
+all four workspace API reads return 200, and the status is Workspace connected
+without a browser error. Live run-detail checks could not complete because this
+fresh demo view had no experiment rows; no new records were created to exercise
+that check. No existing tests or gates were changed. Removal commit/push is recorded
+in the handoff; the sections below retain the earlier implementation history.
 
 Jacob clarified: "i just want it to give the agent a prompt with all the info
 filled in". The direct-submission design below is not approved or implemented.
