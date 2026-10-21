@@ -1,133 +1,70 @@
-# ML Pipeline Pro
+# Project Title: ML Pipeline Pro
 
-A course project by **Team MJN** for reproducible classification experiments,
-bounded hyperparameter tuning, monitoring, and conversational pipeline guidance.
+> Turn classification CSVs into reproducible PyTorch MLP or logistic-regression
+> experiments, tune models with Optuna, and monitor inference with Grafana.
+> LangChain adds conversational guidance and reviewed Python drafts alongside
+> separate model-management, tuning and monitoring APIs.
 
-## Demo
+## 👥 Team Members & Contributions
 
-![Animated ML Pipeline Pro dashboard walkthrough](demo.gif)
-
-The recording shows the locally hosted browser dashboard. For a live local
-walkthrough, follow the [dashboard startup guide](docs/guides/dashboard.md#start-on-this-desktop)
-and open `http://127.0.0.1:8000/dashboard/`. The base Compose stack below starts
-with chat and uploads disabled; the guide explains the additional services and
-configuration. Public URL verification is outside this submission update at
-Jacob's request.
-
-## Team and contributions
+As per course requirements, all three members must actively collaborate and commit
+to this repository. Participation by all three is **not demonstrated** by the
+available evidence.
 
 Contributions below are grounded in published Git history through `baa8189`
 (October 20, 2026). Commit authorship records submitted work; it does not establish
 how much was written manually versus with AI assistance. No contributions outside
 Git were reported for this audit.
 
-| Team member | Verified workflow contributions | Status in the submitted application |
-| --- | --- | --- |
-| **Jacob Hermsmeyer** ([JacobHermsmeyer21](https://github.com/JacobHermsmeyer21)) | Backend/services, dataset and model registration, serial PyTorch training, Optuna tuning and recovery, LangChain tools and Python drafts, monitoring, Docker/Kubernetes/CI, original dashboard, CSV preparation/column versions/deletion, deployment diagnostics, OpenAI integration, logistic regression, short IDs and classification metrics. Representative commits: `0e37e6e`, `5c5f429`, `c31898c`, `a44452e`. | Maintained implementation and subsequent feature work are present in the current tree. |
-| **Mingma Lama** ([lama9811](https://github.com/lama9811); also commits as Mingma) | Astro/React dashboard redesign, mocked-API browser regression tests and build checks, CSP changes, Claude backend and output-budget correction, public-deployment plan, presentation slides/PDF, and an earlier submission README. Representative commits: `20bef4f`, `4f9b4a3`, `c0d3cb7`, `e0ac45c`, `c012423`, `1d89614`. | This work was contributed and merged, then removed from the application tree by restoration commit `e7c8e76`. It remains credited in history; Astro, Claude, and those slides are absent from the current submission. |
-| **Nasif Ajilore** | No contribution is recorded under this name in the inspected repository history, and no work outside Git has been reported. | No verified contribution to report. An unidentified Git alias or unreported work cannot be ruled out. |
+* **Jacob Hermsmeyer** ([JacobHermsmeyer21](https://github.com/JacobHermsmeyer21)) - Backend/services, dataset and model registration, serial PyTorch training, Optuna tuning and recovery, LangChain tools and Python drafts, monitoring, Docker/Kubernetes/CI, original dashboard, CSV preparation/column versions/deletion, deployment diagnostics, OpenAI integration, logistic regression, short IDs and classification metrics. Representative commits: `0e37e6e`, `5c5f429`, `c31898c`, `a44452e`. Maintained implementation and subsequent feature work are present in the current tree.
+* **Mingma Lama** ([lama9811](https://github.com/lama9811); also commits as Mingma) - Astro/React dashboard redesign, mocked-API browser regression tests and build checks, CSP changes, Claude backend and output-budget correction, public-deployment plan, presentation slides/PDF, and an earlier submission README. Representative commits: `20bef4f`, `4f9b4a3`, `c0d3cb7`, `e0ac45c`, `c012423`, `1d89614`. This work was contributed and merged, then removed from the application tree by restoration commit `e7c8e76`. It remains credited in history; Astro, Claude, and those slides are absent from the current submission.
+* **Nasif Ajilore** (GitHub username not supplied) - No contribution is recorded under this name in the inspected repository history, and no work outside Git has been reported. No verified contribution to report. An unidentified Git alias or unreported work cannot be ruled out.
 
-## Git workflow
+---
 
-The history contains repeated commits from October 6–20, 2026, feature branches,
-and merged pull requests, including [PR #1](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/1)
-and [PR #2](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/2).
-At audit revision `baa8189`, `git shortlog -sne HEAD` records 131 commits by
-Jacob's identity and 20 by Mingma's two identities (18 + 2, including merges).
-These counts describe reachable history, including work later removed; they are
-not measures of effort. **Active Git collaboration by all three members is not
-demonstrated:** no third contributor identity appears. This requirement remains
-unmet on the available evidence.
+## 🚀 Live Demo
 
-Substantive changes use written plans and human review; completed major changes
-are checked, committed and pushed. See [repository workflow](AGENTS.md) and the
-[development method](docs/project/development-methodology.md).
+* **Application URL:** Not provided. A publicly accessible deployment has not been
+  verified; this requirement remains outstanding. Deployment and URL verification
+  are outside this documentation update at Jacob's request.
+* *Note: This live demo must be fully functional and accessible during the live
+  project presentation.*
 
-## Submission checklist
+For a local presentation, follow the
+[dashboard startup guide](docs/guides/dashboard.md#start-on-this-desktop) and open
+`http://127.0.0.1:8000/dashboard/`. This loopback address works on the host machine
+and does not satisfy the public deployment requirement.
 
-| Professor's requirement | Evidence or remaining limitation |
-| --- | --- |
-| Embedded animated walkthrough | Root `demo.gif` is embedded above; decoded successfully as 2,002 frames at 1922 × 1042. A recording does not establish current service availability. |
-| Operational public app link | Not assessed in this update, at Jacob's request. Local startup is documented above. |
-| Exact README template | Jacob confirmed that the professor did not supply a template. This README covers the supplied checklist; exact-template compliance cannot be assessed. |
-| Three named members and specific contributions | All three are listed above, with historical/removed work and absent evidence stated explicitly. |
-| Regular commits and collaboration by every member | Regular history exists for Jacob and Mingma; participation by Nasif is not evidenced. |
-| Installation, dependencies, datasets and evaluation metrics | Documented below and in the linked setup, API and evidence guides. |
+### 🎥 Project Walkthrough
 
-## Overview and features
+![Project Demo Walkthrough](demo.gif)
 
-Datasets, experiments and conversations support easy-to-type references such as
-`d1`, `e1` and `c1` in the dashboard, agent chat and API. Full IDs keep working. See
-[short IDs and the existing-data upgrade](docs/guides/short-record-ids.md).
+The tracked animation shows the local dashboard, including an Iris CSV import.
+It decodes as 2,002 frames at 1922 × 1042; a recording does not establish current
+service availability.
 
-Models support `mlp` (the default) and `logistic_regression`. Create a linear model
-with `POST /api/v1/models` and
-`{"name":"linear_baseline","architecture":"logistic_regression"}`. Submit
-`POST /api/v1/experiments` with your `dataset_id`, `model_id`, an `Idempotency-Key`
-header, and `"config":{"algorithm":"logistic_regression","epochs":30,"l2_strength":0}`.
-Common config fields/defaults are seed 42, batch size 16, learning rate 0.01 and
-runtime limit 60 seconds. Logistic configs exclude `hidden_units`; MLP payloads
-retain their existing defaults. A config/model mismatch returns scoped
-`409 model_config_mismatch`. Architecture is immutable after creation.
+---
 
-Logistic regression is a fresh PyTorch linear classifier trained with minibatch
-Adam, cross entropy and optional `0.5 * l2_strength * sum(weight ** 2)` (bias is
-unpenalized). It supports binary and multiclass classification; convergence and
-superiority over MLP are not guaranteed. Scaling fits training rows and checkpoints
-are selected by validation metrics. Logistic tuning and AI mutation proposals are
-deferred (`409 unsupported_model_algorithm`); manual training, read/compare tools,
-artifact downloads and version registration work with both algorithms. See the
-[dashboard comparison walkthrough](docs/guides/dashboard.md#compare-algorithms).
+<a id="development-setup"></a>
 
-A machine learning class project for reproducible classification experiments,
-bounded tuning, and conversational pipeline guidance. The backend uses FastAPI,
-MongoDB, Redis/Celery, PyTorch, and Optuna. Conversation development uses
-LangChain with OpenAI as the default agent provider and an explicit local Ollama option.
+## 🛠️ Installation & Setup
 
-For OpenAI, set `OPENAI_API_KEY` in the ignored `.env` file and enable
-`MLPP_CHAT_ENABLED=true`, `MLPP_CHAT_BACKEND=openai`, `MLPP_CHAT_PROTOCOL=native`.
-The default hosted model is `gpt-5.4-mini`; prompts and supplied record context are
-sent externally. Read the [OpenAI setup and verification guide](docs/guides/openai-agent.md)
-for limits, deployment, local compatibility and current acceptance evidence.
-The retained local-model results below do not establish OpenAI acceptance.
+Follow these steps to set up the environment and run the project locally.
 
-Current as of October 19, 2026: the local dashboard supports original CSV import,
-reviewed categorical encoding/splits, immutable column-subset versions and
-permanent dataset/classifier deletion. Independent model, tuning and monitoring
-APIs, generated Python drafts, Prometheus/Grafana and Docker/Kubernetes delivery
-have retained minimal-course evidence. See [current status](docs/project/project-status.md)
-and the [course checklist](docs/project/course-requirements.md) for verification and
-remaining review/deployment gaps. Plans and dated audits retain their original scope.
+### Prerequisites
 
-The [October 19 RX 9070 desktop demo](docs/evidence/2026-10-19-desktop-demo/README.md)
-passes the full bounded AI walkthrough. On the CPU laptop,
-[standalone gates](docs/evidence/2026-10-19-laptop-awake-gates/README.md) pass all ten
-dialogue and seven snippet scenarios with the five-minute profile, while the
-[bounded Kubernetes walkthrough](docs/evidence/2026-10-19-laptop-gateway-health/README.md)
-still fails during a gateway restart. Two later
-[unbounded diagnostics](docs/evidence/2026-10-19-laptop-unbounded/README.md) pass
-complete workflows in 789.906/641.016 seconds using direct AI origins with
-application probes removed. Those diagnostics do not establish finite-profile or
-full gateway acceptance; normal settings and probes were restored.
+* Python **3.11–3.14**; the project's dependency manifest requires a newer Python
+  than the template's generic Python 3.8+ example.
+* Git and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+* Docker with Compose **2.24+** for the full service stack.
+* Configured provider credentials or the explicitly installed local Ollama model
+  and tokenizer for chat. The local course path requires no paid model API.
 
-You can register datasets and models, queue training or tuning, compare validation
-results, download verified artifacts, and register model versions. Training runs
-serially on CPU. Conversation tools, a local model adapter, durable history,
-grounded reads, authenticated routes, and confirmed actions are implemented;
-the opt-in [guided 7B demo](docs/guides/guided-midterm-demo.md) passes the original
-ten dialogue and seven snippet cases. Earlier slow/failed runs remain recorded;
-local inference capacity depends on the declared runtime and available resources.
-Supported Python snippet generation now saves restricted, validated drafts for
-human review. See the [snippet guide](docs/guides/snippet-generation.md).
+### Local Installation
 
-The approved [midterm walkthrough](docs/guides/midterm-walkthrough.md) now has three
-independent domain APIs, guided local AI, generated drafts, measured monitoring
-with Prometheus/Grafana, and a local Kubernetes deployment path. Human draft and
-monitoring reviews are recorded, and the clean-checkout/full Kubernetes AI walkthroughs
-pass. Kubernetes and recovery [successful implementation CI](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/actions/runs/38505646188) pass. See the
-[roadmap](PLAN.md) and [course checklist](docs/project/course-requirements.md).
-
-## Development setup
+uv creates and manages `.venv`; manual activation is unnecessary. The locked
+installation uses `pyproject.toml` and `uv.lock`, rather than `requirements.txt`.
+Run the commands below in PowerShell.
 
 Dependencies are declared in [pyproject.toml](pyproject.toml) and resolved in
 [uv.lock](uv.lock). Python 3.11–3.14 is supported; CI checks Python 3.11 and 3.13.
@@ -140,6 +77,8 @@ is packaged HTML/CSS/JavaScript and needs no Node/Astro build.
 For Python development, install uv, then run:
 
 ```powershell
+git clone https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro.git
+Set-Location ML-Pipeline-Pro
 uv sync --locked --extra training
 # Create configuration only if it does not already exist.
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
@@ -151,7 +90,7 @@ services. Full API workflows need MongoDB/Redis; chat additionally needs its
 configured provider. Settings and secret handling are documented in
 [.env.example](.env.example) and the [setup guide](docs/guides/setup.md).
 
-Install Docker with Compose 2.24 or later. From the repository root:
+For the base service stack, install Docker with Compose 2.24 or later and run:
 
 ```powershell
 docker compose up --build --wait --wait-timeout 300
@@ -170,49 +109,22 @@ verified artifact-specific token counter. See the
 [OpenAI guide](docs/guides/openai-agent.md) or
 [local conversation development](docs/guides/conversation-development.md).
 
-## Try a workflow
+The base stack disables chat and uploads and does not start Grafana. Use the
+[dashboard overlays](docs/guides/dashboard.md#start-on-this-desktop) for the browser
+workflow and [domain services](docs/guides/domain-services.md),
+[monitoring](docs/guides/monitoring-demo.md) and
+[Kubernetes](docs/guides/kubernetes-demo.md) for the separated deployment.
 
-The [local dashboard](docs/guides/dashboard.md) brings CSV upload, model training,
-saved experiments, local-agent chat and embedded Grafana panels into one browser
-workspace at `http://127.0.0.1:8000/dashboard/`. Use the dashboard Compose overlay
-for durable shared uploads and Grafana embedding. Uploads are disabled by default.
-The additive `POST /api/v1/datasets/upload` accepts raw `text/csv` with dataset
-metadata in query parameters; [the API reference](docs/reference/api.md#dataset-upload)
-documents its limits, project scope, replay and failure responses.
-For original classification CSVs, `POST /api/v1/datasets/preview` proposes editable
-encodings and stratified 70/15/15 splits; `POST /api/v1/datasets/prepare` saves the
-exact reviewed recipe. Both accept multipart CSV/JSON and use the same opt-in
-upload setting. See [raw CSV preparation](docs/reference/api.md#raw-csv-preparation).
+---
 
-Choose input columns before uploading, or use **Edit columns** on a saved dataset
-to drop inputs and **Save as new version**. Existing versions/runs retain their
-original data; rows, labels and splits are preserved. The additive
-`GET /api/v1/datasets/{id}/columns`, `POST /api/v1/datasets/{id}/columns/preview`
-and `POST /api/v1/datasets/{id}/columns` routes use the upload opt-in setting.
-See [column editing](docs/reference/api.md#dataset-column-editing).
+## 📊 Dataset
 
-Use **Delete dataset** or **Manage models** in the dashboard to permanently erase
-an item and its related training history/checkpoints after reviewing the exact
-scope. Related active jobs block deletion; conversations/drafts and shared or
-operator-owned inputs are kept. The authenticated deletion-preview, `DELETE`
-dataset/model and operation-status routes are documented in
-[permanent deletion](docs/reference/api.md#permanent-dataset-and-model-deletion).
-
-For the independently runnable model/tuning APIs, follow
-[domain service setup](docs/guides/domain-services.md). Monitoring and Kubernetes
-use the [monitoring](docs/guides/monitoring-demo.md) and
-[Kubernetes](docs/guides/kubernetes-demo.md) guides.
-
-- [Classification](docs/guides/workflows.md#classification-experiment-walkthrough): register inputs, train, compare, and register a version.
-- [Bounded tuning](docs/guides/workflows.md#bounded-classification-tuning): search within trial/runtime limits, inspect results, and cancel.
-- [Conversation tools](docs/guides/workflows.md#conversation-tool-layer): use typed tools over the existing API.
-- [Generated Python drafts](docs/guides/snippet-generation.md): request, inspect, and review integration snippets through chat.
-- [API reference](docs/reference/api.md): endpoints, access headers, errors, and idempotency.
-- [Complete midterm demo](docs/guides/midterm-walkthrough.md): the approved minimal all-nine workflow.
-
-The walkthroughs include demos that run without services.
-
-## Datasets
+* **Source:** Tracked [synthetic classification CSV](examples/data/classification.csv),
+  generated locally by [make_dataset.py](examples/make_dataset.py).
+* **Description:** 120 rows, two numeric features (`feature_1`, `feature_2`), binary
+  `target` labels and explicit `split` membership.
+* **Data Pipeline:** No external download is needed for the tracked example.
+  Regeneration and custom CSV preparation are described below.
 
 The checked-in [classification CSV](examples/data/classification.csv) is synthetic
 educational data generated by [make_dataset.py](examples/make_dataset.py) with
@@ -237,7 +149,45 @@ checked-in synthetic example. A separate historical
 hash, preparation and saved results; its original CSV is not distributed here.
 Verify provenance and permission before redistributing external datasets.
 
-## Models and evaluation metrics
+---
+
+## 🧠 Model Architecture & Training
+
+* **Algorithm:** MLP (linear → ReLU → linear) or logistic regression (linear
+  classifier), supporting binary and multiclass classification.
+* **Frameworks Used:** PyTorch for classifiers, NumPy/scikit-learn for preparation
+  and checks, Optuna for bounded Bayesian tuning, and LangChain for the separate
+  pre-trained conversational model. No language-model training is required.
+* **Training Process:** Serial CPU minibatch Adam with cross-entropy. Defaults:
+  seed 42, 30 epochs, batch size 16, learning rate 0.01, MLP hidden width 16 and
+  a 60-second runtime limit. Fit normalization on training rows, select by
+  validation metrics, then evaluate held-out test rows. Logistic regression can
+  add L2 regularization. Logistic tuning and AI mutation proposals remain
+  unsupported; manual training, comparison, downloads and registration work.
+
+The [capabilities and operational limits](docs/guides/project-capabilities.md)
+retain detailed feature/API contracts and dated acceptance from the prior README.
+See the [API reference](docs/reference/api.md),
+[classification/tuning workflows](docs/guides/workflows.md),
+[complete tutorial](docs/guides/midterm-walkthrough.md) and
+[generated Python drafts](docs/guides/snippet-generation.md).
+
+---
+
+## 📈 Evaluation & Results
+
+One retained October 19 Drug200 MLP run used 200 rows split 117 training / 38
+validation / 45 test, seed 42, 30 epochs and hidden width 16; validation selected
+epoch 24. This is separate from the synthetic example and Iris recording.
+Training-set evaluation scores and loss were not reported in the cited evidence.
+
+| Metric | Training Set | Validation Set | Test Set |
+| :--- | :--- | :--- | :--- |
+| Accuracy | Not reported | 1.000000 | 0.955556 |
+| Macro F1-score | Not reported | 1.000000 | 0.958667 |
+| Macro precision | Not reported | Not reported for this run | Not reported for this run |
+| Macro recall | Not reported | Not reported for this run | Not reported for this run |
+| Loss | Not reported | Not reported | Not reported |
 
 The supported classifiers are a PyTorch MLP (linear → ReLU → linear) and logistic
 regression (a linear classifier). Both use Adam and cross-entropy; the classifier
@@ -267,7 +217,13 @@ the Iris recording. The later
 checks all four metrics against independently reconstructed predictions for real
 binary/multiclass runs. No new model evaluation was run for this README update.
 
-## Run checks
+The [assets evidence index](assets/README.md) links original saved results,
+screenshots and verification logs. No confusion matrix, ROC curve or training
+loss curve is claimed for the historical run.
+
+<a id="run-checks"></a>
+
+### Verification
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run:
 
@@ -284,40 +240,40 @@ and isolated recovery. Both use explicit opt-in flags; missing services or skipp
 selected cases are verification gaps. Historical results live in
 [project status](docs/project/project-status.md).
 
-## Documentation roadmap
+Full bounded laptop Kubernetes AI acceptance remains open; passing desktop,
+standalone and unbounded diagnostic runs have different scopes. See
+[current status](docs/project/project-status.md) and the
+[course checklist](docs/project/course-requirements.md).
 
-Use the [documentation index](docs/README.md) to find guides, references, project
-records, reviewed plans, technical memory, and saved evidence.
-[PLAN.md](PLAN.md) tracks milestones; [AGENTS.md](AGENTS.md) defines repository
-rules. Substantive designs follow the
-[development method](docs/project/development-methodology.md) and require human
-review before implementation.
+---
 
-Application code is in [`src/ml_pipeline_pro`](src/ml_pipeline_pro/), tests in
-[`tests`](tests/), and runnable examples in [`examples`](examples/).
+## 🧑‍💻 Git Workflow & Guidelines
 
-The opt-in [five-minute laptop profile](docs/guides/laptop-five-minute.md) allows
-240 seconds per model call, 270 seconds per complete turn and a 300-second client
-wait. Default call/turn settings remain 20/60 seconds; their allowed finite ceiling
-is 300 seconds with model <= turn. Use the matching deployment and client profile;
-increasing only a client wait cannot extend the application's budget. Readiness
-requires the retained laptop gates and complete demo results, not configuration alone.
+1. **Branch Frequently:** Create feature branches, for example
+   `git checkout -b feature/your-feature`, and merge reviewed work through pull
+   requests.
+2. **Commit Regularly:** Run relevant checks and use descriptive messages, for
+   example `git commit -m "Document classification metrics"`.
+3. **Pull Before Push:** Fetch `origin` before major changes and again before
+   pushing; compare the upstream and inspect `origin/main`. Integrate applicable
+   incoming work, preserve local changes and published history, and rerun affected
+   checks. On a clean, non-diverged `main`, use `git pull --ff-only origin main`.
+   Resolve divergence deliberately; never force-push to bypass incoming changes.
 
-In this opt-in profile, `GET /gateway-live` returns `200 {"status":"alive"}`
-locally from nginx with the usual correlation header. Kubernetes uses it only for
-gateway liveness; readiness and startup still check the upstream API. Validate the
-failure boundary with `uv run --locked --extra training python scripts/check_laptop_gateway.py`.
-This uses an already installed `nginx:1.28-alpine` image in a disposable test network,
-does not pull images or invoke a model, and saves DNS/TCP failure evidence under
-`artifacts/laptop-gateway-check/`.
+The history contains repeated commits from October 6–20, 2026, feature branches,
+and merged pull requests, including [PR #1](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/1)
+and [PR #2](https://github.com/JacobHermsmeyer21/ML-Pipeline-Pro/pull/2).
+At audit revision `baa8189`, `git shortlog -sne baa8189` records 131 commits by
+Jacob's identity and 20 by Mingma's two identities (18 + 2, including merges).
+These counts describe reachable history, including work later removed; they are
+not measures of effort. **Active Git collaboration by all three members is not
+demonstrated:** no third contributor identity appears. This requirement remains
+unmet on the available evidence.
 
-The separately approved `laptop-unbounded-diagnostic` profile measures AI completion
-with no model/turn/client waiting cutoff. It requires
-`MLPP_CHAT_UNBOUNDED_DIAGNOSTIC=true` and both chat/model timeouts set to `none`,
-is rejected in production, and removes application probes only from its rendered
-Kubernetes manifest. Use explicit direct model/monitoring API origins for long AI
-requests; the gateway remains on the backend path. Saved diagnostic turns have
-matching private mode markers and null deadlines; a crashed owner remains running
-until investigated. Default/five-minute profiles, existing finite deadlines and
-action/job budgets retain their behavior. See the
-[diagnostic procedure](docs/guides/laptop-five-minute.md#unbounded-timing-diagnostic).
+Substantive changes use written plans and human review; completed major changes
+are checked, committed and pushed. See [repository workflow](AGENTS.md) and the
+[development method](docs/project/development-methodology.md).
+
+See the [documentation index](docs/README.md) and [roadmap](PLAN.md). Application
+code is in [`src/ml_pipeline_pro/`](src/ml_pipeline_pro/), tests in
+[`tests/`](tests/) and runnable examples in [`examples/`](examples/).

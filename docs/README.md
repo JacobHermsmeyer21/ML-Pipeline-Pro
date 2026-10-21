@@ -8,6 +8,7 @@ retain their reviewed milestone/design scope.
 ## Guides: set up, use, and verify
 
 - [Setup](guides/setup.md): Docker, host development, configuration, data, and artifacts.
+- [Capabilities and operational limits](guides/project-capabilities.md): detailed feature contracts and dated evidence retained from the pre-template README.
 - [Local dashboard](guides/dashboard.md): import raw CSVs, review encodings/splits, drop input columns into new versions, train, permanently delete datasets/models, chat and inspect Grafana.
 - [Domain services](guides/domain-services.md): independent model/tuning processes and compatibility routing.
 - [Workflows](guides/workflows.md): classification, tuning, and typed conversation tools.
