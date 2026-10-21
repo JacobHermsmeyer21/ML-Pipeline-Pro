@@ -1,8 +1,7 @@
 import { $, state, terminalTurns, el, button, api, stored, store, notify, report, describe,
-  setPending, date, download, selectedDataset, selectedModel, showView, recordLabel } from "./core.js";
+  setPending, date, download, recordLabel } from "./core.js";
 import { validationExplanation } from "./reply-errors.js";
 
-const welcome = $("chat-messages").firstElementChild.cloneNode(true);
 function rememberConversation(id, shortId = null) {
   if (shortId) store("conversation-labels", { ...stored("conversation-labels", {}), [id]: shortId });
   const ids = stored("conversations", []).filter((item) => typeof item === "string" && item !== id);
@@ -33,7 +32,6 @@ function renderRecovery() {
 }
 export function renderChat() {
   const log = $("chat-messages"); log.replaceChildren();
-  if (!state.turns.length && !state.pendingChat) { log.append(welcome.cloneNode(true)); bindStarters(log); }
   for (const turn of state.turns) {
     const user = el("div", "chat-message user"); user.append(el("span", "message-label", "You"), el("p", "", turn.user_message)); log.append(user);
     const assistant = el("div", "chat-message assistant"); assistant.append(el("span", "message-label", "Pipeline agent"), el("p", "", turn.message || (turn.status === "running" ? "Working with your saved records…" : turn.error?.message || "No message was saved.")));
@@ -162,17 +160,6 @@ async function checkPending() {
   try { if (state.conversation) await loadHistory(); if (state.pendingChat) await sendChat(state.pendingChat); }
   catch (error) { report(error); }
 }
-function bindStarters(parent) {
-  parent.querySelectorAll("[data-prompt]").forEach((node) => node.addEventListener("click", () => {
-    const dataset = selectedDataset(), model = selectedModel(); let prompt;
-    if (node.dataset.prompt === "python") prompt = "Generate Python listing experiments, limit 50, offset 0. Do not execute.";
-    else if (!dataset) { notify("Choose or upload a dataset first.", "warning"); showView("datasets"); return; }
-    else if (node.dataset.prompt === "inspect") prompt = `Inspect dataset ${dataset.short_id || dataset.id}. Return verified row_counts.train and row_counts.validation facts and guide my next pipeline step.`;
-    else if (!model) { notify("Select or create a model before planning training.", "warning"); showView("runs"); return; }
-    else prompt = `Train dataset ${dataset.short_id || dataset.id} with model ${model.id}. Per-trial runtime is 10 seconds. Do not submit it.`;
-    $("chat-input").value = prompt; $("chat-input").focus();
-  }));
-}
 export function initAgent() {
   state.renderChat = renderChat; state.loadHistory = loadHistory; state.renderConversationSelect = renderConversationSelect; state.renderChatRecovery = renderRecovery;
   $("chat-form").addEventListener("submit", async (event) => {
@@ -191,5 +178,4 @@ export function initAgent() {
     state.conversation = $("conversation-select").value; state.revision = 0; state.turns = []; state.actions.clear(); store("conversation", state.conversation); renderChat();
     if (state.conversation) await loadHistory().catch(report);
   });
-  bindStarters(document);
 }
